@@ -53,21 +53,29 @@ const WindowManager = () => {
         <ul className="task-list">
           {
             taskList.map((task) => {
-              if(task.name===focus) {
-                return (
-                  <li className="task-select" key={task.name}>
-                    <button onClick={() => {
-                    }}>{task.name}</button>
-                  </li>
-                )
-              }else {
+              if(task.type==="Shell") {
                 return(
-                  <li className="task" key={task.name}>
-                    <button onClick={() => {
-                      setFocus(task.name);
-                    }}>{task.name}</button>
+                  <li className="shell-task" key={task.name}>
+                    <button onClick={()=>{console.log("Discover")}}></button>
                   </li>
                 )
+              } else {
+                if (task.name === focus) {
+                  return (
+                    <li className="task-select" key={task.name}>
+                    <button onClick={() => {
+                      }}>{task.name}</button>
+                    </li>
+                  )
+                } else {
+                  return (
+                    <li className="task" key={task.name}>
+                      <button onClick={() => {
+                        setFocus(task.name);
+                      }}>{task.name}</button>
+                    </li>
+                  )
+                }
               }
             })
           }

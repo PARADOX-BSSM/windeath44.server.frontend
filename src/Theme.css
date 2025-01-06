@@ -22,10 +22,36 @@
 .task-list{
     margin:0;
     padding: 0;
+    height: 100%;
+    width: 100%;
     list-style: none;
     display: flex;
     align-content: center;
 }
 .task{
-    margin: 0.75rem;
+    margin: 0.25rem;
+}
+.task > button{
+    height: 100%;
+}
+.task-select{
+    margin: 0.25rem;
+}
+.task-select > button{
+    height: 100%;
+    background-color: darkgrey;
+}
+.shell-task{
+    height: 100%;
+    width: 0.625rem;
+    position: absolute;
+    right: 0;
+}
+.shell-task > button{
+    height: 100%;
+    width: 0.625rem;
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-left: 1px solid black;
 }
