@@ -1,6 +1,31 @@
 .window{
     border: 1px solid black;
+    border-radius: 5px;
 }
 .window-header{
-
+    background-color: darkgrey;
+    border-radius: 4px 4px 0 0;
+}
+.window-content{
+    background-color: gray;
+    border-radius: 0 0 4px 4px;
+}
+.task-bar{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3.125rem;
+    z-index: 99999;
+    background-color: darkgrey;
+}
+.task-list{
+    margin:0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    align-content: center;
+}
+.task{
+    margin: 0.75rem;
 }
