@@ -15,16 +15,20 @@ const Discover = ({addTask}) => {
   }
   return(
     <>
-      <>
-        <button onClick={() => {
+      <div className="app-button">
+        <button onDoubleClick={() => {
           addTask(Application1);
-        }}>Application
+        }}>
         </button>
-        <button onClick={() => {
+        <span className="app-title">Application</span>
+      </div>
+      <div className="app-button">
+        <button onDoubleClick={() => {
           addTask(Application2);
-        }}>Application2
+        }}>
         </button>
-      </>
+        <span className="app-title">Application2</span>
+      </div>
     </>
   )
 }
