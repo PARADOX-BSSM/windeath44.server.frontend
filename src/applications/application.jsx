@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {useDrag} from 'react-use-gesture';
 const Application = (props) => {
   const windowProps = {
@@ -33,28 +33,37 @@ const Application = (props) => {
     zIndex : 0
   }
   const [window, setWindow] = useState(windowProps);
+  useEffect(()=>{
+    props.setFocus(props.name);
+  },[window])
+  useEffect(()=>{
+    if(props.focus===props.name) {
+      props.setLayer(props.layer + 1);
+      setWindow({
+        position: "fixed",
+        height: 400,
+        width: 300,
+        top: window.top,
+        left: window.left,
+        zIndex: props.layer
+      })
+    }
+  },[props.focus])
   const move = useDrag((params)=>{
+    props.setFocus(props.name);
     setWindow({
       position: "fixed",
       height: 400,
       width: 300,
       top: params.offset[1],
       left: params.offset[0],
-      zIndex: props.layer
+      zIndex: props.layer-1
     })
   })
   if(props.type==="App") {
     return (
       <article className="window" style={window} onMouseDown={()=>{
-        props.setLayer(props.layer + 1);
-        setWindow({
-          position: "fixed",
-          height: 400,
-          width: 300,
-          top: window.top,
-          left: window.left,
-          zIndex: props.layer
-        })
+        props.setFocus(props.name)
       }}>
         <header className="window-header" {...move()} style={windowHeaderProps}>
         </header>

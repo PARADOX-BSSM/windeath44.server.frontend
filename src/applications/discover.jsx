@@ -5,7 +5,7 @@ const Discover = ({addTask}) => {
     "component": <></>,
     "type": "App",
     "id": 1234,
-    "name":"Application"
+    "name":"Application1"
   }
   const Application2 = {
     "component": <>hello</>,

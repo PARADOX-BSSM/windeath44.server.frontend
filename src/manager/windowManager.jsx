@@ -8,6 +8,7 @@ const WindowManager = () => {
     inset: 0
   };
   const [layer, setLayer] = useState(1);
+  const [focus, setFocus] = useState("Discover");
   const [taskList, setTaskList] = useState([]);
   const addTask = (component) => {
     setTaskList(Task => (!Task.includes(component))?
@@ -35,10 +36,15 @@ const WindowManager = () => {
         taskList.map((task) => {
           return (
             <Application key={task.name}
+                         name={task.name}
                          uid={task.id}
                          type={task.type}
                          layer={layer}
+                         focus={focus}
+                         taskList={taskList}
                          setLayer={setLayer}
+                         setTaskList={setTaskList}
+                         setFocus={setFocus}
             >{task.component}</Application>
           )
         })
@@ -47,9 +53,22 @@ const WindowManager = () => {
         <ul className="task-list">
           {
             taskList.map((task) => {
-              return (
-                <li className="task" key={task.name}><button>{task.name}</button></li>
-              )
+              if(task.name===focus) {
+                return (
+                  <li className="task-select" key={task.name}>
+                    <button onClick={() => {
+                    }}>{task.name}</button>
+                  </li>
+                )
+              }else {
+                return(
+                  <li className="task" key={task.name}>
+                    <button onClick={() => {
+                      setFocus(task.name);
+                    }}>{task.name}</button>
+                  </li>
+                )
+              }
             })
           }
         </ul>
