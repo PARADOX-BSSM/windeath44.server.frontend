@@ -23,7 +23,6 @@ const Application = (props) => {
     left : 0,
     right : 0,
     bottom : 0,
-    backgroundColor : "red"
   }
   const shellProps = {
     position : "fixed",
@@ -31,7 +30,6 @@ const Application = (props) => {
     left : 0,
     right : 0,
     bottom : 0,
-    backgroundColor : "green",
     zIndex : 0
   }
   const [window, setWindow] = useState(windowProps);
@@ -42,7 +40,6 @@ const Application = (props) => {
       width: 300,
       top: params.offset[1],
       left: params.offset[0],
-      backgroundColor: "black",
       zIndex: props.layer
     })
   })
@@ -56,13 +53,12 @@ const Application = (props) => {
           width: 300,
           top: window.top,
           left: window.left,
-          backgroundColor: "black",
           zIndex: props.layer
         })
       }}>
         <header className="window-header" {...move()} style={windowHeaderProps}>
         </header>
-        <section style={windowContentProps}>
+        <section className="window-content" style={windowContentProps}>
           <h1>{props.children}</h1>
         </section>
       </article>

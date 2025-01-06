@@ -8,7 +8,6 @@ const WindowManager = () => {
     inset: 0
   };
   const [layer, setLayer] = useState(1);
-  const [focus,setFocus] = useState(null);
   const [taskList, setTaskList] = useState([]);
   useEffect(()=>{
     setTimeout(()=>{
@@ -17,7 +16,8 @@ const WindowManager = () => {
           "component":<Discover taskList={taskList} setTaskList={setTaskList}/>,
           "type":"Shell",
           "id":taskList.length,
-          "layer":taskList.length
+          "layer":taskList.length,
+          "name":"Discover"
         }
       ])
     }, 200)
@@ -26,8 +26,8 @@ const WindowManager = () => {
     <main className="window-manager" style={displayDriver}>
       {
         taskList.map((task) => {
-          return(
-            <Application key={task.id}
+          return (
+            <Application key={task.name}
                          uid={task.id}
                          type={task.type}
                          layer={layer}
@@ -36,7 +36,19 @@ const WindowManager = () => {
           )
         })
       }
+      <footer className="task-bar">
+        <ul className="task-list">
+          {
+            taskList.map((task) => {
+              return (
+                <li className="task" key={task.name}>{task.name}</li>
+              )
+            })
+          }
+        </ul>
+      </footer>
     </main>
+
   )
 }
 export default WindowManager;
