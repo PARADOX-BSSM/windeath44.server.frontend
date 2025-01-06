@@ -1,13 +1,14 @@
 .window{
     border: 1px solid black;
     border-radius: 5px;
+    filter: drop-shadow(gray 0px 0px 15px);
 }
 .window-header{
-    background-color: darkgrey;
+    background-color: darkolivegreen;
     border-radius: 4px 4px 0 0;
 }
 .window-content{
-    background-color: gray;
+    background-color: lawngreen;
     border-radius: 0 0 4px 4px;
 }
 .task-bar{
@@ -17,7 +18,7 @@
     right: 0;
     height: 3.125rem;
     z-index: 99999;
-    background-color: darkgrey;
+    background-color: springgreen;
 }
 .task-list{
     margin:0;
@@ -33,13 +34,14 @@
 }
 .task > button{
     height: 100%;
+    background-color: lightgreen;
 }
 .task-select{
     margin: 0.25rem;
 }
 .task-select > button{
     height: 100%;
-    background-color: darkgrey;
+    background-color: seagreen;
 }
 .shell-task{
     height: 100%;
@@ -54,4 +56,20 @@
     padding: 0;
     border: none;
     border-left: 1px solid black;
+}
+.shell{
+    background-color: darkseagreen;
+    display: grid;
+    grid-template-columns: repeat(auto-fill,minmax(5rem,5rem));
+    grid-template-rows: repeat(auto-fill, minmax(5rem,5rem));
+    grid-auto-flow: column;
+}
+.app-button>button{
+    height: calc(100% - 1rem);
+    width: 100%;
+}
+.app-title{
+    height: 1rem;
+    font-size: 0.8rem;
+    margin: 0 auto;
 }
