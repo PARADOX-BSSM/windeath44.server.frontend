@@ -9,14 +9,21 @@ const WindowManager = () => {
   };
   const [layer, setLayer] = useState(1);
   const [taskList, setTaskList] = useState([]);
+  const addTask = (component) => {
+    setTaskList(Task => (!Task.includes(component))?
+      [...Task, component]:[...Task])
+  }
+  useEffect(() => {
+    console.log(taskList);
+  },[taskList]);
   useEffect(()=>{
     setTimeout(()=>{
       setTaskList(Temp=> [...Temp,
         {
-          "component":<Discover taskList={taskList} setTaskList={setTaskList}/>,
+          "component":<Discover addTask = {addTask}/>,
           "type":"Shell",
           "id":taskList.length,
-          "layer":taskList.length,
+          "layer":0,
           "name":"Discover"
         }
       ])
@@ -41,7 +48,7 @@ const WindowManager = () => {
           {
             taskList.map((task) => {
               return (
-                <li className="task" key={task.name}>{task.name}</li>
+                <li className="task" key={task.name}><button>{task.name}</button></li>
               )
             })
           }
