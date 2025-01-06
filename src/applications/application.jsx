@@ -29,7 +29,7 @@ const Application = (props) => {
     top : 0,
     left : 0,
     right : 0,
-    bottom : 0,
+    bottom : "3.125rem",
     zIndex : 0
   }
   const [window, setWindow] = useState(windowProps);
@@ -74,7 +74,7 @@ const Application = (props) => {
     )
   }else if(props.type==="Shell") {
     return (
-      <article style={shellProps}>
+      <article style={shellProps} className="shell">
         {props.children}
       </article>
     )
