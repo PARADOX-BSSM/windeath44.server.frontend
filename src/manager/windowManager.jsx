@@ -14,9 +14,6 @@ const WindowManager = () => {
     setTaskList(Task => (!Task.includes(component))?
       [...Task, component]:[...Task])
   }
-  useEffect(() => {
-    console.log(taskList);
-  },[taskList]);
   useEffect(()=>{
     setTimeout(()=>{
       setTaskList(Temp=> [...Temp,
