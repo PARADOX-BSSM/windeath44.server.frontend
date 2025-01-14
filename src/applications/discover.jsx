@@ -1,4 +1,5 @@
-import Application from "./application.jsx";
+import {Suspense, lazy} from 'react';
+const Terminal = lazy(() => import('./Terminal'));
 
 const Discover = ({addTask}) => {
   const Application1 = {
@@ -12,6 +13,12 @@ const Discover = ({addTask}) => {
     "type": "App",
     "id": 2345,
     "name":"Application2"
+  }
+  const terminal = {
+    "component": <Suspense fallback={null}><Terminal /></Suspense>,
+    "type": "App",
+    "id": 2210,
+    "name":"Terminal"
   }
   return(
     <>
@@ -28,6 +35,13 @@ const Discover = ({addTask}) => {
         }}>
         </button>
         <span className="app-title">Application2</span>
+      </div>
+      <div className="app-button">
+        <button onDoubleClick={() => {
+          addTask(terminal);
+        }}>
+        </button>
+        <span className="app-title">terminal</span>
       </div>
     </>
   )

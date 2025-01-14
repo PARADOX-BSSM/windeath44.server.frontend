@@ -68,7 +68,7 @@ const Application = (props) => {
         <header className="window-header" {...move()} style={windowHeaderProps}>
         </header>
         <section className="window-content" style={windowContentProps}>
-          <h1>{props.children}</h1>
+          {props.children}
         </section>
       </article>
     )
