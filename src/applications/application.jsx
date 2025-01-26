@@ -12,10 +12,17 @@ const Application = (props) => {
   }
   const windowHeaderProps = {
     position : "absolute",
+    display : "flex",
+    alignItems: "center",
     top : 0,
     left : 0,
     right : 0,
     height : 30
+  }
+  const headerButtonProps = {
+    height : 20,
+    width : 20,
+    marginLeft: 5,
   }
   const windowContentProps = {
     position : "absolute",
@@ -66,6 +73,9 @@ const Application = (props) => {
         props.setFocus(props.name)
       }}>
         <header className="window-header" {...move()} style={windowHeaderProps}>
+          <button style={headerButtonProps}></button>
+          <button style={headerButtonProps}></button>
+          <button style={headerButtonProps}></button>
         </header>
         <section className="window-content" style={windowContentProps}>
           {props.children}
