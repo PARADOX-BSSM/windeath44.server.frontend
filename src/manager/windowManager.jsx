@@ -26,61 +26,90 @@ const WindowManager = () => {
         }
       ])
     }, 200)
+    const container = document.getElementById("container");
+    const cursor = document.getElementById("cursor");
+
+    console.log(container);
+
+    // 컨테이너의 위치 및 크기
+    const bounds = container.getBoundingClientRect();
+
+    console.log(bounds);
+
+    document.addEventListener("mousemove", (event) => {
+        let x = event.clientX - bounds.left;
+        let y = event.clientY - bounds.top;
+
+        // 컨테이너 내부에만 커서를 제한
+        x = Math.max(0, Math.min(bounds.width - cursor.offsetWidth, x));
+        y = Math.max(0, Math.min(bounds.height - cursor.offsetHeight, y));
+
+        cursor.style.left = `${x}px`;
+        cursor.style.top = `${y}px`;
+    });
   },[])
+
+  
+
   return(
-    <Suspense fallback={null}>
-      <main className="window-manager" style={displayDriver}>
-        {
-          taskList.map((task) => {
-            return (
-              <Application key={task.name}
-                           name={task.name}
-                           uid={task.id}
-                           type={task.type}
-                           layer={layer}
-                           focus={focus}
-                           taskList={taskList}
-                           setLayer={setLayer}
-                           setTaskList={setTaskList}
-                           setFocus={setFocus}
-              >{task.component}</Application>
-            )
-          })
-        }
-        <footer className="task-bar">
-          <ul className="task-list">
+    <div>
+      <Suspense fallback={null}>
+        <main className="window-manager" style={displayDriver}>
+          <div id="container">
+            <div id="cursor"></div>
             {
               taskList.map((task) => {
-                if(task.type==="Shell") {
-                  return(
-                    <li className="shell-task" key={task.name}>
-                      <button onClick={()=>{console.log("Discover")}}></button>
-                    </li>
-                  )
-                } else {
-                  if (task.name === focus) {
-                    return (
-                      <li className="task-select" key={task.name}>
-                      <button onClick={() => {
-                        }}>{task.name}</button>
-                      </li>
-                    )
-                  } else {
-                    return (
-                      <li className="task" key={task.name}>
-                        <button onClick={() => {
-                          setFocus(task.name);
-                        }}>{task.name}</button>
-                      </li>
-                    )
-                  }
-                }
+                return (
+                  <Application key={task.name}
+                              name={task.name}
+                              uid={task.id}
+                              type={task.type}
+                              layer={layer}
+                              focus={focus}
+                              taskList={taskList}
+                              setLayer={setLayer}
+                              setTaskList={setTaskList}
+                              setFocus={setFocus}
+                  >{task.component}</Application>
+                )
               })
             }
-          </ul>
-        </footer>
-      </main>
-    </Suspense>
+            <footer className="task-bar">
+              <ul className="task-list">
+                {
+                  taskList.map((task) => {
+                    if(task.type==="Shell") {
+                      return(
+                        <li className="shell-task" key={task.name}>
+                          <button onClick={()=>{console.log("Discover")}}></button>
+                        </li>
+                      )
+                    } else {
+                      if (task.name === focus) {
+                        return (
+                          <li className="task-select" key={task.name}>
+                          <button onClick={() => {
+                            }}>{task.name}</button>
+                          </li>
+                        )
+                      } else {
+                        return (
+                          <li className="task" key={task.name}>
+                            <button onClick={() => {
+                              setFocus(task.name);
+                            }}>{task.name}</button>
+                          </li>
+                        )
+                      }
+                    }
+                  })
+                }
+              </ul>
+            </footer>
+          </div>
+        </main>
+      </Suspense>
+    </div>
   )
 }
 export default WindowManager;
