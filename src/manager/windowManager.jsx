@@ -7,6 +7,33 @@ const WindowManager = () => {
     position: "fixed",
     inset: 0
   };
+  const taskBarStyle = {
+    position: "fixed",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: "3.125rem",
+    zIndex: 99999,
+    backgroundColor: "springgreen"
+  };
+  const taskListStyle = {
+    margin:0,
+    padding: 0,
+    height: "100%",
+    width: "100%",
+    listStyle: "none",
+    display: "flex",
+    alignContent: "center"
+  };
+  const taskButtonStyle = {
+    height: "100%",
+    backgroundColor:"lightgreen"
+  };
+  const taskSelectButtonStyle = {
+    height: "100%",
+    backgroundColor:"seagreen"
+  }
+  const taskStyle = { margin: "0.25rem" };
   const [layer, setLayer] = useState(1);
   const [focus, setFocus] = useState("Discover");
   const [taskList, setTaskList] = useState([]);
@@ -29,7 +56,7 @@ const WindowManager = () => {
   },[])
   return(
     <Suspense fallback={null}>
-      <main className="window-manager" style={displayDriver}>
+      <main style={displayDriver}>
         {
           taskList.map((task) => {
             return (
@@ -47,28 +74,22 @@ const WindowManager = () => {
             )
           })
         }
-        <footer className="task-bar">
-          <ul className="task-list">
+        <footer style={taskBarStyle}>
+          <ul style={taskListStyle}>
             {
               taskList.map((task) => {
-                if(task.type==="Shell") {
-                  return(
-                    <li className="shell-task" key={task.name}>
-                      <button onClick={()=>{console.log("Discover")}}></button>
-                    </li>
-                  )
-                } else {
+                if(task.type!=="Shell") {
                   if (task.name === focus) {
                     return (
-                      <li className="task-select" key={task.name}>
-                      <button onClick={() => {
+                      <li style={taskStyle} key={task.name}>
+                        <button style={taskSelectButtonStyle} onClick={() => {
                         }}>{task.name}</button>
                       </li>
                     )
                   } else {
                     return (
-                      <li className="task" key={task.name}>
-                        <button onClick={() => {
+                      <li style={taskStyle} key={task.name}>
+                        <button style={taskButtonStyle} onClick={() => {
                           setFocus(task.name);
                         }}>{task.name}</button>
                       </li>

@@ -20,6 +20,7 @@ const Discover = ({addTask}) => {
     "id": 2210,
     "name":"Terminal"
   }
+  //나중에 map으로 감싸는게 더 좋아보임
   return(
     <>
       <div className="app-button">
