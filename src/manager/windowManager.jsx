@@ -14,6 +14,8 @@ const WindowManager = () => {
     setTaskList(Task => (!Task.includes(component))?
       [...Task, component]:[...Task])
   }
+  let cursorLeft = "0";
+  let cursor = null;
   useEffect(()=>{
     setTimeout(()=>{
       setTaskList(Temp=> [...Temp,
@@ -27,7 +29,7 @@ const WindowManager = () => {
       ])
     }, 200)
     const container = document.getElementById("container");
-    const cursor = document.getElementById("cursor");
+    cursor = document.getElementById("cursor");
 
     console.log(container);
 
@@ -67,6 +69,7 @@ const WindowManager = () => {
                               layer={layer}
                               focus={focus}
                               taskList={taskList}
+                              cursorLeft={cursorLeft}
                               setLayer={setLayer}
                               setTaskList={setTaskList}
                               setFocus={setFocus}

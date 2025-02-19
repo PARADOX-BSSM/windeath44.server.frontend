@@ -13,7 +13,7 @@
     z-index: 999;
     margin: 0vh 20vw;
 }
-.window{
+#window{
     border: 1px solid black;
     border-radius: 5px;
     filter: drop-shadow(gray 0px 0px 15px);
@@ -84,6 +84,7 @@
 .app-button>button{
     height: calc(100% - 1rem);
     width: 100%;
+    cursor: none;
 }
 .app-title{
     height: 1rem;
