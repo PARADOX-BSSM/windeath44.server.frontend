@@ -7,6 +7,8 @@ const WindowManager = () => {
     position: "fixed",
     inset: 0
   };
+  const [cursorLeft, setCursorLeft] = useState("0");
+  const [cursorTop, setCursorTop] = useState("0"); 
   const [layer, setLayer] = useState(1);
   const [focus, setFocus] = useState("Discover");
   const [taskList, setTaskList] = useState([]);
@@ -14,7 +16,6 @@ const WindowManager = () => {
     setTaskList(Task => (!Task.includes(component))?
       [...Task, component]:[...Task])
   }
-  let cursorLeft = "0";
   let cursor = null;
   useEffect(()=>{
     setTimeout(()=>{
@@ -43,11 +44,14 @@ const WindowManager = () => {
         let y = event.clientY - bounds.top;
 
         // 컨테이너 내부에만 커서를 제한
-        x = Math.max(0, Math.min(bounds.width - cursor.offsetWidth, x));
-        y = Math.max(0, Math.min(bounds.height - cursor.offsetHeight, y));
+        x = Math.max(0, Math.min(bounds.width, x));
+        y = Math.max(0, Math.min(bounds.height, y));
 
         cursor.style.left = `${x}px`;
         cursor.style.top = `${y}px`;
+        
+        setCursorLeft(`${x}`);
+        setCursorTop(`${y}`);
     });
   },[])
 
@@ -70,6 +74,7 @@ const WindowManager = () => {
                               focus={focus}
                               taskList={taskList}
                               cursorLeft={cursorLeft}
+                              cursorTop={cursorTop}
                               setLayer={setLayer}
                               setTaskList={setTaskList}
                               setFocus={setFocus}

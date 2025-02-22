@@ -6,8 +6,8 @@ const Application = (props) => {
     position : "fixed",
     height : 400,
     width : 300,
-    top : 0,
-    left : "50vw",
+    top : "20vh",
+    left : "30vw",
     backgroundColor : "black",
     zIndex: props.layer
   }
@@ -41,6 +41,16 @@ const Application = (props) => {
     zIndex : 0
   }
   const [window, setWindow] = useState(windowProps);
+  const [cursorX, setCursorX] = useState(props.cursorLeft);
+  const [cursorY, setCursorY] = useState(props.cursorTop); 
+  const [windowX, setWindowX] = useState(0);
+  const [windowY, setWindowY] = useState(0);
+
+  useEffect(() => {
+    setCursorX(props.cursorLeft);
+    setCursorY(props.cursorTop);
+  }, [props.cursorLeft, props.cursorTop]);
+
   useEffect(()=>{
     props.setFocus(props.name);
   },[window])
@@ -60,15 +70,49 @@ const Application = (props) => {
   const move = useDrag((params)=>{
     props.setFocus(props.name);
     console.log(params.offset[0]);
+
+    const container = document.getElementById("container");
+    const bounds = container.getBoundingClientRect();
+
+    let x = parseFloat(cursorX);
+    let y = parseFloat(cursorY);
+
+    console.log(1, x, y);
+    console.log(2, bounds.left, bounds.right, bounds.top, bounds.bottom);
+    console.log(3, windowX, windowY);
     
-    setWindow({
-      position: "fixed",
-      height: 400,
-      width: 300,
-      top: params.offset[1],
-      left: params.offset[0] + (50 * globalThis.innerWidth) / 100,
-      zIndex: props.layer-1
-    })
+    if(x <= 0 || x >= bounds.right - bounds.left) {
+      setWindow({
+        position: "fixed",
+        height: 400,
+        width: 300,
+        left: windowX,
+        top: params.offset[1] + (20 * globalThis.innerHeight) / 100,
+        zIndex: props.layer-1
+      })
+    }
+    else if(y <= 0 || y >= bounds.bottom - bounds.top) {
+      setWindow({
+        position: "fixed",
+        height: 400,
+        width: 300,
+        left: params.offset[0] + (30 * globalThis.innerWidth) / 100,
+        top: windowY,
+        zIndex: props.layer-1
+      })
+    }
+    else {
+      setWindow({
+        position: "fixed",
+        height: 400,
+        width: 300,
+        top: params.offset[1] + (20 * globalThis.innerHeight) / 100,
+        left: params.offset[0] + (30 * globalThis.innerWidth) / 100,
+        zIndex: props.layer-1
+      })
+    }
+    setWindowX(window.left);
+    setWindowY(window.top);
   })
   if(props.type==="App") {
     return (

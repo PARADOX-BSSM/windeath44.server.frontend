@@ -2,10 +2,11 @@
     margin: 0vh 20vw;
     height: 100%;
     cursor: none;
+    overflow: hidden;
 }
 #cursor {
-    width: 10px;
-    height: 10px;
+    width: 5px;
+    height: 5px;
     background-color: red;
     border-radius: 50%;
     position: absolute;
