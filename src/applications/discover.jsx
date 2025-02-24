@@ -1,10 +1,10 @@
 import {Suspense, lazy} from 'react';
 const Terminal = lazy(() => import('./Terminal'));
-
+const Settings = lazy(() => import('./Settings'));
 const Discover = ({addTask}) => {
   const Apps = [
     {
-      "component": <Suspense fallback={null}><></></Suspense>,
+      "component": <Suspense fallback={null}><Settings /></Suspense>,
       "type": "App",
       "id": 2345,
       "name": "Settings"
