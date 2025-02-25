@@ -1,7 +1,6 @@
 import {useEffect, useState, Suspense, lazy} from 'react';
 const Application = lazy(()=> import('../applications/application.jsx'));
 import Discover from "../applications/discover.jsx";
-import Terminal from '../applications/Terminal.jsx';
 import {Apps} from './importManager.jsx';
 const WindowManager = () => {
   const displayDriver = {
@@ -47,7 +46,6 @@ const WindowManager = () => {
   const removeTask = (component) => {
     setTaskList(Task => (Task.some(item => item.name === component.name))?
     Task.filter(item => item.name !== component.name):[...Task])
-    console.log(taskList.filter(item => item.name !== Application1.name));
   }
   useEffect(() => {
     console.log(1, taskList);
@@ -136,7 +134,7 @@ const WindowManager = () => {
                         if (task.name === focus) {
                           return (
                             <li style={taskStyle} key={task.name}>
-                            <button onClick={() => {
+                            <button style={taskSelectButtonStyle} onClick={() => {
                               }}>{task.name}</button>
                             </li>
                           )
