@@ -2,27 +2,8 @@ import {useEffect, useState, Suspense, lazy} from 'react';
 const Application = lazy(()=> import('../applications/application.jsx'));
 import Discover from "../applications/discover.jsx";
 import Terminal from '../applications/Terminal.jsx';
-
+import {Apps} from './importManager.jsx';
 const WindowManager = () => {
-  const Application1 = {
-    "component": <></>,
-    "type": "App",
-    "id": 1234,
-    "name":"Application1"
-  }
-  const Application2 = {
-    "component": <>hello</>,
-    "type": "App",
-    "id": 2345,
-    "name":"Application2"
-  }
-  const terminal = {
-    "component": <Suspense fallback={null}><Terminal /></Suspense>,
-    "type": "App",
-    "id": 2210,
-    "name":"Terminal"
-  }
-
   const displayDriver = {
     height: "100%",
     inset: 0
@@ -49,10 +30,7 @@ const WindowManager = () => {
     setTimeout(()=>{
       setTaskList(Temp=> [...Temp,
         {
-          "component":<Discover addTask = {addTask}
-                                                    Application1={Application1}
-                                                    Application2={Application2}
-                                                    terminal={terminal}/>,
+          "component":<Discover addTask = {addTask} Apps={Apps}/>,
           "type":"Shell",
           "id":taskList.length,
           "layer":0,
@@ -100,21 +78,19 @@ const WindowManager = () => {
                 taskList.map((task) => {
                   return (
                     <Application key={task.name}
-                                name={task.name}
-                                uid={task.id}
-                                type={task.type}
-                                layer={layer}
-                                focus={focus}
-                                taskList={taskList}
-                                cursorLeft={cursorLeft}
-                                cursorTop={cursorTop}
-                                Application1={Application1}
-                                Application2={Application2}
-                                terminal={terminal}
-                                setLayer={setLayer}
-                                setTaskList={setTaskList}
-                                setFocus={setFocus}
-                                removeTask={removeTask}
+                                 name={task.name}
+                                 uid={task.id}
+                                 type={task.type}
+                                 layer={layer}
+                                 focus={focus}
+                                 taskList={taskList}
+                                 cursorLeft={cursorLeft}
+                                 cursorTop={cursorTop}
+                                 setLayer={setLayer}
+                                 setTaskList={setTaskList}
+                                 setFocus={setFocus}
+                                 removeTask={removeTask}
+                                 removeCompnent={task}
                     >{task.component}</Application>
                   )
                 })

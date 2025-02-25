@@ -44,15 +44,10 @@ const Application = (props) => {
   const [cursorY, setCursorY] = useState(props.cursorTop); 
   const [windowX, setWindowX] = useState(0);
   const [windowY, setWindowY] = useState(0);
-
   useEffect(() => {
     setCursorX(props.cursorLeft);
     setCursorY(props.cursorTop);
   }, [props.cursorLeft, props.cursorTop]);
-
-  useEffect(()=>{
-
-  });
 
   useEffect(()=>{
     props.setFocus(props.name);
@@ -70,19 +65,15 @@ const Application = (props) => {
       })
     }
   },[props.focus])
+
   const move = useDrag((params)=>{
     props.setFocus(props.name);
-    console.log(params.offset[0]);
 
     const container = document.getElementById("container");
     const bounds = container.getBoundingClientRect();
 
     let x = parseFloat(cursorX);
     let y = parseFloat(cursorY);
-
-    console.log(1, x, y);
-    console.log(2, bounds.left, bounds.right, bounds.top, bounds.bottom);
-    console.log(3, windowX, windowY);
     
     if(x <= 0 || x >= bounds.right - bounds.left) {
       setWindow({
@@ -123,16 +114,9 @@ const Application = (props) => {
         props.setFocus(props.name)
       }}>
         <header className="window-header" {...move()} style={windowHeaderProps}>
-          <button style={headerButtonProps} onClick={() => {
-            console.log(props.name);
-            if(props.name == "Application1") {
-              props.removeTask(props.Application1);
-            } else if(props.name == "Application2") {
-              props.removeTask(props.Application2);
-            } else if(props.name == "Terminal") {
-              props.removeTask(props.terminal);
-            }
-          }}></button>
+          <button style={headerButtonProps} onClick={() =>
+            props.removeTask(props.removeCompnent)
+          }></button>
           <button style={headerButtonProps}></button>
           <button style={headerButtonProps}></button>
         </header>
