@@ -2,11 +2,10 @@ import {Suspense, lazy} from 'react';
 const Terminal = lazy(() => import('./Terminal'));
 
 const Discover = ({addTask, Apps}) => {
-
   return(
     <>
       {Apps.map(Application => {
-        return(
+        return (
           <div key={Application.name} className="app-button">
             <button onDoubleClick={() => {
               addTask(Application);

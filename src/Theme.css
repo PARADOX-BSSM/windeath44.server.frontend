@@ -43,53 +43,7 @@ body {
     background-color: lawngreen;
     border-radius: 0 0 4px 4px;
 }
-.task-bar{
-    position: fixed;
-    bottom: 0;
-    left: 20vw;
-    right: 0;
-    height: 3.125rem;
-    width: 60vw;
-    z-index: 99;
-    background-color: springgreen;
-}
-.task-list{
-    margin:0;
-    padding: 0;
-    height: 100%;
-    width: 100%;
-    list-style: none;
-    display: flex;
-    align-content: center;
-}
-.task{
-    margin: 0.25rem;
-}
-.task > button{
-    height: 100%;
-    background-color: lightgreen;
-}
-.task-select{
-    margin: 0.25rem;
-}
-.task-select > button{
-    height: 100%;
-    background-color: seagreen;
-}
-.shell-task{
-    height: 100%;
-    width: 0.625rem;
-    position: absolute;
-    right: 0;
-}
-.shell-task > button{
-    height: 100%;
-    width: 0.625rem;
-    margin: 0;
-    padding: 0;
-    border: none;
-    border-left: 1px solid black;
-}
+
 .shell{
     background-color: darkseagreen;
     display: grid;
