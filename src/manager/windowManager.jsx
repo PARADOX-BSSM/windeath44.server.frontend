@@ -1,8 +1,28 @@
 import {useEffect, useState, Suspense, lazy} from 'react';
 const Application = lazy(()=> import('../applications/application.jsx'));
 import Discover from "../applications/discover.jsx";
+import Terminal from '../applications/Terminal.jsx';
 
 const WindowManager = () => {
+  const Application1 = {
+    "component": <></>,
+    "type": "App",
+    "id": 1234,
+    "name":"Application1"
+  }
+  const Application2 = {
+    "component": <>hello</>,
+    "type": "App",
+    "id": 2345,
+    "name":"Application2"
+  }
+  const terminal = {
+    "component": <Suspense fallback={null}><Terminal /></Suspense>,
+    "type": "App",
+    "id": 2210,
+    "name":"Terminal"
+  }
+
   const displayDriver = {
     height: "100%",
     inset: 0
@@ -16,12 +36,23 @@ const WindowManager = () => {
     setTaskList(Task => (!Task.includes(component))?
       [...Task, component]:[...Task])
   }
+  const removeTask = (component) => {
+    setTaskList(Task => (Task.some(item => item.name === component.name))?
+    Task.filter(item => item.name !== component.name):[...Task])
+    console.log(taskList.filter(item => item.name !== Application1.name));
+  }
+  useEffect(() => {
+    console.log(1, taskList);
+  }, [taskList]); 
   let cursor = null;
   useEffect(()=>{
     setTimeout(()=>{
       setTaskList(Temp=> [...Temp,
         {
-          "component":<Discover addTask = {addTask}/>,
+          "component":<Discover addTask = {addTask}
+                                                    Application1={Application1}
+                                                    Application2={Application2}
+                                                    terminal={terminal}/>,
           "type":"Shell",
           "id":taskList.length,
           "layer":0,
@@ -77,9 +108,13 @@ const WindowManager = () => {
                                 taskList={taskList}
                                 cursorLeft={cursorLeft}
                                 cursorTop={cursorTop}
+                                Application1={Application1}
+                                Application2={Application2}
+                                terminal={terminal}
                                 setLayer={setLayer}
                                 setTaskList={setTaskList}
                                 setFocus={setFocus}
+                                removeTask={removeTask}
                     >{task.component}</Application>
                   )
                 })

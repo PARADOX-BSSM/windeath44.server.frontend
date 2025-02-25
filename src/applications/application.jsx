@@ -51,6 +51,10 @@ const Application = (props) => {
   }, [props.cursorLeft, props.cursorTop]);
 
   useEffect(()=>{
+
+  });
+
+  useEffect(()=>{
     props.setFocus(props.name);
   },[window])
   useEffect(()=>{
@@ -119,7 +123,16 @@ const Application = (props) => {
         props.setFocus(props.name)
       }}>
         <header className="window-header" {...move()} style={windowHeaderProps}>
-          <button style={headerButtonProps}></button>
+          <button style={headerButtonProps} onClick={() => {
+            console.log(props.name);
+            if(props.name == "Application1") {
+              props.removeTask(props.Application1);
+            } else if(props.name == "Application2") {
+              props.removeTask(props.Application2);
+            } else if(props.name == "Terminal") {
+              props.removeTask(props.terminal);
+            }
+          }}></button>
           <button style={headerButtonProps}></button>
           <button style={headerButtonProps}></button>
         </header>

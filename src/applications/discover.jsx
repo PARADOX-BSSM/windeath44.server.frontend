@@ -1,25 +1,7 @@
 import {Suspense, lazy} from 'react';
 const Terminal = lazy(() => import('./Terminal'));
 
-const Discover = ({addTask}) => {
-  const Application1 = {
-    "component": <></>,
-    "type": "App",
-    "id": 1234,
-    "name":"Application1"
-  }
-  const Application2 = {
-    "component": <>hello</>,
-    "type": "App",
-    "id": 2345,
-    "name":"Application2"
-  }
-  const terminal = {
-    "component": <Suspense fallback={null}><Terminal /></Suspense>,
-    "type": "App",
-    "id": 2210,
-    "name":"Terminal"
-  }
+const Discover = ({addTask, Application1, Application2, terminal}) => {
   return(
     <>
       <div className="app-button">
