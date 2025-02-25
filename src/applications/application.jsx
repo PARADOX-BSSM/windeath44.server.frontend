@@ -35,7 +35,6 @@ const Application = (props) => {
   const shellProps = {
     position : "fixed",
     top : 0,
-    left : 0,
     right : 0,
     bottom : "3.125rem",
     zIndex : 0

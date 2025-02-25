@@ -1,6 +1,22 @@
-#container{
-    margin: 0vh 20vw;
+body {
+    margin: 0;
+}
+
+.king {
+    display: flex;
+    height: 100vh;
+}
+
+.outside {
     height: 100%;
+    width: 20vw;
+    z-index: 10;
+    background-color: lightgreen;
+}
+
+#container{
+    height: 100%;
+    width: 60vw;
     cursor: none;
     overflow: hidden;
 }
@@ -12,7 +28,7 @@
     position: absolute;
     pointer-events: none;
     z-index: 999;
-    margin: 0vh 20vw;
+    margin: 0 20vw;
 }
 #window{
     border: 1px solid black;
@@ -30,12 +46,12 @@
 .task-bar{
     position: fixed;
     bottom: 0;
-    left: 0;
+    left: 20vw;
     right: 0;
     height: 3.125rem;
+    width: 60vw;
     z-index: 99;
     background-color: springgreen;
-    margin: 0vh 20vw;
 }
 .task-list{
     margin:0;
@@ -80,7 +96,8 @@
     grid-template-columns: repeat(auto-fill,minmax(5rem,5rem));
     grid-template-rows: repeat(auto-fill, minmax(5rem,5rem));
     grid-auto-flow: column;
-    margin: 0vh 20vw;
+    width: 60vw;
+    left: 20vw;
 }
 .app-button>button{
     height: calc(100% - 1rem);

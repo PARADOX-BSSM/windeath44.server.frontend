@@ -4,7 +4,7 @@ import Discover from "../applications/discover.jsx";
 
 const WindowManager = () => {
   const displayDriver = {
-    position: "fixed",
+    height: "100%",
     inset: 0
   };
   const [cursorLeft, setCursorLeft] = useState("0");
@@ -60,62 +60,66 @@ const WindowManager = () => {
   return(
     <div>
       <Suspense fallback={null}>
-        <main className="window-manager" style={displayDriver}>
-          <div id="container">
-            <div id="cursor"></div>
-            {
-              taskList.map((task) => {
-                return (
-                  <Application key={task.name}
-                              name={task.name}
-                              uid={task.id}
-                              type={task.type}
-                              layer={layer}
-                              focus={focus}
-                              taskList={taskList}
-                              cursorLeft={cursorLeft}
-                              cursorTop={cursorTop}
-                              setLayer={setLayer}
-                              setTaskList={setTaskList}
-                              setFocus={setFocus}
-                  >{task.component}</Application>
-                )
-              })
-            }
-            <footer className="task-bar">
-              <ul className="task-list">
-                {
-                  taskList.map((task) => {
-                    if(task.type==="Shell") {
-                      return(
-                        <li className="shell-task" key={task.name}>
-                          <button onClick={()=>{console.log("Discover")}}></button>
-                        </li>
-                      )
-                    } else {
-                      if (task.name === focus) {
-                        return (
-                          <li className="task-select" key={task.name}>
-                          <button onClick={() => {
-                            }}>{task.name}</button>
+      <div className="king">
+        <div className="outside"></div>
+          <main className="window-manager" style={displayDriver}>
+            <div id="container">
+              <div id="cursor"></div>
+              {
+                taskList.map((task) => {
+                  return (
+                    <Application key={task.name}
+                                name={task.name}
+                                uid={task.id}
+                                type={task.type}
+                                layer={layer}
+                                focus={focus}
+                                taskList={taskList}
+                                cursorLeft={cursorLeft}
+                                cursorTop={cursorTop}
+                                setLayer={setLayer}
+                                setTaskList={setTaskList}
+                                setFocus={setFocus}
+                    >{task.component}</Application>
+                  )
+                })
+              }
+              <footer className="task-bar">
+                <ul className="task-list">
+                  {
+                    taskList.map((task) => {
+                      if(task.type==="Shell") {
+                        return(
+                          <li className="shell-task" key={task.name}>
+                            <button onClick={()=>{console.log("Discover")}}></button>
                           </li>
                         )
                       } else {
-                        return (
-                          <li className="task" key={task.name}>
+                        if (task.name === focus) {
+                          return (
+                            <li className="task-select" key={task.name}>
                             <button onClick={() => {
-                              setFocus(task.name);
-                            }}>{task.name}</button>
-                          </li>
-                        )
+                              }}>{task.name}</button>
+                            </li>
+                          )
+                        } else {
+                          return (
+                            <li className="task" key={task.name}>
+                              <button onClick={() => {
+                                setFocus(task.name);
+                              }}>{task.name}</button>
+                            </li>
+                          )
+                        }
                       }
-                    }
-                  })
-                }
-              </ul>
-            </footer>
-          </div>
-        </main>
+                    })
+                  }
+                </ul>
+              </footer>
+            </div>
+          </main>
+          <div className="outside"></div>
+        </div>
       </Suspense>
     </div>
   )
