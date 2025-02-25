@@ -1,4 +1,36 @@
-.window{
+body {
+    margin: 0;
+}
+
+.king {
+    display: flex;
+    height: 100vh;
+}
+
+.outside {
+    height: 100%;
+    width: 20vw;
+    z-index: 10;
+    background-color: lightgreen;
+}
+
+#container{
+    height: 100%;
+    width: 60vw;
+    cursor: none;
+    overflow: hidden;
+}
+#cursor {
+    width: 5px;
+    height: 5px;
+    background-color: red;
+    border-radius: 50%;
+    position: absolute;
+    pointer-events: none;
+    z-index: 999;
+    margin: 0 20vw;
+}
+#window{
     border: 1px solid black;
     border-radius: 5px;
     filter: drop-shadow(gray 0px 0px 15px);
@@ -11,16 +43,20 @@
     background-color: lawngreen;
     border-radius: 0 0 4px 4px;
 }
+
 .shell{
     background-color: darkseagreen;
     display: grid;
     grid-template-columns: repeat(auto-fill,minmax(5rem,5rem));
     grid-template-rows: repeat(auto-fill, minmax(5rem,5rem));
     grid-auto-flow: column;
+    width: 60vw;
+    left: 20vw;
 }
 .app-button>button{
     height: calc(100% - 1rem);
     width: 100%;
+    cursor: none;
 }
 .app-title{
     height: 1rem;
