@@ -51,7 +51,8 @@ const Application = (props) => {
   const [cursorY, setCursorY] = useState(props.cursorTop);
   const [windowX, setWindowX] = useState(0);
   const [windowY, setWindowY] = useState(0);
-  const [beforeParams, setBeforeParams] = useState([0,0]);
+  const [beforeSizeParams, setBeforeSizeParams] = useState([0,0]);
+  const [beforeMoveParams, setBeforeMoveParams] = useState([0,0]);
   const [isFirst, setIsFirst] = useState(true);
   useEffect(() => {
     setCursorX(props.cursorLeft);
@@ -88,8 +89,8 @@ const Application = (props) => {
         position: "fixed",
         height: 400,
         width: 300,
-        left: windowX,
-        top: params.offset[1] + (20 * globalThis.innerHeight) / 100,
+        left: window.left,
+        top: window.top + params.offset[1] - beforeMoveParams[1],
         zIndex: props.layer-1
       })
     }
@@ -98,8 +99,8 @@ const Application = (props) => {
         position: "fixed",
         height: window.height,
         width: window.width,
-        left: params.offset[0] + (30 * globalThis.innerWidth) / 100,
-        top: windowY,
+        left: window.left + params.offset[0] - beforeMoveParams[0],
+        top: window.top,
         zIndex: props.layer-1
       })
     }
@@ -108,30 +109,41 @@ const Application = (props) => {
         position: "fixed",
         height: window.height,
         width: window.width,
-        top: params.offset[1] + (20 * globalThis.innerHeight) / 100,
-        left: params.offset[0] + (30 * globalThis.innerWidth) / 100,
+        top: window.top + params.offset[1] - beforeMoveParams[1],
+        left: window.left + params.offset[0] - beforeMoveParams[0],
         zIndex: props.layer-1
       })
     }
     setWindowX(window.left);
     setWindowY(window.top);
+    setBeforeMoveParams(params.offset);
   })
   const sizeManager = useDrag((params)=>{
     if(isFirst) {
       if ((props.mouseBeacon[0] >= window.left + window.width - 10) && (props.mouseBeacon[1] >= window.top + window.height - 10)) {
         setWindow({
           position: "fixed",
-          height: window.height + params.offset[1] - beforeParams[1],
-          width: window.width + params.offset[0] - beforeParams[0],
+          height: window.height + params.offset[1] - beforeSizeParams[1],
+          width: window.width + params.offset[0] - beforeSizeParams[0],
           top: window.top,
           left: window.left,
+          zIndex: props.layer - 1
+        })
+      } else if ((props.mouseBeacon[0] <= window.left + 10) && (props.mouseBeacon[1] >= window.top + window.height - 10)) {
+        console.log("adssa")
+        setWindow({
+          position: "fixed",
+          height: window.height + params.offset[1] - beforeSizeParams[1],
+          width: window.width - params.offset[0] + beforeSizeParams[0],
+          top: window.top,
+          left: window.left + params.offset[0] - beforeSizeParams[0],
           zIndex: props.layer - 1
         })
       } else if (props.mouseBeacon[0] >= window.left + window.width - 10) {
         setWindow({
           position: "fixed",
           height: window.height,
-          width: window.width + params.offset[0] - beforeParams[0],
+          width: window.width + params.offset[0] - beforeSizeParams[0],
           top: window.top,
           left: window.left,
           zIndex: props.layer - 1
@@ -139,17 +151,27 @@ const Application = (props) => {
       } else if (props.mouseBeacon[1] >= window.top + window.height - 10) {
         setWindow({
           position: "fixed",
-          height: window.height + params.offset[1] - beforeParams[1],
+          height: window.height + params.offset[1] - beforeSizeParams[1],
           width: window.width,
           top: window.top,
           left: window.left,
           zIndex: props.layer - 1
         })
-      }else{
+      }else if(props.mouseBeacon[0] <= window.left + 10) {
+        setWindow({
+          position: "fixed",
+          height: window.height,
+          width: window.width - params.offset[0] + beforeSizeParams[0],
+          top: window.top,
+          left: window.left + params.offset[0] - beforeSizeParams[0],
+          zIndex: props.layer - 1
+        })
+      }
+      else{
         setIsFirst(false);
       }
     }
-    setBeforeParams(params.offset);
+    setBeforeSizeParams(params.offset);
   })
 
   if(props.type==="App") {
