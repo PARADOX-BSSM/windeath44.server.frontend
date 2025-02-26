@@ -109,6 +109,7 @@ const WindowManager = () => {
                                  name={task.name}
                                  uid={task.id}
                                  type={task.type}
+                                 appSetup={task.appSetup}
                                  layer={layer}
                                  focus={focus}
                                  taskList={taskList}

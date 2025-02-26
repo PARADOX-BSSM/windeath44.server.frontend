@@ -118,52 +118,73 @@ const Application = (props) => {
     setWindowY(window.top);
     setBeforeMoveParams(params.offset);
   })
+  {}
   const sizeManager = useDrag((params)=>{
     if(isFirst) {
-      if ((props.mouseBeacon[0] >= window.left + window.width - 10) && (props.mouseBeacon[1] >= window.top + window.height - 10)) {
+      if ((props.mouseBeacon[0] >= window.left + window.width - 10)
+        && (props.mouseBeacon[1] >= window.top + window.height - 10))
+      {
         setWindow({
           position: "fixed",
-          height: window.height + params.offset[1] - beforeSizeParams[1],
-          width: window.width + params.offset[0] - beforeSizeParams[0],
+          height: window.height>=props.appSetup.minHeight?
+            window.height + params.offset[1] - beforeSizeParams[1]:
+            props.appSetup.minHeight,
+          width: window.width>=props.appSetup.minWidth?
+            window.width + params.offset[0] - beforeSizeParams[0]:
+            props.appSetup.minWidth,
           top: window.top,
           left: window.left,
           zIndex: props.layer - 1
         })
-      } else if ((props.mouseBeacon[0] <= window.left + 10) && (props.mouseBeacon[1] >= window.top + window.height - 10)) {
-        console.log("adssa")
+      } else if ((props.mouseBeacon[0] <= window.left + 10)
+        && (props.mouseBeacon[1] >= window.top + window.height - 10))
+      {
         setWindow({
           position: "fixed",
-          height: window.height + params.offset[1] - beforeSizeParams[1],
-          width: window.width - params.offset[0] + beforeSizeParams[0],
+          height: window.height>=props.appSetup.minHeight?
+            window.height + params.offset[1] - beforeSizeParams[1]:
+            props.appSetup.minHeight,
+          width: window.width>=props.appSetup.minWidth?
+            window.width - params.offset[0] + beforeSizeParams[0]:
+            props.appSetup.minWidth,
           top: window.top,
           left: window.left + params.offset[0] - beforeSizeParams[0],
           zIndex: props.layer - 1
         })
-      } else if (props.mouseBeacon[0] >= window.left + window.width - 10) {
+      } else if (props.mouseBeacon[0] >= window.left + window.width - 10)
+      {
         setWindow({
           position: "fixed",
           height: window.height,
-          width: window.width + params.offset[0] - beforeSizeParams[0],
+          width: window.width>=props.appSetup.minWidth?
+            window.width + params.offset[0] - beforeSizeParams[0]:
+            props.appSetup.minWidth,
           top: window.top,
           left: window.left,
           zIndex: props.layer - 1
         })
-      } else if (props.mouseBeacon[1] >= window.top + window.height - 10) {
+      }else if(props.mouseBeacon[0] <= window.left + 10)
+      {
         setWindow({
           position: "fixed",
-          height: window.height + params.offset[1] - beforeSizeParams[1],
+          height: window.height,
+          width: window.width>=props.appSetup.minWidth?
+            window.width - params.offset[0] + beforeSizeParams[0]:
+            props.appSetup.minWidth,
+          top: window.top,
+          left: window.left + params.offset[0] - beforeSizeParams[0],
+          zIndex: props.layer - 1
+        })
+      } else if (props.mouseBeacon[1] >= window.top + window.height - 10)
+      {
+        setWindow({
+          position: "fixed",
+          height: window.height>=props.appSetup.minHeight?
+            window.height + params.offset[1] - beforeSizeParams[1]:
+            props.appSetup.minHeight,
           width: window.width,
           top: window.top,
           left: window.left,
-          zIndex: props.layer - 1
-        })
-      }else if(props.mouseBeacon[0] <= window.left + 10) {
-        setWindow({
-          position: "fixed",
-          height: window.height,
-          width: window.width - params.offset[0] + beforeSizeParams[0],
-          top: window.top,
-          left: window.left + params.offset[0] - beforeSizeParams[0],
           zIndex: props.layer - 1
         })
       }
