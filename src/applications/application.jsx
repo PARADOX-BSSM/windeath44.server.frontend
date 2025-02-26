@@ -1,6 +1,33 @@
 import {useEffect, useState} from 'react';
 import {useDrag} from 'react-use-gesture';
+import styled from "styled-components";
 
+const WindowHeader = styled.header`
+    background-color: darkolivegreen;
+    border-radius: 4px 4px 0 0;
+    position : absolute;
+    display : flex;
+    align-items: center;
+    top : 0;
+    left : 0;
+    right : 0;
+    height : 30px;
+`;
+const HeaderButton = styled.button`
+    height : 20px;
+    width : 20px;
+    margin-left: 5px;
+`;
+const WindowContent = styled.section`
+    position : absolute;
+    top : 30px;
+    left : 0;
+    right : 0;
+    bottom : 0;
+    padding : 0 5px 5px 5px;
+    background-color: lawngreen;
+    border-radius: 0 0 4px 4px;
+`;
 const Application = (props) => {
   const windowProps = {
     position : "fixed",
@@ -11,31 +38,7 @@ const Application = (props) => {
     backgroundColor : "black",
     zIndex: props.layer
   }
-  const windowHeaderProps = {
-    position : "absolute",
-    display : "flex",
-    alignItems: "center",
-    top : 0,
-    left : 0,
-    right : 0,
-    height : 30
-  }
-  const headerButtonProps = {
-    height : 20,
-    width : 20,
-    marginLeft: 5,
-  }
-  const windowContentProps = {
-    position : "absolute",
-    top : 30,
-    left : 0,
-    right : 0,
-    bottom : 0,
-    paddingTop : 0,
-    paddingRight : 5,
-    paddingBottom: 5,
-    paddingLeft: 5,
-  }
+
   const shellProps = {
     position : "fixed",
     top : 0,
@@ -71,7 +74,7 @@ const Application = (props) => {
     }
   },[props.focus])
 
-  const moveWindow = useDrag((params)=>{
+  const moveManager = useDrag((params)=>{
     props.setFocus(props.name);
 
     const container = document.getElementById("container");
@@ -113,7 +116,7 @@ const Application = (props) => {
     setWindowX(window.left);
     setWindowY(window.top);
   })
-  const dragWindow = useDrag((params)=>{
+  const sizeManager = useDrag((params)=>{
     if(isFirst) {
       if ((props.mouseBeacon[0] >= window.left + window.width - 10) && (props.mouseBeacon[1] >= window.top + window.height - 10)) {
         setWindow({
@@ -154,16 +157,16 @@ const Application = (props) => {
       <article id="window" style={window} onMouseDown={()=>{
         props.setFocus(props.name)
       }}>
-        <header className="window-header" {...moveWindow()} style={windowHeaderProps}>
-          <button style={headerButtonProps} onClick={() =>
+        <WindowHeader {...moveManager()}>
+          <HeaderButton onClick={() =>
             props.removeTask(props.removeCompnent)
-          }></button>
-          <button style={headerButtonProps}></button>
-          <button style={headerButtonProps}></button>
-        </header>
-        <section className="window-content" {...dragWindow()} style={windowContentProps} onMouseUp={()=>setIsFirst(true)}>
+          }></HeaderButton>
+          <HeaderButton> </HeaderButton>
+          <HeaderButton> </HeaderButton>
+        </WindowHeader>
+        <WindowContent {...sizeManager()} onMouseUp={()=>setIsFirst(true)}>
           {props.children}
-        </section>
+        </WindowContent>
       </article>
     )
   }else if(props.type==="Shell") {

@@ -35,14 +35,6 @@ body {
     border-radius: 5px;
     filter: drop-shadow(gray 0px 0px 15px);
 }
-.window-header{
-    background-color: darkolivegreen;
-    border-radius: 4px 4px 0 0;
-}
-.window-content{
-    background-color: lawngreen;
-    border-radius: 0 0 4px 4px;
-}
 
 .shell{
     background-color: darkseagreen;
