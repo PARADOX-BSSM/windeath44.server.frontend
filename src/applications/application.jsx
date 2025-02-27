@@ -75,13 +75,15 @@ const Application = (props) => {
   },[props.focus])
   useEffect(()=>{
     if(isFullScreen){
+      const container = document.getElementById("container");
+      const bounds = container.getBoundingClientRect();
       setBackupWindow(window);
       setWindow({
         position: "fixed",
-        height: "calc(100% - 52px)",
-        width: `calc(100% - calc(40vw + 2px))`,
-        top: 0,
-        left: (20 * globalThis.innerWidth) / 100,
+        height: `calc(${bounds.height}px - 2px)`,
+        width: `calc(${bounds.width}px - 2px)`,
+        top: bounds.top,
+        left: bounds.left,
         zIndex: props.layer-1
       })
     }else if(!isFullScreen){

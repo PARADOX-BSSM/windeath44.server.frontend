@@ -15,7 +15,7 @@ body {
 }
 
 #container{
-    height: 100%;
+    height: calc(100% - 50px);
     width: 100%;
     cursor: none;
     overflow: hidden;
