@@ -36,7 +36,8 @@ const WindowManager = () => {
   }
   const taskStyle = { margin: "0.25rem" };
   const [cursorLeft, setCursorLeft] = useState("0");
-  const [cursorTop, setCursorTop] = useState("0"); 
+  const [cursorTop, setCursorTop] = useState("0");
+  const [mouseBeacon, setMouseBeacon] = useState([]);
   const [layer, setLayer] = useState(1);
   const [focus, setFocus] = useState("Discover");
   const [taskList, setTaskList] = useState([]);
@@ -78,7 +79,7 @@ const WindowManager = () => {
     document.addEventListener("mousemove", (event) => {
         let x = event.clientX - bounds.left;
         let y = event.clientY - bounds.top;
-
+        setMouseBeacon([event.clientX, event.clientY]);
         // 컨테이너 내부에만 커서를 제한
         x = Math.max(0, Math.min(bounds.width, x));
         y = Math.max(0, Math.min(bounds.height, y));
@@ -108,6 +109,7 @@ const WindowManager = () => {
                                  name={task.name}
                                  uid={task.id}
                                  type={task.type}
+                                 appSetup={task.appSetup}
                                  layer={layer}
                                  focus={focus}
                                  taskList={taskList}
@@ -118,6 +120,7 @@ const WindowManager = () => {
                                  setFocus={setFocus}
                                  removeTask={removeTask}
                                  removeCompnent={task}
+                                 mouseBeacon={mouseBeacon}
                     >{task.component}</Application>
                   )
                 })
