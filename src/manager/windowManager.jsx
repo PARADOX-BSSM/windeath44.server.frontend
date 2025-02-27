@@ -6,7 +6,9 @@ import {Apps} from './importManager.jsx';
 const WindowManager = () => {
   const displayDriver = {
     height: "100%",
-    inset: 0
+    inset: 0,
+    aspectRatio: "4 / 3",
+    margin: "0 auto",
   };
   const taskBarStyle = {
     position: "fixed",
@@ -77,11 +79,11 @@ const WindowManager = () => {
     console.log(bounds);
 
     document.addEventListener("mousemove", (event) => {
-        let x = event.clientX - bounds.left;
-        let y = event.clientY - bounds.top;
+        let x = event.clientX;
+        let y = event.clientY - bounds.y;
         setMouseBeacon([event.clientX, event.clientY]);
         // 컨테이너 내부에만 커서를 제한
-        x = Math.max(0, Math.min(bounds.width, x));
+        x = Math.max(bounds.left, Math.min(bounds.left + bounds.width, x));
         y = Math.max(0, Math.min(bounds.height, y));
 
         cursor.style.left = `${x}px`;
@@ -98,7 +100,6 @@ const WindowManager = () => {
     <div>
       <Suspense fallback={null}>
       <div className="king">
-        <div className="outside"></div>
           <main style={displayDriver}>
             <div id="container">
               <div id="cursor"></div>
@@ -159,7 +160,6 @@ const WindowManager = () => {
               </footer>
             </div>
           </main>
-          <div className="outside"></div>
         </div>
       </Suspense>
     </div>
