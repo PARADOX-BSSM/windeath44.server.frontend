@@ -15,7 +15,8 @@ body {
 }
 
 #container{
-    height: calc(100% - 50px);
+    position: relative;
+    height: 100%;
     width: 100%;
     cursor: none;
     overflow: hidden;
@@ -30,12 +31,6 @@ body {
     pointer-events: none;
     z-index: 999;
 }
-#window{
-    border: 1px solid black;
-    border-radius: 5px;
-    filter: drop-shadow(gray 0px 0px 15px);
-}
-
 .shell{
     background-color: darkseagreen;
     display: grid;

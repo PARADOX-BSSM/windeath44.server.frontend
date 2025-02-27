@@ -2,6 +2,10 @@ import {useEffect, useState} from 'react';
 import {useDrag} from 'react-use-gesture';
 import styled from "styled-components";
 
+const Window = styled.article`
+    border: 1px solid black;
+    border-radius: 5px;
+`
 const WindowHeader = styled.header`
     background-color: darkolivegreen;
     border-radius: 4px 4px 0 0;
@@ -30,13 +34,14 @@ const WindowContent = styled.section`
 `;
 const Application = (props) => {
   const windowProps = {
-    position : "fixed",
+    position : "absolute",
     height : 400,
     width : 300,
     top : (20 * globalThis.innerHeight) / 100,
     left : (30 * globalThis.innerWidth) / 100,
     backgroundColor : "black",
-    zIndex: props.layer
+    zIndex: props.layer,
+    filter: "dropShadow(gray 0px 0px 15px)",
   }
 
   const shellProps = {
@@ -64,12 +69,13 @@ const Application = (props) => {
     if(props.focus===props.name) {
       props.setLayer(props.layer + 1);
       setWindow({
-        position: "fixed",
+        position: window.position,
         height: 400,
         width: 300,
         top: window.top,
         left: window.left,
-        zIndex: props.layer
+        zIndex: props.layer,
+        filter: "dropShadow(gray 0px 0px 15px)",
       })
     }
   },[props.focus])
@@ -79,12 +85,12 @@ const Application = (props) => {
       const bounds = container.getBoundingClientRect();
       setBackupWindow(window);
       setWindow({
-        position: "fixed",
-        height: `calc(${bounds.height}px - 2px)`,
+        position: window.position,
+        height: `calc(${bounds.height}px - 52px)`,
         width: `calc(${bounds.width}px - 2px)`,
         top: bounds.top,
-        left: bounds.left,
-        zIndex: props.layer-1
+        left: 0,
+        zIndex: props.layer-1,
       })
     }else if(!isFullScreen){
       setWindow(backupWindow);
@@ -99,31 +105,34 @@ const Application = (props) => {
       let x = parseFloat(cursorX);
       let y = parseFloat(cursorY);
 
-      if (x <= 0 || x >= bounds.right - bounds.left) {
+      if (x <= 0 || x >= bounds.width - 5) {
         setWindow({
-          position: "fixed",
-          height: 400,
-          width: 300,
+          position: window.position,
+          height: window.height,
+          width: window.width,
           left: window.left,
           top: window.top + params.offset[1] - beforeMoveParams[1],
-          zIndex: props.layer - 1
+          zIndex: props.layer - 1,
+          filter: "dropShadow(gray 0px 0px 15px)",
         })
-      } else if (y <= 0 || y >= bounds.bottom - bounds.top) {
+      } else if (y <= 0 || y >= bounds.height - 55) {
         setWindow({
-          position: "fixed",
+          position: window.position,
           height: window.height,
           width: window.width,
           left: window.left + params.offset[0] - beforeMoveParams[0],
           top: window.top,
+          filter: "dropShadow(gray 0px 0px 15px)",
           zIndex: props.layer - 1
         })
       } else {
         setWindow({
-          position: "fixed",
+          position: window.position,
           height: window.height,
           width: window.width,
           top: window.top + params.offset[1] - beforeMoveParams[1],
           left: window.left + params.offset[0] - beforeMoveParams[0],
+          filter: "dropShadow(gray 0px 0px 15px)",
           zIndex: props.layer - 1
         })
       }
@@ -146,6 +155,7 @@ const Application = (props) => {
             window.width + params.offset[0] - beforeSizeParams[0]:
             props.appSetup.minWidth,
           top: window.top,
+          filter: "dropShadow(gray 0px 0px 15px)",
           left: window.left,
           zIndex: props.layer - 1
         })
@@ -161,6 +171,7 @@ const Application = (props) => {
             window.width - params.offset[0] + beforeSizeParams[0]:
             props.appSetup.minWidth,
           top: window.top,
+          filter: "dropShadow(gray 0px 0px 15px)",
           left: window.left + params.offset[0] - beforeSizeParams[0],
           zIndex: props.layer - 1
         })
@@ -174,6 +185,7 @@ const Application = (props) => {
             props.appSetup.minWidth,
           top: window.top,
           left: window.left,
+          filter: "dropShadow(gray 0px 0px 15px)",
           zIndex: props.layer - 1
         })
       }else if(props.mouseBeacon[0] <= window.left + 10)
@@ -185,6 +197,7 @@ const Application = (props) => {
             window.width - params.offset[0] + beforeSizeParams[0]:
             props.appSetup.minWidth,
           top: window.top,
+          filter: "dropShadow(gray 0px 0px 15px)",
           left: window.left + params.offset[0] - beforeSizeParams[0],
           zIndex: props.layer - 1
         })
@@ -197,6 +210,7 @@ const Application = (props) => {
             props.appSetup.minHeight,
           width: window.width,
           top: window.top,
+          filter: "dropShadow(gray 0px 0px 15px)",
           left: window.left,
           zIndex: props.layer - 1
         })
@@ -210,7 +224,7 @@ const Application = (props) => {
 
   if(props.type==="App") {
     return (
-      <article id="window" style={window} onMouseDown={()=>{
+      <Window style={window} onMouseDown={()=>{
         props.setFocus(props.name)
       }}>
         <WindowHeader {...moveManager()}>
@@ -225,7 +239,7 @@ const Application = (props) => {
         <WindowContent {...sizeManager()} onMouseUp={()=>setIsFirst(true)}>
           {props.children}
         </WindowContent>
-      </article>
+      </Window>
     )
   }else if(props.type==="Shell") {
     return (

@@ -1,8 +1,9 @@
 import {useEffect, useState, Suspense, lazy} from 'react';
 const Application = lazy(()=> import('../applications/application.jsx'));
 import Discover from "../applications/discover.jsx";
-import Terminal from '../applications/Terminal.jsx';
 import {Apps} from './importManager.jsx';
+
+
 const WindowManager = () => {
   const displayDriver = {
     height: "100%",
@@ -11,10 +12,9 @@ const WindowManager = () => {
     margin: "0 auto",
   };
   const taskBarStyle = {
-    position: "fixed",
+    position: "sticky",
     bottom: 0,
-    left: 0,
-    right: 0,
+    width: "inherit",
     height: "3.125rem",
     zIndex: 99999,
     backgroundColor: "springgreen"
@@ -50,7 +50,6 @@ const WindowManager = () => {
   const removeTask = (component) => {
     setTaskList(Task => (Task.some(item => item.name === component.name))?
     Task.filter(item => item.name !== component.name):[...Task])
-    console.log(taskList.filter(item => item.name !== Application1.name));
   }
   useEffect(() => {
     console.log(1, taskList);
@@ -79,12 +78,13 @@ const WindowManager = () => {
     console.log(bounds);
 
     document.addEventListener("mousemove", (event) => {
-        let x = event.clientX;
+        let x = event.clientX - bounds.x;
         let y = event.clientY - bounds.y;
         setMouseBeacon([event.clientX, event.clientY]);
         // 컨테이너 내부에만 커서를 제한
-        x = Math.max(bounds.left, Math.min(bounds.left + bounds.width, x));
-        y = Math.max(0, Math.min(bounds.height, y));
+      console.log(Math.min(bounds.width, x));
+        x = Math.max(0, Math.min(bounds.width - 5, x));
+        y = Math.max(0, Math.min(bounds.height - 55, y));
 
         cursor.style.left = `${x}px`;
         cursor.style.top = `${y}px`;
