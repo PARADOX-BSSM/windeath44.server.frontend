@@ -40,11 +40,8 @@ const Application = (props) => {
   }
 
   const shellProps = {
-    position : "fixed",
-    top : 0,
-    right : 0,
-    bottom : "3.125rem",
-    zIndex : 0
+    height : "100%",
+    width : "100%",
   }
   const [window, setWindow] = useState(windowProps);
   const [backupWindow, setBackupWindow] = useState(window);
