@@ -19,30 +19,43 @@ const Logo = styled.section`
     top: 0;
     background-color:aqua;
 `;
-const Snapshot = styled.ul`
+const SnapshotList = styled.ul`
     position: absolute;
-    left: 50;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    flex-direction: column;
+    display: flex;
+    left: 50px;
     bottom: 0;
     top:0;
     right:0;
 `;
+const Snapshot = styled.li`
+    list-style: none;
+    padding-bottom: 5px;
+    width: 100%;
+    & > button {
+        width: 100%;
+    }
+`
 const Observer = (props) => {
   return (
     <Container>
       <Logo>
 
       </Logo>
-      <Snapshot>
+      <SnapshotList>
         {Apps.map((Application)=>{
           return(
-            <li key={Application.id}>
+            <Snapshot key={Application.id}>
               <button onClick={() => {
                 props.addTask(Application);
               }}>{Application.name}</button>
-            </li>
+            </Snapshot>
           )
         })}
-      </Snapshot>
+      </SnapshotList>
     </Container>
   )
 }
