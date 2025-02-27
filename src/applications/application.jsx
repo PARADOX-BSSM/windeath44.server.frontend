@@ -47,6 +47,7 @@ const Application = (props) => {
     zIndex : 0
   }
   const [window, setWindow] = useState(windowProps);
+  const [backupWindow, setBackupWindow] = useState(window);
   const [cursorX, setCursorX] = useState(props.cursorLeft);
   const [cursorY, setCursorY] = useState(props.cursorTop);
   const [windowX, setWindowX] = useState(0);
@@ -54,6 +55,7 @@ const Application = (props) => {
   const [beforeSizeParams, setBeforeSizeParams] = useState([0,0]);
   const [beforeMoveParams, setBeforeMoveParams] = useState([0,0]);
   const [isFirst, setIsFirst] = useState(true);
+  const [isFullScreen, setIsFullScreen] = useState(false);
   useEffect(() => {
     setCursorX(props.cursorLeft);
     setCursorY(props.cursorTop);
@@ -74,53 +76,65 @@ const Application = (props) => {
       })
     }
   },[props.focus])
-
+  useEffect(()=>{
+    if(isFullScreen){
+      setBackupWindow(window);
+      setWindow({
+        position: "fixed",
+        height: "calc(100% - 52px)",
+        width: `calc(100% - calc(40vw + 2px))`,
+        top: 0,
+        left: (20 * globalThis.innerWidth) / 100,
+        zIndex: props.layer-1
+      })
+    }else if(!isFullScreen){
+      setWindow(backupWindow);
+    }
+  }, [isFullScreen]);
   const moveManager = useDrag((params)=>{
     props.setFocus(props.name);
+    if(!isFullScreen) {
+      const container = document.getElementById("container");
+      const bounds = container.getBoundingClientRect();
 
-    const container = document.getElementById("container");
-    const bounds = container.getBoundingClientRect();
+      let x = parseFloat(cursorX);
+      let y = parseFloat(cursorY);
 
-    let x = parseFloat(cursorX);
-    let y = parseFloat(cursorY);
-
-    if(x <= 0 || x >= bounds.right - bounds.left) {
-      setWindow({
-        position: "fixed",
-        height: 400,
-        width: 300,
-        left: window.left,
-        top: window.top + params.offset[1] - beforeMoveParams[1],
-        zIndex: props.layer-1
-      })
-    }
-    else if(y <= 0 || y >= bounds.bottom - bounds.top) {
-      setWindow({
-        position: "fixed",
-        height: window.height,
-        width: window.width,
-        left: window.left + params.offset[0] - beforeMoveParams[0],
-        top: window.top,
-        zIndex: props.layer-1
-      })
-    }
-    else {
-      setWindow({
-        position: "fixed",
-        height: window.height,
-        width: window.width,
-        top: window.top + params.offset[1] - beforeMoveParams[1],
-        left: window.left + params.offset[0] - beforeMoveParams[0],
-        zIndex: props.layer-1
-      })
+      if (x <= 0 || x >= bounds.right - bounds.left) {
+        setWindow({
+          position: "fixed",
+          height: 400,
+          width: 300,
+          left: window.left,
+          top: window.top + params.offset[1] - beforeMoveParams[1],
+          zIndex: props.layer - 1
+        })
+      } else if (y <= 0 || y >= bounds.bottom - bounds.top) {
+        setWindow({
+          position: "fixed",
+          height: window.height,
+          width: window.width,
+          left: window.left + params.offset[0] - beforeMoveParams[0],
+          top: window.top,
+          zIndex: props.layer - 1
+        })
+      } else {
+        setWindow({
+          position: "fixed",
+          height: window.height,
+          width: window.width,
+          top: window.top + params.offset[1] - beforeMoveParams[1],
+          left: window.left + params.offset[0] - beforeMoveParams[0],
+          zIndex: props.layer - 1
+        })
+      }
     }
     setWindowX(window.left);
     setWindowY(window.top);
     setBeforeMoveParams(params.offset);
   })
-  {}
   const sizeManager = useDrag((params)=>{
-    if(isFirst) {
+    if(isFirst && !isFullScreen) {
       if ((props.mouseBeacon[0] >= window.left + window.width - 10)
         && (props.mouseBeacon[1] >= window.top + window.height - 10))
       {
@@ -204,7 +218,9 @@ const Application = (props) => {
           <HeaderButton onClick={() =>
             props.removeTask(props.removeCompnent)
           }></HeaderButton>
-          <HeaderButton> </HeaderButton>
+          <HeaderButton onClick={()=>
+            setIsFullScreen(!isFullScreen)
+          }></HeaderButton>
           <HeaderButton> </HeaderButton>
         </WindowHeader>
         <WindowContent {...sizeManager()} onMouseUp={()=>setIsFirst(true)}>
