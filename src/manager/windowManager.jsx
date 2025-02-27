@@ -47,6 +47,7 @@ const WindowManager = () => {
   const [focus, setFocus] = useState("Discover");
   const [taskList, setTaskList] = useState([]);
   const [startOption, setStartOption] = useState(false);
+  const [backUpFocus, setBackUpFocus] = useState(focus);
 
 
   const addTask = (component) => {
@@ -58,7 +59,11 @@ const WindowManager = () => {
       Task.filter(item => item.name !== component.name) : [...Task])
   }
   let cursor = null;
-
+  useEffect(() => {
+    if(focus!=="Discover"){
+      setStartOption(false);
+    }
+  },[focus])
 
   useEffect(()=>{
     setTimeout(()=>{
@@ -128,7 +133,7 @@ const WindowManager = () => {
                   )
                 })
               }
-              {startOption? <Observer/>:<></>}
+              {startOption? <Observer addTask={addTask}/>:<></>}
               <footer style={taskBarStyle}>
                 <ul style={taskListStyle}>
                   {
@@ -136,7 +141,14 @@ const WindowManager = () => {
                       if(task.type==="Shell") {
                         return(
                           <li style={taskStyle} key={task.name}>
-                            <button style={startOption===true?taskSelectButtonStyle:taskButtonStyle} onClick={()=>{setStartOption(!startOption)}}>Start</button>
+                            <button style={startOption?taskSelectButtonStyle:taskButtonStyle} onClick={()=>{
+                              setStartOption(!startOption);
+                              if(startOption===true){
+                                setFocus(backUpFocus);
+                              }else {
+                                setBackUpFocus(focus);
+                                setFocus(task.name);
+                              }}}>Start</button>
                           </li>
                         )
                       } else {
