@@ -11,6 +11,9 @@ export default defineConfig({
       allowedHeaders: ['Content-Type', 'Authorization'], // 허용할 헤더
       credentials: true, // 쿠키를 포함할지 여부
     },
+    allowedHosts: [
+      "yuuki08noah.com"
+    ],
     port: 3000,
     host: '0.0.0.0'
    },
