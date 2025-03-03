@@ -1,8 +1,10 @@
 import {useEffect, useState, Suspense, lazy} from 'react';
 const Application = lazy(()=> import('../applications/application.jsx'));
 import Discover from "../applications/discover.jsx";
-import Terminal from '../applications/Terminal.jsx';
 import {Apps} from './importManager.jsx';
+import Observer from "../applications/utility/Observer.jsx";
+
+
 const WindowManager = () => {
   const displayDriver = {
     height: "100%",
@@ -11,12 +13,11 @@ const WindowManager = () => {
     margin: "0 auto",
   };
   const taskBarStyle = {
-    position: "fixed",
+    position: "sticky",
     bottom: 0,
-    left: 0,
-    right: 0,
+    width: "inherit",
     height: "3.125rem",
-    zIndex: 99999,
+    zIndex: 998,
     backgroundColor: "springgreen"
   };
   const taskListStyle = {
@@ -37,25 +38,33 @@ const WindowManager = () => {
     backgroundColor:"seagreen"
   }
   const taskStyle = { margin: "0.25rem" };
+
+
   const [cursorLeft, setCursorLeft] = useState("0");
   const [cursorTop, setCursorTop] = useState("0");
   const [mouseBeacon, setMouseBeacon] = useState([]);
   const [layer, setLayer] = useState(1);
   const [focus, setFocus] = useState("Discover");
   const [taskList, setTaskList] = useState([]);
+  const [startOption, setStartOption] = useState(false);
+  const [backUpFocus, setBackUpFocus] = useState(focus);
+
+
   const addTask = (component) => {
     setTaskList(Task => (!Task.includes(component))?
       [...Task, component]:[...Task])
   }
   const removeTask = (component) => {
-    setTaskList(Task => (Task.some(item => item.name === component.name))?
-    Task.filter(item => item.name !== component.name):[...Task])
-    console.log(taskList.filter(item => item.name !== Application1.name));
+    setTaskList(Task => (Task.some(item => item.name === component.name)) ?
+      Task.filter(item => item.name !== component.name) : [...Task])
   }
-  useEffect(() => {
-    console.log(1, taskList);
-  }, [taskList]); 
   let cursor = null;
+  useEffect(() => {
+    if(focus!=="Discover"){
+      setStartOption(false);
+    }
+  },[focus])
+
   useEffect(()=>{
     setTimeout(()=>{
       setTaskList(Temp=> [...Temp,
@@ -71,20 +80,18 @@ const WindowManager = () => {
     const container = document.getElementById("container");
     cursor = document.getElementById("cursor");
 
-    console.log(container);
-
     // 컨테이너의 위치 및 크기
     const bounds = container.getBoundingClientRect();
 
     console.log(bounds);
 
     document.addEventListener("mousemove", (event) => {
-        let x = event.clientX;
+        let x = event.clientX - bounds.x;
         let y = event.clientY - bounds.y;
         setMouseBeacon([event.clientX, event.clientY]);
         // 컨테이너 내부에만 커서를 제한
-        x = Math.max(bounds.left, Math.min(bounds.left + bounds.width, x));
-        y = Math.max(0, Math.min(bounds.height, y));
+        x = Math.max(0, Math.min(bounds.width - 5, x));
+        y = Math.max(0, Math.min(bounds.height - 5, y));
 
         cursor.style.left = `${x}px`;
         cursor.style.top = `${y}px`;
@@ -99,7 +106,7 @@ const WindowManager = () => {
   return(
     <div>
       <Suspense fallback={null}>
-      <div className="king">
+        <div className="king">
           <main style={displayDriver}>
             <div id="container">
               <div id="cursor"></div>
@@ -126,6 +133,7 @@ const WindowManager = () => {
                   )
                 })
               }
+              {startOption? <Observer addTask={addTask}/>:<></>}
               <footer style={taskBarStyle}>
                 <ul style={taskListStyle}>
                   {
@@ -133,14 +141,21 @@ const WindowManager = () => {
                       if(task.type==="Shell") {
                         return(
                           <li style={taskStyle} key={task.name}>
-                            <button onClick={()=>{console.log("Discover")}}></button>
+                            <button style={startOption?taskSelectButtonStyle:taskButtonStyle} onClick={()=>{
+                              setStartOption(!startOption);
+                              if(startOption===true){
+                                setFocus(backUpFocus);
+                              }else {
+                                setBackUpFocus(focus);
+                                setFocus(task.name);
+                              }}}>Start</button>
                           </li>
                         )
                       } else {
                         if (task.name === focus) {
                           return (
                             <li style={taskStyle} key={task.name}>
-                            <button onClick={() => {
+                            <button style={taskSelectButtonStyle} onClick={() => {
                               }}>{task.name}</button>
                             </li>
                           )
