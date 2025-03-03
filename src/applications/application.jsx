@@ -1,54 +1,67 @@
 import {useEffect, useState} from 'react';
 import {useDrag} from 'react-use-gesture';
+import styled from "styled-components";
 
+const Window = styled.article`
+    border: 1px solid black;
+    border-radius: 5px;
+`
+const WindowHeader = styled.header`
+    background-color: darkolivegreen;
+    border-radius: 4px 4px 0 0;
+    position : absolute;
+    display : flex;
+    align-items: center;
+    top : 0;
+    left : 0;
+    right : 0;
+    height : 30px;
+`;
+const HeaderButton = styled.button`
+    height : 20px;
+    width : 20px;
+    margin-left: 5px;
+`;
+const WindowContent = styled.section`
+    position : absolute;
+    top : 30px;
+    left : 0;
+    right : 0;
+    bottom : 0;
+    padding : 0 5px 5px 5px;
+    background-color: lawngreen;
+    border-radius: 0 0 4px 4px;
+`;
 const Application = (props) => {
   const windowProps = {
-    position : "fixed",
+    position : "absolute",
     height : 400,
     width : 300,
-    top : "20vh",
-    left : "30vw",
+    top : (20 * globalThis.innerHeight) / 100,
+    left : (30 * globalThis.innerWidth) / 100,
     backgroundColor : "black",
-    zIndex: props.layer
+    zIndex: props.layer,
+    filter: "dropShadow(gray 0px 0px 15px)",
   }
-  const windowHeaderProps = {
-    position : "absolute",
-    display : "flex",
-    alignItems: "center",
-    top : 0,
-    left : 0,
-    right : 0,
-    height : 30
-  }
-  const headerButtonProps = {
-    height : 20,
-    width : 20,
-    marginLeft: 5,
-  }
-  const windowContentProps = {
-    position : "absolute",
-    top : 30,
-    left : 0,
-    right : 0,
-    bottom : 0,
-  }
+
   const shellProps = {
-    position : "fixed",
-    top : 0,
-    right : 0,
-    bottom : "3.125rem",
-    zIndex : 0
+    height : "100%",
+    width : "100%",
   }
   const [window, setWindow] = useState(windowProps);
+  const [backupWindow, setBackupWindow] = useState(window);
   const [cursorX, setCursorX] = useState(props.cursorLeft);
-  const [cursorY, setCursorY] = useState(props.cursorTop); 
+  const [cursorY, setCursorY] = useState(props.cursorTop);
   const [windowX, setWindowX] = useState(0);
   const [windowY, setWindowY] = useState(0);
+  const [beforeSizeParams, setBeforeSizeParams] = useState([0,0]);
+  const [beforeMoveParams, setBeforeMoveParams] = useState([0,0]);
+  const [isFirst, setIsFirst] = useState(true);
+  const [isFullScreen, setIsFullScreen] = useState(false);
   useEffect(() => {
     setCursorX(props.cursorLeft);
     setCursorY(props.cursorTop);
   }, [props.cursorLeft, props.cursorTop]);
-
   useEffect(()=>{
     props.setFocus(props.name);
   },[window])
@@ -56,74 +69,177 @@ const Application = (props) => {
     if(props.focus===props.name) {
       props.setLayer(props.layer + 1);
       setWindow({
-        position: "fixed",
+        position: window.position,
         height: 400,
         width: 300,
         top: window.top,
         left: window.left,
-        zIndex: props.layer
+        zIndex: props.layer,
+        filter: "dropShadow(gray 0px 0px 15px)",
       })
     }
   },[props.focus])
-
-  const move = useDrag((params)=>{
+  useEffect(()=>{
+    if(isFullScreen){
+      const container = document.getElementById("container");
+      const bounds = container.getBoundingClientRect();
+      setBackupWindow(window);
+      setWindow({
+        position: window.position,
+        height: `calc(${bounds.height}px - 52px)`,
+        width: `calc(${bounds.width}px - 2px)`,
+        top: bounds.top,
+        left: 0,
+        zIndex: props.layer-1,
+      })
+    }else if(!isFullScreen){
+      setWindow(backupWindow);
+    }
+  }, [isFullScreen]);
+  const moveManager = useDrag((params)=>{
     props.setFocus(props.name);
+    if(!isFullScreen) {
+      const container = document.getElementById("container");
+      const bounds = container.getBoundingClientRect();
 
-    const container = document.getElementById("container");
-    const bounds = container.getBoundingClientRect();
+      let x = parseFloat(cursorX);
+      let y = parseFloat(cursorY);
 
-    let x = parseFloat(cursorX);
-    let y = parseFloat(cursorY);
-    
-    if(x <= 0 || x >= bounds.right - bounds.left) {
-      setWindow({
-        position: "fixed",
-        height: 400,
-        width: 300,
-        left: windowX,
-        top: params.offset[1] + (20 * globalThis.innerHeight) / 100,
-        zIndex: props.layer-1
-      })
-    }
-    else if(y <= 0 || y >= bounds.bottom - bounds.top) {
-      setWindow({
-        position: "fixed",
-        height: 400,
-        width: 300,
-        left: params.offset[0] + (30 * globalThis.innerWidth) / 100,
-        top: windowY,
-        zIndex: props.layer-1
-      })
-    }
-    else {
-      setWindow({
-        position: "fixed",
-        height: 400,
-        width: 300,
-        top: params.offset[1] + (20 * globalThis.innerHeight) / 100,
-        left: params.offset[0] + (30 * globalThis.innerWidth) / 100,
-        zIndex: props.layer-1
-      })
+      if (x <= 0 || x >= bounds.width - 5) {
+        setWindow({
+          position: window.position,
+          height: window.height,
+          width: window.width,
+          left: window.left,
+          top: window.top + params.offset[1] - beforeMoveParams[1],
+          zIndex: props.layer - 1,
+          filter: "dropShadow(gray 0px 0px 15px)",
+        })
+      } else if (y <= 0 || y >= bounds.height - 55) {
+        setWindow({
+          position: window.position,
+          height: window.height,
+          width: window.width,
+          left: window.left + params.offset[0] - beforeMoveParams[0],
+          top: window.top,
+          filter: "dropShadow(gray 0px 0px 15px)",
+          zIndex: props.layer - 1
+        })
+      } else {
+        setWindow({
+          position: window.position,
+          height: window.height,
+          width: window.width,
+          top: window.top + params.offset[1] - beforeMoveParams[1],
+          left: window.left + params.offset[0] - beforeMoveParams[0],
+          filter: "dropShadow(gray 0px 0px 15px)",
+          zIndex: props.layer - 1
+        })
+      }
     }
     setWindowX(window.left);
     setWindowY(window.top);
+    setBeforeMoveParams(params.offset);
   })
+  const sizeManager = useDrag((params)=>{
+    if(isFirst && !isFullScreen) {
+      if ((props.mouseBeacon[0] >= window.left + window.width - 10)
+        && (props.mouseBeacon[1] >= window.top + window.height - 10))
+      {
+        setWindow({
+          position: window.position,
+          height: window.height>=props.appSetup.minHeight?
+            window.height + params.offset[1] - beforeSizeParams[1]:
+            props.appSetup.minHeight,
+          width: window.width>=props.appSetup.minWidth?
+            window.width + params.offset[0] - beforeSizeParams[0]:
+            props.appSetup.minWidth,
+          top: window.top,
+          filter: "dropShadow(gray 0px 0px 15px)",
+          left: window.left,
+          zIndex: props.layer - 1
+        })
+      } else if ((props.mouseBeacon[0] <= window.left + 10)
+        && (props.mouseBeacon[1] >= window.top + window.height - 10))
+      {
+        setWindow({
+          position: window.position,
+          height: window.height>=props.appSetup.minHeight?
+            window.height + params.offset[1] - beforeSizeParams[1]:
+            props.appSetup.minHeight,
+          width: window.width>=props.appSetup.minWidth?
+            window.width - params.offset[0] + beforeSizeParams[0]:
+            props.appSetup.minWidth,
+          top: window.top,
+          filter: "dropShadow(gray 0px 0px 15px)",
+          left: window.left + params.offset[0] - beforeSizeParams[0],
+          zIndex: props.layer - 1
+        })
+      } else if (props.mouseBeacon[0] >= window.left + window.width - 10)
+      {
+        setWindow({
+          position: window.position,
+          height: window.height,
+          width: window.width>=props.appSetup.minWidth?
+            window.width + params.offset[0] - beforeSizeParams[0]:
+            props.appSetup.minWidth,
+          top: window.top,
+          left: window.left,
+          filter: "dropShadow(gray 0px 0px 15px)",
+          zIndex: props.layer - 1
+        })
+      }else if(props.mouseBeacon[0] <= window.left + 10)
+      {
+        setWindow({
+          position: window.position,
+          height: window.height,
+          width: window.width>=props.appSetup.minWidth?
+            window.width - params.offset[0] + beforeSizeParams[0]:
+            props.appSetup.minWidth,
+          top: window.top,
+          filter: "dropShadow(gray 0px 0px 15px)",
+          left: window.left + params.offset[0] - beforeSizeParams[0],
+          zIndex: props.layer - 1
+        })
+      } else if (props.mouseBeacon[1] >= window.top + window.height - 10)
+      {
+        setWindow({
+          position: window.position,
+          height: window.height>=props.appSetup.minHeight?
+            window.height + params.offset[1] - beforeSizeParams[1]:
+            props.appSetup.minHeight,
+          width: window.width,
+          top: window.top,
+          filter: "dropShadow(gray 0px 0px 15px)",
+          left: window.left,
+          zIndex: props.layer - 1
+        })
+      }
+      else{
+        setIsFirst(false);
+      }
+    }
+    setBeforeSizeParams(params.offset);
+  })
+
   if(props.type==="App") {
     return (
-      <article id="window" style={window} onMouseDown={()=>{
+      <Window style={window} onMouseDown={()=>{
         props.setFocus(props.name)
       }}>
-        <header className="window-header" {...move()} style={windowHeaderProps}>
-          <button style={headerButtonProps} onClick={() =>
+        <WindowHeader {...moveManager()}>
+          <HeaderButton onClick={() =>
             props.removeTask(props.removeCompnent)
-          }></button>
-          <button style={headerButtonProps}></button>
-          <button style={headerButtonProps}></button>
-        </header>
-        <section className="window-content" style={windowContentProps}>
+          }></HeaderButton>
+          <HeaderButton onClick={()=>
+            setIsFullScreen(!isFullScreen)
+          }></HeaderButton>
+          <HeaderButton> </HeaderButton>
+        </WindowHeader>
+        <WindowContent {...sizeManager()} onMouseUp={()=>setIsFirst(true)}>
           {props.children}
-        </section>
-      </article>
+        </WindowContent>
+      </Window>
     )
   }else if(props.type==="Shell") {
     return (

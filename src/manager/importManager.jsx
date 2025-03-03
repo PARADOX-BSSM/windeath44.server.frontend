@@ -8,7 +8,11 @@ const Apps =
         "component": <Suspense fallback={null}><Terminal/></Suspense>,
         "type": "App",
         "id": 2210,
-        "name": "Terminal"
+        "name": "Terminal",
+        "appSetup":{
+          "minWidth" : 200,
+          "minHeight" : 150
+        }
       },{
         "component": <Suspense fallback={null}><Settings/></Suspense>,
         "type": "App",

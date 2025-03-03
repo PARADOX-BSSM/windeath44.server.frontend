@@ -15,10 +15,12 @@ body {
 }
 
 #container{
+    position: relative;
     height: 100%;
-    width: 60vw;
+    width: 100%;
     cursor: none;
     overflow: hidden;
+    margin: 0 auto;
 }
 #cursor {
     width: 5px;
@@ -28,30 +30,16 @@ body {
     position: absolute;
     pointer-events: none;
     z-index: 999;
-    margin: 0 20vw;
 }
-#window{
-    border: 1px solid black;
-    border-radius: 5px;
-    filter: drop-shadow(gray 0px 0px 15px);
-}
-.window-header{
-    background-color: darkolivegreen;
-    border-radius: 4px 4px 0 0;
-}
-.window-content{
-    background-color: lawngreen;
-    border-radius: 0 0 4px 4px;
-}
-
 .shell{
     background-color: darkseagreen;
     display: grid;
     grid-template-columns: repeat(auto-fill,minmax(5rem,5rem));
     grid-template-rows: repeat(auto-fill, minmax(5rem,5rem));
     grid-auto-flow: column;
-    width: 60vw;
-    left: 20vw;
+    height: 100%;
+    width: 100%;
+    margin : 0 auto;
 }
 .app-button>button{
     height: calc(100% - 1rem);
