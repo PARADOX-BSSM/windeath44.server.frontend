@@ -147,7 +147,7 @@ const Application = (props) => {
         && (props.mouseBeacon[1] >= window.top + window.height - 10))
       {
         setWindow({
-          position: "fixed",
+          position: window.position,
           height: window.height>=props.appSetup.minHeight?
             window.height + params.offset[1] - beforeSizeParams[1]:
             props.appSetup.minHeight,
@@ -163,7 +163,7 @@ const Application = (props) => {
         && (props.mouseBeacon[1] >= window.top + window.height - 10))
       {
         setWindow({
-          position: "fixed",
+          position: window.position,
           height: window.height>=props.appSetup.minHeight?
             window.height + params.offset[1] - beforeSizeParams[1]:
             props.appSetup.minHeight,
@@ -178,7 +178,7 @@ const Application = (props) => {
       } else if (props.mouseBeacon[0] >= window.left + window.width - 10)
       {
         setWindow({
-          position: "fixed",
+          position: window.position,
           height: window.height,
           width: window.width>=props.appSetup.minWidth?
             window.width + params.offset[0] - beforeSizeParams[0]:
@@ -191,7 +191,7 @@ const Application = (props) => {
       }else if(props.mouseBeacon[0] <= window.left + 10)
       {
         setWindow({
-          position: "fixed",
+          position: window.position,
           height: window.height,
           width: window.width>=props.appSetup.minWidth?
             window.width - params.offset[0] + beforeSizeParams[0]:
@@ -204,7 +204,7 @@ const Application = (props) => {
       } else if (props.mouseBeacon[1] >= window.top + window.height - 10)
       {
         setWindow({
-          position: "fixed",
+          position: window.position,
           height: window.height>=props.appSetup.minHeight?
             window.height + params.offset[1] - beforeSizeParams[1]:
             props.appSetup.minHeight,
