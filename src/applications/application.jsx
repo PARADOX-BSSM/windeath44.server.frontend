@@ -52,8 +52,6 @@ const Application = (props) => {
   const [backupWindow, setBackupWindow] = useState(window);
   const [cursorX, setCursorX] = useState(props.cursorLeft);
   const [cursorY, setCursorY] = useState(props.cursorTop);
-  const [windowX, setWindowX] = useState(0);
-  const [windowY, setWindowY] = useState(0);
   const [beforeSizeParams, setBeforeSizeParams] = useState([0,0]);
   const [beforeMoveParams, setBeforeMoveParams] = useState([0,0]);
   const [isFirst, setIsFirst] = useState(true);
@@ -137,8 +135,6 @@ const Application = (props) => {
         })
       }
     }
-    setWindowX(window.left);
-    setWindowY(window.top);
     setBeforeMoveParams(params.offset);
   })
   const sizeManager = useDrag((params)=>{
