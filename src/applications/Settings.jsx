@@ -6,7 +6,11 @@ const Settings = () => {
     setTree([...tree , value]);
   }
   const Pop = () => {
-    setTree(tree.splice(-1,1))
+    if(tree.length>0) {
+      let copy = [...tree];
+      copy.splice(-1,1)
+      setTree([...copy])
+    }
   }
   const Top = () => {
     if(tree.length>0)
@@ -14,13 +18,43 @@ const Settings = () => {
     else
       return 0;
   }
-  console.log(tree.length);
-  return (
-    <>
-      <button>
-        Wallpaper
-      </button>
-    </>
-  )
+
+  if(Top()===0)
+    return (
+      <>
+        <button onClick={() => {
+          Push(1)
+        }}>
+          Wallpaper
+        </button>
+        <button onClick={() => {
+          Push(2)
+        }}>
+          Account
+        </button>
+      </>
+    )
+  else if (Top() === 1)
+    return (
+      <>
+        <header>
+          <button onClick={() => {
+            Pop()
+          }}>Back
+          </button>
+          wallpaper
+        </header>
+      </>
+    )
+  else if (Top() === 2)
+    return (
+      <>
+        <button onClick={() => {
+          Pop()
+        }}>Back
+        </button>
+        Account
+      </>
+    )
 }
 export default Settings;

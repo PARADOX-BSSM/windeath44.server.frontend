@@ -1,5 +1,4 @@
 import {Suspense, lazy} from 'react';
-const Terminal = lazy(() => import('./Terminal'));
 
 const Discover = ({addTask, Apps}) => {
   return(

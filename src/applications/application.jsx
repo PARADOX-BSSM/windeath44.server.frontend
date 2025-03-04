@@ -52,8 +52,6 @@ const Application = (props) => {
   const [backupWindow, setBackupWindow] = useState(window);
   const [cursorX, setCursorX] = useState(props.cursorLeft);
   const [cursorY, setCursorY] = useState(props.cursorTop);
-  const [windowX, setWindowX] = useState(0);
-  const [windowY, setWindowY] = useState(0);
   const [beforeSizeParams, setBeforeSizeParams] = useState([0,0]);
   const [beforeMoveParams, setBeforeMoveParams] = useState([0,0]);
   const [isFirst, setIsFirst] = useState(true);
@@ -137,8 +135,6 @@ const Application = (props) => {
         })
       }
     }
-    setWindowX(window.left);
-    setWindowY(window.top);
     setBeforeMoveParams(params.offset);
   })
   const sizeManager = useDrag((params)=>{
@@ -172,7 +168,9 @@ const Application = (props) => {
             props.appSetup.minWidth,
           top: window.top,
           filter: "dropShadow(gray 0px 0px 15px)",
-          left: window.left + params.offset[0] - beforeSizeParams[0],
+          left: window.width>=props.appSetup.minWidth?
+            window.left + params.offset[0] - beforeSizeParams[0]:
+            window.left,
           zIndex: props.layer - 1
         })
       } else if (props.mouseBeacon[0] >= window.left + window.width - 10)
@@ -198,7 +196,9 @@ const Application = (props) => {
             props.appSetup.minWidth,
           top: window.top,
           filter: "dropShadow(gray 0px 0px 15px)",
-          left: window.left + params.offset[0] - beforeSizeParams[0],
+          left: window.width>=props.appSetup.minWidth?
+            window.left + params.offset[0] - beforeSizeParams[0]:
+            window.left,
           zIndex: props.layer - 1
         })
       } else if (props.mouseBeacon[1] >= window.top + window.height - 10)
@@ -231,10 +231,11 @@ const Application = (props) => {
           <HeaderButton onClick={() =>
             props.removeTask(props.removeCompnent)
           }></HeaderButton>
+          <HeaderButton onClick={()=>{}}>
+          </HeaderButton>
           <HeaderButton onClick={()=>
             setIsFullScreen(!isFullScreen)
           }></HeaderButton>
-          <HeaderButton> </HeaderButton>
         </WindowHeader>
         <WindowContent {...sizeManager()} onMouseUp={()=>setIsFirst(true)}>
           {props.children}

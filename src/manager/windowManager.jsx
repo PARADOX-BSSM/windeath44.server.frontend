@@ -59,12 +59,14 @@ const WindowManager = () => {
       Task.filter(item => item.name !== component.name) : [...Task])
   }
   let cursor = null;
+
+
+
   useEffect(() => {
     if(focus!=="Discover"){
       setStartOption(false);
     }
   },[focus])
-
   useEffect(()=>{
     setTimeout(()=>{
       setTaskList(Temp=> [...Temp,
@@ -79,12 +81,7 @@ const WindowManager = () => {
     }, 200)
     const container = document.getElementById("container");
     cursor = document.getElementById("cursor");
-
-    // 컨테이너의 위치 및 크기
     const bounds = container.getBoundingClientRect();
-
-    console.log(bounds);
-
     document.addEventListener("mousemove", (event) => {
         let x = event.clientX - bounds.x;
         let y = event.clientY - bounds.y;
@@ -141,14 +138,17 @@ const WindowManager = () => {
                       if(task.type==="Shell") {
                         return(
                           <li style={taskStyle} key={task.name}>
-                            <button style={startOption?taskSelectButtonStyle:taskButtonStyle} onClick={()=>{
-                              setStartOption(!startOption);
-                              if(startOption===true){
-                                setFocus(backUpFocus);
-                              }else {
-                                setBackUpFocus(focus);
-                                setFocus(task.name);
-                              }}}>Start</button>
+                            <button style={startOption?taskSelectButtonStyle:taskButtonStyle}
+                                    onClick={()=>{
+                                      setStartOption(!startOption);
+                                      if(startOption===true){
+                                        setFocus(backUpFocus);
+                                      }else {
+                                        setBackUpFocus(focus);
+                                        setFocus(task.name);
+                                      }
+                                    }
+                            }>Start</button>
                           </li>
                         )
                       } else {

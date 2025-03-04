@@ -10,6 +10,7 @@ const Apps =
         "id": 2210,
         "name": "Terminal",
         "appSetup":{
+          "Image" : "default",
           "minWidth" : 200,
           "minHeight" : 150
         }
@@ -17,7 +18,12 @@ const Apps =
         "component": <Suspense fallback={null}><Settings/></Suspense>,
         "type": "App",
         "id": 2221,
-        "name": "Settings"
+        "name": "Settings",
+        "appSetup":{
+          "Image" : "default",
+          "minWidth" : 200,
+          "minHeight" : 150
+        }
       }
     ]
 
