@@ -50,16 +50,14 @@ const Application = (props) => {
   }
   const [window, setWindow] = useState(windowProps);
   const [backupWindow, setBackupWindow] = useState(window);
-  const [cursorX, setCursorX] = useState(props.cursorLeft);
-  const [cursorY, setCursorY] = useState(props.cursorTop);
+  const [cursor, setCursor] = useState([props.cursorLeft,props.cursorTop]);
   const [beforeSizeParams, setBeforeSizeParams] = useState([0,0]);
   const [beforeMoveParams, setBeforeMoveParams] = useState([0,0]);
   const [isFirst, setIsFirst] = useState(true);
   const [isFullScreen, setIsFullScreen] = useState(false);
   useEffect(() => {
-    setCursorX(props.cursorLeft);
-    setCursorY(props.cursorTop);
-  }, [props.cursorLeft, props.cursorTop]);
+    setCursor(props.cursorVec);
+  }, [props.cursorVec]);
   useEffect(()=>{
     props.setFocus(props.name);
   },[window])
@@ -68,8 +66,8 @@ const Application = (props) => {
       props.setLayer(props.layer + 1);
       setWindow({
         position: window.position,
-        height: 400,
-        width: 300,
+        height: window.height,
+        width: window.width,
         top: window.top,
         left: window.left,
         zIndex: props.layer,
@@ -100,15 +98,17 @@ const Application = (props) => {
       const container = document.getElementById("container");
       const bounds = container.getBoundingClientRect();
 
-      let x = parseFloat(cursorX);
-      let y = parseFloat(cursorY);
+      let x = parseFloat(cursor[0]);
+      let y = parseFloat(cursor[1]);
 
       if (x <= 0 || x >= bounds.width - 5) {
         setWindow({
           position: window.position,
           height: window.height,
           width: window.width,
-          left: window.left,
+          left: x <= 0 || x >= bounds.width - 5?
+            window.left:
+            window.left + params.offset[0] - beforeMoveParams[0],
           top: window.top + params.offset[1] - beforeMoveParams[1],
           zIndex: props.layer - 1,
           filter: "dropShadow(gray 0px 0px 15px)",
@@ -137,83 +137,77 @@ const Application = (props) => {
     }
     setBeforeMoveParams(params.offset);
   })
+
+
+  const widthCondition = () => {
+    if (((props.mouseBeacon[0] >= window.left + window.width - 10)
+        && (props.mouseBeacon[1] >= window.top + window.height - 10)) //오른쪽 아래 모서리
+      ||((props.mouseBeacon[0] <= window.left + 10)
+        && (props.mouseBeacon[1] >= window.top + window.height - 10)) //왼쪽 아래 모서리
+      ||(props.mouseBeacon[0] >= window.left + window.width - 10) // 오른쪽 모서리
+      ||((props.mouseBeacon[0] <= window.left + 10))){ //왼쪽 모서리
+      return true;
+    }
+    return false;
+  }
+  const heightCondition = () => {
+    if (((props.mouseBeacon[0] >= window.left + window.width - 10)
+        && (props.mouseBeacon[1] >= window.top + window.height - 10))
+      ||((props.mouseBeacon[0] <= window.left + 10)
+        && (props.mouseBeacon[1] >= window.top + window.height - 10))
+      ||(props.mouseBeacon[1] >= window.top + window.height - 10)) {
+      return true;
+    }
+    return false;
+  }
+  const leftCondition = () => {
+    if (((props.mouseBeacon[0] <= window.left + 10)
+        && (props.mouseBeacon[1] >= window.top + window.height - 10))
+      ||(props.mouseBeacon[0] <= window.left + 10)){
+      return true;
+    }
+    return false;
+  }
+
+  const widthLimit = (params) => {
+    if (window.width>=props.appSetup.minWidth){
+      if ((props.mouseBeacon[0] >= window.left + window.width - 10)
+          && (props.mouseBeacon[1] >= window.top + window.height - 10)
+        ||(props.mouseBeacon[0] >= window.left + window.width - 10)
+        ) {
+        return window.width + params.offset[0] - beforeSizeParams[0];
+      }else{
+        return window.width - params.offset[0] + beforeSizeParams[0];
+      }
+    }
+    return props.appSetup.minWidth;
+  }
+  const heightLimit = (params) => {
+    if (window.height>=props.appSetup.minHeight){
+      return window.height + params.offset[1] - beforeSizeParams[1];
+    }
+    return props.appSetup.minHeight;
+  }
+  const leftLimit = (params) => {
+    if (window.width>=props.appSetup.minWidth){
+
+      return window.left + params.offset[0] - beforeSizeParams[0];
+    }
+    return window.left;
+  }
   const sizeManager = useDrag((params)=>{
     if(isFirst && !isFullScreen) {
-      if ((props.mouseBeacon[0] >= window.left + window.width - 10)
-        && (props.mouseBeacon[1] >= window.top + window.height - 10))
-      {
-        setWindow({
-          position: window.position,
-          height: window.height>=props.appSetup.minHeight?
-            window.height + params.offset[1] - beforeSizeParams[1]:
-            props.appSetup.minHeight,
-          width: window.width>=props.appSetup.minWidth?
-            window.width + params.offset[0] - beforeSizeParams[0]:
-            props.appSetup.minWidth,
-          top: window.top,
-          filter: "dropShadow(gray 0px 0px 15px)",
-          left: window.left,
-          zIndex: props.layer - 1
-        })
-      } else if ((props.mouseBeacon[0] <= window.left + 10)
-        && (props.mouseBeacon[1] >= window.top + window.height - 10))
-      {
-        setWindow({
-          position: window.position,
-          height: window.height>=props.appSetup.minHeight?
-            window.height + params.offset[1] - beforeSizeParams[1]:
-            props.appSetup.minHeight,
-          width: window.width>=props.appSetup.minWidth?
-            window.width - params.offset[0] + beforeSizeParams[0]:
-            props.appSetup.minWidth,
-          top: window.top,
-          filter: "dropShadow(gray 0px 0px 15px)",
-          left: window.left + params.offset[0] - beforeSizeParams[0],
-          zIndex: props.layer - 1
-        })
-      } else if (props.mouseBeacon[0] >= window.left + window.width - 10)
-      {
-        setWindow({
-          position: window.position,
-          height: window.height,
-          width: window.width>=props.appSetup.minWidth?
-            window.width + params.offset[0] - beforeSizeParams[0]:
-            props.appSetup.minWidth,
-          top: window.top,
-          left: window.left,
-          filter: "dropShadow(gray 0px 0px 15px)",
-          zIndex: props.layer - 1
-        })
-      }else if(props.mouseBeacon[0] <= window.left + 10)
-      {
-        setWindow({
-          position: window.position,
-          height: window.height,
-          width: window.width>=props.appSetup.minWidth?
-            window.width - params.offset[0] + beforeSizeParams[0]:
-            props.appSetup.minWidth,
-          top: window.top,
-          filter: "dropShadow(gray 0px 0px 15px)",
-          left: window.left + params.offset[0] - beforeSizeParams[0],
-          zIndex: props.layer - 1
-        })
-      } else if (props.mouseBeacon[1] >= window.top + window.height - 10)
-      {
-        setWindow({
-          position: window.position,
-          height: window.height>=props.appSetup.minHeight?
-            window.height + params.offset[1] - beforeSizeParams[1]:
-            props.appSetup.minHeight,
-          width: window.width,
-          top: window.top,
-          filter: "dropShadow(gray 0px 0px 15px)",
-          left: window.left,
-          zIndex: props.layer - 1
-        })
-      }
-      else{
+      setWindow({
+        position: window.position,
+        height: heightCondition()?heightLimit(params):window.height,
+        width: widthCondition()?widthLimit(params):window.width,
+        top: window.top,
+        left: leftCondition()?leftLimit(params):window.left,
+        zIndex: props.layer - 1,
+        filter: "dropShadow(gray 0px 0px 15px)"
+      })
+    } else{
         setIsFirst(false);
-      }
     }
     setBeforeSizeParams(params.offset);
   })

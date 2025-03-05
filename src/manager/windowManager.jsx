@@ -39,12 +39,11 @@ const WindowManager = () => {
   }
   const taskStyle = { margin: "0.25rem" };
 
-
-  const [cursorLeft, setCursorLeft] = useState("0");
-  const [cursorTop, setCursorTop] = useState("0");
-  const [mouseBeacon, setMouseBeacon] = useState([]);
-  const [layer, setLayer] = useState(1);
-  const [focus, setFocus] = useState("Discover");
+  let cursor = null;
+  const [cursorVec, setCursorVec] = useState(["0","0"]);  //보정 후 커서 위치
+  const [mouseBeacon, setMouseBeacon] = useState([]); //마우스 절대 위치
+  const [layer, setLayer] = useState(1);  //최대 레이어
+  const [focus, setFocus] = useState("Discover"); //최대 레이어를 사용중인 애플리케이션
   const [taskList, setTaskList] = useState([]);
   const [startOption, setStartOption] = useState(false);
   const [backUpFocus, setBackUpFocus] = useState(focus);
@@ -58,15 +57,14 @@ const WindowManager = () => {
     setTaskList(Task => (Task.some(item => item.name === component.name)) ?
       Task.filter(item => item.name !== component.name) : [...Task])
   }
-  let cursor = null;
   useEffect(() => {
     if(focus!=="Discover"){
       setStartOption(false);
     }
   },[focus])
 
-  useEffect(()=>{
-    setTimeout(()=>{
+  useEffect(()=>{ //초기 기본 설정
+    setTimeout(()=>{ //Discover 실행
       setTaskList(Temp=> [...Temp,
         {
           "component":<Discover addTask = {addTask} Apps={Apps}/>,
@@ -77,8 +75,9 @@ const WindowManager = () => {
         }
       ])
     }, 200)
-    const container = document.getElementById("container");
-    cursor = document.getElementById("cursor");
+
+    const container = document.getElementById("container"); // 화면 기준을 컨테이너로 설정
+    cursor = document.getElementById("cursor"); // 커서 불러오기
 
     // 컨테이너의 위치 및 크기
     const bounds = container.getBoundingClientRect();
@@ -86,18 +85,17 @@ const WindowManager = () => {
     console.log(bounds);
 
     document.addEventListener("mousemove", (event) => {
-        let x = event.clientX - bounds.x;
-        let y = event.clientY - bounds.y;
-        setMouseBeacon([event.clientX, event.clientY]);
+      let x = event.clientX - bounds.x;
+      let y = event.clientY - bounds.y;
         // 컨테이너 내부에만 커서를 제한
-        x = Math.max(0, Math.min(bounds.width - 5, x));
-        y = Math.max(0, Math.min(bounds.height - 5, y));
+      x = Math.max(0, Math.min(bounds.width - 5, x));
+      y = Math.max(0, Math.min(bounds.height - 5, y));
 
-        cursor.style.left = `${x}px`;
-        cursor.style.top = `${y}px`;
-        
-        setCursorLeft(`${x}`);
-        setCursorTop(`${y}`);
+      cursor.style.left = `${x}px`;
+      cursor.style.top = `${y}px`;
+
+      setMouseBeacon([event.clientX, event.clientY]);
+      setCursorVec([`${x}`,`${y}`]);
     });
   },[])
 
@@ -121,8 +119,7 @@ const WindowManager = () => {
                                  layer={layer}
                                  focus={focus}
                                  taskList={taskList}
-                                 cursorLeft={cursorLeft}
-                                 cursorTop={cursorTop}
+                                 cursorVec={cursorVec}
                                  setLayer={setLayer}
                                  setTaskList={setTaskList}
                                  setFocus={setFocus}
