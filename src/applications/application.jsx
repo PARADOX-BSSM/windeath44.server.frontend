@@ -32,6 +32,10 @@ const WindowContent = styled.section`
     background-color: lawngreen;
     border-radius: 0 0 4px 4px;
 `;
+const Shell = styled.article`
+    height : 100%;
+    width : 100%;
+`;
 const Application = (props) => {
   const windowProps = {
     position : "absolute",
@@ -43,25 +47,21 @@ const Application = (props) => {
     zIndex: props.layer,
     filter: "dropShadow(gray 0px 0px 15px)",
   }
+  const [window, setWindow] = useState(windowProps);//창 Props
+  const [backupWindow, setBackupWindow] = useState(window);//창 최대화 전 Props 백업
+  const [cursor, setCursor] = useState([props.cursorVec]);//보정 후 커서 위치
+  const [beforeSizeParams, setBeforeSizeParams] = useState([0,0]);//이전 useDrag params 저장(size)
+  const [beforeMoveParams, setBeforeMoveParams] = useState([0,0]);//이전 useDrag params 저장(move)
+  const [isFirst, setIsFirst] = useState(true);//첫 클릭 여부
+  const [isFullScreen, setIsFullScreen] = useState(false);//창 최대 여부
 
-  const shellProps = {
-    height : "100%",
-    width : "100%",
-  }
-  const [window, setWindow] = useState(windowProps);
-  const [backupWindow, setBackupWindow] = useState(window);
-  const [cursor, setCursor] = useState([props.cursorLeft,props.cursorTop]);
-  const [beforeSizeParams, setBeforeSizeParams] = useState([0,0]);
-  const [beforeMoveParams, setBeforeMoveParams] = useState([0,0]);
-  const [isFirst, setIsFirst] = useState(true);
-  const [isFullScreen, setIsFullScreen] = useState(false);
-  useEffect(() => {
+  useEffect(() => { //cursorVec 동기화
     setCursor(props.cursorVec);
   }, [props.cursorVec]);
-  useEffect(()=>{
+  useEffect(()=>{ //창 Props 수정될 시 Focus
     props.setFocus(props.name);
   },[window])
-  useEffect(()=>{
+  useEffect(()=>{ //Fucus가 본인이면 가장 높은 Layer로 렌더링
     if(props.focus===props.name) {
       props.setLayer(props.layer + 1);
       setWindow({
@@ -75,7 +75,7 @@ const Application = (props) => {
       })
     }
   },[props.focus])
-  useEffect(()=>{
+  useEffect(()=>{ //창 최대화 상태
     if(isFullScreen){
       const container = document.getElementById("container");
       const bounds = container.getBoundingClientRect();
@@ -92,7 +92,80 @@ const Application = (props) => {
       setWindow(backupWindow);
     }
   }, [isFullScreen]);
-  const moveManager = useDrag((params)=>{
+
+
+  const widthCondition = () => { //창 가로 크기 조건문
+    if (((props.mouseBeacon[0] >= window.left + window.width - 10)
+        && (props.mouseBeacon[1] >= window.top + window.height - 10)) //오른쪽 아래 모서리
+      ||((props.mouseBeacon[0] <= window.left + 10)
+        && (props.mouseBeacon[1] >= window.top + window.height - 10)) //왼쪽 아래 모서리
+      ||(props.mouseBeacon[0] >= window.left + window.width - 10) // 오른쪽 모서리
+      ||((props.mouseBeacon[0] <= window.left + 10))){ //왼쪽 모서리
+      return true;
+    }
+    return false;
+  }
+  const heightCondition = () => { //창 세로 크기 조건문
+    if (((props.mouseBeacon[0] >= window.left + window.width - 10)
+        && (props.mouseBeacon[1] >= window.top + window.height - 10))
+      ||((props.mouseBeacon[0] <= window.left + 10)
+        && (props.mouseBeacon[1] >= window.top + window.height - 10))
+      ||(props.mouseBeacon[1] >= window.top + window.height - 10)) {
+      return true;
+    }
+    return false;
+  }
+  const leftCondition = () => { //창 위치 조건문
+    if (((props.mouseBeacon[0] <= window.left + 10)
+        && (props.mouseBeacon[1] >= window.top + window.height - 10))
+      ||(props.mouseBeacon[0] <= window.left + 10)){
+      return true;
+    }
+    return false;
+  }
+  const widthLimit = (params) => { //가로 최소 크기 조건문
+    if (window.width>=props.appSetup.minWidth){
+      if ((props.mouseBeacon[0] >= window.left + window.width - 10)
+          && (props.mouseBeacon[1] >= window.top + window.height - 10)
+        ||(props.mouseBeacon[0] >= window.left + window.width - 10)
+        ) {
+        return window.width + params.offset[0] - beforeSizeParams[0];
+      }else{
+        return window.width - params.offset[0] + beforeSizeParams[0];
+      }
+    }
+    return props.appSetup.minWidth;
+  }
+  const heightLimit = (params) => { //세로 최소 크기 조건문
+    if (window.height>=props.appSetup.minHeight){
+      return window.height + params.offset[1] - beforeSizeParams[1];
+    }
+    return props.appSetup.minHeight;
+  }
+  const leftLimit = (params) => { //가로 최소 크기 조건문
+    if (window.width>=props.appSetup.minWidth){
+
+      return window.left + params.offset[0] - beforeSizeParams[0];
+    }
+    return window.left;
+  }
+  const sizeManager = useDrag((params)=>{ //size 조절
+    if(isFirst && !isFullScreen) {
+      setWindow({
+        position: window.position,
+        height: heightCondition()?heightLimit(params):window.height,
+        width: widthCondition()?widthLimit(params):window.width,
+        top: window.top,
+        left: leftCondition()?leftLimit(params):window.left,
+        zIndex: props.layer - 1,
+        filter: "dropShadow(gray 0px 0px 15px)"
+      })
+    } else{
+        setIsFirst(false);
+    }
+    setBeforeSizeParams(params.offset);
+  })
+  const moveManager = useDrag((params)=>{ //위치 조절
     props.setFocus(props.name);
     if(!isFullScreen) {
       const container = document.getElementById("container");
@@ -116,82 +189,6 @@ const Application = (props) => {
     }
     setBeforeMoveParams(params.offset);
   })
-
-
-  const widthCondition = () => {
-    if (((props.mouseBeacon[0] >= window.left + window.width - 10)
-        && (props.mouseBeacon[1] >= window.top + window.height - 10)) //오른쪽 아래 모서리
-      ||((props.mouseBeacon[0] <= window.left + 10)
-        && (props.mouseBeacon[1] >= window.top + window.height - 10)) //왼쪽 아래 모서리
-      ||(props.mouseBeacon[0] >= window.left + window.width - 10) // 오른쪽 모서리
-      ||((props.mouseBeacon[0] <= window.left + 10))){ //왼쪽 모서리
-      return true;
-    }
-    return false;
-  }
-  const heightCondition = () => {
-    if (((props.mouseBeacon[0] >= window.left + window.width - 10)
-        && (props.mouseBeacon[1] >= window.top + window.height - 10))
-      ||((props.mouseBeacon[0] <= window.left + 10)
-        && (props.mouseBeacon[1] >= window.top + window.height - 10))
-      ||(props.mouseBeacon[1] >= window.top + window.height - 10)) {
-      return true;
-    }
-    return false;
-  }
-  const leftCondition = () => {
-    if (((props.mouseBeacon[0] <= window.left + 10)
-        && (props.mouseBeacon[1] >= window.top + window.height - 10))
-      ||(props.mouseBeacon[0] <= window.left + 10)){
-      return true;
-    }
-    return false;
-  }
-
-  const widthLimit = (params) => {
-    if (window.width>=props.appSetup.minWidth){
-      if ((props.mouseBeacon[0] >= window.left + window.width - 10)
-          && (props.mouseBeacon[1] >= window.top + window.height - 10)
-        ||(props.mouseBeacon[0] >= window.left + window.width - 10)
-        ) {
-        return window.width + params.offset[0] - beforeSizeParams[0];
-      }else{
-        return window.width - params.offset[0] + beforeSizeParams[0];
-      }
-    }
-    return props.appSetup.minWidth;
-  }
-  const heightLimit = (params) => {
-    if (window.height>=props.appSetup.minHeight){
-      return window.height + params.offset[1] - beforeSizeParams[1];
-    }
-    return props.appSetup.minHeight;
-  }
-  const leftLimit = (params) => {
-    if (window.width>=props.appSetup.minWidth){
-
-      return window.left + params.offset[0] - beforeSizeParams[0];
-    }
-    return window.left;
-  }
-
-  const sizeManager = useDrag((params)=>{
-    if(isFirst && !isFullScreen) {
-      setWindow({
-        position: window.position,
-        height: heightCondition()?heightLimit(params):window.height,
-        width: widthCondition()?widthLimit(params):window.width,
-        top: window.top,
-        left: leftCondition()?leftLimit(params):window.left,
-        zIndex: props.layer - 1,
-        filter: "dropShadow(gray 0px 0px 15px)"
-      })
-    } else{
-        setIsFirst(false);
-    }
-    setBeforeSizeParams(params.offset);
-  })
-
   if(props.type==="App") {
     return (
       <Window style={window} onMouseDown={()=>{
@@ -213,9 +210,9 @@ const Application = (props) => {
     )
   }else if(props.type==="Shell") {
     return (
-      <article style={shellProps} className="shell">
+      <Shell className="shell">
         {props.children}
-      </article>
+      </Shell>
     )
   }
 }
