@@ -100,40 +100,19 @@ const Application = (props) => {
 
       let x = parseFloat(cursor[0]);
       let y = parseFloat(cursor[1]);
-
-      if (x <= 0 || x >= bounds.width - 5) {
-        setWindow({
-          position: window.position,
-          height: window.height,
-          width: window.width,
-          left: x <= 0 || x >= bounds.width - 5?
-            window.left:
-            window.left + params.offset[0] - beforeMoveParams[0],
-          top: window.top + params.offset[1] - beforeMoveParams[1],
-          zIndex: props.layer - 1,
-          filter: "dropShadow(gray 0px 0px 15px)",
-        })
-      } else if (y <= 0 || y >= bounds.height - 55) {
-        setWindow({
-          position: window.position,
-          height: window.height,
-          width: window.width,
-          left: window.left + params.offset[0] - beforeMoveParams[0],
-          top: window.top,
-          filter: "dropShadow(gray 0px 0px 15px)",
-          zIndex: props.layer - 1
-        })
-      } else {
-        setWindow({
-          position: window.position,
-          height: window.height,
-          width: window.width,
-          top: window.top + params.offset[1] - beforeMoveParams[1],
-          left: window.left + params.offset[0] - beforeMoveParams[0],
-          filter: "dropShadow(gray 0px 0px 15px)",
-          zIndex: props.layer - 1
-        })
-      }
+      setWindow({
+        position: window.position,
+        height: window.height,
+        width: window.width,
+        left: x <= 0 || x >= bounds.width - 5?
+          window.left:
+          window.left + params.offset[0] - beforeMoveParams[0],
+        top: y <= 0 || y >= bounds.height - 55?
+          window.left:
+          window.top + params.offset[1] - beforeMoveParams[1],
+        zIndex: props.layer - 1,
+        filter: "dropShadow(gray 0px 0px 15px)",
+      })
     }
     setBeforeMoveParams(params.offset);
   })
@@ -195,6 +174,7 @@ const Application = (props) => {
     }
     return window.left;
   }
+
   const sizeManager = useDrag((params)=>{
     if(isFirst && !isFullScreen) {
       setWindow({
