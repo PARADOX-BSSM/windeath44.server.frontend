@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import useStack from '../manager/DataStructureManager.jsx'
+import {useStack} from '../manager/DataStructureManager.jsx'
 
 const Settings = () => {
   const [stack, Push, Pop, Top] = useStack();

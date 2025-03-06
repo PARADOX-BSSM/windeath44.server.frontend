@@ -23,4 +23,4 @@ const useStack = () => {
   return [stack, Push, Pop, Top];
 }
 
-export default useStack;
+export {useStack};
