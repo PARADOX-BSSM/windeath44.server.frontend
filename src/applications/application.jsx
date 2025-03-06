@@ -22,6 +22,15 @@ const HeaderButton = styled.button`
     width : 20px;
     margin-left: 5px;
 `;
+const MinimizeButton = styled(HeaderButton)`
+    background-color: orange;
+    border: 1px solid darkorange;
+    border-radius: 2px;
+    &:hover {
+        background-color: darkorange;
+        border: 1px solid darkgoldenrod;
+    }
+`
 const WindowContent = styled.section`
     position : absolute;
     top : 30px;
@@ -219,15 +228,30 @@ const Application = (props) => {
         props.setFocus(props.name)
       }}>
         <WindowHeader {...moveManager()}>
-          <HeaderButton onClick={() =>
-            props.removeTask(props.removeCompnent)
-          }></HeaderButton>
-          <HeaderButton onClick={()=>
-            setIsFullScreen(!isFullScreen)
-          }></HeaderButton>
-          <HeaderButton onClick={()=>
-            setIsMinimized(!isMinimized)
-          }> </HeaderButton>
+          {props.focus === props.name?
+            <>
+              <HeaderButton onClick={() =>
+                props.removeTask(props.removeCompnent)
+              }></HeaderButton>
+              <HeaderButton onClick={()=>
+                setIsFullScreen(!isFullScreen)
+              }></HeaderButton>
+              <MinimizeButton onClick={()=>
+                setIsMinimized(!isMinimized)
+              }> </MinimizeButton>
+            </>:
+            <>
+              <HeaderButton onClick={() =>
+                props.removeTask(props.removeCompnent)
+              }></HeaderButton>
+              <HeaderButton onClick={()=>
+                setIsFullScreen(!isFullScreen)
+              }></HeaderButton>
+              <HeaderButton onClick={()=>
+                setIsMinimized(!isMinimized)
+              }> </HeaderButton>
+            </>
+          }
         </WindowHeader>
         <WindowContent {...sizeManager()} onMouseUp={()=>setIsFirst(true)}>
           {props.children}
@@ -236,7 +260,7 @@ const Application = (props) => {
     )
   }else if(props.type==="Shell") {
     return (
-      <Shell className="shell">
+      <Shell className="shell" onClick={()=>props.setFocus("Discover")}>
         {props.children}
       </Shell>
     )
