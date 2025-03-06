@@ -17,7 +17,11 @@ const Apps =
         "component": <Suspense fallback={null}><Settings/></Suspense>,
         "type": "App",
         "id": 2221,
-        "name": "Settings"
+        "name": "Settings",
+        "appSetup":{
+            "minWidth" : 200,
+            "minHeight" : 150
+        }
       }
     ]
 

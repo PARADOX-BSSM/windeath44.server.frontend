@@ -47,7 +47,7 @@ const WindowManager = () => {
   const [taskList, setTaskList] = useState([]);
   const [startOption, setStartOption] = useState(false);
   const [backUpFocus, setBackUpFocus] = useState(focus);
-
+  const [tabDownInterrupt, setTabDownInterrupt] = useState("empty");
 
   const addTask = (component) => {
     setTaskList(Task => (!Task.includes(component))?
@@ -62,7 +62,6 @@ const WindowManager = () => {
       setStartOption(false);
     }
   },[focus])
-
   useEffect(()=>{ //초기 기본 설정
     setTimeout(()=>{ //Discover 실행
       setTaskList(Temp=> [...Temp,
@@ -120,9 +119,11 @@ const WindowManager = () => {
                                  focus={focus}
                                  taskList={taskList}
                                  cursorVec={cursorVec}
+                                 tabDownInterrupt={tabDownInterrupt}
                                  setLayer={setLayer}
                                  setTaskList={setTaskList}
                                  setFocus={setFocus}
+                                 setTabDownInterrupt={setTabDownInterrupt}
                                  removeTask={removeTask}
                                  removeCompnent={task}
                                  mouseBeacon={mouseBeacon}
@@ -153,6 +154,7 @@ const WindowManager = () => {
                           return (
                             <li style={taskStyle} key={task.name}>
                             <button style={taskSelectButtonStyle} onClick={() => {
+                              setTabDownInterrupt(task.name);
                               }}>{task.name}</button>
                             </li>
                           )

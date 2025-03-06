@@ -54,16 +54,41 @@ const Application = (props) => {
   const [beforeMoveParams, setBeforeMoveParams] = useState([0,0]);//이전 useDrag params 저장(move)
   const [isFirst, setIsFirst] = useState(true);//첫 클릭 여부
   const [isFullScreen, setIsFullScreen] = useState(false);//창 최대 여부
+  const [isMinimized, setIsMinimized] = useState(false);//창 최소화 여부
 
   useEffect(() => { //cursorVec 동기화
     setCursor(props.cursorVec);
   }, [props.cursorVec]);
   useEffect(()=>{ //창 Props 수정될 시 Focus
-    props.setFocus(props.name);
+    if(!isMinimized && (props.focus !== props.name)) {
+      props.setFocus(props.name);
+    }
   },[window])
+  useEffect(()=>{
+    if(isMinimized){
+      setWindow({
+        display: "none",
+        position: window.position,
+        height: window.height,
+        width: window.width,
+        top: window.top,
+        left: window.left,
+        zIndex: props.layer,
+        filter: "dropShadow(gray 0px 0px 15px)"
+      })
+      props.setFocus("Discover");
+    }
+  },[isMinimized])
+  useEffect(()=>{
+    if(props.tabDownInterrupt==props.name) {
+      setIsMinimized(true);
+      props.setTabDownInterrupt("empty")
+    }
+  },[props.tabDownInterrupt])
   useEffect(()=>{ //Fucus가 본인이면 가장 높은 Layer로 렌더링
     if(props.focus===props.name) {
       props.setLayer(props.layer + 1);
+      setIsMinimized(false);
       setWindow({
         position: window.position,
         height: window.height,
@@ -144,7 +169,6 @@ const Application = (props) => {
   }
   const leftLimit = (params) => { //가로 최소 크기 조건문
     if (window.width>=props.appSetup.minWidth){
-
       return window.left + params.offset[0] - beforeSizeParams[0];
     }
     return window.left;
@@ -201,7 +225,9 @@ const Application = (props) => {
           <HeaderButton onClick={()=>
             setIsFullScreen(!isFullScreen)
           }></HeaderButton>
-          <HeaderButton> </HeaderButton>
+          <HeaderButton onClick={()=>
+            setIsMinimized(!isMinimized)
+          }> </HeaderButton>
         </WindowHeader>
         <WindowContent {...sizeManager()} onMouseUp={()=>setIsFirst(true)}>
           {props.children}
