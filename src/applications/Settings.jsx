@@ -1,24 +1,11 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
+import useStack from '../manager/DataStructureManager.jsx'
 
 const Settings = () => {
-  const [tree, setTree] = useState([0]);
-  const Push = (value) => {
-    setTree([...tree , value]);
-  }
-  const Pop = () => {
-    if(tree.length>0) {
-      let copy = [...tree];
-      copy.splice(-1,1)
-      setTree([...copy])
-    }
-  }
-  const Top = () => {
-    if(tree.length>0)
-      return tree[tree.length - 1];
-    else
-      return 0;
-  }
-
+  const [stack, Push, Pop, Top] = useStack();
+  useEffect(() => {
+    console.log(stack);
+  }, [stack]);
   if(Top()===0)
     return (
       <>
