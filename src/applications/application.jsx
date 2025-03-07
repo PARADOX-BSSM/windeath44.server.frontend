@@ -65,6 +65,7 @@ const Application = (props) => {
   const [isFullScreen, setIsFullScreen] = useState(false);//창 최대 여부
   const [isMinimized, setIsMinimized] = useState(false);//창 최소화 여부
 
+
   useEffect(() => { //cursorVec 동기화
     setCursor(props.cursorVec);
   }, [props.cursorVec]);
