@@ -3,6 +3,7 @@ const Application = lazy(()=> import('../applications/application.jsx'));
 import Discover from "../applications/discover.jsx";
 import {Apps} from './importManager.jsx';
 import Observer from "../applications/utility/Observer.jsx";
+import {useProcessManager} from "./ProcessManager.jsx";
 
 
 const WindowManager = () => {
@@ -44,19 +45,11 @@ const WindowManager = () => {
   const [mouseBeacon, setMouseBeacon] = useState([]); //마우스 절대 위치
   const [layer, setLayer] = useState(1);  //최대 레이어
   const [focus, setFocus] = useState("Discover"); //최대 레이어를 사용중인 애플리케이션
-  const [taskList, setTaskList] = useState([]);
+  const [taskList, addTask, removeTask] = useProcessManager();
   const [startOption, setStartOption] = useState(false);
   const [backUpFocus, setBackUpFocus] = useState(focus);
   const [tabDownInterrupt, setTabDownInterrupt] = useState("empty");
 
-  const addTask = (component) => {
-    setTaskList(Task => (!Task.includes(component))?
-      [...Task, component]:[...Task])
-  }
-  const removeTask = (component) => {
-    setTaskList(Task => (Task.some(item => item.name === component.name)) ?
-      Task.filter(item => item.name !== component.name) : [...Task])
-  }
   useEffect(() => {
     if(focus!=="Discover"){
       setStartOption(false);
@@ -64,7 +57,7 @@ const WindowManager = () => {
   },[focus])
   useEffect(()=>{ //초기 기본 설정
     setTimeout(()=>{ //Discover 실행
-      setTaskList(Temp=> [...Temp,
+      addTask(
         {
           "component":<Discover addTask = {addTask} Apps={Apps}/>,
           "type":"Shell",
@@ -72,7 +65,7 @@ const WindowManager = () => {
           "layer":0,
           "name":"Discover"
         }
-      ])
+      )
     }, 200)
 
     const container = document.getElementById("container"); // 화면 기준을 컨테이너로 설정
@@ -118,7 +111,6 @@ const WindowManager = () => {
                                  cursorVec={cursorVec}
                                  tabDownInterrupt={tabDownInterrupt}
                                  setLayer={setLayer}
-                                 setTaskList={setTaskList}
                                  setFocus={setFocus}
                                  setTabDownInterrupt={setTabDownInterrupt}
                                  removeTask={removeTask}
