@@ -58,7 +58,7 @@ const Application = (props) => {
   }
   const [window, setWindow] = useState(windowProps);//창 Props
   const [backupWindow, setBackupWindow] = useState(window);//창 최대화 전 Props 백업
-  const [cursor, setCursor] = useState([props.cursorVec]);//보정 후 커서 위치
+  const [cursor, setCursor] = useState(props.cursorVec);//보정 후 커서 위치
   const [beforeSizeParams, setBeforeSizeParams] = useState([0,0]);//이전 useDrag params 저장(size)
   const [beforeMoveParams, setBeforeMoveParams] = useState([0,0]);//이전 useDrag params 저장(move)
   const [isFirst, setIsFirst] = useState(true);//첫 클릭 여부
@@ -202,7 +202,7 @@ const Application = (props) => {
   const moveManager = useDrag((params)=>{ //위치 조절
     props.setFocus(props.name);
     if(!isFullScreen) {
-      const container = document.getElementById("container");
+      const container = document.getElementById("display");
       const bounds = container.getBoundingClientRect();
 
       let x = parseFloat(cursor[0]);

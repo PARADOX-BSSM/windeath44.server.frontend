@@ -1,16 +1,17 @@
 import {useEffect, useState, Suspense, lazy} from 'react';
 const Application = lazy(()=> import('../applications/application.jsx'));
 import Discover from "../applications/discover.jsx";
-import {Apps} from './importManager.jsx';
 import Observer from "../applications/utility/Observer.jsx";
 import {useProcessManager} from "./ProcessManager.jsx";
+import {Apps} from './importManager.jsx';
+
 
 
 const WindowManager = () => {
   const displayDriver = {
-    height: "100%",
+    height: "100vh",
+    width: "100vw",
     inset: 0,
-    aspectRatio: "4 / 3",
     margin: "0 auto",
   };
   const taskBarStyle = {
@@ -68,7 +69,7 @@ const WindowManager = () => {
       )
     }, 200)
 
-    const container = document.getElementById("container"); // 화면 기준을 컨테이너로 설정
+    const container = document.getElementById("display"); // 화면 기준을 컨테이너로 설정
     cursor = document.getElementById("cursor"); // 커서 불러오기
 
     // 컨테이너의 위치 및 크기
@@ -93,9 +94,7 @@ const WindowManager = () => {
   return(
     <div>
       <Suspense fallback={null}>
-        <div className="king">
           <main style={displayDriver}>
-            <div id="container">
               <div id="cursor"></div>
               {
                 taskList.map((task) => {
@@ -164,9 +163,7 @@ const WindowManager = () => {
                   }
                 </ul>
               </footer>
-            </div>
           </main>
-        </div>
       </Suspense>
     </div>
   )
