@@ -52,7 +52,7 @@ const WindowManager = () => {
   const [tabDownInterrupt, setTabDownInterrupt] = useState("empty");
 
   useEffect(() => {
-    if(focus!=="Discover"){
+    if(focus!=="Observer"){
       setStartOption(false);
     }
   },[focus])
@@ -126,7 +126,7 @@ const WindowManager = () => {
                     taskList.map((task) => {
                       if(task.type==="Shell") {
                         return(
-                          <li style={taskStyle} key={task.name}>
+                          <li style={taskStyle} key={"Observer"}>
                             <button style={startOption?taskSelectButtonStyle:taskButtonStyle}
                                     onClick={()=>{
                                       setStartOption(!startOption);
@@ -134,7 +134,7 @@ const WindowManager = () => {
                                         setFocus(backUpFocus);
                                       }else {
                                         setBackUpFocus(focus);
-                                        setFocus(task.name);
+                                        setFocus("Observer");
                                       }
                                     }
                             }>Start</button>

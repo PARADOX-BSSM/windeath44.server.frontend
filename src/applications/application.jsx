@@ -30,7 +30,25 @@ const MinimizeButton = styled(HeaderButton)`
         background-color: darkorange;
         border: 1px solid darkgoldenrod;
     }
-`
+`;
+const FullScreenButton = styled(HeaderButton)`
+    background-color: greenyellow;
+    border: 1px solid green;
+    border-radius: 2px;
+    &:hover {
+        background-color: green;
+        border: 1px solid darkgreen;
+    }
+`;
+const ExitButton = styled(HeaderButton)`
+    background-color: red;
+    border: 1px solid darkred;
+    border-radius: 2px;
+    &:hover {
+        background-color: darkred;
+        border: 1px solid #600000;
+    }
+`;
 const WindowContent = styled.section`
     position : absolute;
     top : 30px;
@@ -231,12 +249,12 @@ const Application = (props) => {
         <WindowHeader {...moveManager()}>
           {props.focus === props.name?
             <>
-              <HeaderButton onClick={() =>
+              <ExitButton onClick={() =>
                 props.removeTask(props.removeCompnent)
-              }></HeaderButton>
-              <HeaderButton onClick={()=>
+              }></ExitButton>
+              <FullScreenButton onClick={()=>
                 setIsFullScreen(!isFullScreen)
-              }></HeaderButton>
+              }></FullScreenButton>
               <MinimizeButton onClick={()=>
                 setIsMinimized(!isMinimized)
               }> </MinimizeButton>
