@@ -112,13 +112,13 @@ const Application = (props) => {
   },[props.focus])
   useEffect(()=>{ //창 최대화 상태
     if(isFullScreen){
-      const container = document.getElementById("container");
+      const container = document.getElementById("display");
       const bounds = container.getBoundingClientRect();
       setBackupWindow(window);
       setWindow({
         position: window.position,
-        height: `calc(${bounds.height}px - 52px)`,
-        width: `calc(${bounds.width}px - 2px)`,
+        height: `calc(100vh - 52px)`,
+        width: `calc(100vw - 2px)`,
         top: bounds.top,
         left: 0,
         zIndex: props.layer-1,
