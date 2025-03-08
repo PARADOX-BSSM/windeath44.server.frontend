@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {useStack} from '../manager/dataStructureManager.jsx'
+import {useStack} from '../modules/dataStructureModule.jsx'
 
 import {Main, Wallpaper} from './Pages/settingsPages.jsx'
 
