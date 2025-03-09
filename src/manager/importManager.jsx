@@ -10,6 +10,7 @@ const Apps =
         "id": 2210,
         "name": "Terminal",
         "appSetup":{
+          "Image" : "default",
           "minWidth" : 200,
           "minHeight" : 150
         }
@@ -19,8 +20,9 @@ const Apps =
         "id": 2221,
         "name": "Settings",
         "appSetup":{
-            "minWidth" : 200,
-            "minHeight" : 150
+          "Image" : "default",
+          "minWidth" : 200,
+          "minHeight" : 150
         }
       }
     ]
