@@ -1,7 +1,6 @@
 import {Suspense, lazy} from "react";
-const Terminal =  lazy(()=> import("../applications/Terminal.jsx"));
-const Settings = lazy(()=> import("../applications/settings.jsx"));
-
+const Terminal =  lazy(()=> import("../applications/Terminal.tsx"));
+const Settings = lazy(()=> import("../applications/settings.tsx"));
 //Application Import 형식 예시
 /*
 {
@@ -16,7 +15,6 @@ const Settings = lazy(()=> import("../applications/settings.jsx"));
         }
 }
  */
-
 const Apps =
     [
       {
