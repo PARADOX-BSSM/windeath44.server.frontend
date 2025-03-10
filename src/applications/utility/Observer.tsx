@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import {useEffect, useState} from "react";
-import {Apps} from '/src/manager/importManager.tsx';
+import {Apps} from '@/manager/importManager.tsx';
+import {TaskType} from "@/modules/typeModule.tsx";
 
 const Container = styled.section`
     position: absolute;
@@ -46,7 +47,7 @@ const Observer = (props) => {
 
       </Logo>
       <SnapshotList>
-        {Apps.map((Application)=>{
+        {Apps.map((Application:TaskType)=>{
           return(
             <Snapshot key={Application.id}>
               <button onClick={() => {

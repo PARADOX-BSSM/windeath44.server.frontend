@@ -4,12 +4,6 @@
     "paths": {
       "@/*" : [
         "./*"
-      ],
-      "@manager/*" : [
-        "./manager/*"
-      ],
-      "@module/*" : [
-        "./module/*"
       ]
     }
   }

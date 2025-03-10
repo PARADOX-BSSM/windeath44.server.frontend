@@ -152,22 +152,24 @@ const Application = (props:any) => {
     }
   }, [isFullScreen]);
 
+  const Corner = () => {
+    const [x, y] = props.mouseBeacon;
+    const { left, top, width, height } = window;
+
+    const nearRight = x >= left + width - 10;
+    const nearLeft = x <= left + 10;
+    const nearBottom = y >= top + height - 10;
+
+    return [nearRight, nearLeft, nearBottom];
+  }
 
   const widthCondition = () => { //창 가로 크기 조건문
-h    return ((props.mouseBeacon[0] >= window.left + window.width - 10)
-        && (props.mouseBeacon[1] >= window.top + window.height - 10)) //오른쪽 아래 모서리
-      || ((props.mouseBeacon[0] <= window.left + 10)
-        && (props.mouseBeacon[1] >= window.top + window.height - 10)) //왼쪽 아래 모서리
-      || (props.mouseBeacon[0] >= window.left + window.width - 10) // 오른쪽 모서리
-      || ((props.mouseBeacon[0] <= window.left + 10));
-
+    const [nearRight, nearLeft, nearBottom] = Corner();
+    return ((nearRight && nearBottom) || (nearLeft && nearBottom) || nearRight || nearLeft);
   }
   const heightCondition = () => { //창 세로 크기 조건문
-    return (((props.mouseBeacon[0] >= window.left + window.width - 10)
-        && (props.mouseBeacon[1] >= window.top + window.height - 10))
-      ||((props.mouseBeacon[0] <= window.left + 10)
-        && (props.mouseBeacon[1] >= window.top + window.height - 10))
-      ||(props.mouseBeacon[1] >= window.top + window.height - 10))
+    const [nearRight, nearLeft, nearBottom] = Corner();
+    return ((nearRight && nearBottom) || (nearLeft && nearBottom) || nearBottom)
   }
   const leftCondition = () => { //창 위치 조건문
     return (((props.mouseBeacon[0] <= window.left + 10)
@@ -200,7 +202,7 @@ h    return ((props.mouseBeacon[0] >= window.left + window.width - 10)
     return window.left;
   }
   const sizeManager = useDrag((params)=>{ //size 조절
-    if(isFirst && !isFullScreen) {
+    if(isFirst && !isFullScreen && (heightCondition() || widthCondition() || leftCondition())) {
       setWindow({
         display: undefined,
         position: window.position,
