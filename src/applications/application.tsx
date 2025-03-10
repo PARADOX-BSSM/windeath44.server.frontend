@@ -154,33 +154,25 @@ const Application = (props:any) => {
 
 
   const widthCondition = () => { //창 가로 크기 조건문
-    if (((props.mouseBeacon[0] >= window.left + window.width - 10)
+h    return ((props.mouseBeacon[0] >= window.left + window.width - 10)
         && (props.mouseBeacon[1] >= window.top + window.height - 10)) //오른쪽 아래 모서리
-      ||((props.mouseBeacon[0] <= window.left + 10)
+      || ((props.mouseBeacon[0] <= window.left + 10)
         && (props.mouseBeacon[1] >= window.top + window.height - 10)) //왼쪽 아래 모서리
-      ||(props.mouseBeacon[0] >= window.left + window.width - 10) // 오른쪽 모서리
-      ||((props.mouseBeacon[0] <= window.left + 10))){ //왼쪽 모서리
-      return true;
-    }
-    return false;
+      || (props.mouseBeacon[0] >= window.left + window.width - 10) // 오른쪽 모서리
+      || ((props.mouseBeacon[0] <= window.left + 10));
+
   }
   const heightCondition = () => { //창 세로 크기 조건문
-    if (((props.mouseBeacon[0] >= window.left + window.width - 10)
+    return (((props.mouseBeacon[0] >= window.left + window.width - 10)
         && (props.mouseBeacon[1] >= window.top + window.height - 10))
       ||((props.mouseBeacon[0] <= window.left + 10)
         && (props.mouseBeacon[1] >= window.top + window.height - 10))
-      ||(props.mouseBeacon[1] >= window.top + window.height - 10)) {
-      return true;
-    }
-    return false;
+      ||(props.mouseBeacon[1] >= window.top + window.height - 10))
   }
   const leftCondition = () => { //창 위치 조건문
-    if (((props.mouseBeacon[0] <= window.left + 10)
+    return (((props.mouseBeacon[0] <= window.left + 10)
         && (props.mouseBeacon[1] >= window.top + window.height - 10))
-      ||(props.mouseBeacon[0] <= window.left + 10)){
-      return true;
-    }
-    return false;
+      ||(props.mouseBeacon[0] <= window.left + 10))
   }
   const widthLimit = (params:any) => { //가로 최소 크기 조건문
     if (window.width as unknown as number >=props.appSetup.minWidth){

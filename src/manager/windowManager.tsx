@@ -1,11 +1,11 @@
 import {useEffect, useState, Suspense, lazy} from 'react';
 import styled from "styled-components";
-const Application = lazy(()=> import('../applications/application.tsx'));
 import Discover from "../applications/discover.tsx";
 import Observer from "../applications/utility/Observer.tsx";
 import {useProcessManager} from "./processManager.tsx";
 import {TaskType} from "../modules/typeModule.tsx";
 import {Apps} from './importManager.tsx';
+const Application = lazy(()=> import('../applications/application.tsx'));
 
 
 const TaskBar = styled.footer`
@@ -44,10 +44,10 @@ const WindowManager = () => {
   const taskStyle = { margin: "0.25rem" };
 
   let cursor:any = null;
-  const [cursorVec, setCursorVec] = useState(["0","0"]);  //보정 후 커서 위치
+  const [cursorVec, setCursorVec] = useState<string[]>(["0","0"]);  //보정 후 커서 위치
   const [mouseBeacon, setMouseBeacon] = useState<number[]>([0,0]); //마우스 절대 위치
-  const [layer, setLayer] = useState(1);  //최대 레이어
-  const [focus, setFocus] = useState("Discover"); //최대 레이어를 사용중인 애플리케이션
+  const [layer, setLayer] = useState<number>(1);  //최대 레이어
+  const [focus, setFocus] = useState<string>("Discover"); //최대 레이어를 사용중인 애플리케이션
   const [taskList, addTask, removeTask] = useProcessManager();
   const [startOption, setStartOption] = useState<boolean>(false);
   const [backUpFocus, setBackUpFocus] = useState(focus);
@@ -98,8 +98,8 @@ const WindowManager = () => {
   return(
     <div>
       <Suspense fallback={null}>
-          <main style={displayDriver}>
-              <div id="cursor"></div>
+        <main style={displayDriver}>
+          <div id="cursor"></div>
               {
                 taskList.map((task:TaskType) => {
                   return (
@@ -124,8 +124,8 @@ const WindowManager = () => {
                 })
               }
               {startOption? <Observer addTask={addTask}/>:<></>}
-              <TaskBar>
-                <ul style={taskListStyle}>
+          <TaskBar>
+            <ul style={taskListStyle}>
                   {
                     taskList.map((task) => {
                       if(task.type==="Shell") {
@@ -165,9 +165,9 @@ const WindowManager = () => {
                       }
                     })
                   }
-                </ul>
-              </TaskBar>
-          </main>
+            </ul>
+          </TaskBar>
+        </main>
       </Suspense>
     </div>
   )

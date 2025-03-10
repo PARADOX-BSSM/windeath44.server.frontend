@@ -5,7 +5,6 @@ import {TaskType} from '../modules/typeModule.tsx'
 //기본 제공 기능
 //- 프로세스 추가
 //- 프로세스 삭제
-
 const useProcessManager: () => [TaskType[], (component: TaskType) => void, (component: TaskType) => void] = () => {
   const [taskList, setTaskList] = useState<TaskType[]>([]);
   const addTask = (component:TaskType) => {

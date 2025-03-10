@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import {useEffect, useState} from "react";
-import {Apps} from '/src/manager/importManager.jsx';
+import {Apps} from '/src/manager/importManager.tsx';
 
 const Container = styled.section`
     position: absolute;
