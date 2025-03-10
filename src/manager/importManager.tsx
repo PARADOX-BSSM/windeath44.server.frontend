@@ -1,4 +1,6 @@
 import {Suspense, lazy} from "react";
+import {TaskType} from "@/modules/typeModule.tsx";
+
 const Terminal =  lazy(()=> import("../applications/Terminal.tsx"));
 const Settings = lazy(()=> import("../applications/settings.tsx"));
 //Application Import 형식 예시
@@ -15,13 +17,14 @@ const Settings = lazy(()=> import("../applications/settings.tsx"));
         }
 }
  */
-const Apps =
+const Apps:TaskType[] =
     [
       {
         "component": <Suspense fallback={null}><Terminal/></Suspense>,
         "type": "App",
         "id": 2210,
         "name": "Terminal",
+        "layer": undefined,
         "appSetup":{
           "Image" : "default",
           "minWidth" : 200,
@@ -32,6 +35,7 @@ const Apps =
         "type": "App",
         "id": 2221,
         "name": "Settings",
+        "layer": undefined,
         "appSetup":{
           "Image" : "default",
           "minWidth" : 200,

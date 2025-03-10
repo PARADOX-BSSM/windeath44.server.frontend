@@ -1,4 +1,5 @@
 
+
 type TaskType = {
   "component" : JSX.Element,
   "type" : string,
@@ -11,5 +12,6 @@ type TaskType = {
     "minHeight" : number | undefined,
   } | undefined,
 }
+
 
 export type {TaskType}

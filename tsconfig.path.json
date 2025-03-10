@@ -5,11 +5,11 @@
       "@/*" : [
         "./*"
       ],
-      "@assets/*" : [
-        "./assets/*"
+      "@manager/*" : [
+        "./manager/*"
       ],
-      "@components/*" : [
-        "./components/*"
+      "@module/*" : [
+        "./module/*"
       ]
     }
   }

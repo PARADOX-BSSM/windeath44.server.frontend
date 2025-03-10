@@ -14,7 +14,7 @@ const TaskBar = styled.footer`
     width: inherit;
     height: 3.125rem;
     z-index: 998;
-    background-color: "springgreen;
+    background-color: springgreen;
 `;
 
 const WindowManager = () => {
@@ -62,7 +62,7 @@ const WindowManager = () => {
     const discover:TaskType = {
       "component":<Discover addTask = {addTask} Apps={Apps}/>,
       "type":"Shell",
-      "id":taskList.length,
+      "id":0,
       "layer":0,
       "name":"Discover",
       "appSetup":undefined

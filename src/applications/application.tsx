@@ -63,8 +63,8 @@ const Shell = styled.article`
     height : 100%;
     width : 100%;
 `;
-const Application = (props) => {
-  const windowProps = {
+const Application = (props:any) => {
+  const windowProps:React.CSSProperties = {
     position : "absolute",
     height : 400,
     width : 300,
@@ -74,14 +74,14 @@ const Application = (props) => {
     zIndex: props.layer,
     filter: "dropShadow(gray 0px 0px 15px)",
   }
-  const [window, setWindow] = useState(windowProps);//창 Props
-  const [backupWindow, setBackupWindow] = useState(window);//창 최대화 전 Props 백업
-  const [cursor, setCursor] = useState(props.cursorVec);//보정 후 커서 위치
-  const [beforeSizeParams, setBeforeSizeParams] = useState([0,0]);//이전 useDrag params 저장(size)
-  const [beforeMoveParams, setBeforeMoveParams] = useState([0,0]);//이전 useDrag params 저장(move)
-  const [isFirst, setIsFirst] = useState(true);//첫 클릭 여부
-  const [isFullScreen, setIsFullScreen] = useState(false);//창 최대 여부
-  const [isMinimized, setIsMinimized] = useState(false);//창 최소화 여부
+  const [window, setWindow] = useState<React.CSSProperties>(windowProps);//창 Props
+  const [backupWindow, setBackupWindow] = useState<React.CSSProperties>(window);//창 최대화 전 Props 백업
+  const [cursor, setCursor] = useState<string[]>(props.cursorVec);//보정 후 커서 위치
+  const [beforeSizeParams, setBeforeSizeParams] = useState<number[]>([0,0]);//이전 useDrag params 저장(size)
+  const [beforeMoveParams, setBeforeMoveParams] = useState<number[]>([0,0]);//이전 useDrag params 저장(move)
+  const [isFirst, setIsFirst] = useState<boolean>(true);//첫 클릭 여부
+  const [isFullScreen, setIsFullScreen] = useState<boolean>(false);//창 최대 여부
+  const [isMinimized, setIsMinimized] = useState<boolean>(false);//창 최소화 여부
 
 
   useEffect(() => { //cursorVec 동기화
@@ -102,6 +102,7 @@ const Application = (props) => {
         top: window.top,
         left: window.left,
         zIndex: props.layer,
+        backgroundColor: window.backgroundColor,
         filter: "dropShadow(gray 0px 0px 15px)"
       })
       props.setFocus("Discover");
@@ -118,28 +119,33 @@ const Application = (props) => {
       props.setLayer(props.layer + 1);
       setIsMinimized(false);
       setWindow({
+        display: undefined,
         position: window.position,
         height: window.height,
         width: window.width,
         top: window.top,
         left: window.left,
         zIndex: props.layer,
+        backgroundColor: window.backgroundColor,
         filter: "dropShadow(gray 0px 0px 15px)",
       })
     }
   },[props.focus])
   useEffect(()=>{ //창 최대화 상태
     if(isFullScreen){
-      const container = document.getElementById("display");
+      const container = document.getElementById("display") as HTMLElement;
       const bounds = container.getBoundingClientRect();
       setBackupWindow(window);
       setWindow({
+        display: undefined,
         position: window.position,
         height: `calc(100vh - 52px)`,
         width: `calc(100vw - 2px)`,
         top: bounds.top,
         left: 0,
         zIndex: props.layer-1,
+        backgroundColor: window.backgroundColor,
+        filter: undefined
       })
     }else if(!isFullScreen){
       setWindow(backupWindow);
@@ -176,27 +182,27 @@ const Application = (props) => {
     }
     return false;
   }
-  const widthLimit = (params) => { //가로 최소 크기 조건문
-    if (window.width>=props.appSetup.minWidth){
+  const widthLimit = (params:any) => { //가로 최소 크기 조건문
+    if (window.width as unknown as number >=props.appSetup.minWidth){
       if ((props.mouseBeacon[0] >= window.left + window.width - 10)
           && (props.mouseBeacon[1] >= window.top + window.height - 10)
         ||(props.mouseBeacon[0] >= window.left + window.width - 10)
         ) {
         return window.width + params.offset[0] - beforeSizeParams[0];
       }else{
-        return window.width - params.offset[0] + beforeSizeParams[0];
+        return window.width as unknown as number - params.offset[0] + beforeSizeParams[0];
       }
     }
     return props.appSetup.minWidth;
   }
-  const heightLimit = (params) => { //세로 최소 크기 조건문
-    if (window.height>=props.appSetup.minHeight){
+  const heightLimit = (params:any) => { //세로 최소 크기 조건문
+    if (window.height as unknown as number >=props.appSetup.minHeight){
       return window.height + params.offset[1] - beforeSizeParams[1];
     }
     return props.appSetup.minHeight;
   }
-  const leftLimit = (params) => { //가로 최소 크기 조건문
-    if (window.width>=props.appSetup.minWidth){
+  const leftLimit = (params:any) => { //가로 최소 크기 조건문
+    if (window.width as unknown as number >=props.appSetup.minWidth){
       return window.left + params.offset[0] - beforeSizeParams[0];
     }
     return window.left;
@@ -204,12 +210,14 @@ const Application = (props) => {
   const sizeManager = useDrag((params)=>{ //size 조절
     if(isFirst && !isFullScreen) {
       setWindow({
+        display: undefined,
         position: window.position,
         height: heightCondition()?heightLimit(params):window.height,
         width: widthCondition()?widthLimit(params):window.width,
         top: window.top,
         left: leftCondition()?leftLimit(params):window.left,
         zIndex: props.layer - 1,
+        backgroundColor: window.backgroundColor,
         filter: "dropShadow(gray 0px 0px 15px)"
       })
     } else{
@@ -220,22 +228,24 @@ const Application = (props) => {
   const moveManager = useDrag((params)=>{ //위치 조절
     props.setFocus(props.name);
     if(!isFullScreen) {
-      const container = document.getElementById("display");
+      const container = document.getElementById("display") as HTMLElement;
       const bounds = container.getBoundingClientRect();
 
       let x = parseFloat(cursor[0]);
       let y = parseFloat(cursor[1]);
       setWindow({
+        display: undefined,
         position: window.position,
         height: window.height,
         width: window.width,
         left: x <= 0 || x >= bounds.width - 5?
           window.left:
-          window.left + params.offset[0] - beforeMoveParams[0],
+          window.left as unknown as number + params.offset[0] - beforeMoveParams[0],
         top: y <= 0 || y >= bounds.height - 55?
-          window.left:
-          window.top + params.offset[1] - beforeMoveParams[1],
+          window.top:
+          window.top as unknown as number + params.offset[1] - beforeMoveParams[1],
         zIndex: props.layer - 1,
+        backgroundColor: window.backgroundColor,
         filter: "dropShadow(gray 0px 0px 15px)",
       })
     }
