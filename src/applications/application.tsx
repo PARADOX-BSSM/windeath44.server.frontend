@@ -172,16 +172,13 @@ const Application = (props:any) => {
     return ((nearRight && nearBottom) || (nearLeft && nearBottom) || nearBottom)
   }
   const leftCondition = () => { //창 위치 조건문
-    return (((props.mouseBeacon[0] <= window.left + 10)
-        && (props.mouseBeacon[1] >= window.top + window.height - 10))
-      ||(props.mouseBeacon[0] <= window.left + 10))
+    const [nearRight, nearLeft, nearBottom] = Corner();
+    return ((nearLeft && nearBottom) || nearLeft)
   }
   const widthLimit = (params:any) => { //가로 최소 크기 조건문
+    const [nearRight, nearLeft, nearBottom] = Corner();
     if (window.width as unknown as number >=props.appSetup.minWidth){
-      if ((props.mouseBeacon[0] >= window.left + window.width - 10)
-          && (props.mouseBeacon[1] >= window.top + window.height - 10)
-        ||(props.mouseBeacon[0] >= window.left + window.width - 10)
-        ) {
+      if (nearLeft && nearBottom || nearRight) {
         return window.width + params.offset[0] - beforeSizeParams[0];
       }else{
         return window.width as unknown as number - params.offset[0] + beforeSizeParams[0];
