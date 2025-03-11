@@ -115,23 +115,22 @@ const Application = (props:any) => {
     }
   },[props.tabDownInterrupt])
   useEffect(()=>{ //Fucus가 본인이면 가장 높은 Layer로 렌더링
-    if(props.focus==="Observer"){
-      props.setLayer(props.layer - 1);
-    }
-    if(props.focus===props.name) {
-      props.setLayer(props.layer + 1);
-      setIsMinimized(false);
-      setWindow({
-        display: undefined,
-        position: window.position,
-        height: window.height,
-        width: window.width,
-        top: window.top,
-        left: window.left,
-        zIndex: props.layer,
-        backgroundColor: window.backgroundColor,
-        filter: "dropShadow(gray 0px 0px 15px)",
-      })
+    if(props.type !== "Shell") {
+      if (props.focus === props.name) {
+        props.setLayer(props.layer + 1);
+        setIsMinimized(false);
+        setWindow({
+          display: undefined,
+          position: window.position,
+          height: window.height,
+          width: window.width,
+          top: window.top,
+          left: window.left,
+          zIndex: props.layer,
+          backgroundColor: window.backgroundColor,
+          filter: "dropShadow(gray 0px 0px 15px)",
+        })
+      }
     }
   },[props.focus])
   useEffect(()=>{ //창 최대화 상태
@@ -203,6 +202,7 @@ const Application = (props:any) => {
   }
   const sizeManager = useDrag((params)=>{ //size 조절
     if(isFirst && !isFullScreen && (heightCondition() || widthCondition() || leftCondition())) {
+
       setWindow({
         display: undefined,
         position: window.position,
