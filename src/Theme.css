@@ -1,5 +1,6 @@
 body {
     margin: 0;
+    overflow: hidden
 }
 
 .king {
@@ -50,4 +51,7 @@ body {
     height: 1rem;
     font-size: 0.8rem;
     margin: 0 auto;
+}
+.display {
+
 }
