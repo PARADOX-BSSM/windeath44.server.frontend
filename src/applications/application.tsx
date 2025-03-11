@@ -56,6 +56,7 @@ const WindowContent = styled.section`
     right : 0;
     bottom : 0;
     padding : 0 5px 5px 5px;
+    box-sizing: border-box;
     background-color: lawngreen;
     border-radius: 0 0 4px 4px;
 `;
