@@ -60,7 +60,7 @@ const WindowManager = () => {
   },[focus])
   useEffect(()=>{ //초기 기본 설정
     const discover:TaskType = {
-      "component":<Discover addTask = {addTask} Apps={Apps}/>,
+      "component":<Discover />,
       "type":"Shell",
       "id":0,
       "layer":0,

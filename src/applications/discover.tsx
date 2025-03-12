@@ -1,7 +1,9 @@
-import {Suspense, lazy} from 'react';
 import {TaskType} from "@/modules/typeModule.tsx";
+import {useProcessManager} from "@/manager/processManager.tsx";
+import {Apps} from '@/manager/importManager.tsx'
 
-const Discover = ({addTask, Apps}) => {
+const Discover = () => {
+  const [taskList, addTask, removeTask] = useProcessManager();
   return(
     <>
       {Apps.map((Application:TaskType) => {
