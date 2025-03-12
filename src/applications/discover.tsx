@@ -3,7 +3,7 @@ import {useProcessManager} from "@/manager/processManager.tsx";
 import {Apps} from '@/manager/importManager.tsx'
 
 const Discover = () => {
-  const [taskList, addTask, removeTask] = useProcessManager();
+  const [, addTask, ] = useProcessManager();
   return(
     <>
       {Apps.map((Application:TaskType) => {
