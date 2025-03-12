@@ -1,5 +1,6 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {styled} from "styled-components";
+import {useQueue} from "@/modules/dataStructureModule.tsx";
 
 const Input = styled.input`
     background-color: none;
@@ -20,11 +21,21 @@ const TerminalContent = styled.div`
 
 const Terminal = () =>{
   const [command,setCommand] = useState("");
+  const [history, Push ,Pop,] = useQueue();
+
+  useEffect(() => {
+    if(history.length > 100){
+      Pop();
+    }
+  },[history]);
+
   return (
     <TerminalContent>
       <Input onKeyDown={(e)=>{
         if(e.key==="Enter") {
           console.log("enter");
+          Push(e.target.value);
+          console.log(history);
           e.target.value = "";
         }
         setCommand(e.target.value);
