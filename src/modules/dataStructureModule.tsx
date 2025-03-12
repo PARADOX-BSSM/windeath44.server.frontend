@@ -2,18 +2,18 @@ import {useState} from "react";
 
 
 const useStack = () => {
-  const [stack, setStack] = useState([0]);
-  const Push = (value) => {
+  const [stack, setStack] = useState<any[]>([0]);
+  const Push:any = (value:any) => {
     setStack([...stack , value]);
   }
-  const Pop = () => {
+  const Pop:any  = () => {
     if(stack.length>0) {
-      let copy = [...stack];
+      let copy:any[] = [...stack];
       copy.splice(-1,1)
       setStack([...copy])
     }
   }
-  const Top = () => {
+  const Top:any = () => {
     if(stack.length>0)
       return stack[stack.length - 1];
     else
