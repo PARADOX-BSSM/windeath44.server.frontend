@@ -64,6 +64,8 @@ const Shell = styled.article`
     height : 100%;
     width : 100%;
 `;
+const toNumber = (to:string|any) => (to as any as number)
+
 const Application = (props:any) => {
   const windowProps:React.CSSProperties = {
     position : "absolute",
@@ -83,7 +85,6 @@ const Application = (props:any) => {
   const [isFirst, setIsFirst] = useState<boolean>(true);//첫 클릭 여부
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);//창 최대 여부
   const [isMinimized, setIsMinimized] = useState<boolean>(false);//창 최소화 여부
-
 
   useEffect(() => { //cursorVec 동기화
     setCursor(props.cursorVec);
@@ -159,9 +160,9 @@ const Application = (props:any) => {
     const [x, y] = props.mouseBeacon;
     const { left, top, width, height } = window;
 
-    const nearRight = x >= left + width - 10;
-    const nearLeft = x <= left + 10;
-    const nearBottom = y >= top + height - 10;
+    const nearRight = x >= toNumber(left) + toNumber(width) - 10;
+    const nearLeft = x <= toNumber(left) + 10;
+    const nearBottom = y >= toNumber(top) + toNumber(height) - 10;
 
     return [nearRight, nearLeft, nearBottom];
   }
@@ -175,7 +176,7 @@ const Application = (props:any) => {
     return ((nearRight && nearBottom) || (nearLeft && nearBottom) || nearBottom)
   }
   const leftCondition = () => { //창 위치 조건문
-    const [nearRight, nearLeft, nearBottom] = Corner();
+    const [, nearLeft, nearBottom] = Corner();
     return ((nearLeft && nearBottom) || nearLeft)
   }
   const widthLimit = (params:any) => { //가로 최소 크기 조건문

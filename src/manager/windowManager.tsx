@@ -4,7 +4,6 @@ import Discover from "../applications/discover.tsx";
 import Observer from "../applications/utility/Observer.tsx";
 import {useProcessManager} from "./processManager.tsx";
 import {TaskType} from "../modules/typeModule.tsx";
-import {Apps} from './importManager.tsx';
 const Application = lazy(()=> import('../applications/application.tsx'));
 
 
