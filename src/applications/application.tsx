@@ -1,5 +1,6 @@
 import {useEffect, useState} from 'react';
 import {useDrag} from 'react-use-gesture';
+import {toNumber} from "@/modules/typeModule.tsx";
 import styled from "styled-components";
 
 const Window = styled.article`
@@ -64,7 +65,7 @@ const Shell = styled.article`
     height : 100%;
     width : 100%;
 `;
-const toNumber = (to:string|any) => (to as any as number)
+
 
 const Application = (props:any) => {
   const windowProps:React.CSSProperties = {
@@ -180,12 +181,12 @@ const Application = (props:any) => {
     return ((nearLeft && nearBottom) || nearLeft)
   }
   const widthLimit = (params:any) => { //가로 최소 크기 조건문
-    const [nearRight, nearLeft, nearBottom] = Corner();
+    const [nearRight, , ] = Corner();
     if (window.width as unknown as number >=props.appSetup.minWidth){
-      if (nearLeft && nearBottom || nearRight) {
-        return window.width + params.offset[0] - beforeSizeParams[0];
+      if (nearRight) {
+        return toNumber(window.width) + params.offset[0] - beforeSizeParams[0];
       }else{
-        return window.width as unknown as number - params.offset[0] + beforeSizeParams[0];
+        return toNumber(window.width) - params.offset[0] + beforeSizeParams[0];
       }
     }
     return props.appSetup.minWidth;
@@ -209,7 +210,7 @@ const Application = (props:any) => {
         display: undefined,
         position: window.position,
         height: heightCondition()?heightLimit(params):window.height,
-        width: widthCondition()?widthLimit(params):window.width,
+          width: widthCondition()?widthLimit(params):window.width,
         top: window.top,
         left: leftCondition()?leftLimit(params):window.left,
         zIndex: props.layer - 1,
