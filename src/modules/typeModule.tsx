@@ -13,5 +13,7 @@ type TaskType = {
   } | undefined,
 }
 
+const toNumber = (to:string|any) => (to as any as number)
 
 export type {TaskType}
+export {toNumber}
