@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import {useEffect, useState} from "react";
 import {Apps} from '@/manager/importManager.tsx';
 import {TaskType} from "@/modules/typeModule.tsx";
 
@@ -44,7 +43,7 @@ const Observer = (props) => {
   return (
     <Container>
       <Logo>
-
+        
       </Logo>
       <SnapshotList>
         {Apps.map((Application:TaskType)=>{

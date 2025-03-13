@@ -15,23 +15,24 @@ const TaskBar = styled.footer`
     z-index: 998;
     background-color: springgreen;
 `;
+const Display = styled.main`
+    height: 100vh;
+    width: 100vw;
+    inset: 0;
+    margin: 0 auto;
+`;
+const TaskList = styled.ul`
+    margin:0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    list-style: none;
+    display: flex;
+    align-content: center;
+`;
+
 
 const WindowManager = () => {
-  const displayDriver = {
-    height: "100vh",
-    width: "100vw",
-    inset: 0,
-    margin: "0 auto",
-  };
-  const taskListStyle = {
-    margin:0,
-    padding: 0,
-    height: "100%",
-    width: "100%",
-    listStyle: "none",
-    display: "flex",
-    alignContent: "center"
-  };
   const taskButtonStyle = {
     height: "100%",
     backgroundColor:"lightgreen"
@@ -97,7 +98,7 @@ const WindowManager = () => {
   return(
     <div>
       <Suspense fallback={null}>
-        <main style={displayDriver}>
+        <Display>
           <div id="cursor"></div>
               {
                 taskList.map((task:TaskType) => {
@@ -124,7 +125,7 @@ const WindowManager = () => {
               }
               {startOption? <Observer addTask={addTask}/>:<></>}
           <TaskBar>
-            <ul style={taskListStyle}>
+            <TaskList>
                   {
                     taskList.map((task) => {
                       if(task.type==="Shell") {
@@ -164,9 +165,9 @@ const WindowManager = () => {
                       }
                     })
                   }
-            </ul>
+            </TaskList>
           </TaskBar>
-        </main>
+        </Display>
       </Suspense>
     </div>
   )
