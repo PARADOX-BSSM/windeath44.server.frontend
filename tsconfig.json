@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "target": "ESNext", //컴파일 될 때 ECMAScript의 목표 버전 설정 (ESNext는 가장 최신)
+    "useDefineForClassFields": true, //클래스의 필드 초기화 방법
+    "lib": [ //TypeScirpt 컴파일러가 코드에서 사용할 수 있는 내장 라이브러리
+      "ESNext",
+      "DOM", // DOM 관련 API
+      "DOM.Iterable" //DOM 관련 API
+    ],
+    "module": "ESNext", //컴파일된 JavaScript 모듈 포맷 지정
+    "skipLibCheck": true, //라이브러리의 타입 체크 skip
+    /* Bundler mode */
+    "moduleResolution": "node",
+    "allowImportingTsExtensions": true, //.ts 파일 import 허용
+    "allowSyntheticDefaultImports" : true, //default exports
+    "resolveJsonModule": true, //JSON 모듈 허용
+    "isolatedModules": true, //각 파일
+    "noEmit": true, //컴파일 된 출력 생성 X
+    "jsx": "react-jsx", //JSX 문법 사용시 처리 방법
+    /* Linting */
+    "strict": true, //엄격한 타입 체크
+    "noUnusedLocals": true, //사용하지 않는 지역 변수 알림
+    "noUnusedParameters": true, //사용하지 않는 파라미터 알림
+    "noFallthroughCasesInSwitch": true //switch - case 에서 break 없이 진행되는 것 방지
+  },
+  "include": [ //컴파일 할 타입스크립트 프로젝트
+    "src"
+  ],
+  "exclude": [ //컴파일러가 특정 디렉토리나 파일을 제외하도록 지정
+    "node_modules"
+  ],
+  "extends": "./tsconfig.path.json"
+}

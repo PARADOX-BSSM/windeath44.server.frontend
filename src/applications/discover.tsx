@@ -1,9 +1,12 @@
-import {Suspense, lazy} from 'react';
+import {TaskType} from "@/modules/typeModule.tsx";
+import {useProcessManager} from "@/manager/processManager.tsx";
+import {Apps} from '@/manager/importManager.tsx'
 
-const Discover = ({addTask, Apps}) => {
+const Discover = () => {
+  const [, addTask, ] = useProcessManager();
   return(
     <>
-      {Apps.map(Application => {
+      {Apps.map((Application:TaskType) => {
         return (
           <div key={Application.name} className="app-button">
             <button onDoubleClick={() => {
