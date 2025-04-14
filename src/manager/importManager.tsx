@@ -41,6 +41,7 @@ const Apps:TaskType[] =
           "minWidth" : 200,
           "minHeight" : 150
         }
+
       }
     ]
 
