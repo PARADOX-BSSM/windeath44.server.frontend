@@ -4,6 +4,7 @@ import Discover from "../applications/discover.tsx";
 import Observer from "../applications/utility/Observer.tsx";
 import {useProcessManager} from "./processManager.tsx";
 import {TaskType} from "../modules/typeModule.tsx";
+import '../Theme.css';
 const Application = lazy(()=> import('../applications/application.tsx'));
 
 
@@ -16,8 +17,8 @@ const TaskBar = styled.footer`
     background-color: springgreen;
 `;
 const Display = styled.main`
-    height: 100vh;
-    width: 100vw;
+    height : 100vh;
+    aspect-ratio: 4/3;
     inset: 0;
     margin: 0 auto;
 `;
@@ -96,7 +97,7 @@ const WindowManager = () => {
   
 
   return(
-    <div>
+    <div className='desktop'>
       <Suspense fallback={null}>
         <Display>
           <div id="cursor"></div>
