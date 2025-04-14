@@ -70,8 +70,8 @@ const Shell = styled.article`
 const Application = (props:any) => {
   const windowProps:React.CSSProperties = {
     position : "absolute",
-    height : 400,
-    width : 300,
+    height : props.setUpHeight,
+    width : props.setUpWidth,
     top : (20 * globalThis.innerHeight) / 100,
     left : (30 * globalThis.innerWidth) / 100,
     backgroundColor : "black",

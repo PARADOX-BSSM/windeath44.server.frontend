@@ -4,6 +4,7 @@ import Discover from "../applications/discover.tsx";
 import Observer from "../applications/utility/Observer.tsx";
 import {useProcessManager} from "./processManager.tsx";
 import {TaskType} from "../modules/typeModule.tsx";
+import LogIn from '@/applications/Login.tsx';
 const Application = lazy(()=> import('../applications/application.tsx'));
 
 
@@ -52,6 +53,7 @@ const WindowManager = () => {
   const [startOption, setStartOption] = useState<boolean>(false);
   const [backUpFocus, setBackUpFocus] = useState(focus);
   const [tabDownInterrupt, setTabDownInterrupt] = useState("empty");
+  const [isLogIned, setIsLogIned] = useState(false);
 
   useEffect(() => {
     if(focus!=="Observer"){
@@ -59,20 +61,47 @@ const WindowManager = () => {
     }
   },[focus])
   useEffect(()=>{ //초기 기본 설정
-    const discover:TaskType = {
-      "component":<Discover />,
-      "type":"Shell",
-      "id":0,
-      "layer":0,
-      "name":"Discover",
-      "appSetup":undefined
+    const logIn:TaskType = {
+      "component": <Suspense fallback={null}><LogIn setIsLogIned={setIsLogIned}/></Suspense>,
+      "type": "App",
+      "id": 1,
+      "name": "LogIn",
+      "layer": undefined,
+      "appSetup":{
+        "Image" : "default",
+        "minWidth" : 800,
+        "minHeight" : 508,
+        "setUpWidth" : 800,
+        "setUpHeight" : 508
+      }
     }
-    setTimeout(()=>{ //Discover 실행
-      addTask(
-        discover
-      )
-    }, 200)
 
+    if (isLogIned) { //로그인이 되어 있으면
+      removeTask(logIn)
+      const discover:TaskType = {
+        "component":<Discover />,
+        "type":"Shell",
+        "id":0,
+        "layer":0,
+        "name":"Discover",
+        "appSetup":undefined
+      }
+      setTimeout(()=>{ //Discover 실행
+        addTask(
+          discover
+        )
+      }, 200)
+    }
+    else {
+      setTimeout(()=>{ //로그인 창 실행
+        addTask(
+          logIn
+        )
+      }, 200)
+    }
+  },[isLogIned])
+
+  useEffect(() => {
     const container:HTMLElement = document.getElementById("display") as HTMLElement; // 화면 기준을 컨테이너로 설정
     cursor = document.getElementById("cursor"); // 커서 불러오기
 
@@ -91,7 +120,7 @@ const WindowManager = () => {
       setMouseBeacon([event.clientX, event.clientY]);
       setCursorVec([`${x}`,`${y}`]);
     });
-  },[])
+  }, [])
 
   
 
@@ -108,6 +137,8 @@ const WindowManager = () => {
                                  uid={task.id}
                                  type={task.type}
                                  appSetup={task.appSetup}
+                                 setUpHeight={task.appSetup?.setUpHeight}
+                                 setUpWidth={task.appSetup?.setUpWidth}
                                  layer={layer}
                                  focus={focus}
                                  taskList={taskList}

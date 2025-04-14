@@ -43,7 +43,7 @@ const tempButtonStyle = {
 }
 
 
-const LogIn = () => {
+const LogIn = (props) => {
     return (
       <>
         <div style={tempImageStyle}>
@@ -69,7 +69,7 @@ const LogIn = () => {
           </div>
           <div className="buttons" style={tempButtonsStyle}>
             <button style={tempButtonStyle}>확인</button>
-            <button style={tempButtonStyle}>취소</button>
+            <button style={tempButtonStyle} onClick={() => {props.setIsLogIned(true)}}>취소</button>
             <button style={tempButtonStyle}>비밀번호 찾기</button>
             <button style={tempButtonStyle}>회원가입</button>
           </div>

@@ -29,7 +29,9 @@ const Apps:TaskType[] =
         "appSetup":{
           "Image" : "default",
           "minWidth" : 200,
-          "minHeight" : 150
+          "minHeight" : 150,
+          "setUpWidth" : 300,
+          "setUpHeight" : 400
         }
       },{
         "component": <Suspense fallback={null}><Settings/></Suspense>,
@@ -40,7 +42,9 @@ const Apps:TaskType[] =
         "appSetup":{
           "Image" : "default",
           "minWidth" : 200,
-          "minHeight" : 150
+          "minHeight" : 150,
+          "setUpWidth" : 300,
+          "setUpHeight" : 400
         }
       },{
         "component": <Suspense fallback={null}><LogIn/></Suspense>,
@@ -51,7 +55,9 @@ const Apps:TaskType[] =
         "appSetup":{
           "Image" : "default",
           "minWidth" : 800,
-          "minHeight" : 508
+          "minHeight" : 508,
+          "setUpWidth" : 800,
+          "setUpHeight" : 508
         }
       }
     ]

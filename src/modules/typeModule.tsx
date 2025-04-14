@@ -10,6 +10,8 @@ type TaskType = {
     "Image" : string | undefined,
     "minWidth" : number | undefined,
     "minHeight" : number | undefined,
+    "setUpWidth" : number | undefined,
+    "setUpHeight" : number | undefined,
   } | undefined,
 }
 
