@@ -53,7 +53,7 @@ const WindowManager = () => {
   const [startOption, setStartOption] = useState<boolean>(false);
   const [backUpFocus, setBackUpFocus] = useState(focus);
   const [tabDownInterrupt, setTabDownInterrupt] = useState("empty");
-  const [isLogIned, setIsLogIned] = useState(false);
+  const [isLogIned, setIsLogIned] = useState(false); //로그인 상태(나중에 게스트와 구분하기 위해 str 써도 될듯)
 
   useEffect(() => {
     if(focus!=="Observer"){
@@ -61,7 +61,7 @@ const WindowManager = () => {
     }
   },[focus])
   useEffect(()=>{ //초기 기본 설정
-    const logIn:TaskType = {
+    const logIn:TaskType = { //로그인 Task
       "component": <Suspense fallback={null}><LogIn setIsLogIned={setIsLogIned}/></Suspense>,
       "type": "App",
       "id": 1,
