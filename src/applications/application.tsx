@@ -257,7 +257,12 @@ const Application = (props:any) => {
           {props.focus === props.name?
             <>
               <ExitButton onClick={() =>
-                props.removeTask(props.removeCompnent)
+                {
+                  props.removeTask(props.removeCompnent);
+                  if (!props.isLogIned) {
+                    props.setIsLogIned(true);
+                  }
+                }
               }></ExitButton>
               <FullScreenButton onClick={()=>
                 setIsFullScreen(!isFullScreen)

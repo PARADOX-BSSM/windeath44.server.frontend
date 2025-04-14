@@ -144,9 +144,11 @@ const WindowManager = () => {
                                  taskList={taskList}
                                  cursorVec={cursorVec}
                                  tabDownInterrupt={tabDownInterrupt}
+                                 isLogIned={isLogIned}
                                  setLayer={setLayer}
                                  setFocus={setFocus}
                                  setTabDownInterrupt={setTabDownInterrupt}
+                                 setIsLogIned={setIsLogIned}
                                  removeTask={removeTask}
                                  removeCompnent={task}
                                  mouseBeacon={mouseBeacon}
