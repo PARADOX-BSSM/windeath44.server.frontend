@@ -225,10 +225,10 @@ const Application = (props:any) => {
   const moveManager = useDrag((params)=>{ //위치 조절
     props.setFocus(props.name);
     if(!isFullScreen) {
-      const container = document.getElementById("display") as HTMLElement;
+      const container = document.getElementById("cursorContainer") as HTMLElement;
       const bounds = container.getBoundingClientRect();
 
-      let x = parseFloat(cursor[0]);
+      let x = parseFloat(cursor[0]) - bounds.left;
       let y = parseFloat(cursor[1]);
       setWindow({
         display: undefined,
