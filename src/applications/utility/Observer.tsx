@@ -1,10 +1,11 @@
 import styled from "styled-components";
 import {Apps} from '@/manager/importManager.tsx';
 import {TaskType} from "@/modules/typeModule.tsx";
+import {useState,useEffect} from 'react';
 
-const Container = styled.section`
+const Container = styled.section<{ left: number }>`
     position: absolute;
-    left:0;
+    left: ${({ left }) => `${left}px`};
     bottom:50px;
     height: 500px;
     width: 300px;
@@ -39,11 +40,21 @@ const Snapshot = styled.li`
         width: 100%;
     }
 `
-const Observer = (props) => {
+
+const Observer = (props:any) => {
+  const [containerLeft, setContainerLeft] = useState<number>(0); //observe에 넘길 container 비율
+
+  useEffect(() => {
+    const container = document.getElementById("cursorContainer");
+    if (container) {
+      const bounds = container.getBoundingClientRect();
+      setContainerLeft(bounds.left);
+    }
+  }, []);
+
   return (
-    <Container>
+    <Container left={containerLeft}>
       <Logo>
-        
       </Logo>
       <SnapshotList>
         {Apps.map((Application:TaskType)=>{
