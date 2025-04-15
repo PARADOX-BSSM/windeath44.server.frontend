@@ -3,6 +3,7 @@ import {TaskType} from "@/modules/typeModule.tsx";
 
 const Terminal =  lazy(()=> import("../applications/Terminal.tsx"));
 const Settings = lazy(()=> import("../applications/settings.tsx"));
+const LogIn = lazy(()=> import("../applications/Login.tsx"));
 //Application Import 형식 예시
 /*
 {
@@ -13,7 +14,9 @@ const Settings = lazy(()=> import("../applications/settings.tsx"));
         "appSetup":{
           "Image" : {대표 이미지},
           "minWidth" : {최소 넓이},
-          "minHeight" : {최소 높이}
+          "minHeight" : {최소 높이},
+          "setUpWidth" : {넓이 초기값},
+          "setUpHeight" : {높이 초기값},
         }
 }
  */
@@ -28,7 +31,9 @@ const Apps:TaskType[] =
         "appSetup":{
           "Image" : "default",
           "minWidth" : 200,
-          "minHeight" : 150
+          "minHeight" : 150,
+          "setUpWidth" : 300,
+          "setUpHeight" : 400
         }
       },{
         "component": <Suspense fallback={null}><Settings/></Suspense>,
@@ -39,7 +44,22 @@ const Apps:TaskType[] =
         "appSetup":{
           "Image" : "default",
           "minWidth" : 200,
-          "minHeight" : 150
+          "minHeight" : 150,
+          "setUpWidth" : 300,
+          "setUpHeight" : 400
+        }
+      },{
+        "component": <Suspense fallback={null}><LogIn/></Suspense>,
+        "type": "App",
+        "id": 2222,
+        "name": "LogIn",
+        "layer": undefined,
+        "appSetup":{
+          "Image" : "default",
+          "minWidth" : 800,
+          "minHeight" : 508,
+          "setUpWidth" : 800,
+          "setUpHeight" : 508
         }
       }
     ]
