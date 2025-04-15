@@ -14,7 +14,9 @@ const LogIn = lazy(()=> import("../applications/Login.tsx"));
         "appSetup":{
           "Image" : {대표 이미지},
           "minWidth" : {최소 넓이},
-          "minHeight" : {최소 높이}
+          "minHeight" : {최소 높이},
+          "setUpWidth" : {넓이 초기값},
+          "setUpHeight" : {높이 초기값},
         }
 }
  */
