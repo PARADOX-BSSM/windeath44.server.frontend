@@ -52,6 +52,7 @@ body {
     font-size: 0.8rem;
     margin: 0 auto;
 }
-.display {
-    width: 50vw;
+
+#display{
+    position:relative;
 }

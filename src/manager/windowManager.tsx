@@ -44,7 +44,6 @@ const WindowManager = () => {
   }
   const taskStyle = { margin: "0.25rem" };
 
-  let cursor:any = null;
   const [cursorVec, setCursorVec] = useState<string[]>(["0","0"]);  //보정 후 커서 위치
   const [mouseBeacon, setMouseBeacon] = useState<number[]>([0,0]); //마우스 절대 위치
   const [layer, setLayer] = useState<number>(1);  //최대 레이어
@@ -54,12 +53,15 @@ const WindowManager = () => {
   const [backUpFocus, setBackUpFocus] = useState(focus);
   const [tabDownInterrupt, setTabDownInterrupt] = useState("empty");
 
+  // 포커스가 바뀔 때마다
   useEffect(() => {
     if(focus!=="Observer"){
       setStartOption(false);
     }
   },[focus])
-  useEffect(()=>{ //초기 기본 설정
+
+  //초기 기본 설정
+  useEffect(()=>{ 
     const discover:TaskType = {
       "component":<Discover />,
       "type":"Shell",
@@ -73,17 +75,24 @@ const WindowManager = () => {
         discover
       )
     }, 200)
+  },[])
 
-    const container:HTMLElement = document.getElementById("display") as HTMLElement; // 화면 기준을 컨테이너로 설정
-    cursor = document.getElementById("cursor"); // 커서 불러오기
+  
+  // 가상 커서 구현
+  useEffect(() => {
+    const container:HTMLElement = document.getElementById("cursorContainer") as HTMLElement; // 화면 기준을 컨테이너로 설정
+    const cursor = document.getElementById("cursor"); // 커서 불러오기
+
+    if (!container || !cursor) return;
 
     // 컨테이너의 위치 및 크기
     const bounds = container.getBoundingClientRect();
+    console.log(bounds.height, bounds.width)
     document.addEventListener("mousemove", (event:MouseEvent) => {
-      let x = event.clientX - bounds.x;
+      let x = event.clientX - bounds.x + bounds.left;
       let y = event.clientY - bounds.y;
         // 컨테이너 내부에만 커서를 제한
-      x = Math.max(0, Math.min(bounds.width - 5, x));
+      x = Math.max(bounds.left, Math.min(bounds.width - 5 + bounds.left, x));
       y = Math.max(0, Math.min(bounds.height - 5, y));
 
       cursor.style.left = `${x}px`;
@@ -92,14 +101,14 @@ const WindowManager = () => {
       setMouseBeacon([event.clientX, event.clientY]);
       setCursorVec([`${x}`,`${y}`]);
     });
-  },[])
+  }, [])
 
   
 
   return(
     <div className='desktop'>
       <Suspense fallback={null}>
-        <Display>
+        <Display id='cursorContainer'>
           <div id="cursor"></div>
               {
                 taskList.map((task:TaskType) => {
