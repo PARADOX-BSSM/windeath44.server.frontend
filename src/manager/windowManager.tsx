@@ -21,6 +21,7 @@ const Display = styled.main`
     aspect-ratio: 4/3;
     inset: 0;
     margin: 0 auto;
+    cursor: none;
 `;
 const TaskList = styled.ul`
     margin:0;
