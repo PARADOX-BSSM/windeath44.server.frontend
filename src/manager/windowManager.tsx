@@ -2,10 +2,10 @@ import { useEffect, useState, Suspense, lazy } from 'react';
 import styled from "styled-components";
 import Discover from "../applications/discover.tsx";
 import Observer from "../applications/utility/Observer.tsx";
-import { useProcessManager } from "./processManager.tsx";
-import { TaskType } from "../modules/typeModule.tsx";
-import '../Theme.css';
-const Application = lazy(() => import('../applications/application.tsx'));
+import {useProcessManager} from "./processManager.tsx";
+import {TaskType} from "../modules/typeModule.tsx";
+import LogIn from '@/applications/Login.tsx';
+const Application = lazy(()=> import('../applications/application.tsx'));
 
 
 const TaskBar = styled.footer`
@@ -66,6 +66,7 @@ const WindowManager = () => {
   const [startOption, setStartOption] = useState<boolean>(false);
   const [backUpFocus, setBackUpFocus] = useState(focus);
   const [tabDownInterrupt, setTabDownInterrupt] = useState("empty");
+  const [isLogIned, setIsLogIned] = useState(false); //로그인 상태(나중에 게스트와 구분하기 위해 str 써도 될듯)
 
   const [sideWidth, setSideWidth] = useState<number>(0);
 
@@ -75,29 +76,50 @@ const WindowManager = () => {
     if (focus !== "Observer") {
       setStartOption(false);
     }
-  }, [focus])
-
-  //초기 기본 설정
-  useEffect(() => {
-    const discover: TaskType = {
-      "component": <Discover />,
-      "type": "Shell",
-      "id": 0,
-      "layer": 0,
-      "name": "Discover",
-      "appSetup": undefined
+  },[focus])
+  useEffect(()=>{ //초기 기본 설정
+    const logIn:TaskType = { //로그인 Task
+      "component": <Suspense fallback={null}><LogIn setIsLogIned={setIsLogIned}/></Suspense>,
+      "type": "App",
+      "id": 1,
+      "name": "LogIn",
+      "layer": undefined,
+      "appSetup":{
+        "Image" : "default",
+        "minWidth" : 800,
+        "minHeight" : 508,
+        "setUpWidth" : 800,
+        "setUpHeight" : 508
+      }
     }
-    setTimeout(() => { //Discover 실행
-      addTask(
-        discover
-      )
-    }, 200)
-  }, [])
 
+    if (isLogIned) { //로그인이 되어 있으면
+      removeTask(logIn)
+      const discover:TaskType = {
+        "component":<Discover />,
+        "type":"Shell",
+        "id":0,
+        "layer":0,
+        "name":"Discover",
+        "appSetup":undefined
+      }
+      setTimeout(()=>{ //Discover 실행
+        addTask(
+          discover
+        )
+      }, 200)
+    }
+    else {
+      setTimeout(()=>{ //로그인 창 실행
+        addTask(
+          logIn
+        )
+      }, 200)
+    }
+  },[isLogIned])
 
-  // 가상 커서 구현
   useEffect(() => {
-    const container: HTMLElement = document.getElementById("cursorContainer") as HTMLElement; // 화면 기준을 컨테이너로 설정
+    const container:HTMLElement = document.getElementById("cursorContainer") as HTMLElement; // 화면 기준을 컨테이너로 설정
     const cursor = document.getElementById("cursor"); // 커서 불러오기
 
     if (!container || !cursor) return;
@@ -144,30 +166,34 @@ const WindowManager = () => {
         <BackgroundDiv width={sideWidth}></BackgroundDiv>
         <Display id='cursorContainer'>
           <div id="cursor"></div>
-          {
-            taskList.map((task: TaskType) => {
-              return (
-                <Application key={task.name}
-                  name={task.name}
-                  uid={task.id}
-                  type={task.type}
-                  appSetup={task.appSetup}
-                  layer={layer}
-                  focus={focus}
-                  taskList={taskList}
-                  cursorVec={cursorVec}
-                  tabDownInterrupt={tabDownInterrupt}
-                  setLayer={setLayer}
-                  setFocus={setFocus}
-                  setTabDownInterrupt={setTabDownInterrupt}
-                  removeTask={removeTask}
-                  removeCompnent={task}
-                  mouseBeacon={mouseBeacon}
-                >{task.component}</Application>
-              )
-            })
-          }
-          {startOption ? <Observer addTask={addTask} /> : <></>}
+              {
+                taskList.map((task:TaskType) => {
+                  return (
+                    <Application key={task.name}
+                                 name={task.name}
+                                 uid={task.id}
+                                 type={task.type}
+                                 appSetup={task.appSetup}
+                                 setUpHeight={task.appSetup?.setUpHeight}
+                                 setUpWidth={task.appSetup?.setUpWidth}
+                                 layer={layer}
+                                 focus={focus}
+                                 taskList={taskList}
+                                 cursorVec={cursorVec}
+                                 tabDownInterrupt={tabDownInterrupt}
+                                 isLogIned={isLogIned}
+                                 setLayer={setLayer}
+                                 setFocus={setFocus}
+                                 setTabDownInterrupt={setTabDownInterrupt}
+                                 setIsLogIned={setIsLogIned}
+                                 removeTask={removeTask}
+                                 removeCompnent={task}
+                                 mouseBeacon={mouseBeacon}
+                    >{task.component}</Application>
+                  )
+                })
+              }
+              {startOption? <Observer addTask={addTask}/>:<></>}
           <TaskBar>
             <TaskList>
               {
