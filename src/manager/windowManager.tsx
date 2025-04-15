@@ -4,7 +4,7 @@ import Discover from "../applications/discover.tsx";
 import Observer from "../applications/utility/Observer.tsx";
 import {useProcessManager} from "./processManager.tsx";
 import {TaskType} from "../modules/typeModule.tsx";
-// import {Join} from "@/applications/utility/joinMembership.tsx";
+import JoinMembership from "../applications/utility/joinMembership.tsx";
 const Application = lazy(()=> import('../applications/application.tsx'));
 
 
@@ -68,9 +68,23 @@ const WindowManager = () => {
       "name":"Discover",
       "appSetup":undefined
     }
+    const Join:TaskType = { //로그인 Task
+      "component": <Suspense fallback={null}><JoinMembership/></Suspense>,
+      "type": "App",
+      "id": 1,
+      "name": "LogIn",
+      "layer": undefined,
+      "appSetup":{
+        "Image" : "default",
+        "minWidth" : 800,
+        "minHeight" : 508,
+        "setUpWidth" : 800,
+        "setUpHeight" : 508
+      }
+    }
     setTimeout(()=>{ //Discover 실행
       addTask(
-        discover
+        Join
       )
     }, 200)
 

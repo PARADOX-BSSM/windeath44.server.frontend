@@ -3,7 +3,6 @@ import {TaskType} from "@/modules/typeModule.tsx";
 
 const Terminal =  lazy(()=> import("../applications/Terminal.tsx"));
 const Settings = lazy(()=> import("../applications/settings.tsx"));
-const Join = lazy(()=> import("../applications/utility/joinMembership.tsx"));
 //Application Import 형식 예시
 /*
 {
@@ -36,18 +35,6 @@ const Apps:TaskType[] =
         "type": "App",
         "id": 2221,
         "name": "Settings",
-        "layer": undefined,
-        "appSetup":{
-          "Image" : "default",
-          "minWidth" : 200,
-          "minHeight" : 150
-        }
-
-      },{
-        "component": <Suspense fallback={null}><Join/></Suspense>,
-        "type": "App",
-        "id": 2221,
-        "name": "login",
         "layer": undefined,
         "appSetup":{
           "Image" : "default",
