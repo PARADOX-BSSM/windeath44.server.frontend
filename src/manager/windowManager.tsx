@@ -1,10 +1,10 @@
-import {useEffect, useState, Suspense, lazy} from 'react';
+import { useEffect, useState, Suspense, lazy } from 'react';
 import styled from "styled-components";
 import Discover from "../applications/discover.tsx";
 import Observer from "../applications/utility/Observer.tsx";
 import {useProcessManager} from "./processManager.tsx";
 import {TaskType} from "../modules/typeModule.tsx";
-import JoinMembership from "../applications/utility/joinMembership.tsx";
+import LogIn from '@/applications/Login.tsx';
 const Application = lazy(()=> import('../applications/application.tsx'));
 
 
@@ -17,10 +17,11 @@ const TaskBar = styled.footer`
     background-color: springgreen;
 `;
 const Display = styled.main`
-    height: 100vh;
-    width: 100vw;
+    height : 100vh;
+    aspect-ratio: 4/3;
     inset: 0;
     margin: 0 auto;
+    cursor: none;
 `;
 const TaskList = styled.ul`
     margin:0;
@@ -31,45 +32,54 @@ const TaskList = styled.ul`
     display: flex;
     align-content: center;
 `;
+const BackgroundDiv = styled.div<{width:number}>`
+    margin:0;
+    padding:0;
+    height:100vh;
+    width: ${({ width }) => `${width}px`};
+    z-index : 9999;
+    background-color:black;
+`
+const Desktop = styled.div`
+  margin:0;
+  padding:0;
+  display:flex;
+`
 
 
 const WindowManager = () => {
   const taskButtonStyle = {
     height: "100%",
-    backgroundColor:"lightgreen"
+    backgroundColor: "lightgreen"
   };
   const taskSelectButtonStyle = {
     height: "100%",
-    backgroundColor:"seagreen"
+    backgroundColor: "seagreen"
   }
   const taskStyle = { margin: "0.25rem" };
 
-  let cursor:any = null;
-  const [cursorVec, setCursorVec] = useState<string[]>(["0","0"]);  //보정 후 커서 위치
-  const [mouseBeacon, setMouseBeacon] = useState<number[]>([0,0]); //마우스 절대 위치
+  const [cursorVec, setCursorVec] = useState<string[]>(["0", "0"]);  //보정 후 커서 위치
+  const [mouseBeacon, setMouseBeacon] = useState<number[]>([0, 0]); //마우스 절대 위치
   const [layer, setLayer] = useState<number>(1);  //최대 레이어
   const [focus, setFocus] = useState<string>("Discover"); //최대 레이어를 사용중인 애플리케이션
   const [taskList, addTask, removeTask] = useProcessManager();
   const [startOption, setStartOption] = useState<boolean>(false);
   const [backUpFocus, setBackUpFocus] = useState(focus);
   const [tabDownInterrupt, setTabDownInterrupt] = useState("empty");
+  const [isLogIned, setIsLogIned] = useState(false); //로그인 상태(나중에 게스트와 구분하기 위해 str 써도 될듯)
 
+  const [sideWidth, setSideWidth] = useState<number>(0);
+
+
+  // 포커스가 바뀔 때마다
   useEffect(() => {
-    if(focus!=="Observer"){
+    if (focus !== "Observer") {
       setStartOption(false);
     }
   },[focus])
   useEffect(()=>{ //초기 기본 설정
-    const discover:TaskType = {
-      "component":<Discover />,
-      "type":"Shell",
-      "id":0,
-      "layer":0,
-      "name":"Discover",
-      "appSetup":undefined
-    }
-    const Join:TaskType = { //로그인 Task
-      "component": <Suspense fallback={null}><JoinMembership/></Suspense>,
+    const logIn:TaskType = { //로그인 Task
+      "component": <Suspense fallback={null}><LogIn setIsLogIned={setIsLogIned}/></Suspense>,
       "type": "App",
       "id": 1,
       "name": "LogIn",
@@ -82,38 +92,79 @@ const WindowManager = () => {
         "setUpHeight" : 508
       }
     }
-    setTimeout(()=>{ //Discover 실행
-      addTask(
-        Join
-      )
-    }, 200)
 
-    const container:HTMLElement = document.getElementById("display") as HTMLElement; // 화면 기준을 컨테이너로 설정
-    cursor = document.getElementById("cursor"); // 커서 불러오기
+    if (isLogIned) { //로그인이 되어 있으면
+      removeTask(logIn)
+      const discover:TaskType = {
+        "component":<Discover />,
+        "type":"Shell",
+        "id":0,
+        "layer":0,
+        "name":"Discover",
+        "appSetup":undefined
+      }
+      setTimeout(()=>{ //Discover 실행
+        addTask(
+          discover
+        )
+      }, 200)
+    }
+    else {
+      setTimeout(()=>{ //로그인 창 실행
+        addTask(
+          logIn
+        )
+      }, 200)
+    }
+  },[isLogIned])
+
+  useEffect(() => {
+    const container:HTMLElement = document.getElementById("cursorContainer") as HTMLElement; // 화면 기준을 컨테이너로 설정
+    const cursor = document.getElementById("cursor"); // 커서 불러오기
+
+    if (!container || !cursor) return;
 
     // 컨테이너의 위치 및 크기
     const bounds = container.getBoundingClientRect();
-    document.addEventListener("mousemove", (event:MouseEvent) => {
-      let x = event.clientX - bounds.x;
+    console.log(bounds.height, bounds.width)
+    document.addEventListener("mousemove", (event: MouseEvent) => {
+      let x = event.clientX - bounds.x + bounds.left;
       let y = event.clientY - bounds.y;
-        // 컨테이너 내부에만 커서를 제한
-      x = Math.max(0, Math.min(bounds.width - 5, x));
+      // 컨테이너 내부에만 커서를 제한
+      x = Math.max(bounds.left, Math.min(bounds.width - 5 + bounds.left, x));
       y = Math.max(0, Math.min(bounds.height - 5, y));
 
       cursor.style.left = `${x}px`;
       cursor.style.top = `${y}px`;
 
       setMouseBeacon([event.clientX, event.clientY]);
-      setCursorVec([`${x}`,`${y}`]);
+      setCursorVec([`${x}`, `${y}`]);
     });
-  },[])
+  }, [])
 
+
+  //side div 크기 초기 설정
+  useEffect(() => {
+    const updateSideWidth = () => {
+      const fullWidth = window.innerWidth;
+      const fullHeight = window.innerHeight;
+      const containerWidth = fullHeight * 4 / 3;
+      const calculatedSide = (fullWidth - containerWidth) / 2;
+      setSideWidth(Math.max(0, calculatedSide));
+    }
   
+    updateSideWidth(); // 초기 계산
+    window.addEventListener('resize', updateSideWidth); // 반응형 대응
+    return () => window.removeEventListener('resize', updateSideWidth);
+  }, []);
 
-  return(
-    <div>
+
+
+  return (
+    <Desktop>
       <Suspense fallback={null}>
-        <Display>
+        <BackgroundDiv width={sideWidth}></BackgroundDiv>
+        <Display id='cursorContainer'>
           <div id="cursor"></div>
               {
                 taskList.map((task:TaskType) => {
@@ -123,14 +174,18 @@ const WindowManager = () => {
                                  uid={task.id}
                                  type={task.type}
                                  appSetup={task.appSetup}
+                                 setUpHeight={task.appSetup?.setUpHeight}
+                                 setUpWidth={task.appSetup?.setUpWidth}
                                  layer={layer}
                                  focus={focus}
                                  taskList={taskList}
                                  cursorVec={cursorVec}
                                  tabDownInterrupt={tabDownInterrupt}
+                                 isLogIned={isLogIned}
                                  setLayer={setLayer}
                                  setFocus={setFocus}
                                  setTabDownInterrupt={setTabDownInterrupt}
+                                 setIsLogIned={setIsLogIned}
                                  removeTask={removeTask}
                                  removeCompnent={task}
                                  mouseBeacon={mouseBeacon}
@@ -141,50 +196,51 @@ const WindowManager = () => {
               {startOption? <Observer addTask={addTask}/>:<></>}
           <TaskBar>
             <TaskList>
-                  {
-                    taskList.map((task) => {
-                      if(task.type==="Shell") {
-                        return(
-                          <li style={taskStyle} key={"Observer"}>
-                            <button style={startOption?taskSelectButtonStyle:taskButtonStyle}
-                                    onClick={()=>{
-                                      setStartOption(!startOption);
-                                      if(startOption){
-                                        setFocus(backUpFocus);
-                                      }else {
-                                        setBackUpFocus(focus);
-                                        setFocus("Observer");
-                                      }
-                                    }
-                            }>Start</button>
-                          </li>
-                        )
-                      } else {
-                        if (task.name === focus) {
-                          return (
-                            <li style={taskStyle} key={task.name}>
-                            <button style={taskSelectButtonStyle} onClick={() => {
-                              setTabDownInterrupt(task.name);
-                              }}>{task.name}</button>
-                            </li>
-                          )
-                        } else {
-                          return (
-                            <li style={taskStyle} key={task.name}>
-                              <button style={taskButtonStyle} onClick={() => {
-                                setFocus(task.name);
-                              }}>{task.name}</button>
-                            </li>
-                          )
-                        }
-                      }
-                    })
+              {
+                taskList.map((task) => {
+                  if (task.type === "Shell") {
+                    return (
+                      <li style={taskStyle} key={"Observer"}>
+                        <button style={startOption ? taskSelectButtonStyle : taskButtonStyle}
+                          onClick={() => {
+                            setStartOption(!startOption);
+                            if (startOption) {
+                              setFocus(backUpFocus);
+                            } else {
+                              setBackUpFocus(focus);
+                              setFocus("Observer");
+                            }
+                          }
+                          }>Start</button>
+                      </li>
+                    )
+                  } else {
+                    if (task.name === focus) {
+                      return (
+                        <li style={taskStyle} key={task.name}>
+                          <button style={taskSelectButtonStyle} onClick={() => {
+                            setTabDownInterrupt(task.name);
+                          }}>{task.name}</button>
+                        </li>
+                      )
+                    } else {
+                      return (
+                        <li style={taskStyle} key={task.name}>
+                          <button style={taskButtonStyle} onClick={() => {
+                            setFocus(task.name);
+                          }}>{task.name}</button>
+                        </li>
+                      )
+                    }
                   }
+                })
+              }
             </TaskList>
           </TaskBar>
         </Display>
+        <BackgroundDiv width={sideWidth}></BackgroundDiv>
       </Suspense>
-    </div>
+    </Desktop>
   )
 }
 export default WindowManager;

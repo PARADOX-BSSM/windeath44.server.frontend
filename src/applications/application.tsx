@@ -70,8 +70,8 @@ const Shell = styled.article`
 const Application = (props:any) => {
   const windowProps:React.CSSProperties = {
     position : "absolute",
-    height : 400,
-    width : 300,
+    height : props.setUpHeight,
+    width : props.setUpWidth,
     top : (20 * globalThis.innerHeight) / 100,
     left : (30 * globalThis.innerWidth) / 100,
     backgroundColor : "black",
@@ -138,16 +138,16 @@ const Application = (props:any) => {
   },[props.focus])
   useEffect(()=>{ //창 최대화 상태
     if(isFullScreen){
-      const container = document.getElementById("display") as HTMLElement;
+      const container = document.getElementById("cursorContainer") as HTMLElement;
       const bounds = container.getBoundingClientRect();
       setBackupWindow(window);
       setWindow({
         display: undefined,
         position: window.position,
         height: `calc(100vh - 52px)`,
-        width: `calc(100vw - 2px)`,
+        width: bounds.width,
         top: bounds.top,
-        left: 0,
+        left: bounds.left,
         zIndex: props.layer-1,
         backgroundColor: window.backgroundColor,
         filter: undefined
@@ -223,12 +223,11 @@ const Application = (props:any) => {
     setBeforeSizeParams(params.offset);
   })
   const moveManager = useDrag((params)=>{ //위치 조절
-    props.setFocus(props.name);
+    // props.setFocus(props.name); // 없어도 될듯
     if(!isFullScreen) {
-      const container = document.getElementById("display") as HTMLElement;
+      const container = document.getElementById("cursorContainer") as HTMLElement;
       const bounds = container.getBoundingClientRect();
-
-      let x = parseFloat(cursor[0]);
+      let x = parseFloat(cursor[0]) - bounds.left;
       let y = parseFloat(cursor[1]);
       setWindow({
         display: undefined,
@@ -257,7 +256,12 @@ const Application = (props:any) => {
           {props.focus === props.name?
             <>
               <ExitButton onClick={() =>
-                props.removeTask(props.removeCompnent)
+                {
+                  props.removeTask(props.removeCompnent);
+                  if (!props.isLogIned) {
+                    props.setIsLogIned(true);
+                  }
+                }
               }></ExitButton>
               <FullScreenButton onClick={()=>
                 setIsFullScreen(!isFullScreen)
