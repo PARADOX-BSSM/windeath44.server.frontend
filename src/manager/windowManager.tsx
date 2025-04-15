@@ -53,6 +53,7 @@ const WindowManager = () => {
   const [startOption, setStartOption] = useState<boolean>(false);
   const [backUpFocus, setBackUpFocus] = useState(focus);
   const [tabDownInterrupt, setTabDownInterrupt] = useState("empty");
+  
 
   // 포커스가 바뀔 때마다
   useEffect(() => {

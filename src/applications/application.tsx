@@ -227,7 +227,6 @@ const Application = (props:any) => {
     if(!isFullScreen) {
       const container = document.getElementById("cursorContainer") as HTMLElement;
       const bounds = container.getBoundingClientRect();
-우
       let x = parseFloat(cursor[0]) - bounds.left;
       let y = parseFloat(cursor[1]);
       setWindow({
