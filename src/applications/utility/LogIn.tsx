@@ -71,7 +71,7 @@ const LogIn = (props) => {
             <button style={tempButtonStyle}>확인</button>
             <button style={tempButtonStyle} onClick={() => {props.setIsLogIned(true)}}>취소</button>
             <button style={tempButtonStyle}>비밀번호 찾기</button>
-            <button style={tempButtonStyle}>회원가입</button>
+            <button style={tempButtonStyle} onClick={() => {props.changeToSignUp()}}>회원가입</button>
           </div>
         </div>
       </>

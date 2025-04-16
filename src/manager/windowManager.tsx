@@ -4,7 +4,8 @@ import Discover from "../applications/discover.tsx";
 import Observer from "../applications/utility/Observer.tsx";
 import {useProcessManager} from "./processManager.tsx";
 import {TaskType} from "../modules/typeModule.tsx";
-import LogIn from '@/applications/Login.tsx';
+import LogIn from '@/applications/utility/LogIn.tsx';
+import SignUp from '@/applications/utility/SignUp.tsx';
 const Application = lazy(()=> import('../applications/application.tsx'));
 
 
@@ -70,6 +71,45 @@ const WindowManager = () => {
 
   const [sideWidth, setSideWidth] = useState<number>(0);
 
+  const changeToSignUp = () => {   
+    addTask(signUp);
+    removeTask(logIn);
+  }
+  const changeToLogIn = () => {
+    addTask(logIn);
+    removeTask(signUp);
+  }
+
+  const logIn:TaskType = { //로그인 Task
+    "component": <Suspense fallback={null}><LogIn setIsLogIned={setIsLogIned} changeToSignUp={changeToSignUp} /></Suspense>,
+    "type": "App",
+    "id": 1,
+    "name": "LogIn",
+    "layer": undefined,
+    "appSetup":{
+      "Image" : "default",
+      "minWidth" : 800,
+      "minHeight" : 508,
+      "setUpWidth" : 800,
+      "setUpHeight" : 508
+    }
+  }
+
+  const signUp:TaskType = { //회원가입 Task
+    "component": <Suspense fallback={null}><SignUp changeToLogIn={changeToLogIn}/></Suspense>,
+    "type": "App",
+    "id": 2,
+    "name": "SignUp",
+    "layer": undefined,
+    "appSetup":{
+      "Image" : "default",
+      "minWidth" : 800,
+      "minHeight" : 550,
+      "setUpWidth" : 800,
+      "setUpHeight" : 550
+    }
+  }
+
 
   // 포커스가 바뀔 때마다
   useEffect(() => {
@@ -78,21 +118,6 @@ const WindowManager = () => {
     }
   },[focus])
   useEffect(()=>{ //초기 기본 설정
-    const logIn:TaskType = { //로그인 Task
-      "component": <Suspense fallback={null}><LogIn setIsLogIned={setIsLogIned}/></Suspense>,
-      "type": "App",
-      "id": 1,
-      "name": "LogIn",
-      "layer": undefined,
-      "appSetup":{
-        "Image" : "default",
-        "minWidth" : 800,
-        "minHeight" : 508,
-        "setUpWidth" : 800,
-        "setUpHeight" : 508
-      }
-    }
-
     if (isLogIned) { //로그인이 되어 있으면
       removeTask(logIn)
       const discover:TaskType = {

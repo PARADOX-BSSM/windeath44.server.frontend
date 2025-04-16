@@ -43,7 +43,7 @@ const tempButtonStyle = {
     lineHeight: "12px",
 }
 
-const JoinMembership = (props) => {
+const SignUp = (props) => {
     return (
         <>
             <div style={tempImageStyle}>
@@ -77,11 +77,11 @@ const JoinMembership = (props) => {
                 </div>
                 <div className="buttons" style={tempButtonsStyle}>
                     <button style={tempButtonStyle}>확인</button>
-                    <button style={tempButtonStyle}>취소</button>
+                    <button style={tempButtonStyle} onClick={props.changeToLogIn}>취소</button>
                 </div>
             </div>
         </>
     )
 
 }
-export default JoinMembership;
+export default SignUp;

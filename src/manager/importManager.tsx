@@ -3,7 +3,8 @@ import {TaskType} from "@/modules/typeModule.tsx";
 
 const Terminal =  lazy(()=> import("../applications/Terminal.tsx"));
 const Settings = lazy(()=> import("../applications/settings.tsx"));
-const LogIn = lazy(()=> import("../applications/Login.tsx"));
+const LogIn = lazy(()=> import("../applications/utility/LogIn.tsx"));
+const JoinMembership = lazy(()=> import("../applications/utility/SignUp.tsx"));
 //Application Import 형식 예시
 /*
 {
@@ -61,7 +62,19 @@ const Apps:TaskType[] =
           "setUpWidth" : 800,
           "setUpHeight" : 508
         }
-
+      },{
+        "component": <Suspense fallback={null}><JoinMembership /></Suspense>,
+        "type": "App",
+        "id": 2223,
+        "name": "Join",
+        "layer": undefined,
+        "appSetup":{
+          "Image" : "default",
+          "minWidth" : 800,
+          "minHeight" : 550,
+          "setUpWidth" : 800,
+          "setUpHeight" : 550
+        }
       }
     ]
 
