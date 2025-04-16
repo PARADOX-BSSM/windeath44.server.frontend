@@ -71,42 +71,43 @@ const WindowManager = () => {
 
   const [sideWidth, setSideWidth] = useState<number>(0);
 
-  const changeToSignUp = () => {
-    const logIn:TaskType = { //로그인 Task
-      "component": <Suspense fallback={null}><LogIn/></Suspense>,
-      "type": "App",
-      "id": 1,
-      "name": "LogIn",
-      "layer": undefined,
-      "appSetup":{
-        "Image" : "default",
-        "minWidth" : 800,
-        "minHeight" : 508,
-        "setUpWidth" : 800,
-        "setUpHeight" : 508
-      }
-    }
+  const changeToSignUp = () => {   
+    addTask(signUp);
+    removeTask(logIn);
+  }
+  const changeToLogIn = () => {
+    addTask(logIn);
+    removeTask(signUp);
+  }
 
-    const signUp:TaskType = { //회원가입 Task
-      "component": <Suspense fallback={null}><SignUp/></Suspense>,
-      "type": "App",
-      "id": 2,
-      "name": "SignUp",
-      "layer": undefined,
-      "appSetup":{
-        "Image" : "default",
-        "minWidth" : 800,
-        "minHeight" : 550,
-        "setUpWidth" : 800,
-        "setUpHeight" : 550
-      }
+  const logIn:TaskType = { //로그인 Task
+    "component": <Suspense fallback={null}><LogIn setIsLogIned={setIsLogIned} changeToSignUp={changeToSignUp} /></Suspense>,
+    "type": "App",
+    "id": 1,
+    "name": "LogIn",
+    "layer": undefined,
+    "appSetup":{
+      "Image" : "default",
+      "minWidth" : 800,
+      "minHeight" : 508,
+      "setUpWidth" : 800,
+      "setUpHeight" : 508
     }
-    addTask(
-      signUp
-    )
-    removeTask(
-      logIn
-    )
+  }
+
+  const signUp:TaskType = { //회원가입 Task
+    "component": <Suspense fallback={null}><SignUp changeToLogIn={changeToLogIn}/></Suspense>,
+    "type": "App",
+    "id": 2,
+    "name": "SignUp",
+    "layer": undefined,
+    "appSetup":{
+      "Image" : "default",
+      "minWidth" : 800,
+      "minHeight" : 550,
+      "setUpWidth" : 800,
+      "setUpHeight" : 550
+    }
   }
 
 
@@ -117,21 +118,6 @@ const WindowManager = () => {
     }
   },[focus])
   useEffect(()=>{ //초기 기본 설정
-    const logIn:TaskType = { //로그인 Task
-      "component": <Suspense fallback={null}><LogIn setIsLogIned={setIsLogIned} changeToSignUp={changeToSignUp} /></Suspense>,
-      "type": "App",
-      "id": 1,
-      "name": "LogIn",
-      "layer": undefined,
-      "appSetup":{
-        "Image" : "default",
-        "minWidth" : 800,
-        "minHeight" : 508,
-        "setUpWidth" : 800,
-        "setUpHeight" : 508
-      }
-    }
-
     if (isLogIned) { //로그인이 되어 있으면
       removeTask(logIn)
       const discover:TaskType = {

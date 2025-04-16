@@ -77,7 +77,7 @@ const SignUp = (props) => {
                 </div>
                 <div className="buttons" style={tempButtonsStyle}>
                     <button style={tempButtonStyle}>확인</button>
-                    <button style={tempButtonStyle}>취소</button>
+                    <button style={tempButtonStyle} onClick={props.changeToLogIn}>취소</button>
                 </div>
             </div>
         </>
