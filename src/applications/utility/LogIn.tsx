@@ -9,11 +9,11 @@ const TempImageStyle = styled.div`
   line-height: 180px;
 `;
 
-const tempBulkStyle = {
-  width: "100%",
-  height: "10px",
-  backgroundColor: "#FFBBF5",
-}
+const TempBulkStyle = styled.div`
+  width: 100%;
+  height: 10px;
+  background-color: #FFBBF5;
+`
 
 const tempMainStyle = {
   backgroundColor: "#FFD3FB",
@@ -51,7 +51,7 @@ const LogIn = (props) => {
         <TempImageStyle>
           <h1>Windeath44</h1>
         </TempImageStyle>
-        <div style={tempBulkStyle}></div>
+        <TempBulkStyle></TempBulkStyle>
         <div style={tempMainStyle}>
           <div className="inputs" style={tempInputsStyle}>
             <div>
