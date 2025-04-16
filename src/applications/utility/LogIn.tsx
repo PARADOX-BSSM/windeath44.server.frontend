@@ -1,11 +1,13 @@
-const tempImageStyle = {
-  backgroundColor: "#FFFFFF",
-  width: "100%",
-  height: "180px",
-  textAlign: "center",
-  fontSize: "30px",
-  lineHeight: "180px",
-}
+import styled from "styled-components";
+
+const TempImageStyle = styled.div`
+  background-color: white;
+  width: 100%;
+  height: 180px;
+  text-align: center;
+  font-size: 30px;
+  line-height: 180px;
+`;
 
 const tempBulkStyle = {
   width: "100%",
@@ -46,9 +48,9 @@ const tempButtonStyle = {
 const LogIn = (props) => {
     return (
       <>
-        <div style={tempImageStyle}>
+        <TempImageStyle>
           <h1>Windeath44</h1>
-        </div>
+        </TempImageStyle>
         <div style={tempBulkStyle}></div>
         <div style={tempMainStyle}>
           <div className="inputs" style={tempInputsStyle}>
