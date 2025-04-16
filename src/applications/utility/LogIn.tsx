@@ -15,19 +15,19 @@ const TempBulkStyle = styled.div`
   background-color: #FFBBF5;
 `
 
-const tempMainStyle = {
-  backgroundColor: "#FFD3FB",
-  width: "100%",
-  height: "258px",
-}
+const TempMainStyle = styled.div`
+  background-color: #FFD3FB;
+  width: 100%;
+  height: 258px;
+`
 
-const tempInputsStyle = {
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "flex-start",
-  gap: "12px",
-  padding: "20px",
-}
+const TempInputsStyle = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 20px;
+`
 
 const tempButtonsStyle = {
   display: "flex",
@@ -52,8 +52,8 @@ const LogIn = (props) => {
           <h1>Windeath44</h1>
         </TempImageStyle>
         <TempBulkStyle></TempBulkStyle>
-        <div style={tempMainStyle}>
-          <div className="inputs" style={tempInputsStyle}>
+        <TempMainStyle>
+          <TempInputsStyle>
             <div>
               <span style={{}}>사용자 이름:</span>
               <input></input>
@@ -62,20 +62,20 @@ const LogIn = (props) => {
               <span>비밀번호:</span>
               <input></input>
             </div>
-          </div>
-          <div className="radio" style={tempInputsStyle}>
+          </TempInputsStyle>
+          <TempInputsStyle>
             <div>
               <input type="checkbox"></input>
               <span>다음 실행에도 로그인 유지하기</span>
             </div>
-          </div>
+          </TempInputsStyle>
           <div className="buttons" style={tempButtonsStyle}>
             <button style={tempButtonStyle}>확인</button>
             <button style={tempButtonStyle} onClick={() => {props.setIsLogIned(true)}}>취소</button>
             <button style={tempButtonStyle}>비밀번호 찾기</button>
             <button style={tempButtonStyle} onClick={() => {props.changeToSignUp()}}>회원가입</button>
           </div>
-        </div>
+        </TempMainStyle>
       </>
     )
 
