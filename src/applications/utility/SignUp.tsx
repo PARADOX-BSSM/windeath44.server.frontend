@@ -43,7 +43,7 @@ const tempButtonStyle = {
     lineHeight: "12px",
 }
 
-const JoinMembership = (props) => {
+const SignUp = (props) => {
     return (
         <>
             <div style={tempImageStyle}>
@@ -84,4 +84,4 @@ const JoinMembership = (props) => {
     )
 
 }
-export default JoinMembership;
+export default SignUp;
