@@ -3,7 +3,7 @@ import {TaskType} from "@/modules/typeModule.tsx";
 
 const Terminal =  lazy(()=> import("../applications/Terminal.tsx"));
 const Settings = lazy(()=> import("../applications/settings.tsx"));
-const LogIn = lazy(()=> import("../applications/Login.tsx"));
+const LogIn = lazy(()=> import("../applications/utility/LogIn.tsx"));
 //Application Import 형식 예시
 /*
 {
