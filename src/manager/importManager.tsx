@@ -62,6 +62,7 @@ const Apps:TaskType[] =
           "setUpWidth" : 800,
           "setUpHeight" : 508
         }
+      }
 
     ]
 
