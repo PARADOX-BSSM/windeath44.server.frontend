@@ -42,8 +42,28 @@ const tempButtonStyle = {
   lineHeight: "12px",
 }
 
+let dummyAccount = [
+  {
+    id: "Roena0516",
+    password: "1234",
+    nickname: "로에나"
+  }
+]
 
-const LogIn = (props) => {
+
+const LogIn = (props: { setIsLogIned: (arg0: boolean) => void; changeToSignUp: () => void }) => {
+  let inputedID = "";
+  let inputedPassword = "";
+
+  let checkLogIn = (id: string, password: string) => {
+    dummyAccount.forEach(element => {
+      if (element.id === id && element.password === password) {
+        props.setIsLogIned(true);
+        console.log(id, password);
+      }
+    });
+  }
+
     return (
       <>
         <div style={tempImageStyle}>
@@ -54,11 +74,11 @@ const LogIn = (props) => {
           <div className="inputs" style={tempInputsStyle}>
             <div>
               <span style={{}}>사용자 이름:</span>
-              <input></input>
+              <input className="id" type="text" onChange={(e) => inputedID = e.target.value}></input>
             </div>
             <div>
               <span>비밀번호:</span>
-              <input></input>
+              <input className="password" type="password" onChange={(e) => inputedPassword = e.target.value}></input>
             </div>
           </div>
           <div className="radio" style={tempInputsStyle}>
@@ -68,7 +88,7 @@ const LogIn = (props) => {
             </div>
           </div>
           <div className="buttons" style={tempButtonsStyle}>
-            <button style={tempButtonStyle}>확인</button>
+            <button style={tempButtonStyle} onClick={() => {checkLogIn(inputedID, inputedPassword)}}>확인</button>
             <button style={tempButtonStyle} onClick={() => {props.setIsLogIned(true)}}>취소</button>
             <button style={tempButtonStyle}>비밀번호 찾기</button>
             <button style={tempButtonStyle} onClick={() => {props.changeToSignUp()}}>회원가입</button>
