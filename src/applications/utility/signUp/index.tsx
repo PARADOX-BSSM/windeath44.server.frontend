@@ -1,6 +1,7 @@
 import * as _ from './style';
 import Logo from '@/assets/windeath44.svg';
 import {useState} from "react";
+import Button from "@/applications/components/button";
 
 const SingUp = (props) => {
     const [name, setName] = useState('');
@@ -34,8 +35,8 @@ const SingUp = (props) => {
                     </_.inputsDiv>
                 </_.tempInputsStyle>
                 <_.tempButtonsStyle>
-                    <_.tempButtonStyle>확인</_.tempButtonStyle>
-                    <_.tempButtonStyle onClick={props.changeToLogIn}>취소</_.tempButtonStyle>
+                    <Button props={"확인"}/>
+                    <Button onClick={props.changeToLogIn} props={"취소"}/>
                 </_.tempButtonsStyle>
             </_.tempMainStyle>
         </_.tempMain>

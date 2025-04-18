@@ -51,13 +51,7 @@ export const tempButtonsStyle = styled.div`
     right: 0;
 `;
 
-export const tempButtonStyle = styled.button`
-    width: 144px;
-    height: 42px;
-    font-size: 20px;
-    line-height: 12px;
-    font-family: "Galmuri11";
-`;
+
  export const inputsDiv = styled.div`
      width: 100%;
      display: flex;
