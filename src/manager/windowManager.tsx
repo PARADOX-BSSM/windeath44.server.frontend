@@ -39,7 +39,6 @@ const BackgroundDiv = styled.div<{width:number}>`
     height:100vh;
     width: ${({ width }) => `${width}px`};
     z-index : 9999;
-    background-color:black;
 `
 const Desktop = styled.div`
   margin:0;
