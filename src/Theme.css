@@ -10,8 +10,8 @@
 body {
     margin: 0;
     overflow: hidden;
-    background-image: url("./assets/Background.png");
-    background-size: cover;
+    /* background-image: url("./assets/Background.png");
+    background-size: cover; */
 }
 
 .king {

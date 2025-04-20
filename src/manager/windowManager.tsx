@@ -7,6 +7,7 @@ import {TaskType} from "../modules/typeModule.tsx";
 import LogIn from '@/applications/utility/LogIn.tsx';
 import SignUp from "@/applications/utility/signUp";
 const Application = lazy(()=> import('../applications/application.tsx'));
+import bgImg from '../assets/Background.png'; 
 
 
 const TaskBar = styled.footer`
@@ -39,6 +40,8 @@ const BackgroundDiv = styled.div<{width:number}>`
     height:100vh;
     width: ${({ width }) => `${width}px`};
     z-index : 9999;
+    background-image:url("${bgImg}");
+    background-size:cover;
 `
 const Desktop = styled.div`
   margin:0;
