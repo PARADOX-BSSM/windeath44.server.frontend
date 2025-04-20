@@ -52,6 +52,8 @@ body {
     height: 100%;
     width: 100%;
     margin : 0 auto;
+    background-image: url('./assets/skeleton.png');
+    background-size: cover;
 }
 .app-button>button{
     height: calc(100% - 1rem);
