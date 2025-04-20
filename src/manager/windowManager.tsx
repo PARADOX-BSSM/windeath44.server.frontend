@@ -16,7 +16,8 @@ const TaskBar = styled.footer`
     width: inherit;
     height: 3.125rem;
     z-index: 998;
-    background-color: springgreen;
+    background-color: var(--light-primary-color);
+    border : 1px black solid;
 `;
 const Display = styled.main`
     height : 100vh;
