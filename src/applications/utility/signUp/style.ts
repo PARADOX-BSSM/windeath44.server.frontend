@@ -52,12 +52,3 @@ export const tempButtonsStyle = styled.div`
 `;
 
 
- export const inputsDiv = styled.div`
-     width: 100%;
-     display: flex;
-     justify-content: space-between;
- `;
-export const inputs = styled.input`
-     width: 80%;
-    height: 1.5rem;
- `;
