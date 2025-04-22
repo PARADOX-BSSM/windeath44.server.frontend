@@ -5,7 +5,7 @@ import Observer from "../applications/utility/Observer.tsx";
 import {useProcessManager} from "./processManager.tsx";
 import {TaskType} from "../modules/typeModule.tsx";
 import LogIn from '@/applications/utility/LogIn.tsx';
-import SignUp from '@/applications/utility/SignUp.tsx';
+import SignUp from "@/applications/utility/signUp";
 const Application = lazy(()=> import('../applications/application.tsx'));
 
 
@@ -59,7 +59,7 @@ const WindowManager = () => {
   }
   const taskStyle = { margin: "0.25rem" };
 
-  const [cursorVec, setCursorVec] = useState<string[]>(["0", "0"]);  //보정 후 커서 위치
+  const [cursorVec, setCursorVec] = useState<number[]>([0, 0, 0, 0]);  //보정 후 커서 위치
   const [mouseBeacon, setMouseBeacon] = useState<number[]>([0, 0]); //마우스 절대 위치
   const [layer, setLayer] = useState<number>(1);  //최대 레이어
   const [focus, setFocus] = useState<string>("Discover"); //최대 레이어를 사용중인 애플리케이션
@@ -163,7 +163,7 @@ const WindowManager = () => {
       cursor.style.top = `${y}px`;
 
       setMouseBeacon([event.clientX, event.clientY]);
-      setCursorVec([`${x}`, `${y}`]);
+      setCursorVec([x, y]);
     });
   }, [])
 

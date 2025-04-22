@@ -56,7 +56,7 @@ const WindowContent = styled.section`
     left : 0;
     right : 0;
     bottom : 0;
-    padding : 0 5px 5px 5px;
+    padding : 0 0.25rem 0.25rem 0.25rem;
     box-sizing: border-box;
     background-color: lawngreen;
     border-radius: 0 0 4px 4px;
@@ -80,7 +80,7 @@ const Application = (props:any) => {
   }
   const [window, setWindow] = useState<React.CSSProperties>(windowProps);//창 Props
   const [backupWindow, setBackupWindow] = useState<React.CSSProperties>(window);//창 최대화 전 Props 백업
-  const [cursor, setCursor] = useState<string[]>(props.cursorVec);//보정 후 커서 위치
+  const [cursor, setCursor] = useState<number[]>(props.cursorVec);//보정 후 커서 위치
   const [beforeSizeParams, setBeforeSizeParams] = useState<number[]>([0,0]);//이전 useDrag params 저장(size)
   const [beforeMoveParams, setBeforeMoveParams] = useState<number[]>([0,0]);//이전 useDrag params 저장(move)
   const [isFirst, setIsFirst] = useState<boolean>(true);//첫 클릭 여부
@@ -88,7 +88,9 @@ const Application = (props:any) => {
   const [isMinimized, setIsMinimized] = useState<boolean>(false);//창 최소화 여부
 
   useEffect(() => { //cursorVec 동기화
+    setBeforeMoveParams(cursor);
     setCursor(props.cursorVec);
+
   }, [props.cursorVec]);
   useEffect(()=>{ //창 Props 수정될 시 Focus
     if(!isMinimized && (props.focus !== props.name)) {
@@ -223,30 +225,50 @@ const Application = (props:any) => {
     setBeforeSizeParams(params.offset);
   })
   const moveManager = useDrag((params)=>{ //위치 조절
-    // props.setFocus(props.name); // 없어도 될듯
+    // props.setFocus(props.name);
     if(!isFullScreen) {
       const container = document.getElementById("cursorContainer") as HTMLElement;
       const bounds = container.getBoundingClientRect();
-      let x = parseFloat(cursor[0]) - bounds.left;
-      let y = parseFloat(cursor[1]);
+      let x = cursor[0];
+      let y = cursor[1];
       setWindow({
         display: undefined,
         position: window.position,
         height: window.height,
         width: window.width,
-        left: x <= 0 || x >= bounds.width - 5?
-          window.left:
-          window.left as unknown as number + params.offset[0] - beforeMoveParams[0],
-        top: y <= 0 || y >= bounds.height - 55?
-          window.top:
-          window.top as unknown as number + params.offset[1] - beforeMoveParams[1],
+        left: window.left as unknown as number + (x - beforeMoveParams[0]),
+        top: window.top as unknown as number + (y - beforeMoveParams[1]),
         zIndex: props.layer - 1,
         backgroundColor: window.backgroundColor,
         filter: "dropShadow(gray 0px 0px 15px)",
       })
     }
-    setBeforeMoveParams(params.offset);
   })
+  // const moveManager = useDrag((params)=>{ //위치 조절
+  //   // props.setFocus(props.name); // 없어도 될듯
+  //   if(!isFullScreen) {
+  //     const container = document.getElementById("cursorContainer") as HTMLElement;
+  //     const bounds = container.getBoundingClientRect();
+  //     let x = parseFloat(cursor[0]) - bounds.left;
+  //     let y = parseFloat(cursor[1]);
+  //     setWindow({
+  //       display: undefined,
+  //       position: window.position,
+  //       height: window.height,
+  //       width: window.width,
+  //       left: x <= 0 || x >= bounds.width - 5?
+  //         window.left:
+  //         window.left as unknown as number + params.offset[0] - beforeMoveParams[0],
+  //       top: y <= 0 || y >= bounds.height - 55?
+  //         window.top:
+  //         window.top as unknown as number + params.offset[1] - beforeMoveParams[1],
+  //       zIndex: props.layer - 1,
+  //       backgroundColor: window.backgroundColor,
+  //       filter: "dropShadow(gray 0px 0px 15px)",
+  //     })
+  //   }
+  //   setBeforeMoveParams(params.offset);
+  // })
   if(props.type==="App") {
     return (
       <Window style={window} onMouseDown={()=>{

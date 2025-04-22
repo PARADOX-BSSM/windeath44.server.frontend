@@ -1,81 +1,99 @@
-import styled from "styled-components";
+const tempImageStyle = {
+  backgroundColor: "#FFFFFF",
+  width: "100%",
+  height: "180px",
+  textAlign: "center",
+  fontSize: "30px",
+  lineHeight: "180px",
+}
 
-const TempImageStyle = styled.div`
-  background-color: white;
-  width: 100%;
-  height: 180px;
-  text-align: center;
-  font-size: 30px;
-  line-height: 180px;
-`;
+const tempBulkStyle = {
+  width: "100%",
+  height: "10px",
+  backgroundColor: "#FFBBF5",
+}
 
-const TempBulkStyle = styled.div`
-  width: 100%;
-  height: 10px;
-  background-color: #FFBBF5;
-`
+const tempMainStyle = {
+  backgroundColor: "#FFD3FB",
+  width: "100%",
+  height: "258px",
+}
 
-const TempMainStyle = styled.div`
-  background-color: #FFD3FB;
-  width: 100%;
-  height: 258px;
-`
+const tempInputsStyle = {
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "flex-start",
+  gap: "12px",
+  padding: "20px",
+}
 
-const TempInputsStyle = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 20px;
-`
+const tempButtonsStyle = {
+  display: "flex",
+  flexDirection: "row",
+  justifyContent: "flex-end",
+  gap: "10px",
+  padding: "8px",
+}
 
-const TempButtonContainerStyle = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  gap: 10px;
-  padding: 8px;
-`
+const tempButtonStyle = {
+  width: "144px",
+  height: "42px",
+  fontSize: "20px",
+  lineHeight: "12px",
+}
 
-const TempButtonStyle = styled.button`
-  width: 144px;
-  height: 42px;
-  font-size: 20px;
-  line-height: 12px;
-`
+let dummyAccount = [
+  {
+    id: "Roena0516",
+    password: "1234",
+    nickname: "로에나"
+  }
+]
 
 
-const LogIn = (props) => {
+const LogIn = (props: { setIsLogIned: (arg0: boolean) => void; changeToSignUp: () => void }) => {
+  let inputedID = "";
+  let inputedPassword = "";
+
+  let checkLogIn = (id: string, password: string) => {
+    dummyAccount.forEach(element => {
+      if (element.id === id && element.password === password) {
+        props.setIsLogIned(true);
+        console.log(id, password);
+      }
+    });
+  }
+
     return (
       <>
-        <TempImageStyle>
+        <div style={tempImageStyle}>
           <h1>Windeath44</h1>
-        </TempImageStyle>
-        <TempBulkStyle></TempBulkStyle>
-        <TempMainStyle>
-          <TempInputsStyle>
+        </div>
+        <div style={tempBulkStyle}></div>
+        <div style={tempMainStyle}>
+          <div className="inputs" style={tempInputsStyle}>
             <div>
               <span style={{}}>사용자 이름:</span>
-              <input></input>
+              <input className="id" type="text" onChange={(e) => inputedID = e.target.value}></input>
             </div>
             <div>
               <span>비밀번호:</span>
-              <input></input>
+              <input className="password" type="password" onChange={(e) => inputedPassword = e.target.value}></input>
             </div>
-          </TempInputsStyle>
-          <TempInputsStyle>
+          </div>
+          <div className="radio" style={tempInputsStyle}>
             <div>
               <input type="checkbox"></input>
               <span>다음 실행에도 로그인 유지하기</span>
             </div>
-          </TempInputsStyle>
-          <TempButtonContainerStyle>
-            <TempButtonStyle>확인</TempButtonStyle>
-            <TempButtonStyle onClick={() => {props.setIsLogIned(true)}}>취소</TempButtonStyle>
-            <TempButtonStyle>비밀번호 찾기</TempButtonStyle>
-            <TempButtonStyle onClick={() => {props.changeToSignUp()}}>회원가입</TempButtonStyle>
-          </TempButtonContainerStyle>
-        </TempMainStyle>
+          </div>
+          <div className="buttons" style={tempButtonsStyle}>
+            <button style={tempButtonStyle} onClick={() => {checkLogIn(inputedID, inputedPassword)}}>확인</button>
+            <button style={tempButtonStyle} onClick={() => {props.setIsLogIned(true)}}>취소</button>
+            <button style={tempButtonStyle}>비밀번호 찾기</button>
+            <button style={tempButtonStyle} onClick={() => {props.changeToSignUp()}}>회원가입</button>
+          </div>
+        </div>
       </>
     )
 
