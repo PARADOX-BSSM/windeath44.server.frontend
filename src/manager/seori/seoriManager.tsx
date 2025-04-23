@@ -1,47 +1,63 @@
-import { MouseConstraint, Mouse, Bodies, Body, Engine, Events, Render, Runner, World } from "matter-js"
+import { MouseConstraint, Mouse, Bodies, Body, Engine, Events, Render, Runner, World, Query } from "matter-js"
 import "./world.css";
-import { useEffect, useRef } from "react";
+import { MutableRefObject, useEffect, useRef } from "react";
 
-const Seori = () => {
+export default function Seori() {
   // 설이 Ref
-  const shapeRef = useRef<Body>(null);
+  const shapeRef = useRef<Body | null>(null) as MutableRefObject<Body | null>;
   // is드래그 Ref
   const isDraggingRef = useRef(false);
   // 설이가 바라보는 방향 Ref
   const directionRef = useRef("left");
   
   useEffect(() => {
+    const container = document.getElementById("cursorContainer");
+    const taskbar = document.getElementById("taskbarContainer");
+
+    if (!container || !taskbar) { return }
+
+    const bounds = container.getBoundingClientRect();
+    const taskbarBounds = taskbar.getBoundingClientRect();
+    
     // 초깃값 설정
     const engine = Engine.create();
     const render = Render.create({
       engine,
-      element: document.body,
+      element: container,
       options: {
         wireframes: false,
-        background: "#F7F4C8",
-        width: 620,
-        height: 420,
+        background: "#F7F4C800",
+        width: bounds.width,
+        height: bounds.height,
       }
     })
-    const world = engine.world
+    const world = engine.world;
+    render.canvas.style.zIndex = "0";
+    render.canvas.style.position = "absolute";
+    render.canvas.style.pointerEvents = "auto";
+
+    const secondDiv = container.querySelector("div");
+    if (secondDiv) {
+        container.insertBefore(render.canvas, secondDiv);
+    }
 
     // 벽
-    const leftWall = Bodies.rectangle(15, 0, 30, 790, {
+    const leftWall = Bodies.rectangle(-50, 0, 100, bounds.height * 2, {
       isStatic: true, // isStatic: false로 되어있으면 얘도 떨어짐
       render: { fillStyle: "#E6B143"},
       label: "left"
     })
-    const rightWall = Bodies.rectangle(605, 0, 30, 790, {
+    const rightWall = Bodies.rectangle(bounds.width + 50, 0, 100, bounds.height * 2, {
       isStatic: true,
       render: { fillStyle: "#E6B143"},
       label: "right"
     })
-    const ground = Bodies.rectangle(310, 420, 620, 60, {
+    const ground = Bodies.rectangle(0, bounds.bottom - taskbarBounds.height / 2, taskbarBounds.width * 10, taskbarBounds.height, {
       isStatic: true,
       render: { fillStyle: "#E6B143"},
       label: "ground"
     })
-    const top = Bodies.rectangle(310, -30, 620, 30, {
+    const top = Bodies.rectangle(310, -50, bounds.width * 2, 100, {
       isStatic: true,
       render: { fillStyle: "#E6B143"},
       label: "top"
@@ -88,7 +104,7 @@ const Seori = () => {
       constraint: {
         stiffness: 0.2, // 탄성정도
         render:{
-          visible: true //마우스 드래그 시 제약조건 보이기X
+          visible: false //마우스 드래그 시 제약조건 보이기X
         }
       }
     })
@@ -119,8 +135,8 @@ const Seori = () => {
       }
     });
 
-    const canvasWidth = 590;
-    const canvasHeight = 390;
+    const canvasWidth = bounds.width + 100;
+    const canvasHeight = bounds.height + 100;
         
     // world 바깥으로 나가면 드래그 종료하는 코드
     document.addEventListener("mousemove", (e) => {
@@ -221,6 +237,9 @@ const Seori = () => {
       Engine.clear(engine);
     };
   }, [])
-}
 
-export default Seori
+  return (
+    <>
+    </>
+  );
+}

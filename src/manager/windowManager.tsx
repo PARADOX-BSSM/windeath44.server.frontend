@@ -8,6 +8,7 @@ import LogIn from '@/applications/utility/login';
 import SignUp from "@/applications/utility/signUp";
 const Application = lazy(()=> import('../applications/application.tsx'));
 import bgImg from '../assets/Background.png'; 
+import Seori from './seori/seoriManager.tsx';
 
 
 const TaskBar = styled.footer`
@@ -127,7 +128,7 @@ const WindowManager = () => {
         "component":<Discover />,
         "type":"Shell",
         "id":0,
-        "layer":0,
+        "layer":-3,
         "name":"Discover",
         "appSetup":undefined
       }
@@ -151,6 +152,8 @@ const WindowManager = () => {
     const cursor = document.getElementById("cursor"); // 커서 불러오기
 
     if (!container || !cursor) return;
+
+    cursor.style.zIndex = "9990";
 
     // 컨테이너의 위치 및 크기
     const bounds = container.getBoundingClientRect();
@@ -193,6 +196,7 @@ const WindowManager = () => {
       <Suspense fallback={null}>
         <BackgroundDiv width={sideWidth}></BackgroundDiv>
         <Display id='cursorContainer'>
+          <Seori />
           <div id="cursor"></div>
               {
                 taskList.map((task:TaskType) => {
@@ -222,7 +226,7 @@ const WindowManager = () => {
                 })
               }
               {startOption? <Observer addTask={addTask}/>:<></>}
-          <TaskBar>
+          <TaskBar id='taskbarContainer'>
             <TaskList>
               {
                 taskList.map((task) => {
