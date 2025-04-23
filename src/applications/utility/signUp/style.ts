@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import '@/assets/font.css';
 
 export const tempMain = styled.div`
     width: 100%;
@@ -36,7 +35,6 @@ export const tempInputsStyle = styled.div`
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
-    font-family: "Galmuri11";
     padding: 20px;
 `;
 

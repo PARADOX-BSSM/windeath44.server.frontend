@@ -36,34 +36,16 @@ const LogIn = ({ setIsLogIned, changeToSignUp }: Props) => {
   };
 
     return (
-      <>
+      <_.tempMain>
         <_.tempImage>
           <img src={Logo} alt="" />
         </_.tempImage>
         <_.tempBulk />
-        <_.tempMain>
+        <_.tempMainStyle>
           <_.tempInputs>
             {inputList.map((item) => (
                 <Inputs  {...item}/>
             ))}
-            {/*<div>*/}
-            {/*  <span>사용자 이름:</span>*/}
-            {/*  <input*/}
-            {/*      className="id"*/}
-            {/*      value={inputID}*/}
-            {/*      type="text"*/}
-            {/*      onChange={(e) => setInputID(e.target.value)}*/}
-            {/*  />*/}
-            {/*</div>*/}
-            {/*<div>*/}
-            {/*  <span>비밀번호:</span>*/}
-            {/*  <input*/}
-            {/*      className="password"*/}
-            {/*      value={inputPW}*/}
-            {/*      type="password"*/}
-            {/*      onChange={(e) => setInputPW(e.target.value)}*/}
-            {/*  />*/}
-            {/*</div>*/}
           </_.tempInputs>
           <_.tempInputs>
             <div>
@@ -77,8 +59,8 @@ const LogIn = ({ setIsLogIned, changeToSignUp }: Props) => {
             <Button props="비밀번호 찾기"/>
             <Button props="회원가입" onClick={() => changeToSignUp()}/>
           </_.tempButtons>
-        </_.tempMain>
-      </>
+        </_.tempMainStyle>
+      </_.tempMain>
     )
 
 }

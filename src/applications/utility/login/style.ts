@@ -1,12 +1,11 @@
 import styled from "styled-components";
 
 export const tempImage = styled.div`
-  background-color: #ffffff;
-  width: 100%;
-  height: 180px;
-  text-align: center;
-  font-size: 30px;
-  line-height: 180px;
+    width: 100%;
+    height: 180px;
+    background-color: #ffffff;
+    display: flex;
+    justify-content: center;
 `;
 
 export const tempBulk = styled.div`
@@ -16,11 +15,19 @@ export const tempBulk = styled.div`
 `;
 
 export const tempMain = styled.div`
-  background-color: #ffd3fb;
-  width: 100%;
-  height: 258px;
-`;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
+`;
+export const tempMainStyle = styled.div`
+    background-color: #FFD3FB;
+    width: 100%;
+    height: 100%;
+    position: relative;
+`;
 export const tempInputs = styled.div`
   display: flex;
   flex-direction: column;
@@ -35,11 +42,4 @@ export const tempButtons = styled.div`
   justify-content: flex-end;
   gap: 10px;
   padding: 8px;
-`;
-
-export const tempButton = styled.button`
-  width: 144px;
-  height: 42px;
-  font-size: 20px;
-  line-height: 12px;
 `;
