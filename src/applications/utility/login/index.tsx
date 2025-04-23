@@ -2,6 +2,7 @@ import * as _ from './style';
 import Logo from '@/assets/windeath44.svg';
 import Button from "@/applications/components/button";
 import {useState} from "react";
+import Inputs from "@/applications/components/inputs";
 
 type Props = {
   setIsLogIned: (arg0: boolean) => void;
@@ -9,6 +10,9 @@ type Props = {
 };
 
 const LogIn = ({ setIsLogIned, changeToSignUp }: Props) => {
+  const [inputID, setInputID] = useState("");
+  const [inputPW, setInputPW] = useState("");
+
   const dummyAccount = [
     {
       id: "Roena0516",
@@ -16,9 +20,10 @@ const LogIn = ({ setIsLogIned, changeToSignUp }: Props) => {
       nickname: "로에나"
     }
   ]
-
-  const [inputID, setInputID] = useState("");
-  const [inputPW, setInputPW] = useState("");
+  const inputList = [
+    { label: "사용자 이름:", value: inputID, setValue: setInputID, type: "text" },
+    { label: "비밀번호:", value: inputPW, setValue: setInputPW, type: "password" },
+  ];
 
   let checkLogIn = (id: string, password: string) => {
     const foundUser = dummyAccount.find(
@@ -38,24 +43,27 @@ const LogIn = ({ setIsLogIned, changeToSignUp }: Props) => {
         <_.tempBulk />
         <_.tempMain>
           <_.tempInputs>
-            <div>
-              <span>사용자 이름:</span>
-              <input
-                  className="id"
-                  value={inputID}
-                  type="text"
-                  onChange={(e) => setInputID(e.target.value)}
-              />
-            </div>
-            <div>
-              <span>비밀번호:</span>
-              <input
-                  className="password"
-                  value={inputPW}
-                  type="password"
-                  onChange={(e) => setInputPW(e.target.value)}
-              />
-            </div>
+            {inputList.map((item) => (
+                <Inputs  {...item}/>
+            ))}
+            {/*<div>*/}
+            {/*  <span>사용자 이름:</span>*/}
+            {/*  <input*/}
+            {/*      className="id"*/}
+            {/*      value={inputID}*/}
+            {/*      type="text"*/}
+            {/*      onChange={(e) => setInputID(e.target.value)}*/}
+            {/*  />*/}
+            {/*</div>*/}
+            {/*<div>*/}
+            {/*  <span>비밀번호:</span>*/}
+            {/*  <input*/}
+            {/*      className="password"*/}
+            {/*      value={inputPW}*/}
+            {/*      type="password"*/}
+            {/*      onChange={(e) => setInputPW(e.target.value)}*/}
+            {/*  />*/}
+            {/*</div>*/}
           </_.tempInputs>
           <_.tempInputs>
             <div>
