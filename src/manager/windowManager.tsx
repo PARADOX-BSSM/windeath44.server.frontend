@@ -7,6 +7,7 @@ import {TaskType} from "../modules/typeModule.tsx";
 import LogIn from '@/applications/utility/login';
 import SignUp from "@/applications/utility/signUp";
 const Application = lazy(()=> import('../applications/application.tsx'));
+import bgImg from '../assets/Background.png'; 
 
 
 const TaskBar = styled.footer`
@@ -15,7 +16,8 @@ const TaskBar = styled.footer`
     width: inherit;
     height: 3.125rem;
     z-index: 998;
-    background-color: springgreen;
+    background-color: var(--light-primary-color);
+    border : 1px black solid;
 `;
 const Display = styled.main`
     height : 100vh;
@@ -39,7 +41,8 @@ const BackgroundDiv = styled.div<{width:number}>`
     height:100vh;
     width: ${({ width }) => `${width}px`};
     z-index : 9999;
-    background-color:black;
+    background-image:url("${bgImg}");
+    background-size:cover;
 `
 const Desktop = styled.div`
   margin:0;
