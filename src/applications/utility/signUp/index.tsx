@@ -4,7 +4,11 @@ import {useState} from "react";
 import Button from "@/applications/components/button";
 import Inputs from "@/applications/components/inputs";
 
-const SingUp = (props) => {
+type Props = {
+    changeToLogIn: () => void;
+};
+
+const SingUp = ({changeToLogIn}:Props) => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [pw, setPw] = useState('');
@@ -31,7 +35,7 @@ const SingUp = (props) => {
                 </_.tempInputsStyle>
                 <_.tempButtonsStyle>
                     <Button props="확인"/>
-                    <Button onClick={props.changeToLogIn} props="취소"/>
+                    <Button onClick={changeToLogIn} props="취소"/>
                 </_.tempButtonsStyle>
             </_.tempMainStyle>
         </_.tempMain>
