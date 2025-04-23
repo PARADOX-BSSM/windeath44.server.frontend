@@ -1,4 +1,5 @@
 import * as _ from './style';
+import Button from "@/applications/components/button";
 
 let dummyAccount = [
   {
@@ -54,16 +55,10 @@ const LogIn = (props: { setIsLogIned: (arg0: boolean) => void; changeToSignUp: (
             </div>
           </_.tempInputs>
           <_.tempButtons>
-            <_.tempButton onClick={() => checkLogIn(inputedID, inputedPassword)}>
-              확인
-            </_.tempButton>
-            <_.tempButton onClick={() => props.setIsLogIned(true)}>
-              취소
-            </_.tempButton>
-            <_.tempButton>비밀번호 찾기</_.tempButton>
-            <_.tempButton onClick={() => props.changeToSignUp()}>
-              회원가입
-            </_.tempButton>
+            <Button props="확인" onClick={() => checkLogIn(inputedID, inputedPassword)}/>
+            <Button props="취소" onClick={() => props.setIsLogIned(true)}/>
+            <Button props="비밀번호 찾기"/>
+            <Button props="회원가입" onClick={() => props.changeToSignUp()}/>
           </_.tempButtons>
         </_.tempMain>
       </>

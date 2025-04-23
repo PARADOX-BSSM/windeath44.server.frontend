@@ -14,7 +14,7 @@ export const Pink = styled.button`
     height: 40.5px;
     margin-top: 1.5px;
     margin-left: 1.5px;
-    font-size: 20px;
+    font-size: 16px;
     line-height: 12px;
     font-family: "Galmuri11";
     border-width: 1.5px; 
