@@ -1,7 +1,14 @@
 import * as _ from './style';
 import {Shadow} from "./style";
 
-const Button = ({label, value, type, setValue}:string) =>{
+type inputProps = {
+    label: string;
+    value: string;
+    type: "text" | "password";
+    setValue: (value: string) => void;
+}
+
+const Button = ({label, value, type, setValue}:inputProps) =>{
     return(
         <_.inputsDiv>
             <span>{label}</span>
