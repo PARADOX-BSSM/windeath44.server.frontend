@@ -58,9 +58,9 @@ const Apps:TaskType[] =
         "appSetup":{
           "Image" : "default",
           "minWidth" : 800,
-          "minHeight" : 508,
+          "minHeight" : 464,
           "setUpWidth" : 800,
-          "setUpHeight" : 508
+          "setUpHeight" : 464
         }
       }
 

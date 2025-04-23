@@ -1,9 +1,8 @@
 import * as _ from './style';
 import Logo from '@/assets/windeath44.svg';
 import Button from "@/applications/components/button";
-import {useState} from "react";
 import Inputs from "@/applications/components/inputs";
-
+import {useState} from "react";
 type Props = {
   setIsLogIned: (arg0: boolean) => void;
   changeToSignUp: () => void;
@@ -46,12 +45,6 @@ const LogIn = ({ setIsLogIned, changeToSignUp }: Props) => {
             {inputList.map((item) => (
                 <Inputs  {...item}/>
             ))}
-          </_.tempInputs>
-          <_.tempInputs>
-            <div>
-              <input type="checkbox" />
-              <span>다음 실행에도 로그인 유지하기</span>
-            </div>
           </_.tempInputs>
           <_.tempButtons>
             <Button props="확인" onClick={() => checkLogIn(inputID, inputPW)}/>

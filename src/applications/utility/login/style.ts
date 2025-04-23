@@ -20,7 +20,6 @@ export const tempMain = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-
 `;
 export const tempMainStyle = styled.div`
     background-color: #FFD3FB;
@@ -37,9 +36,12 @@ export const tempInputs = styled.div`
 `;
 
 export const tempButtons = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  gap: 10px;
-  padding: 8px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    padding: 20px;
+    gap: 10px;
+    position: absolute;
+    bottom: 0;
+    right: 0;
 `;
