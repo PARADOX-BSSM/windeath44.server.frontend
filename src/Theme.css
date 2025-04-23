@@ -1,6 +1,17 @@
+:root{
+    --primary-color : #FF8EF6;
+    --secondary-color : #FFBBF5;
+    --light-primary-color : #FFD3FB;
+    --dark-primary-color : #DCAFDD;
+    --background : #FFBBF5;
+    --primary-black : #2E2E2E;
+}
+
 body {
     margin: 0;
-    overflow: hidden
+    overflow: hidden;
+    /* background-image: url("./assets/Background.png");
+    background-size: cover; */
 }
 
 .king {
@@ -33,7 +44,7 @@ body {
     z-index: 999;
 }
 .shell{
-    background-color: darkseagreen;
+    background-color: var(--secondary-color);
     display: grid;
     grid-template-columns: repeat(auto-fill,minmax(5rem,5rem));
     grid-template-rows: repeat(auto-fill, minmax(5rem,5rem));
@@ -41,6 +52,8 @@ body {
     height: 100%;
     width: 100%;
     margin : 0 auto;
+    background-image: url('./assets/skeleton.png');
+    background-size: cover;
 }
 .app-button>button{
     height: calc(100% - 1rem);
