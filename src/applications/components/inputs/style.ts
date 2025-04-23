@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import '@/assets/font.css';
 
 export const inputsDiv = styled.div`
+    font-family: "Galmuri11";
     width: 95%;
     display: flex;
     justify-content: space-between;
