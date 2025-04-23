@@ -3,7 +3,7 @@ import {TaskType} from "@/modules/typeModule.tsx";
 
 const Terminal =  lazy(()=> import("../applications/Terminal.tsx"));
 const Settings = lazy(()=> import("../applications/settings.tsx"));
-const LogIn = lazy(()=> import("../applications/utility/LogIn.tsx"));
+const LogIn = lazy(()=> import("../applications/utility/login"));
 
 //Application Import 형식 예시
 /*
@@ -58,9 +58,9 @@ const Apps:TaskType[] =
         "appSetup":{
           "Image" : "default",
           "minWidth" : 800,
-          "minHeight" : 508,
+          "minHeight" : 464,
           "setUpWidth" : 800,
-          "setUpHeight" : 508
+          "setUpHeight" : 464
         }
       }
 
