@@ -1,4 +1,5 @@
 import * as _ from './style';
+import Logo from '@/assets/windeath44.svg';
 import Button from "@/applications/components/button";
 
 let dummyAccount = [
@@ -26,7 +27,7 @@ const LogIn = (props: { setIsLogIned: (arg0: boolean) => void; changeToSignUp: (
     return (
       <>
         <_.tempImage>
-          <h1>Windeath44</h1>
+          <img src={Logo} alt="" />
         </_.tempImage>
         <_.tempBulk />
         <_.tempMain>
