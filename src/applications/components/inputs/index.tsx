@@ -8,7 +8,7 @@ type inputProps = {
     setValue: (value: string) => void;
 }
 
-const Button = ({label, value, type, setValue}:inputProps) =>{
+const Inputs = ({label, value, type, setValue}:inputProps) =>{
     return(
         <_.inputsDiv>
             <span>{label}</span>
@@ -22,4 +22,4 @@ const Button = ({label, value, type, setValue}:inputProps) =>{
         </_.inputsDiv>
     );
 }
-export default Button;
+export default Inputs;

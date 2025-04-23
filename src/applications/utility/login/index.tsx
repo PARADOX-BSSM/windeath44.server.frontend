@@ -1,28 +1,34 @@
 import * as _ from './style';
 import Logo from '@/assets/windeath44.svg';
 import Button from "@/applications/components/button";
+import {useState} from "react";
 
-let dummyAccount = [
-  {
-    id: "Roena0516",
-    password: "1234",
-    nickname: "로에나"
-  }
-]
+type Props = {
+  setIsLogIned: (arg0: boolean) => void;
+  changeToSignUp: () => void;
+};
 
+const LogIn = ({ setIsLogIned, changeToSignUp }: Props) => {
+  const dummyAccount = [
+    {
+      id: "Roena0516",
+      password: "1234",
+      nickname: "로에나"
+    }
+  ]
 
-const LogIn = (props: { setIsLogIned: (arg0: boolean) => void; changeToSignUp: () => void }) => {
-  let inputedID = "";
-  let inputedPassword = "";
+  const [inputID, setInputID] = useState("");
+  const [inputPW, setInputPW] = useState("");
 
   let checkLogIn = (id: string, password: string) => {
-    dummyAccount.forEach(element => {
-      if (element.id === id && element.password === password) {
-        props.setIsLogIned(true);
-        console.log(id, password);
-      }
-    });
-  }
+    const foundUser = dummyAccount.find(
+        (element) => element.id === id && element.password === password
+    );
+    if (foundUser) {
+      setIsLogIned(true);
+      console.log(id, password);
+    }
+  };
 
     return (
       <>
@@ -36,16 +42,18 @@ const LogIn = (props: { setIsLogIned: (arg0: boolean) => void; changeToSignUp: (
               <span>사용자 이름:</span>
               <input
                   className="id"
+                  value={inputID}
                   type="text"
-                  onChange={(e) => (inputedID = e.target.value)}
+                  onChange={(e) => setInputID(e.target.value)}
               />
             </div>
             <div>
               <span>비밀번호:</span>
               <input
                   className="password"
+                  value={inputPW}
                   type="password"
-                  onChange={(e) => (inputedPassword = e.target.value)}
+                  onChange={(e) => setInputPW(e.target.value)}
               />
             </div>
           </_.tempInputs>
@@ -56,10 +64,10 @@ const LogIn = (props: { setIsLogIned: (arg0: boolean) => void; changeToSignUp: (
             </div>
           </_.tempInputs>
           <_.tempButtons>
-            <Button props="확인" onClick={() => checkLogIn(inputedID, inputedPassword)}/>
-            <Button props="취소" onClick={() => props.setIsLogIned(true)}/>
+            <Button props="확인" onClick={() => checkLogIn(inputID, inputPW)}/>
+            <Button props="취소" onClick={() => setIsLogIned(true)}/>
             <Button props="비밀번호 찾기"/>
-            <Button props="회원가입" onClick={() => props.changeToSignUp()}/>
+            <Button props="회원가입" onClick={() => changeToSignUp()}/>
           </_.tempButtons>
         </_.tempMain>
       </>
