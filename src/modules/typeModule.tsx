@@ -1,5 +1,3 @@
-
-
 type TaskType = {
   "component" : JSX.Element,
   "type" : string,
