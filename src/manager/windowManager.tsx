@@ -6,7 +6,7 @@ import {useProcessManager} from "./processManager.tsx";
 import {TaskType} from "../modules/typeModule.tsx";
 import LogIn from '@/applications/utility/login';
 import SignUp from "@/applications/utility/signUp";
-import bgImg from '../assets/Background.png';
+import bgImg from '@/assets/Background.png';
 const Application = lazy(()=> import('../applications/application.tsx'));
 
 const Display = styled.main`

@@ -16,7 +16,7 @@ const SingUp = ({changeToLogIn}:Props) => {
 
     const inputList = [
         { label: "사용자 이름:", value: name, setValue: setName, type: "text" },
-        { label: "이메일", value: email, setValue: setEmail, type: "text" },
+        { label: "이메일:", value: email, setValue: setEmail, type: "text" },
         { label: "비밀번호:", value: pw, setValue: setPw, type: "password" },
         { label: "비밀번호 재입력:", value: chakingpw, setValue: setChakingpw, type: "password" }
     ];
