@@ -59,6 +59,7 @@ export default function Seori() {
     const ground = Bodies.rectangle(0, bounds.bottom - taskbarBounds.height / 2, taskbarBounds.width * 10, taskbarBounds.height, {
       isStatic: true,
       friction: 1,
+      frictionStatic: 1,
       render: { fillStyle: "#E6B143"},
       label: "ground"
     })
@@ -75,6 +76,7 @@ export default function Seori() {
     const runner = Runner.create()
     Runner.run(runner, engine)
 
+    // 설이
     function loadImageSize(src: string): Promise<{ width: number; height: number }> {
         return new Promise((resolve, reject) => {
           const img = new Image();
@@ -96,17 +98,18 @@ export default function Seori() {
         label: "shape"
     });
 
-    // 설이
     const texturePath = `src/assets/seori_${stateRef.current}.png`;
     loadImageSize(texturePath).then(({ width, height }) => {
         shape = Bodies.rectangle(300, 150, width, height, {
             inertia: Infinity,
+            friction: 0,
+            frictionStatic: 0,
             render: {
-            sprite: {
-                texture: texturePath,
-                xScale: 1,
-                yScale: 1,
-            }
+                sprite: {
+                    texture: texturePath,
+                    xScale: 1,
+                    yScale: 1,
+                }
             },
             label: "shape"
         });
@@ -238,6 +241,25 @@ export default function Seori() {
         shape.render.fillStyle = "#0000FF";
       }
     });
+
+    // 설이와 바닥과의 충돌 감지 (마찰력 주는 용도)
+    Events.on(engine, 'collisionActive', (event) => {
+        let touchingGround = false;
+      
+        event.pairs.forEach(pair => {
+          const labels = [pair.bodyA.label, pair.bodyB.label];
+          if (labels.includes("shape") && labels.includes("ground")) {
+            touchingGround = true;
+          }
+        });
+      
+        if (shapeRef.current) {
+          Body.set(shapeRef.current, {
+            friction: touchingGround ? 1 : 0,
+            frictionStatic: touchingGround ? 1 : 0
+          });
+        }
+      });
 
     // 설이의 속도가 0인 것을 감지하는 이벤트 (바닥에 붙어있다)
     setInterval(() => {
