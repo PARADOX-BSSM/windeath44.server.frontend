@@ -8,7 +8,6 @@ import LogIn from '@/applications/utility/login';
 import SignUp from "@/applications/utility/signUp";
 const Application = lazy(()=> import('../applications/application.tsx'));
 import bgImg from '@/assets/Background.png';
-// import Seori from '@/manager/seori/seoriManager.tsx';
 
 const Display = styled.main`
     height : 100vh;
