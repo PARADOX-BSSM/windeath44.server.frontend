@@ -129,10 +129,10 @@ const WindowManager = () => {
     const bounds = container.getBoundingClientRect();
     console.log(bounds.height, bounds.width)
     document.addEventListener("mousemove", (event: MouseEvent) => {
-      let x = event.clientX - bounds.x + bounds.left;
+      let x = event.clientX - bounds.left;
       let y = event.clientY - bounds.y;
       // 컨테이너 내부에만 커서를 제한
-      x = Math.max(bounds.left, Math.min(bounds.width - 5 + bounds.left, x));
+      x = Math.max(0, Math.min(bounds.width - 5, x));
       y = Math.max(0, Math.min(bounds.height - 5, y));
 
       cursor.style.left = `${x}px`;
