@@ -20,7 +20,7 @@ const Discover = ({startOption, setStartOption, focus, setFocus, backUpFocus, se
     <>
       {Apps.map((Application:TaskType) => {
         return (
-          <div key={Application.name} className="app-button">
+          <div key={Application.name} className="app-button" style={{zIndex: "0"}}>
             <button onDoubleClick={() => {
               addTask(Application);
             }}>

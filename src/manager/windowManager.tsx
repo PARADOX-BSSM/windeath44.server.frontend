@@ -6,8 +6,10 @@ import {useProcessManager} from "./processManager.tsx";
 import {TaskType} from "../modules/typeModule.tsx";
 import LogIn from '@/applications/utility/login';
 import SignUp from "@/applications/utility/signUp";
-import bgImg from '@/assets/Background.png';
 const Application = lazy(()=> import('../applications/application.tsx'));
+import bgImg from '../assets/Background.png'; 
+import Seori from './seori/seoriManager.tsx';
+
 
 const Display = styled.main`
     height : 100vh;
@@ -15,7 +17,6 @@ const Display = styled.main`
     inset: 0;
     margin: 0 auto;
     cursor: none;
-    position: relative;
 `;
 const BackgroundDiv = styled.div<{width:number}>`
     margin:0;
@@ -97,10 +98,10 @@ const WindowManager = () => {
     if (isLogIned) { //로그인이 되어 있으면
       removeTask(logIn)
       const discover:TaskType = {
-        "component":<Discover startOption={startOption} setStartOption={setStartOption} focus={focus} setFocus={setFocus} backUpFocus={backUpFocus} setBackUpFocus={setBackUpFocus} setTabDownInterrupt={setTabDownInterrupt}/>,
+        "component":<Discover startOption={startOption} setStartOption={setStartOption} focus={focus} setFocus={setFocus} backUpFocus={backUpFocus} setBackUpFocus={setBackUpFocus} setTabDownInterrupt={setTabDownInterrupt} />,
         "type":"Shell",
         "id":0,
-        "layer":0,
+        "layer":-3,
         "name":"Discover",
         "appSetup":undefined
       }
@@ -125,14 +126,16 @@ const WindowManager = () => {
 
     if (!container || !cursor) return;
 
+    cursor.style.zIndex = "9990";
+
     // 컨테이너의 위치 및 크기
     const bounds = container.getBoundingClientRect();
     console.log(bounds.height, bounds.width)
     document.addEventListener("mousemove", (event: MouseEvent) => {
-      let x = event.clientX - bounds.left;
+      let x = event.clientX - bounds.x + bounds.left;
       let y = event.clientY - bounds.y;
       // 컨테이너 내부에만 커서를 제한
-      x = Math.max(0, Math.min(bounds.width - 5, x));
+      x = Math.max(bounds.left, Math.min(bounds.width - 5 + bounds.left, x));
       y = Math.max(0, Math.min(bounds.height - 5, y));
 
       cursor.style.left = `${x}px`;
@@ -166,6 +169,7 @@ const WindowManager = () => {
       <Suspense fallback={null}>
         <BackgroundDiv width={sideWidth}></BackgroundDiv>
         <Display id='cursorContainer'>
+          <Seori />
           <div id="cursor"></div>
               {
                 taskList.map((task:TaskType) => {
