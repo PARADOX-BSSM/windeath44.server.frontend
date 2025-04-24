@@ -8,6 +8,7 @@ import LogIn from '@/applications/utility/login';
 import SignUp from "@/applications/utility/signUp";
 const Application = lazy(()=> import('../applications/application.tsx'));
 import bgImg from '@/assets/Background.png';
+import skeleton from '@/assets/skeleton.png';
 
 const Display = styled.main`
     height : 100vh;
@@ -15,6 +16,9 @@ const Display = styled.main`
     inset: 0;
     margin: 0 auto;
     cursor: none;
+    background-color: var(--background);
+   background-image:url("${skeleton}");
+    background-size: cover;
 `;
 const BackgroundDiv = styled.div<{width:number}>`
     margin:0;
