@@ -7,34 +7,18 @@ import {TaskType} from "../modules/typeModule.tsx";
 import LogIn from '@/applications/utility/login';
 import SignUp from "@/applications/utility/signUp";
 const Application = lazy(()=> import('../applications/application.tsx'));
-import bgImg from '../assets/Background.png'; 
-import Seori from './seori/seoriManager.tsx';
+import bgImg from '@/assets/Background.png';
+import skeleton from '@/assets/skeleton.png';
 
-
-const TaskBar = styled.footer`
-    position: sticky;
-    bottom: 0;
-    width: inherit;
-    height: 3.125rem;
-    z-index: 998;
-    background-color: var(--light-primary-color);
-    border : 1px black solid;
-`;
 const Display = styled.main`
     height : 100vh;
     aspect-ratio: 4/3;
     inset: 0;
     margin: 0 auto;
     cursor: none;
-`;
-const TaskList = styled.ul`
-    margin:0;
-    padding: 0;
-    height: 100%;
-    width: 100%;
-    list-style: none;
-    display: flex;
-    align-content: center;
+    background-color: var(--background);
+   background-image:url("${skeleton}");
+    background-size: cover;
 `;
 const BackgroundDiv = styled.div<{width:number}>`
     margin:0;
@@ -53,15 +37,6 @@ const Desktop = styled.div`
 
 
 const WindowManager = () => {
-  const taskButtonStyle = {
-    height: "100%",
-    backgroundColor: "lightgreen"
-  };
-  const taskSelectButtonStyle = {
-    height: "100%",
-    backgroundColor: "seagreen"
-  }
-  const taskStyle = { margin: "0.25rem" };
 
   const [cursorVec, setCursorVec] = useState<number[]>([0, 0, 0, 0]);  //보정 후 커서 위치
   const [mouseBeacon, setMouseBeacon] = useState<number[]>([0, 0]); //마우스 절대 위치
@@ -125,7 +100,7 @@ const WindowManager = () => {
     if (isLogIned) { //로그인이 되어 있으면
       removeTask(logIn)
       const discover:TaskType = {
-        "component":<Discover />,
+        "component":<Discover startOption={startOption} setStartOption={setStartOption} focus={focus} setFocus={setFocus} backUpFocus={backUpFocus} setBackUpFocus={setBackUpFocus} setTabDownInterrupt={setTabDownInterrupt} />,
         "type":"Shell",
         "id":0,
         "layer":-3,
@@ -196,7 +171,6 @@ const WindowManager = () => {
       <Suspense fallback={null}>
         <BackgroundDiv width={sideWidth}></BackgroundDiv>
         <Display id='cursorContainer'>
-          <Seori />
           <div id="cursor"></div>
               {
                 taskList.map((task:TaskType) => {
@@ -226,49 +200,6 @@ const WindowManager = () => {
                 })
               }
               {startOption? <Observer addTask={addTask}/>:<></>}
-          <TaskBar id='taskbarContainer'>
-            <TaskList>
-              {
-                taskList.map((task) => {
-                  if (task.type === "Shell") {
-                    return (
-                      <li style={taskStyle} key={"Observer"}>
-                        <button style={startOption ? taskSelectButtonStyle : taskButtonStyle}
-                          onClick={() => {
-                            setStartOption(!startOption);
-                            if (startOption) {
-                              setFocus(backUpFocus);
-                            } else {
-                              setBackUpFocus(focus);
-                              setFocus("Observer");
-                            }
-                          }
-                          }>Start</button>
-                      </li>
-                    )
-                  } else {
-                    if (task.name === focus) {
-                      return (
-                        <li style={taskStyle} key={task.name}>
-                          <button style={taskSelectButtonStyle} onClick={() => {
-                            setTabDownInterrupt(task.name);
-                          }}>{task.name}</button>
-                        </li>
-                      )
-                    } else {
-                      return (
-                        <li style={taskStyle} key={task.name}>
-                          <button style={taskButtonStyle} onClick={() => {
-                            setFocus(task.name);
-                          }}>{task.name}</button>
-                        </li>
-                      )
-                    }
-                  }
-                })
-              }
-            </TaskList>
-          </TaskBar>
         </Display>
         <BackgroundDiv width={sideWidth}></BackgroundDiv>
       </Suspense>
