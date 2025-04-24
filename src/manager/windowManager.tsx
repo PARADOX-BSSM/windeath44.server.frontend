@@ -9,6 +9,7 @@ import SignUp from "@/applications/utility/signUp";
 const Application = lazy(()=> import('../applications/application.tsx'));
 import bgImg from '../assets/Background.png'; 
 import Seori from './seori/seoriManager.tsx';
+import Auth from "@/applications/utility/auth";
 
 
 const TaskBar = styled.footer`
@@ -82,10 +83,15 @@ const WindowManager = () => {
   const changeToLogIn = () => {
     addTask(logIn);
     removeTask(signUp);
+    removeTask(auth);
+  }
+  const changeToAuth = () => {
+    addTask(auth)
+    removeTask(logIn);
   }
 
   const logIn:TaskType = { //로그인 Task
-    "component": <Suspense fallback={null}><LogIn setIsLogIned={setIsLogIned} changeToSignUp={changeToSignUp} /></Suspense>,
+    "component": <Suspense fallback={null}><LogIn setIsLogIned={setIsLogIned} changeToSignUp={changeToSignUp} changeToAuth={changeToAuth}/></Suspense>,
     "type": "App",
     "id": 1,
     "name": "LogIn",
@@ -101,6 +107,20 @@ const WindowManager = () => {
 
   const signUp:TaskType = { //회원가입 Task
     "component": <Suspense fallback={null}><SignUp changeToLogIn={changeToLogIn}/></Suspense>,
+    "type": "App",
+    "id": 2,
+    "name": "SignUp",
+    "layer": undefined,
+    "appSetup":{
+      "Image" : "default",
+      "minWidth" : 800,
+      "minHeight" : 550,
+      "setUpWidth" : 800,
+      "setUpHeight" : 550
+    }
+  }
+  const auth:TaskType = { //회원가입 Task
+    "component": <Suspense fallback={null}><Auth changeToLogIn={changeToLogIn}/></Suspense>,
     "type": "App",
     "id": 2,
     "name": "SignUp",
