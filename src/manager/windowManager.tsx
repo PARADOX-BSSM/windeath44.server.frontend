@@ -7,7 +7,6 @@ import {TaskType} from "../modules/typeModule.tsx";
 import LogIn from '@/applications/utility/login';
 import SignUp from "@/applications/utility/signUp";
 import bgImg from '../assets/Background.png';
-import TaskBar from "@/applications/components/taskBar";
 const Application = lazy(()=> import('../applications/application.tsx'));
 
 const Display = styled.main`
@@ -16,6 +15,7 @@ const Display = styled.main`
     inset: 0;
     margin: 0 auto;
     cursor: none;
+    position: relative;
 `;
 const BackgroundDiv = styled.div<{width:number}>`
     margin:0;
@@ -34,15 +34,6 @@ const Desktop = styled.div`
 
 
 const WindowManager = () => {
-  const taskButtonStyle = {
-    height: "100%",
-    backgroundColor: "lightgreen"
-  };
-  const taskSelectButtonStyle = {
-    height: "100%",
-    backgroundColor: "seagreen"
-  }
-  const taskStyle = { margin: "0.25rem" };
 
   const [cursorVec, setCursorVec] = useState<number[]>([0, 0, 0, 0]);  //보정 후 커서 위치
   const [mouseBeacon, setMouseBeacon] = useState<number[]>([0, 0]); //마우스 절대 위치
@@ -106,7 +97,7 @@ const WindowManager = () => {
     if (isLogIned) { //로그인이 되어 있으면
       removeTask(logIn)
       const discover:TaskType = {
-        "component":<Discover />,
+        "component":<Discover startOption={startOption} setStartOption={setStartOption} focus={focus} setFocus={setFocus} backUpFocus={backUpFocus} setBackUpFocus={setBackUpFocus} setTabDownInterrupt={setTabDownInterrupt}/>,
         "type":"Shell",
         "id":0,
         "layer":0,
@@ -204,7 +195,6 @@ const WindowManager = () => {
                 })
               }
               {startOption? <Observer addTask={addTask}/>:<></>}
-          <TaskBar startOption={startOption} setStartOption={setStartOption} focus={focus} setFocus={setFocus} backUpFocus={backUpFocus} setBackUpFocus={setBackUpFocus} setTabDownInterrupt={setTabDownInterrupt} />
         </Display>
         <BackgroundDiv width={sideWidth}></BackgroundDiv>
       </Suspense>

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const TTaskBar = styled.footer`
-    position: sticky;
+    position: absolute;
     bottom: 0;
     width: inherit;
     height: 3.125rem;
