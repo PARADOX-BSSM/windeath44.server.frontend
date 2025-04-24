@@ -1,8 +1,13 @@
 import * as _ from './style';
 
-const Button = ({props}:string) =>{
+type ButtonProps = {
+    props: string;
+    onClick?: () => void;
+}
+
+const Button = ({props,onClick}:ButtonProps) =>{
     return(
-        <_.Black>
+        <_.Black onClick={onClick}>
                 <_.Pink>{props}</_.Pink>
         </_.Black>
     );

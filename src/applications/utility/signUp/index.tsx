@@ -2,12 +2,24 @@ import * as _ from './style';
 import Logo from '@/assets/windeath44.svg';
 import {useState} from "react";
 import Button from "@/applications/components/button";
+import Inputs from "@/applications/components/inputs";
 
-const SingUp = (props) => {
+type Props = {
+    changeToLogIn: () => void;
+};
+
+const SingUp = ({changeToLogIn}:Props) => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [pw, setPw] = useState('');
     const [chakingpw, setChakingpw] = useState('');
+
+    const inputList = [
+        { label: "사용자 이름:", value: name, setValue: setName, type: "text" },
+        { label: "이메일", value: email, setValue: setEmail, type: "text" },
+        { label: "비밀번호:", value: pw, setValue: setPw, type: "password" },
+        { label: "비밀번호 재입력:", value: chakingpw, setValue: setChakingpw, type: "password" }
+    ];
 
     return (
         <_.tempMain>
@@ -17,26 +29,13 @@ const SingUp = (props) => {
             <_.tempBulkStyle />
             <_.tempMainStyle>
                 <_.tempInputsStyle>
-                    <_.inputsDiv>
-                        <span>사용자 이름:</span>
-                        <_.inputs type="text" value={name} onChange={(e) => setName(e.target.value)}/>
-                    </_.inputsDiv>
-                    <_.inputsDiv>
-                        <span>이메일</span>
-                        <_.inputs type="text" value={email} onChange={(e) => setEmail(e.target.value)}/>
-                    </_.inputsDiv>
-                    <_.inputsDiv>
-                        <span>비밀번호:</span>
-                        <_.inputs type="text" value={pw} onChange={(e) => setPw(e.target.value)}/>
-                    </_.inputsDiv>
-                    <_.inputsDiv>
-                        <span>비밀번호 재입력:</span>
-                        <_.inputs type="text" value={chakingpw} onChange={(e) => setChakingpw(e.target.value)}/>
-                    </_.inputsDiv>
+                    {inputList.map((item) => (
+                        <Inputs {...item}/>
+                    ))}
                 </_.tempInputsStyle>
                 <_.tempButtonsStyle>
-                    <Button props={"확인"}/>
-                    <Button onClick={props.changeToLogIn} props={"취소"}/>
+                    <Button props="확인"/>
+                    <Button onClick={changeToLogIn} props="취소"/>
                 </_.tempButtonsStyle>
             </_.tempMainStyle>
         </_.tempMain>

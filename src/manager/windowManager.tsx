@@ -4,9 +4,11 @@ import Discover from "../applications/discover.tsx";
 import Observer from "../applications/utility/Observer.tsx";
 import {useProcessManager} from "./processManager.tsx";
 import {TaskType} from "../modules/typeModule.tsx";
-import LogIn from '@/applications/utility/LogIn.tsx';
+import LogIn from '@/applications/utility/login';
 import SignUp from "@/applications/utility/signUp";
 const Application = lazy(()=> import('../applications/application.tsx'));
+import bgImg from '../assets/Background.png'; 
+import Seori from './seori/seoriManager.tsx';
 
 
 const TaskBar = styled.footer`
@@ -15,7 +17,8 @@ const TaskBar = styled.footer`
     width: inherit;
     height: 3.125rem;
     z-index: 998;
-    background-color: springgreen;
+    background-color: var(--light-primary-color);
+    border : 1px black solid;
 `;
 const Display = styled.main`
     height : 100vh;
@@ -39,7 +42,8 @@ const BackgroundDiv = styled.div<{width:number}>`
     height:100vh;
     width: ${({ width }) => `${width}px`};
     z-index : 9999;
-    background-color:black;
+    background-image:url("${bgImg}");
+    background-size:cover;
 `
 const Desktop = styled.div`
   margin:0;
@@ -89,9 +93,9 @@ const WindowManager = () => {
     "appSetup":{
       "Image" : "default",
       "minWidth" : 800,
-      "minHeight" : 508,
+      "minHeight" : 464,
       "setUpWidth" : 800,
-      "setUpHeight" : 508
+      "setUpHeight" : 464
     }
   }
 
@@ -124,7 +128,7 @@ const WindowManager = () => {
         "component":<Discover />,
         "type":"Shell",
         "id":0,
-        "layer":0,
+        "layer":-3,
         "name":"Discover",
         "appSetup":undefined
       }
@@ -148,6 +152,8 @@ const WindowManager = () => {
     const cursor = document.getElementById("cursor"); // 커서 불러오기
 
     if (!container || !cursor) return;
+
+    cursor.style.zIndex = "9990";
 
     // 컨테이너의 위치 및 크기
     const bounds = container.getBoundingClientRect();
@@ -190,6 +196,7 @@ const WindowManager = () => {
       <Suspense fallback={null}>
         <BackgroundDiv width={sideWidth}></BackgroundDiv>
         <Display id='cursorContainer'>
+          <Seori />
           <div id="cursor"></div>
               {
                 taskList.map((task:TaskType) => {
@@ -219,7 +226,7 @@ const WindowManager = () => {
                 })
               }
               {startOption? <Observer addTask={addTask}/>:<></>}
-          <TaskBar>
+          <TaskBar id='taskbarContainer'>
             <TaskList>
               {
                 taskList.map((task) => {

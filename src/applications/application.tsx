@@ -1,65 +1,54 @@
 import {useEffect, useState} from 'react';
 import {useDrag} from 'react-use-gesture';
 import {toNumber} from "@/modules/typeModule.tsx";
+import Exit from "@/assets/headerButton/exit.svg";
+import Full from "@/assets/headerButton/full.svg";
+import Min from "@/assets/headerButton/min.svg";
 import styled from "styled-components";
 
 const Window = styled.article`
-    border: 1px solid black;
-    border-radius: 5px;
+    border: 2.5px solid #FF8EF6;
+    padding : 0.5rem;
+    display : flex;
+    flex-direction: column;
 `
 const WindowHeader = styled.header`
-    background-color: darkolivegreen;
-    border-radius: 4px 4px 0 0;
-    position : absolute;
+    background-color: #FFD3FB;
+    padding : 0 0.5rem;
     display : flex;
+    justify-content: flex-end;
     align-items: center;
-    top : 0;
-    left : 0;
-    right : 0;
     height : 30px;
+    border: 2.5px solid #E774DD;
 `;
 const HeaderButton = styled.button`
     height : 20px;
     width : 20px;
     margin-left: 5px;
+  padding : 0;
+  //margin : 0;
 `;
 const MinimizeButton = styled(HeaderButton)`
-    background-color: orange;
-    border: 1px solid darkorange;
-    border-radius: 2px;
-    &:hover {
-        background-color: darkorange;
-        border: 1px solid darkgoldenrod;
-    }
+  background-color: rgba(0, 0, 0, 0);
+  border: none;
 `;
 const FullScreenButton = styled(HeaderButton)`
-    background-color: greenyellow;
-    border: 1px solid green;
-    border-radius: 2px;
-    &:hover {
-        background-color: green;
-        border: 1px solid darkgreen;
-    }
+  background-color: rgba(0, 0, 0, 0);
+    border: none;
 `;
 const ExitButton = styled(HeaderButton)`
-    background-color: red;
-    border: 1px solid darkred;
-    border-radius: 2px;
-    &:hover {
-        background-color: darkred;
-        border: 1px solid #600000;
-    }
+  background-color: rgba(0, 0, 0, 0);
+    border: none;
 `;
 const WindowContent = styled.section`
     position : absolute;
-    top : 30px;
+    top : 40px;
     left : 0;
     right : 0;
     bottom : 0;
-    padding : 0 0.25rem 0.25rem 0.25rem;
+    margin : 0.5rem;
     box-sizing: border-box;
-    background-color: lawngreen;
-    border-radius: 0 0 4px 4px;
+    border : solid 2.5px #E774DD;
 `;
 const Shell = styled.article`
     height : 100%;
@@ -74,7 +63,7 @@ const Application = (props:any) => {
     width : props.setUpWidth,
     top : (20 * globalThis.innerHeight) / 100,
     left : (30 * globalThis.innerWidth) / 100,
-    backgroundColor : "black",
+    backgroundColor : "#fff",
     zIndex: props.layer,
     filter: "dropShadow(gray 0px 0px 15px)",
   }
@@ -227,8 +216,8 @@ const Application = (props:any) => {
   const moveManager = useDrag((params)=>{ //위치 조절
     // props.setFocus(props.name);
     if(!isFullScreen) {
-      const container = document.getElementById("cursorContainer") as HTMLElement;
-      const bounds = container.getBoundingClientRect();
+      // const container = document.getElementById("cursorContainer") as HTMLElement;
+      // const bounds = container.getBoundingClientRect(); //얘네도 안씀
       let x = cursor[0];
       let y = cursor[1];
       setWindow({
@@ -277,20 +266,26 @@ const Application = (props:any) => {
         <WindowHeader {...moveManager()}>
           {props.focus === props.name?
             <>
-              <ExitButton onClick={() =>
-                {
-                  props.removeTask(props.removeCompnent);
-                  if (!props.isLogIned) {
-                    props.setIsLogIned(true);
-                  }
-                }
-              }></ExitButton>
               <FullScreenButton onClick={()=>
                 setIsFullScreen(!isFullScreen)
-              }></FullScreenButton>
+              }>
+                <img src={Full} alt=""/>
+              </FullScreenButton>
               <MinimizeButton onClick={()=>
                 setIsMinimized(!isMinimized)
-              }> </MinimizeButton>
+              }>
+                <img src={Min} alt=""/>
+              </MinimizeButton>
+              <ExitButton onClick={() =>
+              {
+                props.removeTask(props.removeCompnent);
+                if (!props.isLogIned) {
+                  props.setIsLogIned(true);
+                }
+              }
+              }>
+                <img src={Exit} alt=""/>
+              </ExitButton>
             </>:
             <>
               <HeaderButton onClick={() =>
