@@ -3,6 +3,7 @@ import {useProcessManager} from "@/manager/processManager.tsx";
 import {Apps} from '@/manager/importManager.tsx'
 import TaskBar from "@/applications/components/taskBar";
 import React from "react";
+import Seori from "@/manager/seori/seoriManager.tsx";
 
 interface TaskBarProps {
   startOption: boolean;
@@ -18,6 +19,7 @@ const Discover = ({startOption, setStartOption, focus, setFocus, backUpFocus, se
   const [, addTask, ] = useProcessManager();
   return(
     <>
+      <Seori/>
       {Apps.map((Application:TaskType) => {
         return (
           <div key={Application.name} className="app-button" style={{zIndex: "0"}}>

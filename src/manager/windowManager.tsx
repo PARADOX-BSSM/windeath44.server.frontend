@@ -7,9 +7,8 @@ import {TaskType} from "../modules/typeModule.tsx";
 import LogIn from '@/applications/utility/login';
 import SignUp from "@/applications/utility/signUp";
 const Application = lazy(()=> import('../applications/application.tsx'));
-import bgImg from '../assets/Background.png'; 
-import Seori from './seori/seoriManager.tsx';
-
+import bgImg from '@/assets/Background.png';
+// import Seori from '@/manager/seori/seoriManager.tsx';
 
 const Display = styled.main`
     height : 100vh;
@@ -169,7 +168,6 @@ const WindowManager = () => {
       <Suspense fallback={null}>
         <BackgroundDiv width={sideWidth}></BackgroundDiv>
         <Display id='cursorContainer'>
-          <Seori />
           <div id="cursor"></div>
               {
                 taskList.map((task:TaskType) => {

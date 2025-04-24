@@ -26,7 +26,7 @@ const TaskBar = ({startOption, setStartOption, focus, setFocus, backUpFocus, set
     }
 
     return (
-        <_.TTaskBar>
+        <_.TTaskBar id='taskbarContainer'>
             <_.TaskList>
                 {
                     taskList.map((task) => {
