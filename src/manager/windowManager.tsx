@@ -73,9 +73,9 @@ const WindowManager = () => {
     "layer": undefined,
     "appSetup":{
       "Image" : "default",
-      "minWidth" : 800,
+      "minWidth" : 748,
       "minHeight" : 464,
-      "setUpWidth" : 800,
+      "setUpWidth" : 748,
       "setUpHeight" : 464
     }
   }
@@ -88,9 +88,9 @@ const WindowManager = () => {
     "layer": undefined,
     "appSetup":{
       "Image" : "default",
-      "minWidth" : 800,
+      "minWidth" : 748,
       "minHeight" : 550,
-      "setUpWidth" : 800,
+      "setUpWidth" : 748,
       "setUpHeight" : 550
     }
   }
@@ -102,10 +102,10 @@ const WindowManager = () => {
     "layer": undefined,
     "appSetup":{
       "Image" : "default",
-      "minWidth" : 800,
-      "minHeight" : 550,
-      "setUpWidth" : 800,
-      "setUpHeight" : 550
+      "minWidth" : 748,
+      "minHeight" : 464,
+      "setUpWidth" : 748,
+      "setUpHeight" : 464
     }
   }
 
