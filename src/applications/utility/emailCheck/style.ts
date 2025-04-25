@@ -14,6 +14,9 @@ export const tempImageStyle = styled.div`
     background-color: #ffffff;
     display: flex;
     justify-content: center;
+    img{
+        width: 100%;
+    }
 `;
 
 export const tempBulkStyle = styled.div`

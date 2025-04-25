@@ -9,7 +9,7 @@ import SignUp from "@/applications/utility/signUp";
 const Application = lazy(()=> import('../applications/application.tsx'));
 import bgImg from '@/assets/Background.png';
 import skeleton from '@/assets/skeleton.png';
-import Auth from "@/applications/utility/auth";
+import EmailChack from "applications/utility/emailCheck";
 
 const Display = styled.main`
     height : 100vh;
@@ -58,10 +58,10 @@ const WindowManager = () => {
   const changeToLogIn = () => {
     addTask(logIn);
     removeTask(signUp);
-    removeTask(auth);
+    removeTask(emailChack);
   }
   const changeToAuth = () => {
-    addTask(auth)
+    addTask(emailChack)
     removeTask(logIn);
   }
 
@@ -94,11 +94,11 @@ const WindowManager = () => {
       "setUpHeight" : 550
     }
   }
-  const auth:TaskType = { //회원가입 Task
-    "component": <Suspense fallback={null}><Auth changeToLogIn={changeToLogIn}/></Suspense>,
+  const emailChack:TaskType = { //이메일 입력 Task
+    "component": <Suspense fallback={null}><EmailChack changeToLogIn={changeToLogIn}/></Suspense>,
     "type": "App",
     "id": 2,
-    "name": "SignUp",
+    "name": "EmailChack",
     "layer": undefined,
     "appSetup":{
       "Image" : "default",

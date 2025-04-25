@@ -1,5 +1,5 @@
 import {useState} from "react";
-import * as _ from "@/applications/utility/signUp/style.ts";
+import * as _ from "@/applications/utility/emailCheck/style.ts";
 import Logo from "@/assets/windeath44.svg";
 import Button from "@/applications/components/button";
 import Inputs from "@/applications/components/inputs";
@@ -8,7 +8,7 @@ interface Props {
     changeToLogIn: () => void;
 };
 
-const Auth = ({changeToLogIn}:Props) =>{
+const EmailChack = ({changeToLogIn}:Props) =>{
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
 
@@ -36,4 +36,4 @@ const Auth = ({changeToLogIn}:Props) =>{
             </_.tempMain>
     )
 }
-export default  Auth;
+export default  EmailChack;
