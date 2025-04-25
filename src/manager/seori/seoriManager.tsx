@@ -58,8 +58,6 @@ export default function Seori() {
     })
     const ground = Bodies.rectangle(0, bounds.bottom - taskbarBounds.height / 2, taskbarBounds.width * 10, taskbarBounds.height, {
       isStatic: true,
-      friction: 1,
-      frictionStatic: 1,
       render: { fillStyle: "#E6B143"},
       label: "ground"
     })
@@ -86,29 +84,31 @@ export default function Seori() {
         });
     }
 
-    let shape = Bodies.rectangle(300, 150, 100, 150, {
+    let shape = Bodies.rectangle(300, 150, 100, 100, {
         inertia: Infinity,
+        friction: 0,
+        frictionStatic: 0,
         render: {
-        sprite: {
-            texture:  `src/assets/seori_${stateRef.current}.png`,
-            xScale: 1,
-            yScale: 1,
-        }
+            sprite: {
+                texture: `src/assets/seori_${stateRef.current}.png`,
+                xScale: 0.75,
+                yScale: 0.75,
+            }
         },
         label: "shape"
     });
 
     const texturePath = `src/assets/seori_${stateRef.current}.png`;
     loadImageSize(texturePath).then(({ width, height }) => {
-        shape = Bodies.rectangle(300, 150, width, height, {
+        shape = Bodies.rectangle(300, 150, width * 0.8, height * 0.8, {
             inertia: Infinity,
             friction: 0,
             frictionStatic: 0,
             render: {
                 sprite: {
                     texture: texturePath,
-                    xScale: 1,
-                    yScale: 1,
+                    xScale: 0.8,
+                    yScale: 0.8,
                 }
             },
             label: "shape"
@@ -242,22 +242,19 @@ export default function Seori() {
       }
     });
 
-    // 설이와 바닥과의 충돌 감지 (마찰력 주는 용도)
+    // 설이와 바닥과의 충돌 감지 (설이 멈추기)
     Events.on(engine, 'collisionActive', (event) => {
         let touchingGround = false;
       
         event.pairs.forEach(pair => {
           const labels = [pair.bodyA.label, pair.bodyB.label];
           if (labels.includes("shape") && labels.includes("ground")) {
-            touchingGround = true;
+            touchingGround = true;Body.setVelocity(shape, { x: 0, y: 0});
           }
         });
       
-        if (shapeRef.current) {
-          Body.set(shapeRef.current, {
-            friction: touchingGround ? 1 : 0,
-            frictionStatic: touchingGround ? 1 : 0
-          });
+        if (shape) {
+          
         }
       });
 
