@@ -6,9 +6,10 @@ import Inputs from "@/applications/components/inputs";
 
 interface Props {
     changeToLogIn: () => void;
+    changeToAuth : () => void;
 };
 
-const EmailChack = ({changeToLogIn}:Props) =>{
+const EmailChack = ({changeToLogIn,changeToAuth}:Props) =>{
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
 
@@ -29,7 +30,7 @@ const EmailChack = ({changeToLogIn}:Props) =>{
                         ))}
                     </_.tempInputsStyle>
                     <_.tempButtonsStyle>
-                        <Button props="확인"/>
+                        <Button onClick={changeToAuth} props="확인"/>
                         <Button onClick={changeToLogIn} props="뒤로가기"/>
                     </_.tempButtonsStyle>
                 </_.tempMainStyle>

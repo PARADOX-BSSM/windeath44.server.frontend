@@ -10,6 +10,7 @@ const Application = lazy(()=> import('../applications/application.tsx'));
 import bgImg from '@/assets/Background.png';
 import skeleton from '@/assets/skeleton.png';
 import EmailChack from "applications/utility/emailCheck";
+import Auth from "@/applications/utility/auth";
 
 const Display = styled.main`
     height : 100vh;
@@ -60,13 +61,18 @@ const WindowManager = () => {
     removeTask(signUp);
     removeTask(emailChack);
   }
-  const changeToAuth = () => {
+  const changeToEmailCheck = () => {
     addTask(emailChack)
     removeTask(logIn);
   }
 
+  const changeToAuth = () => {
+    addTask(auth)
+    removeTask(emailChack);
+  }
+
   const logIn:TaskType = { //로그인 Task
-    "component": <Suspense fallback={null}><LogIn setIsLogIned={setIsLogIned} changeToSignUp={changeToSignUp} changeToAuth={changeToAuth}/></Suspense>,
+    "component": <Suspense fallback={null}><LogIn setIsLogIned={setIsLogIned} changeToSignUp={changeToSignUp} changeToEmailCheck={changeToEmailCheck}/></Suspense>,
     "type": "App",
     "id": 1,
     "name": "LogIn",
@@ -95,10 +101,24 @@ const WindowManager = () => {
     }
   }
   const emailChack:TaskType = { //이메일 입력 Task
-    "component": <Suspense fallback={null}><EmailChack changeToLogIn={changeToLogIn}/></Suspense>,
+    "component": <Suspense fallback={null}><EmailChack changeToLogIn={changeToLogIn} changeToAuth={changeToAuth}/></Suspense>,
     "type": "App",
-    "id": 2,
+    "id": 3,
     "name": "EmailChack",
+    "layer": undefined,
+    "appSetup":{
+      "Image" : "default",
+      "minWidth" : 748,
+      "minHeight" : 464,
+      "setUpWidth" : 748,
+      "setUpHeight" : 464
+    }
+  }
+  const auth:TaskType = { //인증 번호 입력 Task
+    "component": <Suspense fallback={null}><Auth/></Suspense>,
+    "type": "App",
+    "id": 4,
+    "name": "auth",
     "layer": undefined,
     "appSetup":{
       "Image" : "default",
