@@ -60,10 +60,12 @@ const WindowManager = () => {
     addTask(logIn);
     removeTask(signUp);
     removeTask(emailChack);
+    removeTask(auth);
   }
   const changeToEmailCheck = () => {
     addTask(emailChack)
     removeTask(logIn);
+    removeTask(auth);
   }
 
   const changeToAuth = () => {
@@ -115,7 +117,7 @@ const WindowManager = () => {
     }
   }
   const auth:TaskType = { //인증 번호 입력 Task
-    "component": <Suspense fallback={null}><Auth/></Suspense>,
+    "component": <Suspense fallback={null}><Auth changeToLogIn={changeToLogIn} changeToEmailCheck={changeToEmailCheck}/></Suspense>,
     "type": "App",
     "id": 4,
     "name": "auth",
