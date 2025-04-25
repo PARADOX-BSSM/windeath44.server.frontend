@@ -9,6 +9,18 @@ export default function Seori() {
   const isDraggingRef = useRef(false);
   // 설이가 바라보는 방향 Ref
   const directionRef = useRef("left");
+  const setDirectionRef = (direction: string) => {
+    directionRef.current = direction;
+
+    if (!shapeRef.current) { return }
+
+    if (direction === "left") {
+        shapeRef.current.render.sprite!.xScale = 0.8;
+    }
+    if (direction === "right") {
+        shapeRef.current.render.sprite!.xScale = -0.8;
+    }
+  }
   // 설이 상태 Ref
   const stateRef = useRef("default");
   
@@ -91,8 +103,8 @@ export default function Seori() {
         render: {
             sprite: {
                 texture: `src/assets/seori_${stateRef.current}.png`,
-                xScale: 0.75,
-                yScale: 0.75,
+                xScale: 0.8,
+                yScale: 0.8,
             }
         },
         label: "shape"
@@ -233,11 +245,11 @@ export default function Seori() {
 
       // 설이를 잡고 좌우로 이동
       if (x > interval && isDraggingRef.current) {
-        directionRef.current = "right";
+        setDirectionRef("right");
         shape.render.fillStyle = "#FF0000";
       }
       else if (x < -interval && isDraggingRef.current) {
-        directionRef.current = "left";
+        setDirectionRef("left");
         shape.render.fillStyle = "#0000FF";
       }
     });
