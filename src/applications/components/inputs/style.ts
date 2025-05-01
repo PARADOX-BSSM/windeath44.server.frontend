@@ -3,6 +3,7 @@ import '@/assets/font.css';
 
 export const inputsDiv = styled.div`
     font-family: "Galmuri11";
+    font-size: 20px;
     width: 95%;
     display: flex;
     justify-content: space-between;
@@ -10,7 +11,7 @@ export const inputsDiv = styled.div`
 export const inputs = styled.input`
     margin: 0 0 2px 2px;
     width: 482px;
-    height: 16px;
+    height: 24px;
     outline: none;
     border-color: #DCAFDD;
     border-style: solid;

@@ -1,6 +1,5 @@
-// import * as _ from "@/applications/utility/auth/style.ts";
 import React, {useRef, useState} from "react";
-import * as _ from "@/applications/utility/emailCheck/style.ts";
+import * as _ from "@/applications/utility/auth/style.ts";
 import Logo from "@/assets/windeath44.svg";
 import Button from "@/applications/components/button";
 

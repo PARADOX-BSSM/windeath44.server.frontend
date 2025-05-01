@@ -6,6 +6,10 @@
     --background : #FFBBF5;
     --primary-black : #2E2E2E;
 }
+*{
+    margin: 0;
+    padding: 0;
+}
 
 body {
     margin: 0;
