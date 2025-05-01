@@ -47,6 +47,7 @@ const Auth: React.FC = ({changeToLogIn,changeToEmailCheck}:Props) =>{
             <_.tempMainStyle>
                 <_.tempInputsStyle>
                     <div style={{ display: 'flex', gap: '8px' }}>
+                        <label htmlFor="code">인증코드 :</label>
                         {code.map((char, idx) => (
                             <input
                                 key={idx}
@@ -76,4 +77,5 @@ const Auth: React.FC = ({changeToLogIn,changeToEmailCheck}:Props) =>{
 
     );
 }
+
 export default Auth;
