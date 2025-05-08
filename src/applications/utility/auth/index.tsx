@@ -35,7 +35,9 @@ const Auth: React.FC = ({changeToLogIn,changeToEmailCheck}:Props) =>{
     const handleSubmit = () => {
         const finalCode = code.join('');
         console.log('인증 코드:', finalCode);
+        changeToLogIn();
     };
+
 
     return (
         <_.tempMain>
@@ -62,11 +64,11 @@ const Auth: React.FC = ({changeToLogIn,changeToEmailCheck}:Props) =>{
                                 </_.outside>
                             ))}
                         </_.inputStyle>
-                        <button onClick={handleSubmit}>제출</button>
+                        {/*<button onClick={handleSubmit}>제출</button>*/}
                     </_.inputs>
                 </_.tempInputsStyle>
                 <_.tempButtonsStyle>
-                    <Button onClick={changeToLogIn} props="확인"/>
+                    <Button onClick={handleSubmit} props="확인"/>
                     <Button onClick={changeToEmailCheck} props="뒤로가기"/>
                 </_.tempButtonsStyle>
             </_.tempMainStyle>
