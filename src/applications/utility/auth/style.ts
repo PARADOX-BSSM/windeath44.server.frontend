@@ -51,4 +51,35 @@ export const tempButtonsStyle = styled.div`
     right: 0;
 `;
 
+export const inputs = styled.div`
+    font-family: "Galmuri11";
+    font-size: 20px;
+    line-height: 54px;
+    display: flex;
+    gap: 24px;
+`
+export const inputStyle = styled.div`
+    display: flex;
+    gap: 8px;
+`
 
+export const outside = styled.div`
+    width: 48px;
+    height: 52px;
+    background-color: #000;
+    border-width: 0 2px 2px 0;
+    border-style: solid;
+    border-color: #fff ;
+`;
+export const inside = styled.input`
+    width: 42px;
+    height: 46px;
+    margin: 2px 0 0 2px;
+    text-align: center;
+    font-size: 24px;
+    border: #DCAFDD solid 2px;
+    &:focus {
+        outline: none;
+        box-shadow: none;
+    }
+`;

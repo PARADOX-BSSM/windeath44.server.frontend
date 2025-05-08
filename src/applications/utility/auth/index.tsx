@@ -45,27 +45,25 @@ const Auth: React.FC = ({changeToLogIn,changeToEmailCheck}:Props) =>{
             <_.tempBulkStyle />
             <_.tempMainStyle>
                 <_.tempInputsStyle>
-                    <div style={{ display: 'flex', gap: '8px' }}>
+                    <_.inputs>
                         <label htmlFor="code">인증코드 :</label>
-                        {code.map((char, idx) => (
-                            <input
-                                key={idx}
-                                type="text"
-                                maxLength={1}
-                                value={char}
-                                onChange={(e) => handleChange(e.target.value, idx)}
-                                onKeyDown={(e) => handleKeyDown(e, idx)}
-                                ref={(el) => (inputRefs.current[idx] = el)}
-                                style={{
-                                    width: '40px',
-                                    height: '40px',
-                                    textAlign: 'center',
-                                    fontSize: '24px',
-                                }}
-                            />
-                        ))}
+                        <_.inputStyle>
+                            {code.map((char, idx) => (
+                                <_.outside key={idx}>
+                                    <_.inside
+                                        type="text"
+                                        maxLength={1}
+                                        value={char}
+                                        onChange={(e) => handleChange(e.target.value, idx)}
+                                        onKeyDown={(e) => handleKeyDown(e, idx)}
+                                        ref={(el) => (inputRefs.current[idx] = el)}
+
+                                    />
+                                </_.outside>
+                            ))}
+                        </_.inputStyle>
                         <button onClick={handleSubmit}>제출</button>
-                    </div>
+                    </_.inputs>
                 </_.tempInputsStyle>
                 <_.tempButtonsStyle>
                     <Button onClick={changeToLogIn} props="확인"/>
