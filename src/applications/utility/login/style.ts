@@ -6,6 +6,9 @@ export const tempImage = styled.div`
     background-color: #ffffff;
     display: flex;
     justify-content: center;
+    img{
+        width: 100%;
+    }
 `;
 
 export const tempBulk = styled.div`
