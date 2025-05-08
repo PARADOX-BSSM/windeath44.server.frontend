@@ -12,6 +12,7 @@ export const inputs = styled.input`
     margin: 1.5px 0 0 1.5px;
     width: 476.5px;
     height: 26px;
+    font-family: "Galmuri11";
     padding: 0 4px;
     outline: none;
     border-color: #DCAFDD;
