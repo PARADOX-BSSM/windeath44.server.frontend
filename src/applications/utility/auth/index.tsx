@@ -2,6 +2,7 @@ import React, {useRef, useState} from "react";
 import * as _ from "@/applications/utility/auth/style.ts";
 import Logo from "@/assets/windeath44.svg";
 import Button from "@/applications/components/button";
+import {note} from "@/applications/utility/auth/style.ts";
 
 interface Props {
     changeToLogIn: () => void;
@@ -14,7 +15,7 @@ const Auth: React.FC = ({changeToLogIn,changeToEmailCheck}:Props) =>{
     const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
 
     const handleChange = (value: string, index: number) => {
-        if (!/^[a-zA-Z]?$/.test(value)) return; // 알파벳만 허용
+        if (!/^[a-zA-Z0-9]?$/.test(value)) return; // 숫자 & 알파벳만 허용
 
         const newCode = [...code];
         newCode[index] = value.toUpperCase();
@@ -67,6 +68,7 @@ const Auth: React.FC = ({changeToLogIn,changeToEmailCheck}:Props) =>{
                         {/*<button onClick={handleSubmit}>제출</button>*/}
                     </_.inputs>
                 </_.tempInputsStyle>
+                <_.note>* 숫자 및 알파벳만 입력가능합니다.</_.note>
                 <_.tempButtonsStyle>
                     <Button onClick={handleSubmit} props="확인"/>
                     <Button onClick={changeToEmailCheck} props="뒤로가기"/>

@@ -76,6 +76,7 @@ export const inside = styled.input`
     height: 46px;
     margin: 2px 0 0 2px;
     text-align: center;
+    font-family: "Galmuri11";
     font-size: 24px;
     border: #DCAFDD solid 2px;
     &:focus {
@@ -83,3 +84,9 @@ export const inside = styled.input`
         box-shadow: none;
     }
 `;
+export const note = styled.div`
+    font-family: "Galmuri11";
+    font-size: 12px;
+    padding: 0 136px;
+    color: #E774DD;
+`
