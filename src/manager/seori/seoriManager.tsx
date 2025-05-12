@@ -1,28 +1,39 @@
-import { MouseConstraint, Mouse, Bodies, Body, Engine, Events, Render, Runner, World, Query } from "matter-js"
+import { MouseConstraint, Mouse, Bodies, Body, Engine, Events, Render, Runner, World } from "matter-js"
 import "./world.css";
 import { MutableRefObject, useEffect, useRef } from "react";
 
 export default function Seori() {
   // 설이 Ref
   const shapeRef = useRef<Body | null>(null) as MutableRefObject<Body | null>;
+
+  // 설이 스프라이트 변경 함수
+  const setSpriteTexture = (path: string) => {
+    if (!shapeRef.current) { return }
+
+    shapeRef.current.render.sprite!.texture = path;
+  }
+
   // is드래그 Ref
   const isDraggingRef = useRef(false);
+
   // 설이가 바라보는 방향 Ref
   const directionRef = useRef("left");
   const setDirectionRef = (direction: string) => {
     directionRef.current = direction;
-
-    if (!shapeRef.current) { return }
-
-    if (direction === "left") {
-        shapeRef.current.render.sprite!.xScale = 0.8;
-    }
-    if (direction === "right") {
-        shapeRef.current.render.sprite!.xScale = -0.8;
-    }
   }
+
   // 설이 상태 Ref
   const stateRef = useRef("default");
+  const setStateRef = (state: string) => {
+    stateRef.current = state;
+  }
+
+  // 설이 스프라이트 변경 useEffect
+  useEffect(() => {
+    console.log(directionRef.current, stateRef.current);
+    const texturePath = `src/assets/seori/seori_${stateRef.current}_${directionRef.current}.png`;
+    // setSpriteTexture(texturePath);
+  }, [directionRef.current, stateRef.current])
   
   useEffect(() => {
     const container = document.getElementById("cursorContainer");
@@ -102,7 +113,7 @@ export default function Seori() {
         frictionStatic: 0,
         render: {
             sprite: {
-                texture: `src/assets/seori_${stateRef.current}.png`,
+                texture: `src/assets/seori/seori_${stateRef.current}_${directionRef.current}.png`,
                 xScale: 0.8,
                 yScale: 0.8,
             }
@@ -110,7 +121,7 @@ export default function Seori() {
         label: "shape"
     });
 
-    const texturePath = `src/assets/seori_${stateRef.current}.png`;
+    const texturePath = `src/assets/seori/seori_${stateRef.current}_${directionRef.current}.png`;
     loadImageSize(texturePath).then(({ width, height }) => {
         shape = Bodies.rectangle(300, 150, width * 0.8, height * 0.8, {
             inertia: Infinity,
@@ -126,13 +137,15 @@ export default function Seori() {
             label: "shape"
         });
 
-    World.add(world, shape);
-    shapeRef.current = shape;
+        World.add(world, shape);
+        shapeRef.current = shape;
     });
 
     // 드래그 시작 && 끝나면 실행되는 함수들
     const onDragStart = () => {
       console.log("Started");
+      isDraggingRef.current = true;
+      setStateRef("holding");
       if (directionRef.current === "left") {
         shape.render.fillStyle = "#FFFFAA";
       }
@@ -142,6 +155,7 @@ export default function Seori() {
     };
     const onDragEnd = () => {
       console.log("Ended");
+      isDraggingRef.current = false;
     };
 
     const mouse = Mouse.create(render.canvas) //마우스 객체 생성
@@ -158,14 +172,12 @@ export default function Seori() {
     // 드래그 시작 이벤트
     Events.on(mouseConstraint, "startdrag", () => {
       if (!isDraggingRef.current) {
-        isDraggingRef.current = true;
         onDragStart();
       }
     });
         
     // 드래그 종료 이벤트
     Events.on(mouseConstraint, "enddrag", () => {
-      isDraggingRef.current = false;
       onDragEnd();
     });
 
@@ -226,6 +238,7 @@ export default function Seori() {
       // 설이를 잡지 않고 위아래로 이동
       if (y > interval && !isDraggingRef.current) {
         console.log("아래로 이동 중");
+        setStateRef("falling");
         if (directionRef.current === "left") {
           shape.render.fillStyle = "#00FFAA";
         }
@@ -234,6 +247,7 @@ export default function Seori() {
         }
       }
       else if (y < -interval && !isDraggingRef.current) {
+        setStateRef("falling");
         console.log("위로 이동 중");
         if (directionRef.current === "left") {
           shape.render.fillStyle = "#AAAAFF";
@@ -256,18 +270,13 @@ export default function Seori() {
 
     // 설이와 바닥과의 충돌 감지 (설이 멈추기)
     Events.on(engine, 'collisionActive', (event) => {
-        let touchingGround = false;
       
         event.pairs.forEach(pair => {
           const labels = [pair.bodyA.label, pair.bodyB.label];
-          if (labels.includes("shape") && labels.includes("ground")) {
-            touchingGround = true;Body.setVelocity(shape, { x: 0, y: 0});
+          if (labels.includes("shape") && labels.includes("ground") && !isDraggingRef.current) {
+            Body.setVelocity(shape, { x: 0, y: 0});
           }
         });
-      
-        if (shape) {
-          
-        }
       });
 
     // 설이의 속도가 0인 것을 감지하는 이벤트 (바닥에 붙어있다)
@@ -284,6 +293,7 @@ export default function Seori() {
         }
         // 내려놨을 떄
         else {
+            setStateRef("default");
           if (directionRef.current === "left") {
             shape.render.fillStyle = "#000000";
           }
@@ -292,7 +302,7 @@ export default function Seori() {
           }
         }
       }
-    }, 100);
+    }, 75);
 
     return () => {
       Render.stop(render);
