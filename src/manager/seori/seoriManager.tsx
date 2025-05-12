@@ -156,6 +156,7 @@ export default function Seori() {
     const onDragEnd = () => {
       console.log("Ended");
       isDraggingRef.current = false;
+      setStateRef("falling");
     };
 
     const mouse = Mouse.create(render.canvas) //마우스 객체 생성
@@ -237,8 +238,8 @@ export default function Seori() {
         
       // 설이를 잡지 않고 위아래로 이동
       if (y > interval && !isDraggingRef.current) {
-        console.log("아래로 이동 중");
         setStateRef("falling");
+        console.log("아래로 이동 중");
         if (directionRef.current === "left") {
           shape.render.fillStyle = "#00FFAA";
         }
