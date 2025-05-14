@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import {Apps} from '@/manager/importManager.tsx';
+import {Apps} from '@/applications/data/importManager';
 import {TaskType} from "@/modules/typeModule.tsx";
 import {useState,useEffect} from 'react';
 
