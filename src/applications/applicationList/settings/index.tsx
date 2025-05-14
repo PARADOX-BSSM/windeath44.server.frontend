@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {useStack} from '@/hooks/dataStructure.tsx'
-import {Main, Wallpaper} from '../Pages/settingsPages.tsx'
+import {Main, Wallpaper} from './settingsPages.tsx'
 
 const Settings = () => {
   const [stack, Push, Pop, Top] = useStack();
