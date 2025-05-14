@@ -1,5 +1,4 @@
 import { MouseConstraint, Mouse, Bodies, Body, Engine, Events, Render, Runner, World } from "matter-js"
-import "./world.css";
 import { MutableRefObject, useEffect, useRef } from "react";
 
 export default function Seori() {

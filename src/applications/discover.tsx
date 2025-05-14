@@ -3,7 +3,7 @@ import {useProcessManager} from "@/hooks/processManager/processManager";
 import {Apps} from '@/applications/data/importManager'
 import TaskBar from "@/applications/components/taskBar";
 import React from "react";
-import Seori from "@/manager/seori/seoriManager.tsx";
+import Seori from "@/applications/seoriManager";
 
 interface TaskBarProps {
   startOption: boolean;
