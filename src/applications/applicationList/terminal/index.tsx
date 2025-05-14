@@ -9,7 +9,7 @@ const Input = styled.input`
     border: none;
     width: 100%;
     height: 2rem;
-    bottom: 5px;
+    bottom: 5px;x
 `;
 const TerminalContent = styled.div`
     display: flex;

@@ -1,7 +1,7 @@
 import {Suspense, lazy} from "react";
 import {TaskType} from "@/modules/typeModule.tsx";
 
-const Terminal =  lazy(()=> import("../applicationList/Terminal.tsx"));
+const Terminal =  lazy(()=> import("../applicationList/terminal/index.tsx"));
 const Settings = lazy(()=> import("../applicationList/settings/index.tsx"));
 const LogIn = lazy(()=> import("../utility/login/index.tsx"));
 
