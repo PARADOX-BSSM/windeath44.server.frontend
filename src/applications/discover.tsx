@@ -1,5 +1,5 @@
 import {TaskType} from "@/modules/typeModule.tsx"
-import {useProcessManager} from "@/manager/processManager.tsx";
+import {useProcessManager} from "@/hooks/processManager";
 import {Apps} from '@/manager/importManager.tsx'
 import TaskBar from "@/applications/components/taskBar";
 import React from "react";
