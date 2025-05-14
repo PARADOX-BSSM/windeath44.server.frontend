@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {styled} from "styled-components";
-import {useQueue} from "@/modules/dataStructureModule.tsx";
+import {useQueue} from "@/hooks/dataStructureModule";
 
 const Input = styled.input`
     background-color: none;
