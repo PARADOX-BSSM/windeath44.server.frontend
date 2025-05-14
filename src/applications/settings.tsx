@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {useStack} from '@/hooks/dataStructureModule.tsx'
+import {useStack} from '@/hooks/dataStructure.tsx'
 import {Main, Wallpaper} from './Pages/settingsPages.tsx'
 
 const Settings = () => {
