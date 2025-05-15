@@ -109,6 +109,7 @@ const Application = (props:any) => {
     }
   },[props.tabDownInterrupt])
   useEffect(()=>{ //Fucus가 본인이면 가장 높은 Layer로 렌더링
+    console.log(props.name, props.focus);
     if(props.type !== "Shell") {
       if (props.focus === props.name) {
         props.setLayer(props.layer + 1);
@@ -124,6 +125,7 @@ const Application = (props:any) => {
           backgroundColor: window.backgroundColor,
           filter: "dropShadow(gray 0px 0px 15px)",
         })
+        console.log(props.focus, props.name, props.layer);
       }
     }
   },[props.focus])
@@ -271,8 +273,9 @@ const Application = (props:any) => {
               }>
                 <img src={Full} alt=""/>
               </FullScreenButton>
-              <MinimizeButton onClick={()=>
-                setIsMinimized(!isMinimized)
+              <MinimizeButton onClick={()=> {
+                  setIsMinimized(!isMinimized);
+                }
               }>
                 <img src={Min} alt=""/>
               </MinimizeButton>

@@ -30,6 +30,7 @@ const TaskBar = ({startOption, setStartOption, focus, setFocus, backUpFocus, set
             <_.TaskList>
                 {
                     taskList.map((task) => {
+                        console.log(focus);
                         if (task.type === "Shell") {
                             return (
                                 <li style={taskStyle} key={"Observer"}>

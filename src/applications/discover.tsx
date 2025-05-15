@@ -17,6 +17,8 @@ interface TaskBarProps {
 
 const Discover = ({startOption, setStartOption, focus, setFocus, backUpFocus, setBackUpFocus, setTabDownInterrupt }:TaskBarProps) => {
   const [, addTask, ] = useProcessManager();
+
+  console.log(focus, 1);
   return(
     <>
       <Seori/>
