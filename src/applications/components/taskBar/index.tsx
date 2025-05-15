@@ -1,6 +1,8 @@
 import React from "react";
 import * as _ from './style';
 import {useProcessManager} from "@/hooks/processManager/processManager";
+import { useRecoilState } from 'recoil';
+import { focusState } from '@/recoil/focusState';
 
 
 interface TaskBarProps {
@@ -13,7 +15,8 @@ interface TaskBarProps {
     setTabDownInterrupt : React.Dispatch<React.SetStateAction<string>>;
 }
 
-const TaskBar = ({startOption, setStartOption, focus, setFocus, backUpFocus, setBackUpFocus, setTabDownInterrupt }:TaskBarProps) => {
+const TaskBar = ({startOption, setStartOption, backUpFocus, setBackUpFocus, setTabDownInterrupt }:TaskBarProps) => {
+    const [focus, setFocus] = useRecoilState(focusState);
     const [taskList,,] = useProcessManager();
     const taskStyle = { margin: "0.25rem" };
     const taskButtonStyle = {

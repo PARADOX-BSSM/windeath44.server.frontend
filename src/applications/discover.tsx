@@ -1,6 +1,8 @@
 import {TaskType} from "@/modules/typeModule.tsx"
 import {useProcessManager} from "@/hooks/processManager/processManager";
 import {Apps} from '@/applications/data/importManager'
+import { useRecoilState } from 'recoil';
+import { focusState } from '@/recoil/focusState';
 import TaskBar from "@/applications/components/taskBar";
 import React from "react";
 import Seori from "@/applications/seori";
@@ -15,8 +17,9 @@ interface TaskBarProps {
   setTabDownInterrupt : React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Discover = ({startOption, setStartOption, focus, setFocus, backUpFocus, setBackUpFocus, setTabDownInterrupt }:TaskBarProps) => {
+const Discover = ({startOption, setStartOption, backUpFocus, setBackUpFocus, setTabDownInterrupt }:TaskBarProps) => {
   const [, addTask, ] = useProcessManager();
+  const [focus, setFocus] = useRecoilState(focusState);
 
   console.log(focus, 1);
   return(

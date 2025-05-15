@@ -1,6 +1,8 @@
 import {useEffect, useState} from 'react';
 import {useDrag} from 'react-use-gesture';
 import {toNumber} from "@/modules/typeModule.tsx";
+import { useRecoilState } from 'recoil';
+import { focusState } from '@/recoil/focusState';
 import Exit from "@/assets/headerButton/exit.svg";
 import Full from "@/assets/headerButton/full.svg";
 import Min from "@/assets/headerButton/min.svg";
@@ -75,6 +77,7 @@ const Application = (props:any) => {
   const [isFirst, setIsFirst] = useState<boolean>(true);//첫 클릭 여부
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);//창 최대 여부
   const [isMinimized, setIsMinimized] = useState<boolean>(false);//창 최소화 여부
+  const [focus, setFocus] = useRecoilState(focusState);
 
   useEffect(() => { //cursorVec 동기화
     setBeforeMoveParams(cursor);
@@ -82,8 +85,8 @@ const Application = (props:any) => {
 
   }, [props.cursorVec]);
   useEffect(()=>{ //창 Props 수정될 시 Focus
-    if(!isMinimized && (props.focus !== props.name)) {
-      props.setFocus(props.name);
+    if(!isMinimized && (focus !== props.name)) {
+      setFocus(props.name);
     }
   },[window])
   useEffect(()=>{
@@ -99,7 +102,7 @@ const Application = (props:any) => {
         backgroundColor: window.backgroundColor,
         filter: "dropShadow(gray 0px 0px 15px)"
       })
-      props.setFocus("Discover");
+      setFocus("Discover");
     }
   },[isMinimized])
   useEffect(()=>{
@@ -109,9 +112,9 @@ const Application = (props:any) => {
     }
   },[props.tabDownInterrupt])
   useEffect(()=>{ //Fucus가 본인이면 가장 높은 Layer로 렌더링
-    console.log(props.name, props.focus);
+    console.log(props.name, focus);
     if(props.type !== "Shell") {
-      if (props.focus === props.name) {
+      if (focus === props.name) {
         props.setLayer(props.layer + 1);
         setIsMinimized(false);
         setWindow({
@@ -125,10 +128,10 @@ const Application = (props:any) => {
           backgroundColor: window.backgroundColor,
           filter: "dropShadow(gray 0px 0px 15px)",
         })
-        console.log(props.focus, props.name, props.layer);
+        console.log(focus, props.name, props.layer);
       }
     }
-  },[props.focus])
+  },[focus])
   useEffect(()=>{ //창 최대화 상태
     if(isFullScreen){
       const container = document.getElementById("cursorContainer") as HTMLElement;
@@ -263,10 +266,10 @@ const Application = (props:any) => {
   if(props.type==="App") {
     return (
       <Window style={window} onMouseDown={()=>{
-        props.setFocus(props.name)
+        setFocus(props.name)
       }}>
         <WindowHeader {...moveManager()}>
-          {props.focus === props.name?
+          {focus === props.name?
             <>
               <FullScreenButton onClick={()=>
                 setIsFullScreen(!isFullScreen)
@@ -310,7 +313,7 @@ const Application = (props:any) => {
     )
   }else if(props.type==="Shell") {
     return (
-      <Shell className="shell" onClick={()=>props.setFocus("Discover")}>
+      <Shell className="shell" onClick={()=>setFocus("Discover")}>
         {props.children}
       </Shell>
     )

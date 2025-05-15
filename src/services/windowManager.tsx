@@ -11,6 +11,8 @@ import bgImg from '@/assets/Background.png';
 import skeleton from '@/assets/skeleton.png';
 import EmailChack from "applications/utility/emailCheck";
 import Auth from "@/applications/utility/auth";
+import { useRecoilState } from 'recoil';
+import { focusState } from '@/recoil/focusState';
 
 const Display = styled.main`
     height : 100vh;
@@ -43,7 +45,7 @@ const WindowManager = () => {
   const [cursorVec, setCursorVec] = useState<number[]>([0, 0, 0, 0]);  //보정 후 커서 위치
   const [mouseBeacon, setMouseBeacon] = useState<number[]>([0, 0]); //마우스 절대 위치
   const [layer, setLayer] = useState<number>(1);  //최대 레이어
-  const [focus, setFocus] = useState<string>("Discover"); //최대 레이어를 사용중인 애플리케이션
+  const [focus, setFocus] = useRecoilState(focusState); //최대 레이어를 사용중인 애플리케이션
   const [taskList, addTask, removeTask] = useProcessManager();
   const [startOption, setStartOption] = useState<boolean>(false);
   const [backUpFocus, setBackUpFocus] = useState(focus);
@@ -225,13 +227,11 @@ const WindowManager = () => {
                                  setUpHeight={task.appSetup?.setUpHeight}
                                  setUpWidth={task.appSetup?.setUpWidth}
                                  layer={layer}
-                                 focus={focus}
                                  taskList={taskList}
                                  cursorVec={cursorVec}
                                  tabDownInterrupt={tabDownInterrupt}
                                  isLogIned={isLogIned}
                                  setLayer={setLayer}
-                                 setFocus={setFocus}
                                  setTabDownInterrupt={setTabDownInterrupt}
                                  setIsLogIned={setIsLogIned}
                                  removeTask={removeTask}
