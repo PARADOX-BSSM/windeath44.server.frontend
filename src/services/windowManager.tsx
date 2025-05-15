@@ -13,6 +13,7 @@ import EmailChack from "applications/utility/emailCheck";
 import Auth from "@/applications/utility/auth";
 import { useRecoilState } from 'recoil';
 import { focusState } from '@/recoil/focusState';
+import { startOptionState } from '@/recoil/startOptionState.tsx';
 
 const Display = styled.main`
     height : 100vh;
@@ -47,8 +48,7 @@ const WindowManager = () => {
   const [layer, setLayer] = useState<number>(1);  //최대 레이어
   const [focus, setFocus] = useRecoilState(focusState); //최대 레이어를 사용중인 애플리케이션
   const [taskList, addTask, removeTask] = useProcessManager();
-  const [startOption, setStartOption] = useState<boolean>(false);
-  const [backUpFocus, setBackUpFocus] = useState(focus);
+  const [startOption, setStartOption] = useRecoilState(startOptionState);
   const [tabDownInterrupt, setTabDownInterrupt] = useState("empty");
   const [isLogIned, setIsLogIned] = useState(false); //로그인 상태(나중에 게스트와 구분하기 위해 str 써도 될듯)
 
@@ -144,7 +144,7 @@ const WindowManager = () => {
     if (isLogIned) { //로그인이 되어 있으면
       removeTask(logIn)
       const discover:TaskType = {
-        "component":<Discover startOption={startOption} setStartOption={setStartOption} focus={focus} setFocus={setFocus} backUpFocus={backUpFocus} setBackUpFocus={setBackUpFocus} setTabDownInterrupt={setTabDownInterrupt} />,
+        "component":<Discover startOption={startOption} setStartOption={setStartOption} setTabDownInterrupt={setTabDownInterrupt} />,
         "type":"Shell",
         "id":0,
         "layer":-3,

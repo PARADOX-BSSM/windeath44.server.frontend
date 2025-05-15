@@ -1,22 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import * as _ from './style';
 import {useProcessManager} from "@/hooks/processManager/processManager";
 import { useRecoilState } from 'recoil';
-import { focusState } from '@/recoil/focusState';
+import { focusState, backUpFocusState } from '@/recoil/focusState';
+import { startOptionState } from "@/recoil/startOptionState";
 
 
 interface TaskBarProps {
-    startOption: boolean;
-    setStartOption: React.Dispatch<React.SetStateAction<boolean>>;
-    focus : string;
-    setFocus: React.Dispatch<React.SetStateAction<string>>;
-    backUpFocus: string;
-    setBackUpFocus: React.Dispatch<React.SetStateAction<string>>;
     setTabDownInterrupt : React.Dispatch<React.SetStateAction<string>>;
 }
 
-const TaskBar = ({startOption, setStartOption, backUpFocus, setBackUpFocus, setTabDownInterrupt }:TaskBarProps) => {
+const TaskBar = ({setTabDownInterrupt }:TaskBarProps) => {
     const [focus, setFocus] = useRecoilState(focusState);
+    const [startOption, setStartOption] = useRecoilState(startOptionState)
+    const [backUpFocus, setBackUpFocus] = useRecoilState(backUpFocusState);
     const [taskList,,] = useProcessManager();
     const taskStyle = { margin: "0.25rem" };
     const taskButtonStyle = {
@@ -28,26 +25,33 @@ const TaskBar = ({startOption, setStartOption, backUpFocus, setBackUpFocus, setT
         backgroundColor: "seagreen"
     }
 
+    useEffect(() => {
+        console.log(focus, "💡 최신 focus 값");
+      }, [focus]);
+
+      useEffect(() => {
+        if (!startOption) {
+            setFocus(backUpFocus);
+        } else {
+            setBackUpFocus(focus);
+            setFocus("Observer");
+        }
+      }, [startOption]);
+
     return (
         <_.TTaskBar id='taskbarContainer'>
             <_.TaskList>
                 {
                     taskList.map((task) => {
-                        console.log(focus);
                         if (task.type === "Shell") {
                             return (
                                 <li style={taskStyle} key={"Observer"}>
                                     <button style={startOption ? taskSelectButtonStyle : taskButtonStyle} //스타트 옵션은 프롭스로
                                             onClick={() => {
+                                                console.log(startOption);
                                                 setStartOption(!startOption);
-                                                if (startOption) {
-                                                    setFocus(backUpFocus);
-                                                } else {
-                                                    setBackUpFocus(focus);
-                                                    setFocus("Observer");
-                                                }
                                             }
-                                            }>Start</button>
+                                        }>Start</button>
                                 </li>
                             )
                         } else {
@@ -60,9 +64,11 @@ const TaskBar = ({startOption, setStartOption, backUpFocus, setBackUpFocus, setT
                                     </li>
                                 )
                             } else {
+                                console.log(task.name, 1234);
                                 return (
                                     <li style={taskStyle} key={task.name}>
                                         <button style={taskButtonStyle} onClick={() => {
+                                            console.log("현재 focus:", focus, "변경할 task.name:", task.name);
                                             setFocus(task.name);
                                         }}>{task.name}</button>
                                     </li>

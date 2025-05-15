@@ -112,7 +112,7 @@ const Application = (props:any) => {
     }
   },[props.tabDownInterrupt])
   useEffect(()=>{ //Fucus가 본인이면 가장 높은 Layer로 렌더링
-    console.log(props.name, focus);
+    console.log(props.name, focus, 123);
     if(props.type !== "Shell") {
       if (focus === props.name) {
         props.setLayer(props.layer + 1);
@@ -128,7 +128,6 @@ const Application = (props:any) => {
           backgroundColor: window.backgroundColor,
           filter: "dropShadow(gray 0px 0px 15px)",
         })
-        console.log(focus, props.name, props.layer);
       }
     }
   },[focus])
