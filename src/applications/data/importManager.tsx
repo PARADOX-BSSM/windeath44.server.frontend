@@ -1,9 +1,9 @@
 import {Suspense, lazy} from "react";
 import {TaskType} from "@/modules/typeModule.tsx";
 
-const Terminal =  lazy(()=> import("../applications/Terminal.tsx"));
-const Settings = lazy(()=> import("../applications/settings.tsx"));
-const LogIn = lazy(()=> import("../applications/utility/login"));
+const Terminal =  lazy(()=> import("../applicationList/terminal/index.tsx"));
+const Settings = lazy(()=> import("../applicationList/settings/index.tsx"));
+const LogIn = lazy(()=> import("../utility/login/index.tsx"));
 
 //Application Import 형식 예시
 /*

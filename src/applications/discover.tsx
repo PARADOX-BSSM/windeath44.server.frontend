@@ -1,9 +1,9 @@
 import {TaskType} from "@/modules/typeModule.tsx"
-import {useProcessManager} from "@/manager/processManager.tsx";
-import {Apps} from '@/manager/importManager.tsx'
+import {useProcessManager} from "@/hooks/processManager/processManager";
+import {Apps} from '@/applications/data/importManager'
 import TaskBar from "@/applications/components/taskBar";
 import React from "react";
-import Seori from "@/manager/seori/seoriManager.tsx";
+import Seori from "@/applications/seori";
 
 interface TaskBarProps {
   startOption: boolean;

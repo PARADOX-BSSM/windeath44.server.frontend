@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {styled} from "styled-components";
-import {useQueue} from "@/modules/dataStructureModule.tsx";
+import {useQueue} from "@/hooks/dataStructure";
 
 const Input = styled.input`
     background-color: none;
@@ -9,7 +9,7 @@ const Input = styled.input`
     border: none;
     width: 100%;
     height: 2rem;
-    bottom: 5px;
+    bottom: 5px;x
 `;
 const TerminalContent = styled.div`
     display: flex;
