@@ -1,41 +1,14 @@
+import * as _ from './style.ts';
 import { useEffect, useState, Suspense, lazy } from 'react';
-import styled from "styled-components";
-import Discover from "../applications/discover.tsx";
-import Observer from "../applications/utility/observer/index.tsx";
-import {useProcessManager} from "../hooks/processManager/processManager.tsx";
-import {TaskType} from "../modules/typeModule.tsx";
+import Discover from "../../applications/discover.tsx";
+import Observer from "../../applications/utility/observer/index.tsx";
+import {useProcessManager} from "../../hooks/processManager/processManager.tsx";
+import {TaskType} from "../../modules/typeModule.tsx";
 import LogIn from '@/applications/utility/login';
 import SignUp from "@/applications/utility/signUp";
-const Application = lazy(()=> import('../applications/layout/index.tsx'));
-import bgImg from '@/assets/Background.png';
-import skeleton from '@/assets/skeleton.png';
+const Application = lazy(()=> import('../../applications/layout/index.tsx'));
 import EmailChack from "applications/utility/emailCheck";
 import Auth from "@/applications/utility/auth";
-
-const Display = styled.main`
-    height : 100vh;
-    aspect-ratio: 4/3;
-    inset: 0;
-    margin: 0 auto;
-    cursor: none;
-    background-color: var(--background);
-   background-image:url("${skeleton}");
-    background-size: cover;
-`;
-const BackgroundDiv = styled.div<{width:number}>`
-    margin:0;
-    padding:0;
-    height:100vh;
-    width: ${({ width }) => `${width}px`};
-    z-index : 9999;
-    background-image:url("${bgImg}");
-    background-size:cover;
-`
-const Desktop = styled.div`
-  margin:0;
-  padding:0;
-  display:flex;
-`
 
 
 const WindowManager = () => {
@@ -209,10 +182,10 @@ const WindowManager = () => {
 
 
   return (
-    <Desktop>
+    <_.Desktop>
       <Suspense fallback={null}>
-        <BackgroundDiv width={sideWidth}></BackgroundDiv>
-        <Display id='cursorContainer'>
+        <_.BackgroundDiv width={sideWidth}></_.BackgroundDiv>
+        <_.Display id='cursorContainer'>
           <div id="cursor"></div>
               {
                 taskList.map((task:TaskType) => {
@@ -242,10 +215,10 @@ const WindowManager = () => {
                 })
               }
               {startOption? <Observer addTask={addTask}/>:<></>}
-        </Display>
-        <BackgroundDiv width={sideWidth}></BackgroundDiv>
+        </_.Display>
+        <_.BackgroundDiv width={sideWidth}></_.BackgroundDiv>
       </Suspense>
-    </Desktop>
+    </_.Desktop>
   )
 }
 export default WindowManager;
