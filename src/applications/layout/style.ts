@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from "@emotion/styled";
 
 export const Window = styled.article`
     border: 2.5px solid #FF8EF6;

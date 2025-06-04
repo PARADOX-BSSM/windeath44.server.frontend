@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from "@emotion/styled";
 import bgImg from '@/assets/Background.png';
 import skeleton from '@/assets/skeleton.png';
 
