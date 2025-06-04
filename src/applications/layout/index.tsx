@@ -1,60 +1,10 @@
+import * as _ from './style';
 import {useEffect, useState} from 'react';
 import {useDrag} from 'react-use-gesture';
 import {toNumber} from "@/modules/typeModule.tsx";
 import Exit from "@/assets/headerButton/exit.svg";
 import Full from "@/assets/headerButton/full.svg";
 import Min from "@/assets/headerButton/min.svg";
-import styled from "styled-components";
-
-const Window = styled.article`
-    border: 2.5px solid #FF8EF6;
-    padding : 0.5rem;
-    display : flex;
-    flex-direction: column;
-`
-const WindowHeader = styled.header`
-    background-color: #FFD3FB;
-    padding : 0 0.5rem;
-    display : flex;
-    justify-content: flex-end;
-    align-items: center;
-    height : 30px;
-    border: 2.5px solid #E774DD;
-`;
-const HeaderButton = styled.button`
-    height : 20px;
-    width : 20px;
-    margin-left: 5px;
-  padding : 0;
-  //margin : 0;
-`;
-const MinimizeButton = styled(HeaderButton)`
-  background-color: rgba(0, 0, 0, 0);
-  border: none;
-`;
-const FullScreenButton = styled(HeaderButton)`
-  background-color: rgba(0, 0, 0, 0);
-    border: none;
-`;
-const ExitButton = styled(HeaderButton)`
-  background-color: rgba(0, 0, 0, 0);
-    border: none;
-`;
-const WindowContent = styled.section`
-    position : absolute;
-    top : 40px;
-    left : 0;
-    right : 0;
-    bottom : 0;
-    margin : 0.5rem;
-    box-sizing: border-box;
-    border : solid 2.5px #E774DD;
-`;
-const Shell = styled.article`
-    height : 100%;
-    width : 100%;
-`;
-
 
 const Application = (props:any) => {
   const windowProps:React.CSSProperties = {
@@ -260,23 +210,23 @@ const Application = (props:any) => {
   // })
   if(props.type==="App") {
     return (
-      <Window style={window} onMouseDown={()=>{
+      <_.Window style={window} onMouseDown={()=>{
         props.setFocus(props.name)
       }}>
-        <WindowHeader {...moveManager()}>
+        <_.WindowHeader {...moveManager()}>
           {props.focus === props.name?
             <>
-              <FullScreenButton onClick={()=>
+              <_.FullScreenButton onClick={()=>
                 setIsFullScreen(!isFullScreen)
               }>
                 <img src={Full} alt=""/>
-              </FullScreenButton>
-              <MinimizeButton onClick={()=>
+              </_.FullScreenButton>
+              <_.MinimizeButton onClick={()=>
                 setIsMinimized(!isMinimized)
               }>
                 <img src={Min} alt=""/>
-              </MinimizeButton>
-              <ExitButton onClick={() =>
+              </_.MinimizeButton>
+              <_.ExitButton onClick={() =>
               {
                 props.removeTask(props.removeCompnent);
                 if (!props.isLogIned) {
@@ -285,31 +235,31 @@ const Application = (props:any) => {
               }
               }>
                 <img src={Exit} alt=""/>
-              </ExitButton>
+              </_.ExitButton>
             </>:
             <>
-              <HeaderButton onClick={() =>
+              <_.HeaderButton onClick={() =>
                 props.removeTask(props.removeCompnent)
-              }></HeaderButton>
-              <HeaderButton onClick={()=>
+              }></_.HeaderButton>
+              <_.HeaderButton onClick={()=>
                 setIsFullScreen(!isFullScreen)
-              }></HeaderButton>
-              <HeaderButton onClick={()=>
+              }></_.HeaderButton>
+              <_.HeaderButton onClick={()=>
                 setIsMinimized(!isMinimized)
-              }> </HeaderButton>
+              }> </_.HeaderButton>
             </>
           }
-        </WindowHeader>
-        <WindowContent {...sizeManager()} onMouseUp={()=>setIsFirst(true)}>
+        </_.WindowHeader>
+        <_.WindowContent {...sizeManager()} onMouseUp={()=>setIsFirst(true)}>
           {props.children}
-        </WindowContent>
-      </Window>
+        </_.WindowContent>
+      </_.Window>
     )
   }else if(props.type==="Shell") {
     return (
-      <Shell className="shell" onClick={()=>props.setFocus("Discover")}>
+      <_.Shell className="shell" onClick={()=>props.setFocus("Discover")}>
         {props.children}
-      </Shell>
+      </_.Shell>
     )
   }
 }

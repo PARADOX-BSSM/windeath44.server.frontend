@@ -6,7 +6,7 @@ import {useProcessManager} from "../hooks/processManager/processManager.tsx";
 import {TaskType} from "../modules/typeModule.tsx";
 import LogIn from '@/applications/utility/login';
 import SignUp from "@/applications/utility/signUp";
-const Application = lazy(()=> import('../applications/application.tsx'));
+const Application = lazy(()=> import('../applications/layout/index.tsx'));
 import bgImg from '@/assets/Background.png';
 import skeleton from '@/assets/skeleton.png';
 import EmailChack from "applications/utility/emailCheck";
