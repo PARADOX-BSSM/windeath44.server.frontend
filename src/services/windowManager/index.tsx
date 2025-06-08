@@ -4,11 +4,11 @@ import { useAtom } from 'jotai';
 import { isLogInedAtom, focusAtom, layerAtom, tabDownInterruptAtom, backUpFocusAtom, startOptionAtom } from '@/atoms/windowManager.ts';
 import Discover from "../../applications/discover.tsx";
 import Observer from "../../applications/utility/observer/index.tsx";
-import {useProcessManager} from "../../hooks/processManager.tsx";
-import {TaskType} from "../../modules/typeModule.tsx";
+import { useProcessManager } from "../../hooks/processManager.tsx";
+import { TaskType } from "../../modules/typeModule.tsx";
 import LogIn from '@/applications/utility/login';
 import SignUp from "@/applications/utility/signUp";
-const Application = lazy(()=> import('../../applications/layout/index.tsx'));
+const Application = lazy(() => import('../../applications/layout/index.tsx'));
 import EmailChack from "applications/utility/emailCheck";
 import Auth from "@/applications/utility/auth";
 
@@ -28,7 +28,7 @@ const WindowManager = () => {
 
   const [taskList, addTask, removeTask] = useProcessManager();
 
-  const changeToSignUp = () => {   
+  const changeToSignUp = () => {
     addTask(signUp);
     removeTask(logIn);
   }
@@ -48,61 +48,61 @@ const WindowManager = () => {
     removeTask(emailChack);
   }
 
-  const logIn:TaskType = {
-    "component": <Suspense fallback={null}><LogIn setIsLogIned={setIsLogIned} changeToSignUp={changeToSignUp} changeToEmailCheck={changeToEmailCheck}/></Suspense>,
+  const logIn: TaskType = {
+    "component": <Suspense fallback={null}><LogIn setIsLogIned={setIsLogIned} changeToSignUp={changeToSignUp} changeToEmailCheck={changeToEmailCheck} /></Suspense>,
     "type": "App",
     "id": 1,
     "name": "LogIn",
     "layer": undefined,
-    "appSetup":{
-      "Image" : "default",
-      "minWidth" : 748,
-      "minHeight" : 464,
-      "setUpWidth" : 748,
-      "setUpHeight" : 464
+    "appSetup": {
+      "Image": "default",
+      "minWidth": 748,
+      "minHeight": 464,
+      "setUpWidth": 748,
+      "setUpHeight": 464
     }
   }
 
-  const signUp:TaskType = {
-    "component": <Suspense fallback={null}><SignUp changeToLogIn={changeToLogIn}/></Suspense>,
+  const signUp: TaskType = {
+    "component": <Suspense fallback={null}><SignUp changeToLogIn={changeToLogIn} /></Suspense>,
     "type": "App",
     "id": 2,
     "name": "SignUp",
     "layer": undefined,
-    "appSetup":{
-      "Image" : "default",
-      "minWidth" : 748,
-      "minHeight" : 550,
-      "setUpWidth" : 748,
-      "setUpHeight" : 550
+    "appSetup": {
+      "Image": "default",
+      "minWidth": 748,
+      "minHeight": 550,
+      "setUpWidth": 748,
+      "setUpHeight": 550
     }
   }
-  const emailChack:TaskType = {
-    "component": <Suspense fallback={null}><EmailChack changeToLogIn={changeToLogIn} changeToAuth={changeToAuth}/></Suspense>,
+  const emailChack: TaskType = {
+    "component": <Suspense fallback={null}><EmailChack changeToLogIn={changeToLogIn} changeToAuth={changeToAuth} /></Suspense>,
     "type": "App",
     "id": 3,
     "name": "EmailChack",
     "layer": undefined,
-    "appSetup":{
-      "Image" : "default",
-      "minWidth" : 748,
-      "minHeight" : 464,
-      "setUpWidth" : 748,
-      "setUpHeight" : 464
+    "appSetup": {
+      "Image": "default",
+      "minWidth": 748,
+      "minHeight": 464,
+      "setUpWidth": 748,
+      "setUpHeight": 464
     }
   }
-  const auth:TaskType = {
-    "component": <Suspense fallback={null}><Auth changeToLogIn={changeToLogIn} changeToEmailCheck={changeToEmailCheck}/></Suspense>,
+  const auth: TaskType = {
+    "component": <Suspense fallback={null}><Auth changeToLogIn={changeToLogIn} changeToEmailCheck={changeToEmailCheck} /></Suspense>,
     "type": "App",
     "id": 4,
     "name": "auth",
     "layer": undefined,
-    "appSetup":{
-      "Image" : "default",
-      "minWidth" : 748,
-      "minHeight" : 464,
-      "setUpWidth" : 748,
-      "setUpHeight" : 464
+    "appSetup": {
+      "Image": "default",
+      "minWidth": 748,
+      "minHeight": 464,
+      "setUpWidth": 748,
+      "setUpHeight": 464
     }
   }
 
@@ -112,27 +112,27 @@ const WindowManager = () => {
     if (focus !== "Observer") {
       setStartOption(false);
     }
-  },[focus])
-  useEffect(()=>{ //초기 기본 설정
+  }, [focus])
+  useEffect(() => { //초기 기본 설정
     if (isLogIned) {
       removeTask(logIn)
-      const discover:TaskType = {
-        "component":<Discover startOption={startOption} setStartOption={setStartOption} focus={focus} setFocus={setFocus} backUpFocus={backUpFocus} setBackUpFocus={setBackUpFocus} setTabDownInterrupt={setTabDownInterrupt} />,
-        "type":"Shell",
-        "id":0,
-        "layer":-3,
-        "name":"Discover",
-        "appSetup":undefined
+      const discover: TaskType = {
+        "component": <Discover startOption={startOption} setStartOption={setStartOption} focus={focus} setFocus={setFocus} backUpFocus={backUpFocus} setBackUpFocus={setBackUpFocus} setTabDownInterrupt={setTabDownInterrupt} />,
+        "type": "Shell",
+        "id": 0,
+        "layer": -3,
+        "name": "Discover",
+        "appSetup": undefined
       }
-      setTimeout(()=>{ addTask(discover) }, 200)
+      setTimeout(() => { addTask(discover) }, 200)
     }
     else {
-      setTimeout(()=>{ addTask(logIn) }, 200)
+      setTimeout(() => { addTask(logIn) }, 200)
     }
-  },[isLogIned])
+  }, [isLogIned])
 
   useEffect(() => {
-    const container:HTMLElement = document.getElementById("cursorContainer") as HTMLElement;
+    const container: HTMLElement = document.getElementById("cursorContainer") as HTMLElement;
     const cursor = document.getElementById("cursor");
     if (!container || !cursor) return;
     cursor.style.zIndex = "9990";
@@ -168,34 +168,28 @@ const WindowManager = () => {
         <_.BackgroundDiv width={sideWidth}></_.BackgroundDiv>
         <_.Display id='cursorContainer'>
           <div id="cursor"></div>
-              {
-                taskList.map((task:TaskType) => {
-                  return (
-                    <Application key={task.name}
-                                 name={task.name}
-                                 uid={task.id}
-                                 type={task.type}
-                                 appSetup={task.appSetup}
-                                 setUpHeight={task.appSetup?.setUpHeight}
-                                 setUpWidth={task.appSetup?.setUpWidth}
-                                 layer={layer}
-                                 focus={focus}
-                                 taskList={taskList}
-                                 cursorVec={cursorVec}
-                                 tabDownInterrupt={tabDownInterrupt}
-                                 isLogIned={isLogIned}
-                                 setLayer={setLayer}
-                                 setFocus={setFocus}
-                                 setTabDownInterrupt={setTabDownInterrupt}
-                                 setIsLogIned={setIsLogIned}
-                                 removeTask={removeTask}
-                                 removeCompnent={task}
-                                 mouseBeacon={mouseBeacon}
-                    >{task.component}</Application>
-                  )
-                })
-              }
-              {startOption? <Observer addTask={addTask}/>:<></>}
+          {
+            taskList.map((task: TaskType) => {
+              return (
+                <Application
+                  key={task.name}
+                  name={task.name}
+                  uid={task.id}
+                  type={task.type}
+                  appSetup={task.appSetup}
+                  setUpHeight={task.appSetup?.setUpHeight}
+                  setUpWidth={task.appSetup?.setUpWidth}
+                  cursorVec={cursorVec}
+                  removeTask={removeTask}
+                  removeCompnent={task}
+                  mouseBeacon={mouseBeacon}
+                >
+                  {task.component}
+                </Application>
+              )
+            })
+          }
+          {startOption ? <Observer addTask={addTask} /> : <></>}
         </_.Display>
         <_.BackgroundDiv width={sideWidth}></_.BackgroundDiv>
       </Suspense>
