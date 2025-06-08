@@ -1,7 +1,7 @@
 import * as _ from './style.ts';
 import { useEffect, useState, Suspense, lazy } from 'react';
 import { useAtom } from 'jotai';
-import { isLogInedAtom, focusAtom, layerAtom, tabDownInterruptAtom, backUpFocusAtom, startOptionAtom } from '@/atoms/windowManager.ts';
+import { isLogInedAtom, focusAtom, backUpFocusAtom, startOptionAtom } from '@/atoms/windowManager.ts';
 import Discover from "../../applications/discover.tsx";
 import Observer from "../../applications/utility/observer/index.tsx";
 import { useProcessManager } from "../../hooks/processManager.tsx";
@@ -15,7 +15,6 @@ import Auth from "@/applications/utility/auth";
 
 const WindowManager = () => {
   const [cursorVec, setCursorVec] = useState<number[]>([0, 0, 0, 0]);
-  const [mouseBeacon, setMouseBeacon] = useState<number[]>([0, 0]);
   const [sideWidth, setSideWidth] = useState<number>(0);
 
   // jotai 전역 상태
@@ -142,7 +141,6 @@ const WindowManager = () => {
       y = Math.max(0, Math.min(bounds.height - 5, y));
       cursor.style.left = `${x}px`;
       cursor.style.top = `${y}px`;
-      setMouseBeacon([event.clientX, event.clientY]);
       setCursorVec([x, y]);
     });
   }, [])
@@ -180,7 +178,6 @@ const WindowManager = () => {
                   cursorVec={cursorVec}
                   removeTask={removeTask}
                   removeCompnent={task}
-                  mouseBeacon={mouseBeacon}
                 >
                   {task.component}
                 </Application>

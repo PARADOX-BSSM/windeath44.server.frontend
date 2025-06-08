@@ -116,7 +116,7 @@ const Application = (props: any) => {
   }, [isFullScreen]);
 
   const Corner = () => {
-    const [x, y] = props.mouseBeacon;
+    const [x, y] = props.cursorVec;
     const { left, top, width, height } = window;
 
     const nearRight = x >= toNumber(left) + toNumber(width) - 10;
@@ -179,7 +179,7 @@ const Application = (props: any) => {
     }
     setBeforeSizeParams(params.offset);
   });
-  const moveManager = useDrag((params) => {
+  const moveManager = useDrag(() => {
     if (!isFullScreen) {
       let x = cursor[0];
       let y = cursor[1];
