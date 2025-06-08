@@ -19,11 +19,9 @@ const WindowManager = () => {
   const [sideWidth, setSideWidth] = useState<number>(0);
 
   // jotai 전역 상태
-  const [layer, setLayer] = useAtom(layerAtom);
   const [focus, setFocus] = useAtom(focusAtom);
   const [startOption, setStartOption] = useAtom(startOptionAtom);
   const [backUpFocus, setBackUpFocus] = useAtom(backUpFocusAtom);
-  const [tabDownInterrupt, setTabDownInterrupt] = useAtom(tabDownInterruptAtom);
   const [isLogIned, setIsLogIned] = useAtom(isLogInedAtom);
 
   const [taskList, addTask, removeTask] = useProcessManager();
@@ -117,7 +115,7 @@ const WindowManager = () => {
     if (isLogIned) {
       removeTask(logIn)
       const discover: TaskType = {
-        "component": <Discover startOption={startOption} setStartOption={setStartOption} focus={focus} setFocus={setFocus} backUpFocus={backUpFocus} setBackUpFocus={setBackUpFocus} setTabDownInterrupt={setTabDownInterrupt} />,
+        "component": <Discover startOption={startOption} setStartOption={setStartOption} focus={focus} setFocus={setFocus} backUpFocus={backUpFocus} setBackUpFocus={setBackUpFocus} />,
         "type": "Shell",
         "id": 0,
         "layer": -3,
