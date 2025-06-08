@@ -2,7 +2,7 @@ import * as _ from './style.ts';
 import { useEffect, useState, Suspense, lazy } from 'react';
 import Discover from "../../applications/discover.tsx";
 import Observer from "../../applications/utility/observer/index.tsx";
-import {useProcessManager} from "../../hooks/processManager/processManager.tsx";
+import {useProcessManager} from "../../hooks/processManager.tsx";
 import {TaskType} from "../../modules/typeModule.tsx";
 import LogIn from '@/applications/utility/login';
 import SignUp from "@/applications/utility/signUp";

@@ -1,6 +1,6 @@
 import React from "react";
 import * as _ from './style';
-import {useProcessManager} from "@/hooks/processManager/processManager";
+import {useProcessManager} from "@/hooks/processManager";
 
 
 interface TaskBarProps {
