@@ -6,12 +6,14 @@ import Discover from "../../applications/discover.tsx";
 import Observer from "../../applications/utility/observer/index.tsx";
 import { useProcessManager } from "../../hooks/processManager.tsx";
 import { TaskType } from "../../modules/typeModule.tsx";
-import LogIn from '@/applications/utility/login';
-import SignUp from "@/applications/utility/signUp";
-const Application = lazy(() => import('../../applications/layout/index.tsx'));
-import EmailChack from "applications/utility/emailCheck";
-import Auth from "@/applications/utility/auth";
+import {
+  createLogInTask,
+  createSignUpTask,
+  createEmailChackTask,
+  createAuthTask
+} from './tasks';
 
+const Application = lazy(() => import('../../applications/layout/index.tsx'));
 
 const WindowManager = () => {
   const [cursorVec, setCursorVec] = useState<number[]>([0, 0, 0, 0]);
@@ -45,64 +47,10 @@ const WindowManager = () => {
     removeTask(emailChack);
   }
 
-  const logIn: TaskType = {
-    "component": <Suspense fallback={null}><LogIn setIsLogIned={setIsLogIned} changeToSignUp={changeToSignUp} changeToEmailCheck={changeToEmailCheck} /></Suspense>,
-    "type": "App",
-    "id": 1,
-    "name": "LogIn",
-    "layer": undefined,
-    "appSetup": {
-      "Image": "default",
-      "minWidth": 748,
-      "minHeight": 464,
-      "setUpWidth": 748,
-      "setUpHeight": 464
-    }
-  }
-
-  const signUp: TaskType = {
-    "component": <Suspense fallback={null}><SignUp changeToLogIn={changeToLogIn} /></Suspense>,
-    "type": "App",
-    "id": 2,
-    "name": "SignUp",
-    "layer": undefined,
-    "appSetup": {
-      "Image": "default",
-      "minWidth": 748,
-      "minHeight": 550,
-      "setUpWidth": 748,
-      "setUpHeight": 550
-    }
-  }
-  const emailChack: TaskType = {
-    "component": <Suspense fallback={null}><EmailChack changeToLogIn={changeToLogIn} changeToAuth={changeToAuth} /></Suspense>,
-    "type": "App",
-    "id": 3,
-    "name": "EmailChack",
-    "layer": undefined,
-    "appSetup": {
-      "Image": "default",
-      "minWidth": 748,
-      "minHeight": 464,
-      "setUpWidth": 748,
-      "setUpHeight": 464
-    }
-  }
-  const auth: TaskType = {
-    "component": <Suspense fallback={null}><Auth changeToLogIn={changeToLogIn} changeToEmailCheck={changeToEmailCheck} /></Suspense>,
-    "type": "App",
-    "id": 4,
-    "name": "auth",
-    "layer": undefined,
-    "appSetup": {
-      "Image": "default",
-      "minWidth": 748,
-      "minHeight": 464,
-      "setUpWidth": 748,
-      "setUpHeight": 464
-    }
-  }
-
+  const logIn = createLogInTask(setIsLogIned, changeToSignUp, changeToEmailCheck);
+  const signUp = createSignUpTask(changeToLogIn);
+  const emailChack = createEmailChackTask(changeToLogIn, changeToAuth);
+  const auth = createAuthTask(changeToLogIn, changeToEmailCheck);
 
   // 포커스가 바뀔 때마다
   useEffect(() => {
