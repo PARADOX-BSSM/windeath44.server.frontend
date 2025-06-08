@@ -12,10 +12,9 @@ interface TaskBarProps {
   setFocus: React.Dispatch<React.SetStateAction<string>>;
   backUpFocus: string;
   setBackUpFocus: React.Dispatch<React.SetStateAction<string>>;
-  setTabDownInterrupt : React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Discover = ({startOption, setStartOption, focus, setFocus, backUpFocus, setBackUpFocus, setTabDownInterrupt }:TaskBarProps) => {
+const Discover = ({startOption, setStartOption, focus, setFocus, backUpFocus, setBackUpFocus }:TaskBarProps) => {
   const [, addTask, ] = useProcessManager();
   return(
     <>
