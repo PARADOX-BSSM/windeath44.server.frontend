@@ -6,12 +6,7 @@ import Discover from "../../applications/discover.tsx";
 import Observer from "../../applications/utility/observer/index.tsx";
 import { useProcessManager } from "../../hooks/processManager.tsx";
 import { TaskType } from "../../modules/typeModule.tsx";
-import {
-  createLogInTask,
-  createSignUpTask,
-  createEmailChackTask,
-  createAuthTask
-} from './tasks';
+import { getTaskCreators } from './tasks';
 
 const Application = lazy(() => import('../../applications/layout/index.tsx'));
 
@@ -26,31 +21,7 @@ const WindowManager = () => {
   const [isLogIned, setIsLogIned] = useAtom(isLogInedAtom);
 
   const [taskList, addTask, removeTask] = useProcessManager();
-
-  const changeToSignUp = () => {
-    addTask(signUp);
-    removeTask(logIn);
-  }
-  const changeToLogIn = () => {
-    addTask(logIn);
-    removeTask(signUp);
-    removeTask(emailChack);
-    removeTask(auth);
-  }
-  const changeToEmailCheck = () => {
-    addTask(emailChack)
-    removeTask(logIn);
-    removeTask(auth);
-  }
-  const changeToAuth = () => {
-    addTask(auth)
-    removeTask(emailChack);
-  }
-
-  const logIn = createLogInTask(setIsLogIned, changeToSignUp, changeToEmailCheck);
-  const signUp = createSignUpTask(changeToLogIn);
-  const emailChack = createEmailChackTask(changeToLogIn, changeToAuth);
-  const auth = createAuthTask(changeToLogIn, changeToEmailCheck);
+  const { logIn, signUp, emailChack, auth } = getTaskCreators(setIsLogIned, addTask, removeTask);
 
   // 포커스가 바뀔 때마다
   useEffect(() => {

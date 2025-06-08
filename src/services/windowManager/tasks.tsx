@@ -5,62 +5,96 @@ import EmailChack from 'applications/utility/emailCheck';
 import Auth from '@/applications/utility/auth';
 import { TaskType } from '../../modules/typeModule.tsx';
 
-export const createLogInTask = (setIsLogIned: any, changeToSignUp: any, changeToEmailCheck: any): TaskType => ({
-  component: <Suspense fallback={null}><LogIn setIsLogIned={setIsLogIned} changeToSignUp={changeToSignUp} changeToEmailCheck={changeToEmailCheck} /></Suspense>,
-  type: "App",
-  id: 1,
-  name: "LogIn",
-  layer: undefined,
-  appSetup: {
-    Image: "default",
-    minWidth: 748,
-    minHeight: 464,
-    setUpWidth: 748,
-    setUpHeight: 464
-  }
-});
+type SetIsLogIned = React.Dispatch<React.SetStateAction<boolean>>;
+type AddTask = (task: TaskType) => void;
+type RemoveTask = (task: TaskType) => void;
 
-export const createSignUpTask = (changeToLogIn: any): TaskType => ({
-  component: <Suspense fallback={null}><SignUp changeToLogIn={changeToLogIn} /></Suspense>,
-  type: "App",
-  id: 2,
-  name: "SignUp",
-  layer: undefined,
-  appSetup: {
-    Image: "default",
-    minWidth: 748,
-    minHeight: 550,
-    setUpWidth: 748,
-    setUpHeight: 550
-  }
-});
+export function getTaskCreators(
+  setIsLogIned: SetIsLogIned,
+  addTask: AddTask,
+  removeTask: RemoveTask
+) {
+  let logIn: TaskType, signUp: TaskType, emailChack: TaskType, auth: TaskType;
 
-export const createEmailChackTask = (changeToLogIn: any, changeToAuth: any): TaskType => ({
-  component: <Suspense fallback={null}><EmailChack changeToLogIn={changeToLogIn} changeToAuth={changeToAuth} /></Suspense>,
-  type: "App",
-  id: 3,
-  name: "EmailChack",
-  layer: undefined,
-  appSetup: {
-    Image: "default",
-    minWidth: 748,
-    minHeight: 464,
-    setUpWidth: 748,
-    setUpHeight: 464
-  }
-});
+  const changeToSignUp = () => {
+    addTask(signUp);
+    removeTask(logIn);
+  };
+  const changeToLogIn = () => {
+    addTask(logIn);
+    removeTask(signUp);
+    removeTask(emailChack);
+    removeTask(auth);
+  };
+  const changeToEmailCheck = () => {
+    addTask(emailChack);
+    removeTask(logIn);
+    removeTask(auth);
+  };
+  const changeToAuth = () => {
+    addTask(auth);
+    removeTask(emailChack);
+  };
 
-export const createAuthTask = (changeToLogIn: any, changeToEmailCheck: any): TaskType => ({
-  component: <Suspense fallback={null}><Auth changeToLogIn={changeToLogIn} changeToEmailCheck={changeToEmailCheck} /></Suspense>,
-  type: "App",
-  id: 4,
-  name: "auth",
-  layer: undefined,
-  appSetup: {
-    Image: "default",
-    minWidth: 748,
-    minHeight: 464,
-    setUpWidth: 748,
-    setUpHeight: 464
-  }
-});
+  logIn = {
+    component: <Suspense fallback={null}><LogIn setIsLogIned={setIsLogIned} changeToSignUp={changeToSignUp} changeToEmailCheck={changeToEmailCheck} /></Suspense>,
+    type: "App",
+    id: 1,
+    name: "LogIn",
+    layer: undefined,
+    appSetup: {
+      Image: "default",
+      minWidth: 748,
+      minHeight: 464,
+      setUpWidth: 748,
+      setUpHeight: 464
+    }
+  };
+
+  signUp = {
+    component: <Suspense fallback={null}><SignUp changeToLogIn={changeToLogIn} /></Suspense>,
+    type: "App",
+    id: 2,
+    name: "SignUp",
+    layer: undefined,
+    appSetup: {
+      Image: "default",
+      minWidth: 748,
+      minHeight: 550,
+      setUpWidth: 748,
+      setUpHeight: 550
+    }
+  };
+
+  emailChack = {
+    component: <Suspense fallback={null}><EmailChack changeToLogIn={changeToLogIn} changeToAuth={changeToAuth} /></Suspense>,
+    type: "App",
+    id: 3,
+    name: "EmailChack",
+    layer: undefined,
+    appSetup: {
+      Image: "default",
+      minWidth: 748,
+      minHeight: 464,
+      setUpWidth: 748,
+      setUpHeight: 464
+    }
+  };
+
+  auth = {
+    component: <Suspense fallback={null}><Auth changeToLogIn={changeToLogIn} changeToEmailCheck={changeToEmailCheck} /></Suspense>,
+    type: "App",
+    id: 4,
+    name: "auth",
+    layer: undefined,
+    appSetup: {
+      Image: "default",
+      minWidth: 748,
+      minHeight: 464,
+      setUpWidth: 748,
+      setUpHeight: 464
+    }
+  };
+
+  return { logIn, signUp, emailChack, auth };
+}
