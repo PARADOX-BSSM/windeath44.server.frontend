@@ -1,7 +1,6 @@
 import * as _ from './style';
 import { useEffect, useState } from 'react';
 import { useDrag } from 'react-use-gesture';
-import { toNumber } from "@/modules/typeModule.tsx";
 import Exit from "@/assets/headerButton/exit.svg";
 import Full from "@/assets/headerButton/full.svg";
 import Min from "@/assets/headerButton/min.svg";
@@ -12,6 +11,12 @@ import {
   layerAtom,
   tabDownInterruptAtom,
 } from '@/atoms/windowManager.ts';
+import {
+  getCorner,
+  widthCondition,
+  heightCondition,
+  leftCondition,
+} from './utils';
 
 const Application = (props: any) => {
   // jotai 상태 사용
@@ -53,15 +58,8 @@ const Application = (props: any) => {
   useEffect(() => {
     if (isMinimized) {
       setWindow({
+        ...window,
         display: "none",
-        position: window.position,
-        height: window.height,
-        width: window.width,
-        top: window.top,
-        left: window.left,
-        zIndex: layer,
-        backgroundColor: window.backgroundColor,
-        filter: "dropShadow(gray 0px 0px 15px)"
       });
       setFocus("Discover");
     }
@@ -75,22 +73,14 @@ const Application = (props: any) => {
   }, [tabDownInterrupt]);
 
   useEffect(() => {
-    if (props.type !== "Shell") {
-      if (focus === props.name) {
-        setLayer(layer + 1);
-        setIsMinimized(false);
-        setWindow({
-          display: undefined,
-          position: window.position,
-          height: window.height,
-          width: window.width,
-          top: window.top,
-          left: window.left,
-          zIndex: layer,
-          backgroundColor: window.backgroundColor,
-          filter: "dropShadow(gray 0px 0px 15px)",
-        });
-      }
+    if (props.type !== "Shell" && focus === props.name) {
+      setLayer(layer + 1);
+      setIsMinimized(false);
+      setWindow({
+        ...window,
+        display: undefined,
+        zIndex: layer,
+      });
     }
   }, [focus]);
 
@@ -100,14 +90,12 @@ const Application = (props: any) => {
       const bounds = container.getBoundingClientRect();
       setBackupWindow(window);
       setWindow({
-        display: undefined,
-        position: window.position,
+        ...window,
         height: `calc(100vh - 52px)`,
         width: bounds.width,
         top: bounds.top,
         left: bounds.left,
         zIndex: layer - 1,
-        backgroundColor: window.backgroundColor,
         filter: undefined
       });
     } else if (!isFullScreen) {
@@ -115,84 +103,57 @@ const Application = (props: any) => {
     }
   }, [isFullScreen]);
 
-  const Corner = () => {
-    const [x, y] = props.cursorVec;
-    const { left, top, width, height } = window;
+  // 유틸 함수 사용
+  const corner = getCorner(props.cursorVec, window);
 
-    const nearRight = x >= toNumber(left) + toNumber(width) - 10;
-    const nearLeft = x <= toNumber(left) + 10;
-    const nearBottom = y >= toNumber(top) + toNumber(height) - 10;
-
-    return [nearRight, nearLeft, nearBottom];
-  };
-
-  const widthCondition = () => {
-    const [nearRight, nearLeft, nearBottom] = Corner();
-    return ((nearRight && nearBottom) || (nearLeft && nearBottom) || nearRight || nearLeft);
-  };
-  const heightCondition = () => {
-    const [nearRight, nearLeft, nearBottom] = Corner();
-    return ((nearRight && nearBottom) || (nearLeft && nearBottom) || nearBottom);
-  };
-  const leftCondition = () => {
-    const [, nearLeft, nearBottom] = Corner();
-    return ((nearLeft && nearBottom) || nearLeft);
-  };
   const widthLimit = (params: any) => {
-    const [nearRight] = Corner();
+    const [nearRight] = corner;
     if (window.width as unknown as number >= props.appSetup.minWidth) {
       if (nearRight) {
-        return toNumber(window.width) + params.offset[0] - beforeSizeParams[0];
+        return Number(window.width) + params.offset[0] - beforeSizeParams[0];
       } else {
-        return toNumber(window.width) - params.offset[0] + beforeSizeParams[0];
+        return Number(window.width) - params.offset[0] + beforeSizeParams[0];
       }
     }
     return props.appSetup.minWidth;
   };
   const heightLimit = (params: any) => {
     if (window.height as unknown as number >= props.appSetup.minHeight) {
-      return window.height + params.offset[1] - beforeSizeParams[1];
+      return Number(window.height) + params.offset[1] - beforeSizeParams[1];
     }
     return props.appSetup.minHeight;
   };
   const leftLimit = (params: any) => {
     if (window.width as unknown as number >= props.appSetup.minWidth) {
-      return window.left + params.offset[0] - beforeSizeParams[0];
+      return Number(window.left) + params.offset[0] - beforeSizeParams[0];
     }
     return window.left;
   };
+
   const sizeManager = useDrag((params) => {
-    if (isFirst && !isFullScreen && (heightCondition() || widthCondition() || leftCondition())) {
+    if (isFirst && !isFullScreen && (heightCondition(corner) || widthCondition(corner) || leftCondition(corner))) {
       setWindow({
-        display: undefined,
-        position: window.position,
-        height: heightCondition() ? heightLimit(params) : window.height,
-        width: widthCondition() ? widthLimit(params) : window.width,
-        top: window.top,
-        left: leftCondition() ? leftLimit(params) : window.left,
+        ...window,
+        height: heightCondition(corner) ? heightLimit(params) : window.height,
+        width: widthCondition(corner) ? widthLimit(params) : window.width,
+        left: leftCondition(corner) ? leftLimit(params) : window.left,
         zIndex: layer - 1,
-        backgroundColor: window.backgroundColor,
-        filter: "dropShadow(gray 0px 0px 15px)"
       });
     } else {
       setIsFirst(false);
     }
     setBeforeSizeParams(params.offset);
   });
+
   const moveManager = useDrag(() => {
     if (!isFullScreen) {
       let x = cursor[0];
       let y = cursor[1];
       setWindow({
-        display: undefined,
-        position: window.position,
-        height: window.height,
-        width: window.width,
-        left: window.left as unknown as number + (x - beforeMoveParams[0]),
-        top: window.top as unknown as number + (y - beforeMoveParams[1]),
+        ...window,
+        left: Number(window.left) + (x - beforeMoveParams[0]),
+        top: Number(window.top) + (y - beforeMoveParams[1]),
         zIndex: layer - 1,
-        backgroundColor: window.backgroundColor,
-        filter: "dropShadow(gray 0px 0px 15px)",
       });
     }
   });
