@@ -1,7 +1,13 @@
+import { useState } from 'react';
 import MemorialBtn from '@/applications/components/memorialBtn';
 import * as _ from './style.ts';
 
+
+const btnList = ["추모관 검색", "즐겨찾기", "추모관 신청"];
+
 const Memorial = () => {
+    const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
+
     return(
         <_.Container>
             <_.InnerContainer>
@@ -22,9 +28,14 @@ const Memorial = () => {
                     </_.DescriptionBox>
                     <_.BtnWrapper>
                         <_.BtnInnerWrapper>
-                            <MemorialBtn name="추모관 검색"/>
-                            <MemorialBtn name="즐겨찾기"/>
-                            <MemorialBtn name="추모관 신청"/>
+                            {btnList.map((name, idx) => (
+                                <MemorialBtn
+                                    key={name}
+                                    name={name}
+                                    selected={selectedIdx === idx}
+                                    onClick={() => setSelectedIdx(idx)}
+                                />
+                            ))}
                         </_.BtnInnerWrapper>
                         <_.BtnVoid />
                     </_.BtnWrapper>
