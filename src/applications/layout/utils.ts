@@ -27,3 +27,21 @@ export function leftCondition(corner: [boolean, boolean, boolean]) {
 export type DragParams = {
   offset: [number, number];
 };
+
+export interface ApplicationProps {
+  name: string;
+  type: "App" | "Shell";
+  appSetup: {
+    minWidth: number;
+    minHeight: number;
+    setUpWidth: number;
+    setUpHeight: number;
+    [key: string]: any;
+  };
+  setUpHeight: number;
+  setUpWidth: number;
+  cursorVec: number[];
+  removeTask: (task: any) => void;
+  removeCompnent: any;
+  children: React.ReactNode;
+}

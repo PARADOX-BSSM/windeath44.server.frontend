@@ -17,9 +17,10 @@ import {
   heightCondition,
   leftCondition,
   DragParams,
+  ApplicationProps,
 } from './utils';
 
-const Application = (props: any) => {
+const Application = (props: ApplicationProps) => {
   // jotai 상태 사용
   const [layer, setLayer] = useAtom(layerAtom);
   const [focus, setFocus] = useAtom(focusAtom);
