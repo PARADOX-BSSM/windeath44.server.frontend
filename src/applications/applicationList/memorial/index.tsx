@@ -34,6 +34,7 @@ const Memorial = () => {
                                     name={name}
                                     selected={selectedIdx === idx}
                                     onClick={() => setSelectedIdx(idx)}
+                                    type="menu"
                                 />
                             ))}
                         </_.BtnInnerWrapper>
@@ -41,7 +42,7 @@ const Memorial = () => {
                     </_.BtnWrapper>
                 </_.MainContainer>
                 <_.Footer>
-                    <MemorialBtn name="입장하기"/>
+                    <MemorialBtn name="입장하기" type="submit" active={selectedIdx !== null}/>
                 </_.Footer>
             </_.InnerContainer>
         </_.Container>
