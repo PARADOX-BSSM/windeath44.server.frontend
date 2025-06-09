@@ -16,6 +16,7 @@ import {
   widthCondition,
   heightCondition,
   leftCondition,
+  DragParams,
 } from './utils';
 
 const Application = (props: any) => {
@@ -106,7 +107,7 @@ const Application = (props: any) => {
   // 유틸 함수 사용
   const corner = getCorner(props.cursorVec, window);
 
-  const widthLimit = (params: any) => {
+  const widthLimit = (params: DragParams) => {
     const [nearRight] = corner;
     if (window.width as unknown as number >= props.appSetup.minWidth) {
       if (nearRight) {
@@ -117,13 +118,13 @@ const Application = (props: any) => {
     }
     return props.appSetup.minWidth;
   };
-  const heightLimit = (params: any) => {
+  const heightLimit = (params: DragParams) => {
     if (window.height as unknown as number >= props.appSetup.minHeight) {
       return Number(window.height) + params.offset[1] - beforeSizeParams[1];
     }
     return props.appSetup.minHeight;
   };
-  const leftLimit = (params: any) => {
+  const leftLimit = (params: DragParams) => {
     if (window.width as unknown as number >= props.appSetup.minWidth) {
       return Number(window.left) + params.offset[0] - beforeSizeParams[0];
     }

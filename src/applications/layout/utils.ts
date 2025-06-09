@@ -23,3 +23,7 @@ export function leftCondition(corner: [boolean, boolean, boolean]) {
   const [, nearLeft, nearBottom] = corner;
   return ((nearLeft && nearBottom) || nearLeft);
 }
+
+export type DragParams = {
+  offset: [number, number];
+};
