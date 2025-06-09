@@ -22,10 +22,10 @@ import {
 
 const Application = (props: ApplicationProps) => {
   // jotai 상태 사용
-  const [layer, setLayer] = useAtom(layerAtom);
-  const [focus, setFocus] = useAtom(focusAtom);
-  const [tabDownInterrupt, setTabDownInterrupt] = useAtom(tabDownInterruptAtom);
-  const [isLogIned, setIsLogIned] = useAtom(isLogInedAtom);
+  const [layer, setLayer] = useAtom(layerAtom); // 창의 z-index(레이어)
+  const [focus, setFocus] = useAtom(focusAtom); // 현재 포커스된 창 이름 (전역)
+  const [tabDownInterrupt, setTabDownInterrupt] = useAtom(tabDownInterruptAtom); // 단축키 등으로 창 최소화 등 인터럽트 신호 (전역)
+  const [isLogIned, setIsLogIned] = useAtom(isLogInedAtom); // 로그인 여부 (전역)
 
   const windowProps: React.CSSProperties = {
     position: "absolute",
@@ -37,26 +37,32 @@ const Application = (props: ApplicationProps) => {
     zIndex: layer,
     filter: "dropShadow(gray 0px 0px 15px)",
   };
-  const [window, setWindow] = useState<React.CSSProperties>(windowProps);
-  const [backupWindow, setBackupWindow] = useState<React.CSSProperties>(window);
-  const [cursor, setCursor] = useState<number[]>(props.cursorVec);
-  const [beforeSizeParams, setBeforeSizeParams] = useState<number[]>([0, 0]);
-  const [beforeMoveParams, setBeforeMoveParams] = useState<number[]>([0, 0]);
-  const [isFirst, setIsFirst] = useState<boolean>(true);
-  const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
-  const [isMinimized, setIsMinimized] = useState<boolean>(false);
+  const [window, setWindow] = useState<React.CSSProperties>(windowProps); // 현재 창의 상태 (위치, 크기, 스타일 등)
+  const [backupWindow, setBackupWindow] = useState<React.CSSProperties>(window); // 전체화면 진입 전 창의 상태 백업
+  const [cursor, setCursor] = useState<number[]>(props.cursorVec); // 커서 위치(컨테이너 기준)
+  const [beforeSizeParams, setBeforeSizeParams] = useState<number[]>([0, 0]); // 리사이즈 시작 시점의 좌표
+  const [beforeMoveParams, setBeforeMoveParams] = useState<number[]>([0, 0]); // 드래그 시작 시점의 좌표
+  const [isFirst, setIsFirst] = useState<boolean>(true); // 리사이즈 첫 진입 여부
+  const [isFullScreen, setIsFullScreen] = useState<boolean>(false); // 전체화면 여부
+  const [isMinimized, setIsMinimized] = useState<boolean>(false); // 최소화 여부
 
+
+  // 커서 위치 동기화 : props로 받은 커서 위치(props.cursorVec)를 로컬 상태(cursor)로 동기화
   useEffect(() => {
     setBeforeMoveParams(cursor);
     setCursor(props.cursorVec);
   }, [props.cursorVec]);
 
+
+  // UX 개선 : 현재 창의 상태가 바뀌면 focus를 현재 창으로 변경
   useEffect(() => {
     if (!isMinimized && (focus !== props.name)) {
       setFocus(props.name);
     }
   }, [window]);
 
+
+  // 최소화 처리 : 최소화 시 창을 숨기고, 포커스를 "Discover"로 이동
   useEffect(() => {
     if (isMinimized) {
       setWindow({
@@ -67,6 +73,8 @@ const Application = (props: ApplicationProps) => {
     }
   }, [isMinimized]);
 
+
+  // Tab 인터럽트 처리 : tabDownInterrupt가 내 창이면 최소화 후 인터럽트 상태 초기화
   useEffect(() => {
     if (tabDownInterrupt === props.name) {
       setIsMinimized(true);
@@ -74,6 +82,8 @@ const Application = (props: ApplicationProps) => {
     }
   }, [tabDownInterrupt]);
 
+
+  // 포커스 관리 : 창이 최소화되지 않았고, 포커스가 내 창이 아니면 내 창으로 포커스 이동
   useEffect(() => {
     if (props.type !== "Shell" && focus === props.name) {
       setLayer(layer + 1);
@@ -86,6 +96,9 @@ const Application = (props: ApplicationProps) => {
     }
   }, [focus]);
 
+
+  
+  // 전체화면 처리 : 전체화면 진입 시 창 상태 백업 후 화면 전체로 확장, 해제 시 복원
   useEffect(() => {
     if (isFullScreen) {
       const container = document.getElementById("cursorContainer") as HTMLElement;

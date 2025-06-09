@@ -1,5 +1,6 @@
 import { toNumber } from "@/modules/typeModule.tsx";
 
+
 export function getCorner(cursorVec: number[], window: React.CSSProperties) {
   const [x, y] = cursorVec;
   const { left, top, width, height } = window;
