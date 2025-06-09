@@ -1,3 +1,4 @@
+import MemorialBtn from '@/applications/components/memorialBtn';
 import * as _ from './style.ts';
 
 const Memorial = () => {
@@ -21,15 +22,15 @@ const Memorial = () => {
                     </_.DescriptionBox>
                     <_.BtnWrapper>
                         <_.BtnInnerWrapper>
-                            <_.Btn>추모관 검색</_.Btn>
-                            <_.Btn>즐겨찾기</_.Btn>
-                            <_.Btn>추모관 신청</_.Btn>
+                            <MemorialBtn name="추모관 검색"/>
+                            <MemorialBtn name="즐겨찾기"/>
+                            <MemorialBtn name="추모관 신청"/>
                         </_.BtnInnerWrapper>
                         <_.BtnVoid />
                     </_.BtnWrapper>
                 </_.MainContainer>
                 <_.Footer>
-                    <_.Btn>입장하기</_.Btn>
+                    <MemorialBtn name="입장하기"/>
                 </_.Footer>
             </_.InnerContainer>
         </_.Container>

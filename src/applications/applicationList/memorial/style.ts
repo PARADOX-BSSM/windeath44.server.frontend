@@ -106,24 +106,7 @@ export const BtnVoid = styled.div`
     box-shadow: -1px -1px 0px 0px #FFF inset, 1px 1px 0px 0px var(--Black, #2E2E2E) inset, -2px -2px 0px 0px var(--DarkPrimary, #DCAFDD) inset, 2px 2px 0px 0px var(--DarkPrimary, #DCAFDD) inset;
 `
 
-export const Btn = styled.button`
-    display: flex;
-    width: 180px;
-    height: 42px;
-    padding: 9px 24px;
-    justify-content: center;
-    align-items: center;
-    background: var(--light-primary-color);
-    box-shadow: -1.5px -1.5px 0px 0px var(--primary-black) inset, 1.5px 1.5px 0px 0px #FFF inset, -3px -3px 0px 0px var(--dark-primary-color) inset, 3px 3px 0px 0px var(--secondary-color) inset;
-    color: var(--primary-black);
-    border:none;
-    text-align: center;
-    font-family: Galmuri11;
-    font-size: 20px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 15px; /* 75% */
-`
+
 
 export const Footer = styled.footer`
     display: flex;
