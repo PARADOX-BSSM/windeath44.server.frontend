@@ -2,7 +2,6 @@ import React, {useRef, useState} from "react";
 import * as _ from "@/applications/utility/auth/style.ts";
 import Logo from "@/assets/windeath44.svg";
 import Button from "@/applications/components/button";
-import {note} from "@/applications/utility/auth/style.ts";
 
 interface Props {
     changeToLogIn: () => void;

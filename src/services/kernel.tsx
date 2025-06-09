@@ -1,4 +1,4 @@
-import WindowManager from './windowManager.tsx';
+import WindowManager from './windowManager/index.tsx';
 
 function Kernel() {
   //작업 관리를 위한 메니저 호출

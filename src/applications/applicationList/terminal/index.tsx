@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {styled} from "styled-components";
+import styled from "@emotion/styled";
 import {useQueue} from "@/hooks/dataStructure";
 
 const Input = styled.input`

@@ -1,5 +1,5 @@
 import {TaskType} from "@/modules/typeModule.tsx"
-import {useProcessManager} from "@/hooks/processManager/processManager";
+import {useProcessManager} from "@/hooks/processManager";
 import {Apps} from '@/applications/data/importManager'
 import TaskBar from "@/applications/components/taskBar";
 import React from "react";
@@ -12,10 +12,9 @@ interface TaskBarProps {
   setFocus: React.Dispatch<React.SetStateAction<string>>;
   backUpFocus: string;
   setBackUpFocus: React.Dispatch<React.SetStateAction<string>>;
-  setTabDownInterrupt : React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Discover = ({startOption, setStartOption, focus, setFocus, backUpFocus, setBackUpFocus, setTabDownInterrupt }:TaskBarProps) => {
+const Discover = ({startOption, setStartOption, focus, setFocus, backUpFocus, setBackUpFocus }:TaskBarProps) => {
   const [, addTask, ] = useProcessManager();
   return(
     <>
@@ -31,7 +30,7 @@ const Discover = ({startOption, setStartOption, focus, setFocus, backUpFocus, se
           </div>
         )
       })}
-      <TaskBar startOption={startOption} setStartOption={setStartOption} focus={focus} setFocus={setFocus} backUpFocus={backUpFocus} setBackUpFocus={setBackUpFocus} setTabDownInterrupt={setTabDownInterrupt} />
+      <TaskBar startOption={startOption} setStartOption={setStartOption} focus={focus} setFocus={setFocus} backUpFocus={backUpFocus} setBackUpFocus={setBackUpFocus}/>
     </>
   )
 }

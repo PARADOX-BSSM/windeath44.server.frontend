@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "@emotion/styled";
 import '@/assets/font.css';
 
 export const inputsDiv = styled.div`
