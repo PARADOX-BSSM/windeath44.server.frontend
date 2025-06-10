@@ -1,6 +1,6 @@
 import {Suspense, lazy} from "react";
 import {TaskType} from "@/modules/typeModule.tsx";
-import Memorial from "../applicationList/memorial/index.tsx";
+import Memorial from "../applicationList/memorialMenu/index.tsx";
 
 const Terminal =  lazy(()=> import("../applicationList/terminal/index.tsx"));
 const Settings = lazy(()=> import("../applicationList/settings/index.tsx"));
