@@ -1,6 +1,6 @@
 import {Suspense, lazy} from "react";
 import {TaskType} from "@/modules/typeModule.tsx";
-import Memorial from "../applicationList/memorialMenu/index.tsx";
+import MemorialMenu from "../applicationList/memorialMenu/index.tsx";
 
 const Terminal =  lazy(()=> import("../applicationList/terminal/index.tsx"));
 const Settings = lazy(()=> import("../applicationList/settings/index.tsx"));
@@ -64,7 +64,7 @@ const Apps:TaskType[] =
           "setUpHeight" : 464
         }
       },{
-        "component": <Suspense fallback={null}><Memorial/></Suspense>,
+        "component": <Suspense fallback={null}><MemorialMenu/></Suspense>,
         "type": "App",
         "id": 2223,
         "name": "추모관",

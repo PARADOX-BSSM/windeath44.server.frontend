@@ -5,7 +5,7 @@ import * as _ from './style.ts';
 
 const btnList = ["추모관 검색", "즐겨찾기", "추모관 신청"];
 
-const Memorial = () => {
+const MemorialMenu = () => {
     const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
 
     return(
@@ -49,4 +49,4 @@ const Memorial = () => {
     )
 }
 
-export default Memorial;
+export default MemorialMenu;
