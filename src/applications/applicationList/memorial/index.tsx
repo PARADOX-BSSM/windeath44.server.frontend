@@ -55,7 +55,12 @@ const Memorial = () => {
 
         <_.GotoBow>절 하러가기</_.GotoBow>
 
-        
+        <_.Section2>
+          <_.CommentContainer>
+            <_.CommentTitle>추모글</_.CommentTitle>
+          </_.CommentContainer>
+
+        </_.Section2>
       </_.InnerContainer>
     </_.Container>
   );

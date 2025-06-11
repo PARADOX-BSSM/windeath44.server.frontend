@@ -260,3 +260,30 @@ export const GotoBow = styled.button`
     font-weight: 400;
     border:none;
 `
+
+export const Section2 = styled.section`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+`
+
+export const CommentContainer = styled.div`
+    display: flex;
+    width: 774px;
+    padding: 10px 0px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+`
+
+export const CommentTitle = styled.p`
+    align-self: stretch;
+    color: #2E2E2E;
+    font-family: Galmuri11;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+`
