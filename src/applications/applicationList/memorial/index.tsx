@@ -1,7 +1,7 @@
 import IndexMenu from './components/indexMenu';
 import Comment from './components/comment'
 import * as _ from './style';
-import { index } from './data';
+import { index_data, comment_data } from './data';
 
 
 
@@ -25,7 +25,7 @@ const Memorial = () => {
               <_.Index>
                 <_.IndexTitle>목차</_.IndexTitle>
                 {
-                  index.map((item,idx)=>{
+                  index_data.map((item,idx)=>{
                     // console.log(idx);
                     return <IndexMenu text={item} idx={idx}></IndexMenu>
                   })
@@ -71,9 +71,11 @@ const Memorial = () => {
                 <_.InputComment>
                   <_.InputCommentText>추모글을 입력하세요.</_.InputCommentText>
                 </_.InputComment>
-                <Comment nickname='아메' userid='raincandy_U' content='1화만에 죽어버리다니, 불쌍하네' />
-                <Comment nickname='ㄹㅅㅊ' userid='winshine1034' content='돔 공연 축하해...' />
-                <Comment nickname='초텐쨩' userid='x_angelkawaii_x' content='†승천†' />
+                {
+                  comment_data.map((comment)=>{
+                    return <Comment nickname={comment.nickname} userid={comment.userid} content={comment.content} />
+                  })
+                }
               </_.CommentMainInner>
             </_.CommentMain>
           </_.CommentContainer>
