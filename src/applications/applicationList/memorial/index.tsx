@@ -1,5 +1,7 @@
 import IndexMenu from './components/indexMenu';
+import Comment from './components/comment'
 import * as _ from './style';
+
 
 const Memorial = () => {
   return (
@@ -63,6 +65,9 @@ const Memorial = () => {
                 <_.InputComment>
                   <_.InputCommentText>추모글을 입력하세요.</_.InputCommentText>
                 </_.InputComment>
+                <Comment nickname='아메' userid='raincandy_U' content='1화만에 죽어버리다니, 불쌍하네' />
+                <Comment nickname='ㄹㅅㅊ' userid='winshine1034' content='돔 공연 축하해...' />
+                <Comment nickname='초텐쨩' userid='x_angelkawaii_x' content='†승천†' />
               </_.CommentMainInner>
             </_.CommentMain>
           </_.CommentContainer>
