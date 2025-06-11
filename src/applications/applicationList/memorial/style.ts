@@ -325,3 +325,34 @@ export const InputCommentText = styled.p`
     font-weight: 400;
     line-height: normal;
 `
+
+export const ArticleContainer = styled.div`
+    display: flex;
+    width: 774px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+`
+
+export const ArticleTitle = styled.h1`
+    color: var(--Stroke, #E774DD);
+    font-family: Galmuri11;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+`
+
+export const ArticleContent = styled.div`
+    display: flex;
+    padding: 0px 8px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+    color: #2E2E2E;
+    font-family: Galmuri11;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+`

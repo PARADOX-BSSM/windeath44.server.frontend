@@ -72,6 +72,12 @@ const Memorial = () => {
             </_.CommentMain>
           </_.CommentContainer>
 
+          <_.ArticleContainer>
+            <_.ArticleTitle>1. 마지막 순간</_.ArticleTitle>
+            <_.ArticleContent>
+              돔공연 축하해....
+            </_.ArticleContent>
+          </_.ArticleContainer>
         </_.Section2>
       </_.InnerContainer>
     </_.Container>
