@@ -24,6 +24,14 @@ const Memorial = () => {
                 <IndexMenu text="3. 마지막 순간"></IndexMenu>
               </_.Index>
             </_.IndexWrapper>
+            <_.ProfileContainer>
+              <_.ProfileInnerContainer>
+                <_.PictureContainer>
+                  <_.Picture/>
+                  <_.Name>호시노 아이</_.Name>
+                </_.PictureContainer>
+              </_.ProfileInnerContainer>
+            </_.ProfileContainer>
           </_.ContentContainer>
         </_.Section1>
 

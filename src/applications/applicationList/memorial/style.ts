@@ -147,3 +147,48 @@ export const IndexTitle = styled.p`
     font-weight: 400;
     line-height: normal;
 `
+
+export const ProfileContainer = styled.div`
+    display: flex;
+    padding: 4px 16px;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+`
+
+export const ProfileInnerContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+`
+
+export const PictureContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+`
+
+export const Picture = styled.div`
+    display: flex;
+    height: 237.229px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 18.418px solid #000;
+    background: #FFF;
+    width: 168px;
+    flex-shrink: 0;
+`
+
+export const Name = styled.p`
+    color: #2E2E2E;
+    text-align: center;
+    font-family: Galmuri11;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+`
