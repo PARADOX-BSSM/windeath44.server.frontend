@@ -30,6 +30,26 @@ const Memorial = () => {
                   <_.Picture/>
                   <_.Name>호시노 아이</_.Name>
                 </_.PictureContainer>
+                <_.Information>
+                  <_.Row>
+                    <_.Attribute>나이</_.Attribute>
+                    <_.Value>향년 20세</_.Value>
+                  </_.Row>
+                  <_.Row>
+                    <_.Attribute>사망 날짜</_.Attribute>
+                    <_.Value>2023.04.12</_.Value>
+                  </_.Row>
+                  <_.Row>
+                    <_.Attribute>생존 기간</_.Attribute>
+                    <_.Value>1일</_.Value>
+                  </_.Row>
+                  <_.Row>
+                    <_.Attribute>애니메이션</_.Attribute>
+                    <_.Value>최애의 아이</_.Value>
+                  </_.Row>
+
+
+                </_.Information>
               </_.ProfileInnerContainer>
             </_.ProfileContainer>
           </_.ContentContainer>

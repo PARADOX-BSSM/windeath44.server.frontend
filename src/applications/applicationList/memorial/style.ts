@@ -192,3 +192,53 @@ export const Name = styled.p`
     font-weight: 400;
     line-height: normal;
 `
+
+export const Information = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: -1px;
+    border: 1px solid var(--Stroke, #E774DD);
+`
+
+export const Row = styled.div`
+    display: flex;
+    width: 328px;
+    align-items: flex-start;
+    gap: -1px;
+`
+
+export const Attribute = styled.div`
+    display: flex;
+    width: 100px;
+    padding: 4px;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    border: 1px solid var(--Stroke, #E774DD);
+    background: var(--LightPrimary, #FFD3FB);
+    color: var(--off, #FD51A7);
+    text-align: center;
+    font-family: Galmuri11;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+`
+
+export const Value = styled.div`
+    display: flex;
+    padding: 4px;
+    justify-content: center;
+    align-items: center;
+    flex: 1 0 0;
+    align-self: stretch;
+    border: 1px solid var(--Stroke, #E774DD);
+    color: #2E2E2E;
+    text-align: center;
+    font-family: Galmuri11;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+`
