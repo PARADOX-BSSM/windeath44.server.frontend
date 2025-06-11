@@ -242,3 +242,21 @@ export const Value = styled.div`
     font-weight: 400;
     line-height: normal;
 `
+
+export const GotoBow = styled.button`
+    display: flex;
+    width: 260px;
+    height: 60px;
+    padding: 9px 24px;
+    justify-content: center;
+    align-items: center;
+    background: var(--LightPrimary, #FFD3FB);
+    box-shadow: -1.5px -1.5px 0px 0px var(--Black, #2E2E2E) inset, 1.5px 1.5px 0px 0px #FFF inset, -3px -3px 0px 0px var(--DarkPrimary, #DCAFDD) inset, 3px 3px 0px 0px var(--Secondary, #FFBBF5) inset;
+    color: var(--Black, #2E2E2E);
+    text-align: center;
+    font-family: Galmuri11;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 400;
+    border:none;
+`

@@ -47,14 +47,15 @@ const Memorial = () => {
                     <_.Attribute>애니메이션</_.Attribute>
                     <_.Value>최애의 아이</_.Value>
                   </_.Row>
-
-
                 </_.Information>
               </_.ProfileInnerContainer>
             </_.ProfileContainer>
           </_.ContentContainer>
         </_.Section1>
 
+        <_.GotoBow>절 하러가기</_.GotoBow>
+
+        
       </_.InnerContainer>
     </_.Container>
   );
