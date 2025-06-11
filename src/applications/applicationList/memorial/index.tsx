@@ -58,6 +58,13 @@ const Memorial = () => {
         <_.Section2>
           <_.CommentContainer>
             <_.CommentTitle>추모글</_.CommentTitle>
+            <_.CommentMain>
+              <_.CommentMainInner>
+                <_.InputComment>
+                  <_.InputCommentText>추모글을 입력하세요.</_.InputCommentText>
+                </_.InputComment>
+              </_.CommentMainInner>
+            </_.CommentMain>
           </_.CommentContainer>
 
         </_.Section2>

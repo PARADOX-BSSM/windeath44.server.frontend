@@ -287,3 +287,41 @@ export const CommentTitle = styled.p`
     font-weight: 400;
     line-height: normal;
 `
+
+export const CommentMain = styled.div`
+    display: flex;
+    height: 100%;
+    padding: 0px 12px;
+    flex-direction: column;
+    align-items: flex-start;
+    align-self: stretch;
+`
+
+export const CommentMainInner = styled.div`
+    display: flex;
+    width: 744px;
+    padding: 1px 0px;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    flex: 1 0 0;
+    background: rgba(0, 0, 0, 0.20);
+`
+
+export const InputComment = styled.div`
+    display: flex;
+    padding: 12px 15px;
+    align-items: center;
+    gap: 9px;
+    align-self: stretch;
+    background: #FFEBFD;
+`
+
+export const InputCommentText = styled.p`
+    color: var(--DarkPrimary, #DCAFDD);
+    font-family: Galmuri11;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+`
