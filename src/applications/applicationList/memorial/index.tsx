@@ -1,6 +1,9 @@
 import IndexMenu from './components/indexMenu';
 import Comment from './components/comment'
 import * as _ from './style';
+import { index } from './data';
+
+
 
 
 const Memorial = () => {
@@ -21,9 +24,12 @@ const Memorial = () => {
               <_.Quote>이 말은 절대로 거짓말이 아니야.</_.Quote>
               <_.Index>
                 <_.IndexTitle>목차</_.IndexTitle>
-                <IndexMenu text="1. 마지막 순간"></IndexMenu>
-                <IndexMenu text="2. 마지막 순간"></IndexMenu>
-                <IndexMenu text="3. 마지막 순간"></IndexMenu>
+                {
+                  index.map((item,idx)=>{
+                    // console.log(idx);
+                    return <IndexMenu text={item} idx={idx}></IndexMenu>
+                  })
+                }
               </_.Index>
             </_.IndexWrapper>
             <_.ProfileContainer>

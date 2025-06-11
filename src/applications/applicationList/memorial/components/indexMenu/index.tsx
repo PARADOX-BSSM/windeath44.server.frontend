@@ -1,14 +1,14 @@
 import * as _ from './style';
 
 interface PropsType{
-    idx? : number
+    idx : number
     text : string
 }
 
-const IndexMenu = ({text} : PropsType) => {
+const IndexMenu = ({text,idx} : PropsType) => {
     return(
         <_.IndexContainer>
-            <_.IndexText>{text}</_.IndexText>
+            <_.IndexText>{idx+1+". "}{text}</_.IndexText>
         </_.IndexContainer>
     );
 }
