@@ -1,12 +1,13 @@
-:root{
-    --primary-color : #FF8EF6;
-    --secondary-color : #FFBBF5;
-    --light-primary-color : #FFD3FB;
-    --dark-primary-color : #DCAFDD;
-    --background : #FFBBF5;
-    --primary-black : #2E2E2E;
+:root {
+    --primary-color: #FF8EF6;
+    --secondary-color: #FFBBF5;
+    --light-primary-color: #FFD3FB;
+    --dark-primary-color: #DCAFDD;
+    --background: #FFBBF5;
+    --primary-black: #2E2E2E;
 }
-*{
+
+* {
     margin: 0;
     padding: 0;
 }
@@ -30,7 +31,7 @@ body {
     background-color: lightgreen;
 }
 
-#container{
+#container {
     position: relative;
     height: 100%;
     width: 100%;
@@ -38,6 +39,7 @@ body {
     overflow: hidden;
     margin: 0 auto;
 }
+
 #cursor {
     width: 5px;
     height: 5px;
@@ -47,48 +49,51 @@ body {
     pointer-events: none;
     z-index: 999;
 }
-.shell{
+
+.shell {
     background-color: var(--secondary-color);
     display: grid;
-    grid-template-columns: repeat(auto-fill,minmax(5rem,5rem));
-    grid-template-rows: repeat(auto-fill, minmax(5rem,5rem));
+    grid-template-columns: repeat(auto-fill, minmax(5rem, 5rem));
+    grid-template-rows: repeat(auto-fill, minmax(5rem, 5rem));
     grid-auto-flow: column;
     height: 100%;
     width: 100%;
-    margin : 0 auto;
+    margin: 0 auto;
     background-image: url('./assets/skeleton.png');
     background-size: cover;
 }
-.app-button>button{
+
+.app-button>button {
     height: calc(100% - 1rem);
     width: 100%;
     cursor: none;
 }
-.app-title{
+
+.app-title {
     height: 1rem;
     font-size: 0.8rem;
     margin: 0 auto;
 }
 
-#display{
-    position:relative;
+#display {
+    position: relative;
 }
 
- ::-webkit-scrollbar{
+::-webkit-scrollbar {
     background: var(--Secondary, #FFBBF5);
     width: 24px;
- }
+}
 
- ::-webkit-scrollbar-thumb{
+::-webkit-scrollbar-thumb {
     background: var(--LightPrimary, #FFD3FB);
     box-shadow: -1.5px -1.5px 0px 0px var(--Black, #2E2E2E) inset, 1.5px 1.5px 0px 0px #FFF inset, -3px -3px 0px 0px var(--DarkPrimary, #DCAFDD) inset, 3px 3px 0px 0px var(--Secondary, #FFBBF5) inset;
-    width:100%;
+    width: 100%;
     height: 190px;
-    border:none;
- }
+    border: none;
+}
 
 ::-webkit-scrollbar-button {
-  display: flex;
+    display: flex;
     height: 27px;
     padding: 5px 3px 4px 3px;
     flex-direction: column;
@@ -98,16 +103,23 @@ body {
     background: var(--LightPrimary, #FFD3FB);
     box-shadow: -1px -1px 0px 0px var(--Black, #2E2E2E) inset, 1px 1px 0px 0px var(--LightPrimary, #FFD3FB) inset, -2px -2px 0px 0px var(--DarkPrimary, #DCAFDD) inset, 2px 2px 0px 0px #FFF inset;
 }
+
 ::-webkit-scrollbar-button:vertical:start:decrement {
-  display: block;
+    background-image: url("assets/scroll/pointup.svg");
+    background-position: center;
+    display: block;
 }
+
 ::-webkit-scrollbar-button:vertical:decrement {
-  display: none;
+    display: none;
 }
 
 ::-webkit-scrollbar-button:vertical:end:increment {
-  display: block;
+    background-image: url("assets/scroll/pointdown.svg");
+    background-position: center;
+    display: block;
 }
+
 ::-webkit-scrollbar-button:vertical:increment {
-  display: none;
+    display: none;
 }
