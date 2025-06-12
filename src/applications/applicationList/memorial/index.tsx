@@ -72,8 +72,8 @@ const Memorial = () => {
                   <_.InputCommentText>추모글을 입력하세요.</_.InputCommentText>
                 </_.InputComment>
                 {
-                  comment_data.map((comment)=>{
-                    return <Comment nickname={comment.nickname} userid={comment.userid} content={comment.content} />
+                  comment_data.map((comment,idx)=>{
+                    return <Comment nickname={comment.nickname} userid={comment.userid} content={comment.content} idx={idx}/>
                   })
                 }
               </_.CommentMainInner>

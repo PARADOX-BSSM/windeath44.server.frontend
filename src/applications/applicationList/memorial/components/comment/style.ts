@@ -10,10 +10,12 @@ export const CommentDiv = styled.div`
     background: #FFF;
 `
 
-export const ProfileImg = styled.div`
+export const ProfileImg = styled.div<{ imgUrl : string }>`
     width: 45px;
     height: 45px;
-    background-color:gray;
+    background-image: url(${props => props.imgUrl});
+    background-size: cover;
+    background-position: center;
 `
 
 export const TextBox = styled.div`

@@ -1,16 +1,22 @@
 import * as _ from './style';
+import ameImg from '@/assets/profile/ame.svg';
+import chotenImg from '@/assets/profile/choten.svg';
 
 interface PropsType{
     nickname:string,
     userid:string,
     content:string,
+    idx:number,
 }
 
 
-const Comment = ({nickname,userid,content} : PropsType) => {
+const Comment = ({nickname,userid,content,idx} : PropsType) => {
+    console.log(idx);
+    const imgUrl = idx % 2 === 0 ? ameImg : chotenImg;
+    console.log(imgUrl);
     return(
         <_.CommentDiv>
-            <_.ProfileImg />
+            <_.ProfileImg imgUrl={imgUrl}/>
             <_.TextBox>
                 <_.NickNameContainer>
                     <_.NickName>{nickname}</_.NickName>
