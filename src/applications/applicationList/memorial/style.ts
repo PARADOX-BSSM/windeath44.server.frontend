@@ -1,6 +1,19 @@
 import styled from '@emotion/styled';
 
 
+export const Main = styled.main`
+    display: flex;
+    padding: 12px;
+    justify-content: center;
+    align-items: flex-start;
+    flex: 1 0 0;
+    align-self: stretch;
+    background: var(--LightPrimary, #FFD3FB);
+    height:100%;
+    box-sizing:border-box;
+    overflow: hidden;
+`
+
 export const Container = styled.div`
     display: flex;
     width:100%;
@@ -9,9 +22,6 @@ export const Container = styled.div`
     gap: 10px;
     flex: 1 0 0;
     align-self: stretch;
-    box-sizing:border-box;
-    height:100%;
-    overflow: hidden;
 `
 
 export const InnerContainer = styled.div`
