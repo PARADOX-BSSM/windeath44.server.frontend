@@ -171,7 +171,7 @@ export const PictureContainer = styled.div`
     gap: 10px;
 `
 
-export const Picture = styled.div`
+export const Picture = styled.div<{imgUrl : string}>`
     display: flex;
     height: 237.229px;
     flex-direction: column;
@@ -179,6 +179,9 @@ export const Picture = styled.div`
     align-items: center;
     border: 18.418px solid #000;
     background: #FFF;
+    background-image : url(${props => props.imgUrl});
+    background-size: cover;
+    background-position: center;
     width: 168px;
     flex-shrink: 0;
 `

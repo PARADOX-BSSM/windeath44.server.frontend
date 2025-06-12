@@ -2,8 +2,7 @@ import IndexMenu from './components/indexMenu';
 import Comment from './components/comment'
 import * as _ from './style';
 import { index_data, comment_data } from './data';
-
-
+import characterUrl from '@/assets/character/hosino.svg';
 
 
 const Memorial = () => {
@@ -35,7 +34,7 @@ const Memorial = () => {
             <_.ProfileContainer>
               <_.ProfileInnerContainer>
                 <_.PictureContainer>
-                  <_.Picture/>
+                  <_.Picture imgUrl={characterUrl}/>
                   <_.Name>호시노 아이</_.Name>
                 </_.PictureContainer>
                 <_.Information>
