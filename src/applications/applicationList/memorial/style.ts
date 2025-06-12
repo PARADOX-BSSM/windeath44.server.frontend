@@ -11,7 +11,6 @@ export const Main = styled.main`
     background: var(--LightPrimary, #FFD3FB);
     height:100%;
     box-sizing:border-box;
-    overflow: hidden;
 `
 
 export const Container = styled.div`
@@ -22,6 +21,7 @@ export const Container = styled.div`
     gap: 10px;
     flex: 1 0 0;
     align-self: stretch;
+    border:0.5px black solid;
 `
 
 export const InnerContainer = styled.div`
@@ -30,6 +30,7 @@ export const InnerContainer = styled.div`
     height:100%;
     max-height: 100%;
     overflow-y: auto;
+    overflow-x: hidden;
     padding: 27px 23px;
     flex-direction: column;
     align-items: center;
