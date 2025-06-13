@@ -331,13 +331,22 @@ export const InputComment = styled.div`
     background: #FFEBFD;
 `
 
-export const InputCommentText = styled.p`
-    color: var(--DarkPrimary, #DCAFDD);
+export const InputCommentText = styled.input`
     font-family: Galmuri11;
     font-size: 12px;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
+    border: none;
+    background: none; 
+    outline: none;   
+    box-shadow: none;  
+    padding: 0;           
+    border-width: 0;
+    width: 100%;
+    &::placeholder {
+    color: var(--DarkPrimary, #DCAFDD);
+  }
 `
 
 export const ArticleContainer = styled.div`

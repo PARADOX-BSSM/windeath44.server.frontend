@@ -69,7 +69,7 @@ const Memorial = () => {
               <_.CommentMain>
                 <_.CommentMainInner>
                   <_.InputComment>
-                    <_.InputCommentText>추모글을 입력하세요.</_.InputCommentText>
+                    <_.InputCommentText type='text' placeholder='추모글을 입력하세요.'></_.InputCommentText>
                   </_.InputComment>
                   {
                     comment_data.map((comment, idx) => {
