@@ -3,6 +3,13 @@ import Up from "@/assets/search/point_up.svg";
 import Down from "@/assets/search/point_down.svg";
 import {useState} from "react";
 
+interface FilterBlockProps {
+    label: string;
+    option: string;
+    isOpen: boolean;
+    onClick: () => void;
+}
+
 const Search_task = () => {
     const [animation, setAnimation] = useState(false);
     const [death, setDeath] = useState(false);
@@ -29,48 +36,18 @@ const Search_task = () => {
                                         </_.white>
                                     </_.black>
                                 </_.name>
-                                <div>
-                                    <label>애니메이션</label>
-                                    <_.black>
-                                        <_.white>
-                                            <_.dark>
-                                                <_.option>없음</_.option>
-                                                <_.button onClick={handleAnimation}>
-                                                    <_.styles>
-                                                        <div>
-                                                            <div>
-                                                                <div>
-                                                                    <img src={animation?Up:Down} alt={animation?"close":"open"}/>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </_.styles>
-                                                </_.button>
-                                            </_.dark>
-                                        </_.white>
-                                    </_.black>
-                                </div>
-                                <div>
-                                    <label>사인</label>
-                                    <_.black>
-                                        <_.white>
-                                            <_.dark>
-                                                <_.option>모두</_.option>
-                                                <_.button onClick={handleDeath}>
-                                                    <_.styles>
-                                                        <div>
-                                                            <div>
-                                                                <div>
-                                                                    <img src={death?Up:Down} alt={death?"close":"open"}/>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </_.styles>
-                                                </_.button>
-                                            </_.dark>
-                                        </_.white>
-                                    </_.black>
-                                </div>
+                                <FilterBlock
+                                    label="애니메이션"
+                                    option="없음"
+                                    isOpen={animation}
+                                    onClick={handleAnimation}
+                                />
+                                <FilterBlock
+                                    label="사인"
+                                    option="모두"
+                                    isOpen={death}
+                                    onClick={handleDeath}
+                                />
                             </_.search_main>
                         </div>
                     </div>
@@ -79,4 +56,29 @@ const Search_task = () => {
         </_.search>
     );
 }
+const FilterBlock = ({ label, option, isOpen, onClick }: FilterBlockProps) => {
+    return (
+        <div>
+            <label>{label}</label>
+            <_.black>
+                <_.white>
+                    <_.dark>
+                        <_.option>{option}</_.option>
+                        <_.button onClick={onClick}>
+                            <_.styles>
+                                <div>
+                                    <div>
+                                        <div>
+                                            <img src={isOpen ? Up : Down} alt={isOpen ? "close" : "open"} />
+                                        </div>
+                                    </div>
+                                </div>
+                            </_.styles>
+                        </_.button>
+                    </_.dark>
+                </_.white>
+            </_.black>
+        </div>
+    );
+};
 export default Search_task;
