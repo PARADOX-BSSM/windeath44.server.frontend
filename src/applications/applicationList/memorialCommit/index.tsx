@@ -1,5 +1,6 @@
 import * as _ from './style';
 
+
 const MemorialCommit = () => {
     return(
         <_.Container>
@@ -64,9 +65,11 @@ const MemorialCommit = () => {
             </_.Section1>
 
             <_.Section2>
-                
+                <_.Section2Title>- @winshine1034의 수정안</_.Section2Title>
+                <_.Section2CommitAreaContainer>
+                    <_.Section2CommitArea></_.Section2CommitArea>
+                </_.Section2CommitAreaContainer>
             </_.Section2>
-
             <_.SubmitBtn>이 수정 요청을 문서에 병합하기</_.SubmitBtn>
         </_.Container>
     );
