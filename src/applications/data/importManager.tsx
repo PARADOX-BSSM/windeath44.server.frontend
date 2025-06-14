@@ -1,5 +1,6 @@
 import {Suspense, lazy} from "react";
 import {TaskType} from "@/modules/typeModule.tsx";
+import Search from "@/applications/applicationList/search";
 
 const Terminal =  lazy(()=> import("../applicationList/terminal/index.tsx"));
 const Settings = lazy(()=> import("../applicationList/settings/index.tsx"));
@@ -62,7 +63,20 @@ const Apps:TaskType[] =
           "setUpWidth" : 800,
           "setUpHeight" : 464
         }
+      },{
+        "component": <Suspense fallback={null}><Search/></Suspense>,
+        "type": "App",
+        "id": 2222,
+        "name": "Search",
+        "layer": undefined,
+        "appSetup":{
+          "Image" : "default",
+          "minWidth" : 676,
+          "minHeight" : 360,
+          "setUpWidth" : 676,
+          "setUpHeight" : 360
       }
+    }
 
     ]
 
