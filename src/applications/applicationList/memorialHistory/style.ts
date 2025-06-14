@@ -35,6 +35,12 @@ export const Header = styled.header`
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    gap: 16px;
+    width:100%;
+`
+
+export const InnerHeader = styled.div`
+    display: flex;
     justify-content: flex-end;
     align-items: center;
     gap: 24px;
