@@ -9,20 +9,27 @@ export const Container = styled.div`
     gap: 56px;
     flex: 1 0 0;
     background: #FFF;
+    overflow:auto;
+    box-sizing: border-box;
+    height:100%;
 `
 
 export const Section1 = styled.section`
+    width:100%;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 16px;
+    box-sizing: border-box;
 `
 
 export const Section2 = styled.section`
+    width:100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 12px;
+    box-sizing: border-box;
 `
 
 export const SubmitBtn = styled.p`
