@@ -2,6 +2,7 @@ import IndexMenu from '@/applications/components/indexMenu';
 import * as _ from './style';
 import { index_data } from './data';
 import characterUrl from '@/assets/character/hosino.svg';
+import MergeBtn from '@/applications/components/mergeBtn';
 
 const MemorialMerge = () => {
 
@@ -63,13 +64,22 @@ const MemorialMerge = () => {
           </_.Section1>
 
           <_.Section2>
+            <_.Section2Title>기존 문서</_.Section2Title>
+            <_.Section2CommitAreaContainer>
+              <_.Section2CommitArea></_.Section2CommitArea>
+            </_.Section2CommitAreaContainer>
+          </_.Section2>
+
+          <_.Section3>
             <_.ArticleContainer>
               <_.ArticleTitle>1. 마지막 순간</_.ArticleTitle>
               <_.ArticleContent>
                 돔공연 축하해....
               </_.ArticleContent>
             </_.ArticleContainer>
-          </_.Section2>
+          </_.Section3>
+
+          <MergeBtn text='이 수정 요청을 문서에 병합하기' />
         </_.InnerContainer>
       </_.Container>
     </_.Main>

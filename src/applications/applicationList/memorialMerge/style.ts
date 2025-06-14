@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-
+import TextareaAutosize from 'react-textarea-autosize';
 
 export const Main = styled.main`
     display: flex;
@@ -255,11 +255,12 @@ export const Value = styled.div`
     line-height: normal;
 `
 
-export const Section2 = styled.section`
+export const Section3 = styled.section`
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 24px;
+    background: var(--VeryLightPrimary, #FFEEFD);
 `
 
 export const ArticleContainer = styled.div`
@@ -291,4 +292,47 @@ export const ArticleContent = styled.div`
     font-style: normal;
     font-weight: 400;
     line-height: normal;
+`
+
+export const Section2 = styled.section`
+    width:100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    box-sizing: border-box;
+`
+
+export const Section2Title = styled.h2`
+    width: 772px;
+    color: var(--Black, #2E2E2E);
+    hiehgt:;
+    font-family: Galmuri11;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+`
+
+export const Section2CommitAreaContainer = styled.div`
+    display: flex;
+    width: 772px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+    background: var(--VeryLightPrimary, #FFEEFD);
+`
+
+export const Section2CommitArea = styled(TextareaAutosize)`
+    display: flex;
+    padding: 0px 8px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+    resize:none;
+    background:none;
+    border:none;
+    width:100%;
+    outline: none;
+    min-height: 50px;
 `

@@ -1,3 +1,4 @@
+import MergeBtn from '@/applications/components/mergeBtn';
 import * as _ from './style';
 
 
@@ -70,7 +71,7 @@ const MemorialCommit = () => {
                     <_.Section2CommitArea></_.Section2CommitArea>
                 </_.Section2CommitAreaContainer>
             </_.Section2>
-            <_.SubmitBtn>이 수정 요청을 문서에 병합하기</_.SubmitBtn>
+            <MergeBtn text='이 수정 요청을 문서에 병합하기' />
         </_.Container>
     );
 }
