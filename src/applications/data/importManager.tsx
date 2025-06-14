@@ -6,6 +6,7 @@ import Memorial from "../applicationList/memorial/index.tsx";
 const Terminal =  lazy(()=> import("../applicationList/terminal/index.tsx"));
 const Settings = lazy(()=> import("../applicationList/settings/index.tsx"));
 const LogIn = lazy(()=> import("../utility/login/index.tsx"));
+const MemorailHistory = lazy(()=> import("../applicationList/memorialHistory/index.tsx"));
 
 //Application Import 형식 예시
 /*
@@ -90,7 +91,20 @@ const Apps:TaskType[] =
           "setUpWidth" : 850,
           "setUpHeight" : 750,
         }
-      }
+      },,{
+        "component": <Suspense fallback={null}><MemorailHistory/></Suspense>,
+        "type": "App",
+        "id": 2223,
+        "name": "memorailHistory",
+        "layer": undefined,
+        "appSetup":{
+          "Image" : "default",
+          "minWidth" : 840,
+          "minHeight" : 420,
+          "setUpWidth" : 850,
+          "setUpHeight" : 750,
+        }
+      },
 
     ]
 
