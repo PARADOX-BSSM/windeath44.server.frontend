@@ -1,5 +1,4 @@
 import styled from "@emotion/styled";
-
 export const main = styled.div`
     box-sizing: border-box;
     background-color: var(--light-primary-color);
@@ -26,12 +25,6 @@ export const search_task= styled.div`
     gap: 8px;
 `;
 
-// *검색결과창
-export const view= styled.div`
-    width: 100%;
-    height: 100%;
-    padding: 8px 0;
-`;
 // *개체
 export const object= styled.div`
     display: flex;
