@@ -12,6 +12,7 @@ export const Container = styled.div`
     overflow:auto;
     box-sizing: border-box;
     height:100%;
+    overflow-x: hidden;
 `
 
 export const Section1 = styled.section`
@@ -96,7 +97,7 @@ export const Status = styled.p`
 
 export const CharacterProfileContainer = styled.div`
     display: flex;
-    width: 774px;
+    width: 100%;
     padding: 10px 8px;
     justify-content: center;
     align-items: center;
