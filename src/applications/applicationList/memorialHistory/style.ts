@@ -9,7 +9,6 @@ export const Container = styled.div`
     align-items: flex-start;
     gap: 12px;
     align-self: stretch;
-    border: 2.572px solid #E774DD;
     overflow:hidden;
     background: var(--LightPrimary, #FFD3FB);
 `
