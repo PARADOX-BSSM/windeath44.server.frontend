@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import { statSync } from 'fs';
 
 export const Container = styled.div`
     display: flex;

@@ -3,12 +3,15 @@ import styled from '@emotion/styled'
 export const Container = styled.div`
     display: flex;
     padding: 12px;
+    height: 100%;
+    box-sizing: border-box;
     justify-content: center;
     align-items: flex-start;
     gap: 12px;
     align-self: stretch;
-    background: #FFF;
-    box-shadow: -1px -1px 0px 0px #FFF inset, 1px 1px 0px 0px var(--Black, #2E2E2E) inset, -2px -2px 0px 0px var(--DarkPrimary, #DCAFDD) inset, 2px 2px 0px 0px var(--DarkPrimary, #DCAFDD) inset;
+    border: 2.572px solid #E774DD;
+    overflow:hidden;
+    background: var(--LightPrimary, #FFD3FB);
 `
 
 export const InnerContainer = styled.div`
@@ -18,8 +21,11 @@ export const InnerContainer = styled.div`
     gap: 10px;
     flex: 1 0 0;
     align-self: stretch;
+    overflow:hidden;
     background: #FFF;
-    box-shadow: -1px -1px 0px 0px #FFF inset, 1px 1px 0px 0px var(--Black, #2E2E2E) inset, -2px -2px 0px 0px var(--DarkPrimary, #DCAFDD) inset, 2px 2px 0px 0px var(--DarkPrimary, #DCAFDD) inset;
+    border:0.5px solid black;
+    overflow-y: auto;
+    overflow-x: hidden;
 `
 
 export const ContentContainer = styled.div`
