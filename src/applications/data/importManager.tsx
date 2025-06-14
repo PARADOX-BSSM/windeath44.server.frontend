@@ -99,10 +99,10 @@ const Apps:TaskType[] =
         "layer": undefined,
         "appSetup":{
           "Image" : "default",
-          "minWidth" : 840,
+          "minWidth" : 580,
           "minHeight" : 420,
           "setUpWidth" : 850,
-          "setUpHeight" : 750,
+          "setUpHeight" : 500,
         }
       },
 
