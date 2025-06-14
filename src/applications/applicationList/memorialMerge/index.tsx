@@ -15,9 +15,9 @@ const MemorialMerge = () => {
             <_.Header>
               <_.TextContainer>
                 <_.Title>호시노 아이</_.Title>
-                <_.Subtitle>최근 수정: 2025-07-04 12:34:56</_.Subtitle>
+                <_.Subtitle>문서 수정 중</_.Subtitle>
               </_.TextContainer>
-              <_.CurrentPage>문서 수정본 미리보기</_.CurrentPage>
+              <_.CurrentPage>자동 병합이 가능합니다.</_.CurrentPage>
             </_.Header>
             <_.ContentContainer>
               <_.IndexWrapper>
@@ -36,6 +36,7 @@ const MemorialMerge = () => {
                 <_.ProfileInnerContainer>
                   <_.PictureContainer>
                     <_.Picture imgUrl={characterUrl} />
+                    <_.Plus>+</_.Plus>
                     <_.Name>호시노 아이</_.Name>
                   </_.PictureContainer>
                   <_.Information>

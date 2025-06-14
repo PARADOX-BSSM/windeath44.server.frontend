@@ -149,6 +149,7 @@ export const ProfileContainer = styled.div`
     justify-content: flex-end;
     align-items: center;
     gap: 10px;
+    background: var(--VeryLightPrimary, #FFEEFD);
 `
 
 export const ProfileInnerContainer = styled.div`
@@ -159,6 +160,7 @@ export const ProfileInnerContainer = styled.div`
 `
 
 export const PictureContainer = styled.div`
+    position: relative; // 추가!
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -167,18 +169,30 @@ export const PictureContainer = styled.div`
 `
 
 export const Picture = styled.div<{imgUrl : string}>`
-    display: flex;
+    width: 168px;
     height: 237.229px;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
     border: 18.418px solid #000;
-    background: #FFF;
-    background-image : url(${props => props.imgUrl});
+    background-image: url(${props => props.imgUrl});
     background-size: cover;
     background-position: center;
-    width: 168px;
-    flex-shrink: 0;
+    filter: brightness(0.6);
+    position: relative;
+    z-index: 1;
+`
+
+export const Plus = styled.p`
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: #FFF;
+    font-family: Galmuri11;
+    font-size: 66.144px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    z-index: 2;
+    pointer-events: none;
 `
 
 export const Name = styled.p`
