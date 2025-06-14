@@ -17,12 +17,12 @@ export const main_serve= styled.div`
     justify-content: space-evenly;
     gap:4px;
 `;
-export const search_task= styled.div`
+export const search_task = styled.div<{ isColumn: boolean }>`
     width: 100%;
     height: 100%;
     display: flex;
-    align-items: center;
-    gap: 8px;
+    flex-direction: ${({ isColumn }) => (isColumn ? "column" : "row")};
+    gap: ${({ isColumn }) => (isColumn ? "0px" : "8px")};
 `;
 
 // *개체
