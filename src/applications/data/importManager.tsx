@@ -84,7 +84,7 @@ const Apps:TaskType[] =
       },{
         "component": <Suspense fallback={null}><Memorial/></Suspense>,
         "type": "App",
-        "id": 2223,
+        "id": 2224,
         "name": "memorial",
         "layer": undefined,
         "appSetup":{
@@ -97,7 +97,7 @@ const Apps:TaskType[] =
       },,{
         "component": <Suspense fallback={null}><MemorailHistory/></Suspense>,
         "type": "App",
-        "id": 2223,
+        "id": 2225,
         "name": "memorailHistory",
         "layer": undefined,
         "appSetup":{
@@ -110,7 +110,7 @@ const Apps:TaskType[] =
       },{
         "component": <Suspense fallback={null}><MemorialCommit/></Suspense>,
         "type": "App",
-        "id": 2223,
+        "id": 2226,
         "name": "MemorialCommit",
         "layer": undefined,
         "appSetup":{
@@ -123,7 +123,7 @@ const Apps:TaskType[] =
       },{
         "component": <Suspense fallback={null}><MemorialPreview/></Suspense>,
         "type": "App",
-        "id": 2223,
+        "id": 2227,
         "name": "MemorialPreview",
         "layer": undefined,
         "appSetup":{
@@ -136,7 +136,7 @@ const Apps:TaskType[] =
       },{
         "component": <Suspense fallback={null}><MemorialMerge/></Suspense>,
         "type": "App",
-        "id": 2223,
+        "id": 2228,
         "name": "MemorialMerge",
         "layer": undefined,
         "appSetup":{
