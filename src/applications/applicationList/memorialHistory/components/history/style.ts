@@ -6,6 +6,7 @@ export const Container = styled.div`
     align-items: center;
     gap: 9px;
     align-self: stretch;
+    background: #FFF;
 `
 
 export const Profile = styled.div<{imgUrl : string}>`

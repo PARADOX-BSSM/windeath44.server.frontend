@@ -18,16 +18,20 @@ const MemorailHistory = () => {
                     </_.Header>
                     <_.HistoryContainer>
                         <_.HistoryContainerTitle>수정 기록</_.HistoryContainerTitle>
-                        {
-                            historyData.map((history) => {
-                                return <History
-                                    id={history.id}
-                                    editedAt={history.editedAt}
-                                    description={history.description}
-                                    profileUrl={history.profileUrl}
-                                />
-                            })
-                        }
+                        <_.HistoryBox>
+                            <_.HistoryInnerBox>
+                                {
+                                    historyData.map((history) => {
+                                        return <History
+                                            id={history.id}
+                                            editedAt={history.editedAt}
+                                            description={history.description}
+                                            profileUrl={history.profileUrl}
+                                        />
+                                    })
+                                }
+                            </_.HistoryInnerBox>
+                        </_.HistoryBox>
                     </_.HistoryContainer>
                 </_.ContentContainer>
             </_.InnerContainer>

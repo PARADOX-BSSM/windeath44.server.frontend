@@ -126,3 +126,20 @@ export const HistoryContainerBox = styled.div`
     background: #000000;
 `
 
+export const HistoryBox = styled.div`
+    display: flex;
+    padding: 0px 12px;
+    flex-direction: column;
+    align-items: flex-start;
+    align-self: stretch;
+`
+
+export const HistoryInnerBox = styled.div`
+    display: flex;
+    width: 100%;
+    padding: 1px 0px;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    background: rgba(0, 0, 0, 0.20);
+`
