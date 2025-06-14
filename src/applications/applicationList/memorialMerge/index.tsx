@@ -2,7 +2,7 @@ import IndexMenu from '@/applications/components/indexMenu';
 import * as _ from './style';
 import { index_data } from './data';
 import characterUrl from '@/assets/character/hosino.svg';
-import MergeBtn from '@/applications/components/mergeBtn';
+import MemorialTextarea from '@/applications/components/memorialTextarea';
 
 const MemorialMerge = () => {
 
@@ -63,12 +63,29 @@ const MemorialMerge = () => {
             </_.ContentContainer>
           </_.Section1>
 
-          <_.Section2>
-            <_.Section2Title>기존 문서</_.Section2Title>
-            <_.Section2CommitAreaContainer>
-              <_.Section2CommitArea></_.Section2CommitArea>
-            </_.Section2CommitAreaContainer>
-          </_.Section2>
+          <MemorialTextarea from='최종 문서' content='<목차>마지막 순간</목차>
+<사진 {80px}>https://buma.wiki/api/image/display/최애의사인/example.png</사진>
+<동영상>https://www.youtube.com/watch?v=oMk46C5Cjws</동영상>' />
+
+          <MemorialTextarea from='기존 문서' content='<목차>마지막 순간</목차>
+<사진 {80px}>https://buma.wiki/api/image/display/최애의사인/example.png</사진>
+<동영상>https://www.youtube.com/watch?v=oMk46C5Cjws</동영상>' 
+            isReadonly={true} 
+          />
+
+
+          <MemorialTextarea btnText='이 내용으로 문서에 병합하기' from='winshine1034' content='<목차>마지막 순간</목차>
+<사진 {80px}>https://buma.wiki/api/image/display/최애의사인/example.png</사진>
+<동영상>https://www.youtube.com/watch?v=oMk46C5Cjws</동영상>'
+            isReadonly={true}
+            isPerson={true}
+          />
+
+          <MemorialTextarea btnText='이 내용으로 문서에 병합하기' from='bitbyte08' content='<목차>마지막 순간</목차>
+<사진 {80px}>https://buma.wiki/api/image/display/최애의사인/example.png</사진>
+<동영상>https://www.youtube.com/watch?v=oMk46C5Cjws</동영상>'isReadonly={true}
+            isPerson={true}
+          />
 
           <_.Section3>
             <_.ArticleContainer>
@@ -79,7 +96,6 @@ const MemorialMerge = () => {
             </_.ArticleContainer>
           </_.Section3>
 
-          <MergeBtn text='이 수정 요청을 문서에 병합하기' />
         </_.InnerContainer>
       </_.Container>
     </_.Main>

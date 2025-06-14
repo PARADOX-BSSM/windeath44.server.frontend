@@ -1,9 +1,10 @@
 import MergeBtn from '@/applications/components/mergeBtn';
 import * as _ from './style';
+import MemorialTextarea from '@/applications/components/memorialTextarea';
 
 
 const MemorialCommit = () => {
-    return(
+    return (
         <_.Container>
             <_.Section1>
                 <_.Header>
@@ -65,13 +66,11 @@ const MemorialCommit = () => {
                 </_.CharacterProfileContainer>
             </_.Section1>
 
-            <_.Section2>
-                <_.Section2Title>- @winshine1034의 수정안</_.Section2Title>
-                <_.Section2CommitAreaContainer>
-                    <_.Section2CommitArea></_.Section2CommitArea>
-                </_.Section2CommitAreaContainer>
-            </_.Section2>
-            <MergeBtn text='이 수정 요청을 문서에 병합하기' />
+            <MemorialTextarea btnText='이 내용으로 문서에 병합하기' from='winshine1034' content='<목차>마지막 순간</목차>
+<사진 {80px}>https://buma.wiki/api/image/display/최애의사인/example.png</사진>
+<동영상>https://www.youtube.com/watch?v=oMk46C5Cjws</동영상>'
+            isPerson={true}
+          />
         </_.Container>
     );
 }
