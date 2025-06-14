@@ -1,5 +1,6 @@
 import * as _ from './style';
 import History from './components/history';
+import { historyData } from './data';
 
 const MemorailHistory = () => {
     return (
@@ -17,9 +18,15 @@ const MemorailHistory = () => {
                     </_.Header>
                     <_.HistoryContainer>
                         <_.HistoryContainerTitle>수정 기록</_.HistoryContainerTitle>
-                        <History />
-                        <History />
-                        <History />
+                        {
+                            historyData.map((history) => {
+                                return <History
+                                    id={history.id}
+                                    editedAt={history.editedAt}
+                                    description={history.description}
+                                />
+                            })
+                        }
                     </_.HistoryContainer>
                 </_.ContentContainer>
             </_.InnerContainer>
