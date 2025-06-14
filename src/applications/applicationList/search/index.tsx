@@ -13,8 +13,10 @@ const Search = () => {
                 <Viewer/>
             </_.search_task>
             <_.object>
-                <img src={Folder}/>
-                <div>3 개체</div>
+                <div>
+                    <img src={Folder}/>
+                    <div>0개체</div>
+                </div>
             </_.object>
             </_.main_serve>
         </_.main>

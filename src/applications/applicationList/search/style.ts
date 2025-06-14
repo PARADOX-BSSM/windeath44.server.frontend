@@ -27,10 +27,23 @@ export const search_task= styled.div`
 
 // *개체
 export const object= styled.div`
-    display: flex;
-    gap: 4px;
-    padding: 8px;
-    div{
-        padding-top: 4px;
+        border-width: 1.5px 0 0 1.5px;
+        border-style: solid;
+        border-color: #808080;
+        box-sizing: border-box;
+        & > div{
+            width: 100%;
+            height: 100%;
+            border-width: 0 1.5px 1.5px 0;
+            border-style: solid;
+            border-color: #ffffff;
+            box-sizing: border-box;
+            background-color: var(--dark-primary-color);
+            display: flex;
+            gap: 4px;
+            padding-left: 4px;
+            & > div{
+                margin: auto 0;
+            }
     }
 `;
