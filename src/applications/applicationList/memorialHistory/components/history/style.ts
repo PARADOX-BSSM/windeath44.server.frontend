@@ -8,10 +8,10 @@ export const Container = styled.div`
     align-self: stretch;
 `
 
-export const Profile = styled.div`
+export const Profile = styled.div<{imgUrl : string}>`
     width: 45px;
     height: 45px;
-    // background-image:url()
+    background-image: url(${props => props.imgUrl});
     background-color:gray;
 `
 

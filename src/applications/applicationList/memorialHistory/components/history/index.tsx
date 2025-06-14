@@ -4,12 +4,13 @@ interface PropsType{
     id:string,
     editedAt:string,
     description:string,
+    profileUrl:string,
 }
 
-const History = ({ id, editedAt, description } : PropsType) => {
+const History = ({ id, editedAt, description, profileUrl } : PropsType) => {
     return(
         <_.Container>
-            <_.Profile />
+            <_.Profile imgUrl={profileUrl}/>
             <_.TextContainer>
                 <_.ProfileTextContainer>
                     <_.ProfileId>@{id}</_.ProfileId>

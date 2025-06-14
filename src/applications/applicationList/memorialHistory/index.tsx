@@ -24,6 +24,7 @@ const MemorailHistory = () => {
                                     id={history.id}
                                     editedAt={history.editedAt}
                                     description={history.description}
+                                    profileUrl={history.profileUrl}
                                 />
                             })
                         }
