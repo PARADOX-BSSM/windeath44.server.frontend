@@ -9,6 +9,7 @@ const LogIn = lazy(()=> import("../utility/login/index.tsx"));
 const MemorailHistory = lazy(()=> import("../applicationList/memorialHistory/index.tsx"));
 const MemorialCommit = lazy(()=> import("../applicationList/memorialCommit/index.tsx"));
 const MemorialPreview = lazy(()=> import("../applicationList/memorialPreview/index.tsx"));
+const MemorialMerge = lazy(()=> import("../applicationList/memorialMerge/index.tsx"));
 
 //Application Import 형식 예시
 /*
@@ -124,6 +125,19 @@ const Apps:TaskType[] =
         "type": "App",
         "id": 2223,
         "name": "MemorialPreview",
+        "layer": undefined,
+        "appSetup":{
+          "Image" : "default",
+          "minWidth" : 580,
+          "minHeight" : 420,
+          "setUpWidth" : 850,
+          "setUpHeight" : 500,
+        }
+      },{
+        "component": <Suspense fallback={null}><MemorialMerge/></Suspense>,
+        "type": "App",
+        "id": 2223,
+        "name": "MemorialMerge",
         "layer": undefined,
         "appSetup":{
           "Image" : "default",
