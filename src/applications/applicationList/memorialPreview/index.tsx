@@ -1,11 +1,9 @@
 import IndexMenu from '@/applications/components/indexMenu';
-import Comment from '@/applications/components/comment';
 import * as _ from './style';
-import { index_data, comment_data } from './data';
+import { index_data } from './data';
 import characterUrl from '@/assets/character/hosino.svg';
 
-
-const Memorial = () => {
+const MemorialPreview = () => {
   return (
     <_.Main>
       <_.Container>
@@ -16,8 +14,7 @@ const Memorial = () => {
                 <_.Title>호시노 아이</_.Title>
                 <_.Subtitle>최근 수정: 2025-07-04 12:34:56</_.Subtitle>
               </_.TextContainer>
-              <_.History>기록</_.History>
-              <_.DocumentUpdate>문서 수정</_.DocumentUpdate>
+              <_.CurrentPage>문서 수정본 미리보기</_.CurrentPage>
             </_.Header>
             <_.ContentContainer>
               <_.IndexWrapper>
@@ -61,25 +58,7 @@ const Memorial = () => {
             </_.ContentContainer>
           </_.Section1>
 
-          <_.GotoBow>절 하러가기</_.GotoBow>
-
           <_.Section2>
-            <_.CommentContainer>
-              <_.CommentTitle>추모글</_.CommentTitle>
-              <_.CommentMain>
-                <_.CommentMainInner>
-                  <_.InputComment>
-                    <_.InputCommentText type='text' placeholder='추모글을 입력하세요.'></_.InputCommentText>
-                  </_.InputComment>
-                  {
-                    comment_data.map((comment, idx) => {
-                      return <Comment nickname={comment.nickname} userid={comment.userid} content={comment.content} idx={idx} />
-                    })
-                  }
-                </_.CommentMainInner>
-              </_.CommentMain>
-            </_.CommentContainer>
-
             <_.ArticleContainer>
               <_.ArticleTitle>1. 마지막 순간</_.ArticleTitle>
               <_.ArticleContent>
@@ -93,4 +72,4 @@ const Memorial = () => {
   );
 }
 
-export default Memorial;
+export default MemorialPreview;
