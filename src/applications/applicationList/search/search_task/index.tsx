@@ -1,14 +1,17 @@
 import * as _ from "@/applications/applicationList/search/search_task/style.ts";
 import Up from "@/assets/search/point_up.svg";
 import Down from "@/assets/search/point_down.svg";
-import {useState} from "react";
+import {Dispatch, useState} from "react";
 import Option from "@/applications/applicationList/search/option";
+import {SetStateAction} from "jotai/vanilla/typeUtils";
 
 interface FilterBlockProps {
     label: string;
     option: string;
     isOpen: boolean;
     onClick: () => void;
+    list: string[];
+    onChange: Dispatch<SetStateAction<string>>;
 }
 
 const Search_task = () => {
@@ -48,15 +51,25 @@ const Search_task = () => {
                                     option={fillAni}
                                     isOpen={animation}
                                     onClick={handleAnimation}
+                                    list={animationType}
+                                    onChange={(value) => {
+                                        setFillAni(value);
+                                        setAnimation(false);
+                                    }}
                                 />
-                                {animation && <Option list={animationType} onChange={setFillAni}/>}
+
                                 <FilterBlock
                                     label="사인"
                                     option={fillDeath}
                                     isOpen={death}
                                     onClick={handleDeath}
+                                    list={deathReason}
+                                    onChange={(value) => {
+                                        setFillDeath(value);
+                                        setDeath(false);
+                                    }}
                                 />
-                                {death && <Option list={deathReason} onChange={setFillDeath}/>}
+
                             </_.search_main>
                         </div>
                     </div>
@@ -65,9 +78,9 @@ const Search_task = () => {
         </_.search>
     );
 }
-const FilterBlock = ({ label, option, isOpen, onClick }: FilterBlockProps) => {
+const FilterBlock = ({ label, option, isOpen, onClick, list, onChange }: FilterBlockProps) => {
     return (
-        <div>
+        <_.filter_block>
             <label>{label}</label>
             <_.black>
                 <_.white>
@@ -87,7 +100,8 @@ const FilterBlock = ({ label, option, isOpen, onClick }: FilterBlockProps) => {
                     </_.dark>
                 </_.white>
             </_.black>
-        </div>
+            {isOpen && <Option list={list} onChange={onChange} />}
+        </_.filter_block>
     );
 };
 export default Search_task;

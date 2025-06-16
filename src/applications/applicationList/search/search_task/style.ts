@@ -87,3 +87,6 @@ export const name= styled.div`
     display: flex;
     flex-direction: column;
 `;
+export const filter_block= styled.div`
+    position: relative;
+`;
