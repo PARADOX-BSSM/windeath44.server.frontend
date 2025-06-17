@@ -1,9 +1,15 @@
 import {Suspense, lazy} from "react";
 import {TaskType} from "@/modules/typeModule.tsx";
+import MemorialMenu from "../applicationList/memorialMenu/index.tsx";
+import Memorial from "../applicationList/memorial/index.tsx";
 
 const Terminal =  lazy(()=> import("../applicationList/terminal/index.tsx"));
 const Settings = lazy(()=> import("../applicationList/settings/index.tsx"));
 const LogIn = lazy(()=> import("../utility/login/index.tsx"));
+const MemorailHistory = lazy(()=> import("../applicationList/memorialHistory/index.tsx"));
+const MemorialCommit = lazy(()=> import("../applicationList/memorialCommit/index.tsx"));
+const MemorialPreview = lazy(()=> import("../applicationList/memorialPreview/index.tsx"));
+const MemorialMerge = lazy(()=> import("../applicationList/memorialMerge/index.tsx"));
 
 //Application Import 형식 예시
 /*
@@ -62,7 +68,85 @@ const Apps:TaskType[] =
           "setUpWidth" : 800,
           "setUpHeight" : 464
         }
-      }
+      },{
+        "component": <Suspense fallback={null}><MemorialMenu/></Suspense>,
+        "type": "App",
+        "id": 2223,
+        "name": "추모관",
+        "layer": undefined,
+        "appSetup":{
+          "Image" : "default",
+          "minWidth" : 800,
+          "minHeight" : 464,
+          "setUpWidth" : 800,
+          "setUpHeight" : 464
+        }
+      },{
+        "component": <Suspense fallback={null}><Memorial/></Suspense>,
+        "type": "App",
+        "id": 2224,
+        "name": "memorial",
+        "layer": undefined,
+        "appSetup":{
+          "Image" : "default",
+          "minWidth" : 840,
+          "minHeight" : 420,
+          "setUpWidth" : 850,
+          "setUpHeight" : 750,
+        }
+      },,{
+        "component": <Suspense fallback={null}><MemorailHistory/></Suspense>,
+        "type": "App",
+        "id": 2225,
+        "name": "memorailHistory",
+        "layer": undefined,
+        "appSetup":{
+          "Image" : "default",
+          "minWidth" : 580,
+          "minHeight" : 420,
+          "setUpWidth" : 850,
+          "setUpHeight" : 500,
+        }
+      },{
+        "component": <Suspense fallback={null}><MemorialCommit/></Suspense>,
+        "type": "App",
+        "id": 2226,
+        "name": "MemorialCommit",
+        "layer": undefined,
+        "appSetup":{
+          "Image" : "default",
+          "minWidth" : 580,
+          "minHeight" : 420,
+          "setUpWidth" : 850,
+          "setUpHeight" : 500,
+        }
+      },{
+        "component": <Suspense fallback={null}><MemorialPreview/></Suspense>,
+        "type": "App",
+        "id": 2227,
+        "name": "MemorialPreview",
+        "layer": undefined,
+        "appSetup":{
+          "Image" : "default",
+          "minWidth" : 580,
+          "minHeight" : 420,
+          "setUpWidth" : 850,
+          "setUpHeight" : 500,
+        }
+      },{
+        "component": <Suspense fallback={null}><MemorialMerge/></Suspense>,
+        "type": "App",
+        "id": 2228,
+        "name": "MemorialMerge",
+        "layer": undefined,
+        "appSetup":{
+          "Image" : "default",
+          "minWidth" : 580,
+          "minHeight" : 420,
+          "setUpWidth" : 850,
+          "setUpHeight" : 500,
+        }
+      },
 
     ]
 
