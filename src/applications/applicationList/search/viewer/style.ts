@@ -6,6 +6,11 @@ export const view= styled.div`
     padding: 8px 0;
     display: flex;
     gap:2px;
+    overflow-x: scroll;
+    -ms-overflow-style: none;
+    &::-webkit-scrollbar {
+        display: none;
+    }
 `;
 export const styles_out= styled.div`
     width: 100%;
