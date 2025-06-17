@@ -20,8 +20,8 @@ const Search_task = () => {
 
     const [fillDeath, setFillDeath] = useState("모두");
     const [fillAni, setFillAni] = useState("없음");
-    const deathReason = ["모두","자연사(自然死)","병사(病死)","돌연사(突然死)","외인사(外因死)"]
-    const  animationType= ["없음","모두 (스포일러 주의!)","최애의 아이","데스노트","원피스"]
+    const deathReason = ["모두","자연사(自然死)","병사(病死)","돌연사(突然死)","외인사(外因死)","심쿰사"]
+    const  animationType= ["없음","모두 (스포일러 주의!)","최애의 아이","데스노트","원피스","도쿄구울"]
 
     const handleAnimation = () => {
         setAnimation(!animation)

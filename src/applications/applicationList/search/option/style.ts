@@ -32,6 +32,12 @@ export const dark= styled.div`
     display: flex;
     flex-direction: column;
     gap: 2px;
+    height: 124px;
+    overflow-x: scroll;
+    -ms-overflow-style: none;
+    &::-webkit-scrollbar {
+        display: none;
+    }
 `;
 export const options= styled.div`
     &:hover {
