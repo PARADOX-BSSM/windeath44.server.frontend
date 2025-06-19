@@ -1,5 +1,6 @@
 import {Suspense, lazy} from "react";
 import {TaskType} from "@/modules/typeModule.tsx";
+import Search from "@/applications/applicationList/search";
 import MemorialMenu from "../applicationList/memorialMenu/index.tsx";
 import Memorial from "../applicationList/memorial/index.tsx";
 
@@ -69,6 +70,19 @@ const Apps:TaskType[] =
           "setUpHeight" : 464
         }
       },{
+        "component": <Suspense fallback={null}><Search/></Suspense>,
+        "type": "App",
+        "id": 2222,
+        "name": "Search",
+        "layer": undefined,
+        "appSetup":{
+          "Image" : "default",
+          "minWidth" : 676,
+          "minHeight" : 360,
+          "setUpWidth" : 676,
+          "setUpHeight" : 360
+      }
+    },{
         "component": <Suspense fallback={null}><MemorialMenu/></Suspense>,
         "type": "App",
         "id": 2223,
