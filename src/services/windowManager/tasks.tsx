@@ -5,7 +5,7 @@ import EmailChack from 'applications/utility/emailCheck';
 import Auth from '@/applications/utility/auth';
 import { TaskType } from '../../modules/typeModule.tsx';
 
-type SetIsLogIned = React.Dispatch<React.SetStateAction<string>>;
+type SetIsLogIned = React.Dispatch<React.SetStateAction<boolean>>;
 type AddTask = (task: TaskType) => void;
 type RemoveTask = (task: TaskType) => void;
 

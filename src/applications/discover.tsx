@@ -1,6 +1,6 @@
 import {TaskType} from "@/modules/typeModule.tsx"
 import {useProcessManager} from "@/hooks/processManager";
-import {Apps} from '@/applications/data/importManager'
+import useApps from "@/applications/data/importManager";
 import TaskBar from "@/applications/components/taskBar";
 import React from "react";
 import Seori from "@/applications/seori";
@@ -16,6 +16,7 @@ interface TaskBarProps {
 
 const Discover = ({startOption, setStartOption, focus, setFocus, backUpFocus, setBackUpFocus }:TaskBarProps) => {
   const [, addTask, ] = useProcessManager();
+  const Apps = useApps();
   return(
     <>
       <Seori/>
