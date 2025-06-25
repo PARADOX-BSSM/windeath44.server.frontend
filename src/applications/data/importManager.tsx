@@ -112,7 +112,7 @@ const useApps = (): TaskType[] => {
         "setUpWidth" : 850,
         "setUpHeight" : 750,
       }
-    },,{
+    },{
       "component": <Suspense fallback={null}><MemorailHistory/></Suspense>,
       "type": "App",
       "id": 2225,
