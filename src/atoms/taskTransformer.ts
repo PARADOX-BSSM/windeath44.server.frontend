@@ -1,3 +1,3 @@
 import { atom } from 'jotai';
 
-export const changeToSignUpAtom = atom<(() => void) | null>(null);
+export const taskTransformerAtom = atom<((from: string, to: string) => void) | null>(null);

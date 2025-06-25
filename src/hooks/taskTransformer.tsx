@@ -4,25 +4,30 @@ import { useEffect } from 'react';
 import { useProcessManager } from './processManager';
 import useApps from '@/applications/data/importManager';
 
-export const useLoginFunction = (fromTask: string, toTask: string) => {
+export const useTaskTransformFunction = () => {
   const setTaskTransformerAtom = useSetAtom(taskTransformerAtom);
   const [, addTask, removeTask] = useProcessManager();
 
   const Apps = useApps();
 
-  const from = Apps.filter((app) => {
-    return app.name === fromTask;
-  })[0];
-  const to = Apps.filter((app) => {
-    return app.name === toTask;
-  })[0];
-
-  const changeToSignUp = () => {
-    addTask(to);
-    removeTask(from);
+  const taskTransform = (fromTask: string, toTask: string) => {
+    const from = Apps.filter((app) => {
+        return app.name === fromTask;
+    })[0];
+    console.log(from);
+    const to = Apps.filter((app) => {
+        return app.name === toTask;
+    })[0];
+    
+    if (to) {
+        addTask(to);
+    }
+    if (from) {
+        removeTask(from);
+    }
   };
 
   useEffect(() => {
-    setTaskTransformerAtom(() => changeToSignUp);
+    setTaskTransformerAtom(() => taskTransform);
   }, []);
 };
