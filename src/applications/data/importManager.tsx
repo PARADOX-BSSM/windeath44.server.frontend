@@ -3,6 +3,7 @@ import {TaskType} from "@/modules/typeModule.tsx";
 import Search from "@/applications/applicationList/search";
 import MemorialMenu from "../applicationList/memorialMenu/index.tsx";
 import Memorial from "../applicationList/memorial/index.tsx";
+import Bow from "@/applications/applicationList/bow";
 import { useAtom } from 'jotai';
 import { isLogInedAtom } from "@/atoms/windowManager.ts";
 import { useProcessManager } from "@/hooks/processManager.tsx";
@@ -165,6 +166,20 @@ const useApps = (): TaskType[] => {
         "setUpHeight" : 500,
       }
     },
+        {
+        "component": <Suspense fallback={null}><Bow/></Suspense>,
+        "type": "App",
+        "id": 2228,
+        "name": "Bow",
+        "layer": undefined,
+        "appSetup":{
+          "Image" : "default",
+          "minWidth" : 580,
+          "minHeight" : 420,
+          "setUpWidth" : 850,
+          "setUpHeight" : 500,
+        }
+      }
   ];
 
   return baseApps;
