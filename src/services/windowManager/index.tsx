@@ -30,7 +30,7 @@ const WindowManager = () => {
     }
   }, [focus])
   useEffect(() => { //초기 기본 설정
-    if (isLogIned !== "None") {
+    if (isLogIned) {
       removeTask(logIn)
       const discover: TaskType = {
         "component": <Discover startOption={startOption} setStartOption={setStartOption} focus={focus} setFocus={setFocus} backUpFocus={backUpFocus} setBackUpFocus={setBackUpFocus} />,
