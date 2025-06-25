@@ -3,9 +3,13 @@ import Comment from '@/applications/components/comment';
 import * as _ from './style';
 import { index_data, comment_data } from './data';
 import characterUrl from '@/assets/character/hosino.svg';
+import { useAtomValue } from 'jotai';
+import { taskTransformerAtom } from '@/atoms/taskTransformer';
 
 
 const Memorial = () => {
+  const taskTransform = useAtomValue(taskTransformerAtom);
+  
   return (
     <_.Main>
       <_.Container>
@@ -16,8 +20,13 @@ const Memorial = () => {
                 <_.Title>호시노 아이</_.Title>
                 <_.Subtitle>최근 수정: 2025-07-04 12:34:56</_.Subtitle>
               </_.TextContainer>
-              <_.History>기록</_.History>
-              <_.DocumentUpdate>문서 수정</_.DocumentUpdate>
+              <_.History onClick={() => { 
+                taskTransform?.('memorial', 'memorailHistory');
+              }}>기록</_.History>
+              <_.DocumentUpdate onClick={() => { 
+                taskTransform?.('', 'MemorialPreview');
+                taskTransform?.('', 'MemorialCommit');
+              }}>문서 수정</_.DocumentUpdate>
             </_.Header>
             <_.ContentContainer>
               <_.IndexWrapper>
@@ -61,7 +70,9 @@ const Memorial = () => {
             </_.ContentContainer>
           </_.Section1>
 
-          <_.GotoBow>절 하러가기</_.GotoBow>
+          <_.GotoBow onClick={() => { 
+                taskTransform?.('', 'Bow');
+              }}>절 하러가기</_.GotoBow>
 
           <_.Section2>
             <_.CommentContainer>

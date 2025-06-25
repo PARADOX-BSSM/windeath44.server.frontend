@@ -1,8 +1,12 @@
 import * as _ from './style';
 import History from './components/history';
 import { historyData } from './data';
+import { useAtomValue } from 'jotai';
+import { taskTransformerAtom } from '@/atoms/taskTransformer';
 
 const MemorailHistory = () => {
+    const taskTransform = useAtomValue(taskTransformerAtom);
+
     return (
         <_.Container>
             <_.InnerContainer>
@@ -13,7 +17,9 @@ const MemorailHistory = () => {
                                 <_.Title>호시노 아이</_.Title>
                                 <_.SubTitle>최근 수정: 2025-07-04 12:34:56</_.SubTitle>
                             </_.LeftHeader>
-                            <_.GoToBackBtn>돌아가기</_.GoToBackBtn>
+                            <_.GoToBackBtn onClick={() => { 
+                                taskTransform?.('memorailHistory', 'memorial');
+                            }}>돌아가기</_.GoToBackBtn>
                         </_.InnerHeader>
                     </_.Header>
                     <_.HistoryContainer>
