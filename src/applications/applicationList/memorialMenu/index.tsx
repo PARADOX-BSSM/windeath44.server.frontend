@@ -78,7 +78,7 @@ const MemorialMenu = () => {
                     </_.BtnWrapper>
                 </_.MainContainer>
                 <_.Footer>
-                    <MemorialBtn name="입장하기" type="submit" active={selectedIdx !== null}/>
+                    <MemorialBtn name="입장하기" type="submit" active={selectedIdx !== null} onClick={() => {}}/>
                 </_.Footer>
             </_.InnerContainer>
         </_.Container>
