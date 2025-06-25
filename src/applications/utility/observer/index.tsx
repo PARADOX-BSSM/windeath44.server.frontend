@@ -1,10 +1,11 @@
 import * as _ from './style';
-import {Apps} from '@/applications/data/importManager';
+import useApps from "@/applications/data/importManager";
 import {TaskType} from "@/modules/typeModule.tsx";
 import {useState,useEffect} from 'react';
 
 const Observer = (props:any) => {
   const [containerLeft, setContainerLeft] = useState<number>(0); //observe에 넘길 container 비율
+  const Apps = useApps();
 
   useEffect(() => {
     const container = document.getElementById("cursorContainer");

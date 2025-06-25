@@ -4,6 +4,10 @@ import Search from "@/applications/applicationList/search";
 import MemorialMenu from "../applicationList/memorialMenu/index.tsx";
 import Memorial from "../applicationList/memorial/index.tsx";
 import Bow from "@/applications/applicationList/bow";
+import { useAtom } from 'jotai';
+import { isLogInedAtom } from "@/atoms/windowManager.ts";
+import { useProcessManager } from "@/hooks/processManager.tsx";
+import { getTaskCreators } from "@/services/windowManager/tasks.tsx";
 
 const Terminal =  lazy(()=> import("../applicationList/terminal/index.tsx"));
 const Settings = lazy(()=> import("../applicationList/settings/index.tsx"));
@@ -29,140 +33,140 @@ const MemorialMerge = lazy(()=> import("../applicationList/memorialMerge/index.t
         }
 }
  */
-const Apps:TaskType[] =
-    [
-      {
-        "component": <Suspense fallback={null}><Terminal/></Suspense>,
-        "type": "App",
-        "id": 2210,
-        "name": "Terminal",
-        "layer": undefined,
-        "appSetup":{
-          "Image" : "default",
-          "minWidth" : 200,
-          "minHeight" : 150,
-          "setUpWidth" : 300,
-          "setUpHeight" : 400
-        }
-      },{
-        "component": <Suspense fallback={null}><Settings/></Suspense>,
-        "type": "App",
-        "id": 2221,
-        "name": "Settings",
-        "layer": undefined,
-        "appSetup":{
-          "Image" : "default",
-          "minWidth" : 200,
-          "minHeight" : 150,
-          "setUpWidth" : 300,
-          "setUpHeight" : 400
-        }
-      },{
-        "component": <Suspense fallback={null}><LogIn/></Suspense>,
-        "type": "App",
-        "id": 2222,
-        "name": "LogIn",
-        "layer": undefined,
-        "appSetup":{
-          "Image" : "default",
-          "minWidth" : 800,
-          "minHeight" : 464,
-          "setUpWidth" : 800,
-          "setUpHeight" : 464
-        }
-      },{
-        "component": <Suspense fallback={null}><Search/></Suspense>,
-        "type": "App",
-        "id": 2222,
-        "name": "Search",
-        "layer": undefined,
-        "appSetup":{
-          "Image" : "default",
-          "minWidth" : 676,
-          "minHeight" : 360,
-          "setUpWidth" : 676,
-          "setUpHeight" : 360
+const useApps = (): TaskType[] => {
+  const [isLogIned, setIsLogIned] = useAtom(isLogInedAtom);
+  const [taskList, addTask, removeTask] = useProcessManager();
+
+  const { logIn, signUp, emailChack, auth } = getTaskCreators(
+    setIsLogIned,
+    addTask,
+    removeTask
+  );
+
+  const baseApps: TaskType[] = [
+    logIn,
+    signUp,
+    emailChack,
+    auth,
+    {
+      "component": <Suspense fallback={null}><Terminal/></Suspense>,
+      "type": "App",
+      "id": 2210,
+      "name": "Terminal",
+      "layer": undefined,
+      "appSetup":{
+        "Image" : "default",
+        "minWidth" : 200,
+        "minHeight" : 150,
+        "setUpWidth" : 300,
+        "setUpHeight" : 400
       }
     },{
-        "component": <Suspense fallback={null}><MemorialMenu/></Suspense>,
-        "type": "App",
-        "id": 2223,
-        "name": "추모관",
-        "layer": undefined,
-        "appSetup":{
-          "Image" : "default",
-          "minWidth" : 800,
-          "minHeight" : 464,
-          "setUpWidth" : 800,
-          "setUpHeight" : 464
-        }
-      },{
-        "component": <Suspense fallback={null}><Memorial/></Suspense>,
-        "type": "App",
-        "id": 2224,
-        "name": "memorial",
-        "layer": undefined,
-        "appSetup":{
-          "Image" : "default",
-          "minWidth" : 840,
-          "minHeight" : 420,
-          "setUpWidth" : 850,
-          "setUpHeight" : 750,
-        }
-      },,{
-        "component": <Suspense fallback={null}><MemorailHistory/></Suspense>,
-        "type": "App",
-        "id": 2225,
-        "name": "memorailHistory",
-        "layer": undefined,
-        "appSetup":{
-          "Image" : "default",
-          "minWidth" : 580,
-          "minHeight" : 420,
-          "setUpWidth" : 850,
-          "setUpHeight" : 500,
-        }
-      },{
-        "component": <Suspense fallback={null}><MemorialCommit/></Suspense>,
-        "type": "App",
-        "id": 2226,
-        "name": "MemorialCommit",
-        "layer": undefined,
-        "appSetup":{
-          "Image" : "default",
-          "minWidth" : 580,
-          "minHeight" : 420,
-          "setUpWidth" : 850,
-          "setUpHeight" : 500,
-        }
-      },{
-        "component": <Suspense fallback={null}><MemorialPreview/></Suspense>,
-        "type": "App",
-        "id": 2227,
-        "name": "MemorialPreview",
-        "layer": undefined,
-        "appSetup":{
-          "Image" : "default",
-          "minWidth" : 580,
-          "minHeight" : 420,
-          "setUpWidth" : 850,
-          "setUpHeight" : 500,
-        }
-      },{
-        "component": <Suspense fallback={null}><MemorialMerge/></Suspense>,
-        "type": "App",
-        "id": 2228,
-        "name": "MemorialMerge",
-        "layer": undefined,
-        "appSetup":{
-          "Image" : "default",
-          "minWidth" : 580,
-          "minHeight" : 420,
-          "setUpWidth" : 850,
-          "setUpHeight" : 500,
-        }
-      },
-      {
+      "component": <Suspense fallback={null}><Settings/></Suspense>,
+      "type": "App",
+      "id": 2221,
+      "name": "Settings",
+      "layer": undefined,
+      "appSetup":{
+        "Image" : "default",
+        "minWidth" : 200,
+        "minHeight" : 150,
+        "setUpWidth" : 300,
+        "setUpHeight" : 400
+      }
+    },{
+      "component": <Suspense fallback={null}><Search/></Suspense>,
+      "type": "App",
+      "id": 2222,
+      "name": "Search",
+      "layer": undefined,
+      "appSetup":{
+        "Image" : "default",
+        "minWidth" : 676,
+        "minHeight" : 360,
+        "setUpWidth" : 676,
+        "setUpHeight" : 360
+    }
+  },{
+      "component": <Suspense fallback={null}><MemorialMenu/></Suspense>,
+      "type": "App",
+      "id": 2223,
+      "name": "추모관",
+      "layer": undefined,
+      "appSetup":{
+        "Image" : "default",
+        "minWidth" : 800,
+        "minHeight" : 464,
+        "setUpWidth" : 800,
+        "setUpHeight" : 464
+      }
+    },{
+      "component": <Suspense fallback={null}><Memorial/></Suspense>,
+      "type": "App",
+      "id": 2224,
+      "name": "memorial",
+      "layer": undefined,
+      "appSetup":{
+        "Image" : "default",
+        "minWidth" : 840,
+        "minHeight" : 420,
+        "setUpWidth" : 850,
+        "setUpHeight" : 750,
+      }
+    },{
+      "component": <Suspense fallback={null}><MemorailHistory/></Suspense>,
+      "type": "App",
+      "id": 2225,
+      "name": "memorailHistory",
+      "layer": undefined,
+      "appSetup":{
+        "Image" : "default",
+        "minWidth" : 580,
+        "minHeight" : 420,
+        "setUpWidth" : 850,
+        "setUpHeight" : 500,
+      }
+    },{
+      "component": <Suspense fallback={null}><MemorialCommit/></Suspense>,
+      "type": "App",
+      "id": 2226,
+      "name": "MemorialCommit",
+      "layer": undefined,
+      "appSetup":{
+        "Image" : "default",
+        "minWidth" : 580,
+        "minHeight" : 420,
+        "setUpWidth" : 850,
+        "setUpHeight" : 500,
+      }
+    },{
+      "component": <Suspense fallback={null}><MemorialPreview/></Suspense>,
+      "type": "App",
+      "id": 2227,
+      "name": "MemorialPreview",
+      "layer": undefined,
+      "appSetup":{
+        "Image" : "default",
+        "minWidth" : 580,
+        "minHeight" : 420,
+        "setUpWidth" : 850,
+        "setUpHeight" : 500,
+      }
+    },{
+      "component": <Suspense fallback={null}><MemorialMerge/></Suspense>,
+      "type": "App",
+      "id": 2228,
+      "name": "MemorialMerge",
+      "layer": undefined,
+      "appSetup":{
+        "Image" : "default",
+        "minWidth" : 580,
+        "minHeight" : 420,
+        "setUpWidth" : 850,
+        "setUpHeight" : 500,
+      }
+    },
+        {
         "component": <Suspense fallback={null}><Bow/></Suspense>,
         "type": "App",
         "id": 2228,
@@ -175,8 +179,10 @@ const Apps:TaskType[] =
           "setUpWidth" : 850,
           "setUpHeight" : 500,
         }
-      },
+      }
+  ];
 
-    ]
+  return baseApps;
+};
 
-export {Apps}
+export default useApps;
