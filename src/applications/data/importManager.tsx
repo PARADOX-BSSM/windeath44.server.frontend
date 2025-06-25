@@ -57,17 +57,17 @@ const Apps:TaskType[] =
           "setUpHeight" : 400
         }
       },{
-        "component": <Suspense fallback={null}><LogIn/></Suspense>,
+        "component": <Suspense fallback={null}><LogIn setIsLogIned={} changeToSignUp={} changeToEmailCheck={} /></Suspense>,
         "type": "App",
-        "id": 2222,
+        "id": 1,
         "name": "LogIn",
         "layer": undefined,
-        "appSetup":{
-          "Image" : "default",
-          "minWidth" : 800,
-          "minHeight" : 464,
-          "setUpWidth" : 800,
-          "setUpHeight" : 464
+        "appSetup": {
+          "Image": "default",
+          "minWidth": 748,
+          "minHeight": 464,
+          "setUpWidth": 748,
+          "setUpHeight": 464
         }
       },{
         "component": <Suspense fallback={null}><Search/></Suspense>,

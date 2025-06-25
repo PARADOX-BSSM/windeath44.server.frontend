@@ -4,7 +4,7 @@ import Button from "@/applications/components/button";
 import Inputs from "@/applications/components/inputs";
 import {useState} from "react";
 type Props = {
-  setIsLogIned: (arg0: boolean) => void;
+  setIsLogIned: (arg0: string) => void;
   changeToSignUp: () => void;
   changeToEmailCheck: () => void;
 };
@@ -30,8 +30,8 @@ const LogIn = ({ setIsLogIned, changeToSignUp , changeToEmailCheck}: Props) => {
         (element) => element.id === id && element.password === password
     );
     if (foundUser) {
-      setIsLogIned(true);
-      console.log(id, password);
+      setIsLogIned("User");
+      console.log(foundUser.id, foundUser.nickname);
     }
   };
 
@@ -49,7 +49,7 @@ const LogIn = ({ setIsLogIned, changeToSignUp , changeToEmailCheck}: Props) => {
           </_.tempInputs>
           <_.tempButtons>
             <Button props="확인" onClick={() => checkLogIn(inputID, inputPW)}/>
-            <Button props="취소" onClick={() => setIsLogIned(true)}/>
+            <Button props="취소" onClick={() => setIsLogIned("Guest")}/>
             <Button props="비밀번호 찾기" onClick={() => changeToEmailCheck()}/>
             <Button props="회원가입" onClick={() => changeToSignUp()}/>
           </_.tempButtons>
