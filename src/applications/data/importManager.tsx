@@ -3,6 +3,7 @@ import {TaskType} from "@/modules/typeModule.tsx";
 import Search from "@/applications/applicationList/search";
 import MemorialMenu from "../applicationList/memorialMenu/index.tsx";
 import Memorial from "../applicationList/memorial/index.tsx";
+import Bow from "@/applications/applicationList/bow";
 
 const Terminal =  lazy(()=> import("../applicationList/terminal/index.tsx"));
 const Settings = lazy(()=> import("../applicationList/settings/index.tsx"));
@@ -152,6 +153,20 @@ const Apps:TaskType[] =
         "type": "App",
         "id": 2228,
         "name": "MemorialMerge",
+        "layer": undefined,
+        "appSetup":{
+          "Image" : "default",
+          "minWidth" : 580,
+          "minHeight" : 420,
+          "setUpWidth" : 850,
+          "setUpHeight" : 500,
+        }
+      },
+      {
+        "component": <Suspense fallback={null}><Bow/></Suspense>,
+        "type": "App",
+        "id": 2228,
+        "name": "Bow",
         "layer": undefined,
         "appSetup":{
           "Image" : "default",
