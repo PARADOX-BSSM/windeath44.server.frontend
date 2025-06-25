@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
+import { useAtomValue } from 'jotai';
 import MemorialBtn from '@/applications/components/memorialBtn';
 import * as _ from './style.ts';
+import { taskTransformerAtom } from '@/atoms/taskTransformer.ts';
 
 
 const btnList = ["추모관 검색", "즐겨찾기", "추모관 신청"];
@@ -14,6 +16,8 @@ const MemorialMenu = () => {
             오른쪽의 버튼을 눌러 계속 진행할 수 있습니다.
         </>
     );
+
+    const taskTransform = useAtomValue(taskTransformerAtom);
 
     useEffect(() => {
         if (selectedIdx === 0) {
@@ -44,6 +48,18 @@ const MemorialMenu = () => {
             );
         }
     }, [selectedIdx]);
+
+    const moveTo = (idx: number | null) => {
+        if (idx === 0) {
+            taskTransform?.('추모관', 'memorial');
+        }
+        if (idx === 1) {
+            taskTransform?.('추모관', 'memorial');
+        }
+        if (idx === 2) {
+            taskTransform?.('추모관', 'MemorialCommit');
+        }
+    };
 
     return(
         <_.Container>
@@ -78,7 +94,9 @@ const MemorialMenu = () => {
                     </_.BtnWrapper>
                 </_.MainContainer>
                 <_.Footer>
-                    <MemorialBtn name="입장하기" type="submit" active={selectedIdx !== null} onClick={() => {}}/>
+                    <MemorialBtn name="입장하기" type="submit" active={selectedIdx !== null} onClick={() => {
+                        moveTo(selectedIdx);
+                    }}/>
                 </_.Footer>
             </_.InnerContainer>
         </_.Container>
