@@ -51,7 +51,7 @@ const MemorialMenu = () => {
 
     const moveTo = (idx: number | null) => {
         if (idx === 0) {
-            taskTransform?.('추모관', 'memorial');
+            taskTransform?.('추모관', 'Search');
         }
         if (idx === 1) {
             taskTransform?.('추모관', 'memorial');
