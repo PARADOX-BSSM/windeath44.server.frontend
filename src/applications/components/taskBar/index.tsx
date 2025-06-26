@@ -1,20 +1,20 @@
 import React from "react";
 import * as _ from './style';
-import {useProcessManager} from "@/hooks/processManager";
+import { useProcessManager } from "@/hooks/processManager";
 
 
 interface TaskBarProps {
     startOption: boolean;
     setStartOption: React.Dispatch<React.SetStateAction<boolean>>;
-    focus : string;
+    focus: string;
     setFocus: React.Dispatch<React.SetStateAction<string>>;
     backUpFocus: string;
     setBackUpFocus: React.Dispatch<React.SetStateAction<string>>;
-    setTabDownInterrupt : React.Dispatch<React.SetStateAction<string>>;
+    setTabDownInterrupt: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const TaskBar = ({startOption, setStartOption, focus, setFocus, backUpFocus, setBackUpFocus, setTabDownInterrupt }:TaskBarProps) => {
-    const [taskList,,] = useProcessManager();
+const TaskBar = ({ startOption, setStartOption, focus, setFocus, backUpFocus, setBackUpFocus, setTabDownInterrupt }: TaskBarProps) => {
+    const [taskList, ,] = useProcessManager();
     const taskStyle = { margin: "0.25rem" };
     const taskButtonStyle = {
         height: "100%",
@@ -34,17 +34,18 @@ const TaskBar = ({startOption, setStartOption, focus, setFocus, backUpFocus, set
                             return (
                                 <li style={taskStyle} key={"Observer"}>
                                     <button style={startOption ? taskSelectButtonStyle : taskButtonStyle} //스타트 옵션은 프롭스로
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                setStartOption(!startOption);
-                                                if (startOption) {
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setStartOption((prev) => {
+                                                if (prev) {
                                                     setFocus(backUpFocus);
                                                 } else {
                                                     setBackUpFocus(focus);
                                                     setFocus("Observer");
                                                 }
-                                            }
-                                            }>Start</button>
+                                                return !prev;
+                                            });
+                                        }}>Start</button>
                                 </li>
                             )
                         } else {
