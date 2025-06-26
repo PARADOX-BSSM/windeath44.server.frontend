@@ -6,13 +6,13 @@ import { taskSearchAtom } from "@/atoms/taskTransformer.ts";
 const Settings = () => {
   const [stack, push, pop, top] = useStack();
   const taskSearch = useAtomValue(taskSearchAtom);
-  
+
   useEffect(() => {
     console.log("stack: ", stack);
     console.log("top: ", top());
   }, [stack]);
   useEffect(() => {
-    push(taskSearch?.("memorial", stack, push, pop, top));
+    push(taskSearch?.("추모관", stack, push, pop, top));
   }, [])
     return (
       <>

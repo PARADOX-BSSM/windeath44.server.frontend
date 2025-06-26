@@ -2,12 +2,18 @@ import { useEffect, useState } from 'react';
 import { useAtomValue } from 'jotai';
 import MemorialBtn from '@/applications/components/memorialBtn';
 import * as _ from './style.ts';
-import { taskTransformerAtom } from '@/atoms/taskTransformer.ts';
+import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer.ts';
 
+interface dataStructureProps {
+    stack: any[];
+    push: any
+    pop: any;
+    top: any;
+  }
 
 const btnList = ["추모관 검색", "즐겨찾기", "추모관 신청"];
 
-const MemorialMenu = () => {
+const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
     const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
     const [description, setDescription] = useState<JSX.Element | null>(
         <>
@@ -18,6 +24,7 @@ const MemorialMenu = () => {
     );
 
     const taskTransform = useAtomValue(taskTransformerAtom);
+    const taskSearch= useAtomValue(taskSearchAtom);
 
     useEffect(() => {
         if (selectedIdx === 0) {
@@ -51,13 +58,13 @@ const MemorialMenu = () => {
 
     const moveTo = (idx: number | null) => {
         if (idx === 0) {
-            taskTransform?.('추모관', 'Search');
+            push(taskSearch?.('Search', stack, push, pop, top));
         }
         if (idx === 1) {
-            taskTransform?.('추모관', 'memorial');
+            push(taskSearch?.('memorial', stack, push, pop, top));
         }
         if (idx === 2) {
-            taskTransform?.('추모관', 'MemorialCommit');
+            push(taskSearch?.('MemorialCommit', stack, push, pop, top));
         }
     };
 
