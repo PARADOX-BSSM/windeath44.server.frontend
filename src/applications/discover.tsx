@@ -8,13 +8,11 @@ import Seori from "@/applications/seori";
 interface TaskBarProps {
   startOption: boolean;
   setStartOption: React.Dispatch<React.SetStateAction<boolean>>;
-  focus : string;
-  setFocus: React.Dispatch<React.SetStateAction<string>>;
   backUpFocus: string;
   setBackUpFocus: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Discover = ({startOption, setStartOption, focus, setFocus, backUpFocus, setBackUpFocus }:TaskBarProps) => {
+const Discover = ({startOption, setStartOption, backUpFocus, setBackUpFocus }:TaskBarProps) => {
   const [, addTask, ] = useProcessManager();
   const Apps = useApps();
   return(
@@ -31,7 +29,7 @@ const Discover = ({startOption, setStartOption, focus, setFocus, backUpFocus, se
           </div>
         )
       })}
-      <TaskBar startOption={startOption} setStartOption={setStartOption} focus={focus} setFocus={setFocus} backUpFocus={backUpFocus} setBackUpFocus={setBackUpFocus}/>
+      <TaskBar startOption={startOption} setStartOption={setStartOption} backUpFocus={backUpFocus} setBackUpFocus={setBackUpFocus}/>
     </>
   )
 }
