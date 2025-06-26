@@ -16,15 +16,10 @@ export const useTaskSearchFunction = () => {
         return app.name === i_want_to_find_it;
     })[0];
 
-    console.log(i_want_to_find_it);
-    console.log(stack, push, pop, top);
-
     if (stack && push && pop && top) {
       const original = foundTask.component;
       const internal = original.props.children as React.ReactElement;
       const type = internal.type;
-
-      console.log(type);
 
       foundTask.component = (
         <Suspense fallback={null}>

@@ -4,16 +4,17 @@ import {useState} from "react";
 
 const useStack = () => {
   const [stack, setStack] = useState<any[]>([]);
+
   const push:any = (value:any) => {
-    setStack([...stack , value]);
+    setStack(prev => [...prev, value]);
   }
-  const pop:any  = () => {
-    if(stack.length>0) {
-      let copy:any[] = [...stack];
-      copy.splice(-1,1)
-      setStack([...copy])
-    }
-  }
+  const pop = () => {
+    setStack(prev => {
+      const copy = [...prev];
+      copy.pop();
+      return copy;
+    });
+  };
   const top:any = (): TaskType | null => {
     if(stack.length>0)
       return stack[stack.length - 1];

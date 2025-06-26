@@ -5,7 +5,6 @@ import { index_data, comment_data } from './data';
 import characterUrl from '@/assets/character/hosino.svg';
 import { useAtomValue } from 'jotai';
 import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer';
-import { TaskType } from '@/modules/typeModule';
 
 interface dataStructureProps {
   stack: any[];
@@ -17,8 +16,6 @@ interface dataStructureProps {
 const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
   const taskSearch = useAtomValue(taskSearchAtom);
-
-  console.log(stack, push, pop, top);
   
   return (
     <_.Main>
@@ -31,12 +28,11 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
                 <_.Subtitle>최근 수정: 2025-07-04 12:34:56</_.Subtitle>
               </_.TextContainer>
               <_.History onClick={() => { 
-                // taskTransform?.('memorial', 'memorailHistory');
                 push(taskSearch?.("memorailHistory", stack, push, pop, top));
               }}>기록</_.History>
               <_.DocumentUpdate onClick={() => { 
                 taskTransform?.('', 'MemorialPreview');
-                taskTransform?.('', 'MemorialCommit');
+                push(taskSearch?.("MemorialCommit", stack, push, pop, top));
               }}>문서 수정</_.DocumentUpdate>
             </_.Header>
             <_.ContentContainer>
