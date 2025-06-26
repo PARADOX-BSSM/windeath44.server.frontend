@@ -1,25 +1,22 @@
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
+import { useAtomValue } from 'jotai';
 import {useStack} from '@/hooks/dataStructure.tsx'
-import {Main, Wallpaper} from './settingsPages.tsx'
-import Memorial from "../memorial/index.tsx";
+import { taskSearchAtom } from "@/atoms/taskTransformer.ts";
 
 const Settings = () => {
   const [stack, Push, Pop, Top] = useStack();
+  const taskSearch = useAtomValue(taskSearchAtom);
   // const [signal, setSignal] = useState(null);
   useEffect(() => {
     console.log(stack);
     console.log(Top());
   }, [stack]);
   useEffect(() => {
-    Push((
-      <>
-        <Memorial />
-      </>
-    ))
+    Push(taskSearch?.("memorial", stack, Push, Pop, Top));
   }, [])
     return (
       <>
-        {Top()}
+        {Top().component}
       </>
     )
 
