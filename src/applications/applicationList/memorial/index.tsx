@@ -10,7 +10,7 @@ import { TaskType } from '@/modules/typeModule';
 interface dataStructureProps {
   stack: any[];
   push: any
-  pop: any;
+  pop: any;feat:
   top: any;
 }
 
