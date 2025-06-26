@@ -17,7 +17,9 @@ const useStack = () => {
     if(stack.length>0)
       return stack[stack.length - 1];
     else
-      return 0;
+      return (
+        <></>
+    );
   }
 
   return [stack, push, pop, top];

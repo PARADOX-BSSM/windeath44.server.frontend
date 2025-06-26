@@ -1,27 +1,25 @@
 import {useEffect, useState} from "react";
 import {useStack} from '@/hooks/dataStructure.tsx'
 import {Main, Wallpaper} from './settingsPages.tsx'
+import Memorial from "../memorial/index.tsx";
 
 const Settings = () => {
   const [stack, Push, Pop, Top] = useStack();
-  const [signal, setSignal] = useState(null);
+  // const [signal, setSignal] = useState(null);
   useEffect(() => {
     console.log(stack);
+    console.log(Top());
   }, [stack]);
   useEffect(() => {
-    if(signal!==null) {
-      if(signal==="back") {
-        Pop()
-      }else {
-        Push(signal);
-        setSignal(null);
-      }
-    }
-  },  [signal])
+    Push((
+      <>
+        <Memorial />
+      </>
+    ))
+  }, [])
     return (
       <>
-        <Main number={Top()} setSignal={setSignal}/>
-        <Wallpaper number={Top()} setSignal={setSignal}/>
+        {Top()}
       </>
     )
 

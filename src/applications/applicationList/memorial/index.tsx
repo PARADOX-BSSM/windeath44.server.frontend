@@ -6,8 +6,14 @@ import characterUrl from '@/assets/character/hosino.svg';
 import { useAtomValue } from 'jotai';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
 
+interface dataStructureProps {
+  stack: JSX.Element[];
+  Push: () => void;
+  Pop: () => void;
+  Top: () => JSX.Element;
+}
 
-const Memorial = () => {
+const Memorial = ({ stack, Push, Pop, Top }: dataStructureProps) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
   
   return (
