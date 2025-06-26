@@ -34,7 +34,8 @@ const TaskBar = ({startOption, setStartOption, focus, setFocus, backUpFocus, set
                             return (
                                 <li style={taskStyle} key={"Observer"}>
                                     <button style={startOption ? taskSelectButtonStyle : taskButtonStyle} //스타트 옵션은 프롭스로
-                                            onClick={() => {
+                                            onClick={(e) => {
+                                                e.stopPropagation();
                                                 setStartOption(!startOption);
                                                 if (startOption) {
                                                     setFocus(backUpFocus);
@@ -58,7 +59,8 @@ const TaskBar = ({startOption, setStartOption, focus, setFocus, backUpFocus, set
                             } else {
                                 return (
                                     <li style={taskStyle} key={task.name}>
-                                        <button style={taskButtonStyle} onClick={() => {
+                                        <button style={taskButtonStyle} onClick={(e) => {
+                                            e.stopPropagation();
                                             setFocus(task.name);
                                         }}>{task.name}</button>
                                     </li>
