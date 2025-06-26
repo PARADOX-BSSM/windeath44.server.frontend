@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai';
 import { taskSearchAtom } from '@/atoms/taskTransformer';
 import useApps from '@/applications/data/importManager';
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import React from 'react';
 
 export const useTaskSearchFunction = () => {
@@ -20,17 +20,17 @@ export const useTaskSearchFunction = () => {
     console.log(stack, push, pop, top);
 
     if (stack && push && pop && top) {
-      const elementWithProps = React.cloneElement(
-        foundTask.component,
-        {
-          stack,
-          push,
-          pop,
-          top,
-        }
+      const original = foundTask.component;
+      const internal = original.props.children as React.ReactElement;
+      const type = internal.type;
+
+      console.log(type);
+
+      foundTask.component = (
+        <Suspense fallback={null}>
+          {React.createElement(type, { stack, push, pop, top })}
+        </Suspense>
       );
-      
-      foundTask.component = elementWithProps;
     }
 
     return foundTask;

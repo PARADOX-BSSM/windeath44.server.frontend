@@ -12,11 +12,12 @@ const Settings = () => {
     console.log(top());
   }, [stack]);
   useEffect(() => {
+    console.log(1, push);
     push(taskSearch?.("memorial", stack, push, pop, top));
   }, [])
     return (
       <>
-        {top().component}
+        {top()?.component}
       </>
     )
 

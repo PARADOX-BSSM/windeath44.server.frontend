@@ -17,6 +17,8 @@ interface dataStructureProps {
 const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
   const taskSearch = useAtomValue(taskSearchAtom);
+
+  console.log(stack, push, pop, top);
   
   return (
     <_.Main>
