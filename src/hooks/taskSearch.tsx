@@ -11,21 +11,22 @@ export const useTaskSearchFunction = () => {
 
   let foundTask = Apps[0];
 
-  const taskSearch = (i_want_to_find_it: string, stack?: any, Push?: any, Pop?: any, Top?: any) => {
+  const taskSearch = (i_want_to_find_it: string, stack?: any, push?: any, pop?: any, top?: any) => {
     foundTask = Apps.filter((app) => {
         return app.name === i_want_to_find_it;
     })[0];
 
-    console.log(stack, Push, Pop, Top);
+    console.log(i_want_to_find_it);
+    console.log(stack, push, pop, top);
 
-    if (stack && Push && Pop && Top) {
+    if (stack && push && pop && top) {
       const elementWithProps = React.cloneElement(
         foundTask.component,
         {
           stack,
-          Push,
-          Pop,
-          Top,
+          push,
+          pop,
+          top,
         }
       );
       

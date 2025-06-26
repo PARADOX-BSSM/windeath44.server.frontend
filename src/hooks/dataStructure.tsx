@@ -1,3 +1,4 @@
+import { TaskType } from "@/modules/typeModule";
 import {useState} from "react";
 
 
@@ -13,13 +14,11 @@ const useStack = () => {
       setStack([...copy])
     }
   }
-  const top:any = () => {
+  const top:any = (): TaskType | null => {
     if(stack.length>0)
       return stack[stack.length - 1];
     else
-      return (
-        <></>
-    );
+      return null;
   }
 
   return [stack, push, pop, top];

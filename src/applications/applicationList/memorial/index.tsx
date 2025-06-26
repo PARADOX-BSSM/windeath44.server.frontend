@@ -8,13 +8,13 @@ import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer';
 import { TaskType } from '@/modules/typeModule';
 
 interface dataStructureProps {
-  stack: JSX.Element[];
-  Push: (value: TaskType | undefined) => void;
-  Pop: () => void;
-  Top: () => JSX.Element;
+  stack: any[];
+  push: any
+  pop: any;
+  top: any;
 }
 
-const Memorial = ({ stack, Push, Pop, Top }: dataStructureProps) => {
+const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
   const taskSearch = useAtomValue(taskSearchAtom);
   
@@ -30,7 +30,7 @@ const Memorial = ({ stack, Push, Pop, Top }: dataStructureProps) => {
               </_.TextContainer>
               <_.History onClick={() => { 
                 // taskTransform?.('memorial', 'memorailHistory');
-                Push(taskSearch?.("memorailHistory", stack, Push, Pop, Top));
+                push(taskSearch?.("memorailHistory", stack, push, pop, top));
               }}>기록</_.History>
               <_.DocumentUpdate onClick={() => { 
                 taskTransform?.('', 'MemorialPreview');

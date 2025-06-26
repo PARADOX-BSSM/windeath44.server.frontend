@@ -4,19 +4,19 @@ import {useStack} from '@/hooks/dataStructure.tsx'
 import { taskSearchAtom } from "@/atoms/taskTransformer.ts";
 
 const Settings = () => {
-  const [stack, Push, Pop, Top] = useStack();
+  const [stack, push, pop, top] = useStack();
   const taskSearch = useAtomValue(taskSearchAtom);
   // const [signal, setSignal] = useState(null);
   useEffect(() => {
     console.log(stack);
-    console.log(Top());
+    console.log(top());
   }, [stack]);
   useEffect(() => {
-    Push(taskSearch?.("memorial", stack, Push, Pop, Top));
+    push(taskSearch?.("memorial", stack, push, pop, top));
   }, [])
     return (
       <>
-        {Top().component}
+        {top().component}
       </>
     )
 
