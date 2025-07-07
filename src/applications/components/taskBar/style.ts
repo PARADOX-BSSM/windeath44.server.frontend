@@ -66,5 +66,27 @@ export const taskButtonStyle = {
 export const taskSelectButtonStyle = {
     height: "100%",
     backgroundColor: "var(--dark-primary-color)",
-    BoxShadow: "-1.5px -1.5px 0px 0px #FFF inset, 1.5px 1.5px 0px 0px var(--Black, #2E2E2E) inset, -3px -3px 0px 0px var(--Secondary, #FFBBF5) inset, 3px 3px 0px 0px var(--DarkPrimary, #DCAFDD) inset"
+    BoxShadow: "-1.5px -1.5px 0px 0px #FFF inset, 1.5px 1.5px 0px 0px var(--primary-black) inset, -3px -3px 0px 0px var(--secondary-color) inset, 3px 3px 0px 0px var(--dark-primary-color) inset"
 }
+
+export const Observer = styled.div<{ selected?: boolean }>`
+    display: flex;
+    width: 74px;
+    padding: 4px 12px;
+    justify-content: center;
+    align-items: center;
+    ${({ selected }) =>
+        selected &&
+        `
+      backgroundColor: "var(--dark-primary-color)",
+    BoxShadow: "-1.5px -1.5px 0px 0px #FFF inset, 1.5px 1.5px 0px 0px var(--primary-black) inset, -3px -3px 0px 0px var(--secondary-color) inset, 3px 3px 0px 0px var(--dark-primary-color) inset"
+    `
+    }
+    background: var(--light-primary-color);
+    box-shadow: -1.539px -1.539px 0px 0px var(--secondary-color) inset, 1.539px 1.539px 0px 0px #FFF inset, -3.078px -3.078px 0px 0px #DCAFDD inset;
+`
+
+export const StartImg = styled.img`
+    width:100%;
+    height:100%;
+`

@@ -4,6 +4,7 @@ import { useProcessManager } from "@/hooks/processManager";
 import { useAtom } from "jotai";
 import { focusAtom } from "@/atoms/windowManager";
 import FileImg from '@/assets/search/folder.svg';
+import StartImg from '@/assets/Start.svg';
 
 
 interface TaskBarProps {
@@ -16,7 +17,7 @@ interface TaskBarProps {
 const TaskBar = ({ startOption, setStartOption, backUpFocus, setBackUpFocus }: TaskBarProps) => {
     const [taskList, ,] = useProcessManager();
     const [focus, setFocus] = useAtom(focusAtom);
-    
+
 
     return (
         <_.TTaskBar id='taskbarContainer'>
@@ -25,40 +26,39 @@ const TaskBar = ({ startOption, setStartOption, backUpFocus, setBackUpFocus }: T
                     taskList.map((task) => {
                         if (task.type === "Shell") {
                             return (
-                                <li key={"Observer"}>
-                                    <button style={startOption ? _.taskSelectButtonStyle : _.taskButtonStyle} //스타트 옵션은 프롭스로
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            setStartOption((prev) => {
-                                                if (prev) {
-                                                    setFocus(backUpFocus);
-                                                } else {
-                                                    setBackUpFocus(focus);
-                                                    setFocus("Observer");
-                                                }
-                                                return !prev;
-                                            });
-                                        }}>Start</button>
-                                </li>
+                                <_.Observer selected={startOption} onClick={(e) => {
+                                    e.stopPropagation();
+                                    setStartOption((prev) => {
+                                        if (prev) {
+                                            setFocus(backUpFocus);
+                                        } else {
+                                            setBackUpFocus(focus);
+                                            setFocus("Observer");
+                                        }
+                                        return !prev;
+                                    });
+                                }}>
+                                    <_.StartImg src={StartImg}></_.StartImg>
+                                </_.Observer>
                             )
                         } else {
                             if (task.name === focus) {
                                 return (
                                     <_.TaskItem style={_.taskSelectButtonStyle} key={task.name} onClick={() => {
-                                            // setTabDownInterrupt(task.name);
-                                        }}>
-                                        <_.ImgContainer src={FileImg}/>
+                                        // setTabDownInterrupt(task.name);
+                                    }}>
+                                        <_.ImgContainer src={FileImg} />
                                         <_.TaskName>{task.name}</_.TaskName>
                                     </_.TaskItem>
                                 )
                             } else {
                                 return (
                                     <_.TaskItem style={_.taskButtonStyle} key={task.name} onClick={(e) => {
-                                            e.stopPropagation();
-                                            setFocus(task.name);
-                                            console.log(focus);
-                                        }}>
-                                        <_.ImgContainer src={FileImg}/>
+                                        e.stopPropagation();
+                                        setFocus(task.name);
+                                        console.log(focus);
+                                    }}>
+                                        <_.ImgContainer src={FileImg} />
                                         <_.TaskName>{task.name}</_.TaskName>
                                     </_.TaskItem>
                                 )
