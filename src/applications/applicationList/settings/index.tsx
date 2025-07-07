@@ -1,27 +1,22 @@
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
+import { useAtomValue } from 'jotai';
 import {useStack} from '@/hooks/dataStructure.tsx'
-import {Main, Wallpaper} from './settingsPages.tsx'
+import { taskSearchAtom } from "@/atoms/taskTransformer.ts";
 
 const Settings = () => {
-  const [stack, Push, Pop, Top] = useStack();
-  const [signal, setSignal] = useState(null);
+  const [stack, push, pop, top] = useStack();
+  const taskSearch = useAtomValue(taskSearchAtom);
+
   useEffect(() => {
-    console.log(stack);
+    console.log("stack: ", stack);
+    console.log("top: ", top());
   }, [stack]);
   useEffect(() => {
-    if(signal!==null) {
-      if(signal==="back") {
-        Pop()
-      }else {
-        Push(signal);
-        setSignal(null);
-      }
-    }
-  },  [signal])
+    push(taskSearch?.("추모관", stack, push, pop, top));
+  }, [])
     return (
       <>
-        <Main number={Top()} setSignal={setSignal}/>
-        <Wallpaper number={Top()} setSignal={setSignal}/>
+        {top()?.component}
       </>
     )
 

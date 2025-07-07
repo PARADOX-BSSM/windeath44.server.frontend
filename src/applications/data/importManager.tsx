@@ -8,6 +8,7 @@ import { useAtom } from 'jotai';
 import { isLogInedAtom } from "@/atoms/windowManager.ts";
 import { useProcessManager } from "@/hooks/processManager.tsx";
 import { getTaskCreators } from "@/services/windowManager/tasks.tsx";
+import { useStack } from "@/hooks/dataStructure.tsx";
 
 const Terminal =  lazy(()=> import("../applicationList/terminal/index.tsx"));
 const Settings = lazy(()=> import("../applicationList/settings/index.tsx"));
@@ -101,7 +102,7 @@ const useApps = (): TaskType[] => {
         "setUpHeight" : 464
       }
     },{
-      "component": <Suspense fallback={null}><Memorial/></Suspense>,
+      "component": <Suspense fallback={null}><Memorial /></Suspense>,
       "type": "App",
       "id": 2224,
       "name": "memorial",

@@ -1,9 +1,19 @@
 import MergeBtn from '@/applications/components/mergeBtn';
 import * as _ from './style';
 import MemorialTextarea from '@/applications/components/memorialTextarea';
+import { useAtomValue } from 'jotai';
+import { taskSearchAtom } from '@/atoms/taskTransformer';
 
+interface dataStructureProps {
+    stack: any[];
+    push: any
+    pop: any;
+    top: any;
+  }
 
-const MemorialCommit = () => {
+const MemorialCommit = ({ stack, push, pop, top }: dataStructureProps) => {
+    const taskSearch = useAtomValue(taskSearchAtom);
+
     return (
         <_.Container>
             <_.Section1>

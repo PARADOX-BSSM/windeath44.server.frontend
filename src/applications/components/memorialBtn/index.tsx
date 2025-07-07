@@ -15,7 +15,7 @@ const MemorialBtn = ({ name, selected = false, onClick, type = "none", active }:
                 {name}
             </_.SubmitDefault>
         ) : (
-            <_.SubmitActive>
+            <_.SubmitActive onClick={onClick}>
                 {name}
             </_.SubmitActive>
         )

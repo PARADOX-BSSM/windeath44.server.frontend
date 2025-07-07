@@ -7,6 +7,8 @@ import Observer from "../../applications/utility/observer/index.tsx";
 import { useProcessManager } from "../../hooks/processManager.tsx";
 import { TaskType } from "../../modules/typeModule.tsx";
 import { getTaskCreators } from './tasks';
+import { useTaskTransformFunction } from '@/hooks/taskTransformer.tsx';
+import { useTaskSearchFunction } from '@/hooks/taskSearch.tsx';
 
 const Application = lazy(() => import('../../applications/layout/index.tsx'));
 
@@ -22,6 +24,10 @@ const WindowManager = () => {
 
   const [taskList, addTask, removeTask] = useProcessManager();
   const { logIn, signUp, emailChack, auth } = getTaskCreators(setIsLogIned, addTask, removeTask);
+
+  // Custom Hook 초기화 역할
+  useTaskTransformFunction();
+  useTaskSearchFunction();
 
   // 포커스가 바뀔 때마다
   useEffect(() => {
