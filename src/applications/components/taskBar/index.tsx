@@ -3,6 +3,7 @@ import * as _ from './style';
 import { useProcessManager } from "@/hooks/processManager";
 import { useAtom } from "jotai";
 import { focusAtom } from "@/atoms/windowManager";
+import FileImg from '@/assets/search/folder.svg';
 
 
 interface TaskBarProps {
@@ -14,16 +15,8 @@ interface TaskBarProps {
 
 const TaskBar = ({ startOption, setStartOption, backUpFocus, setBackUpFocus }: TaskBarProps) => {
     const [taskList, ,] = useProcessManager();
-    const taskStyle = { margin: "0.25rem" };
     const [focus, setFocus] = useAtom(focusAtom);
-    const taskButtonStyle = {
-        height: "100%",
-        backgroundColor: "lightgreen"
-    };
-    const taskSelectButtonStyle = {
-        height: "100%",
-        backgroundColor: "seagreen"
-    }
+    
 
     return (
         <_.TTaskBar id='taskbarContainer'>
@@ -32,8 +25,8 @@ const TaskBar = ({ startOption, setStartOption, backUpFocus, setBackUpFocus }: T
                     taskList.map((task) => {
                         if (task.type === "Shell") {
                             return (
-                                <li style={taskStyle} key={"Observer"}>
-                                    <button style={startOption ? taskSelectButtonStyle : taskButtonStyle} //스타트 옵션은 프롭스로
+                                <li key={"Observer"}>
+                                    <button style={startOption ? _.taskSelectButtonStyle : _.taskButtonStyle} //스타트 옵션은 프롭스로
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             setStartOption((prev) => {
@@ -51,21 +44,23 @@ const TaskBar = ({ startOption, setStartOption, backUpFocus, setBackUpFocus }: T
                         } else {
                             if (task.name === focus) {
                                 return (
-                                    <li style={taskStyle} key={task.name}>
-                                        <button style={taskSelectButtonStyle} onClick={() => {
+                                    <_.TaskItem style={_.taskSelectButtonStyle} key={task.name} onClick={() => {
                                             // setTabDownInterrupt(task.name);
-                                        }}>{task.name}</button>
-                                    </li>
+                                        }}>
+                                        <_.ImgContainer src={FileImg}/>
+                                        <_.TaskName>{task.name}</_.TaskName>
+                                    </_.TaskItem>
                                 )
                             } else {
                                 return (
-                                    <li style={taskStyle} key={task.name}>
-                                        <button style={taskButtonStyle} onClick={(e) => {
+                                    <_.TaskItem style={_.taskButtonStyle} key={task.name} onClick={(e) => {
                                             e.stopPropagation();
                                             setFocus(task.name);
                                             console.log(focus);
-                                        }}>{task.name}</button>
-                                    </li>
+                                        }}>
+                                        <_.ImgContainer src={FileImg}/>
+                                        <_.TaskName>{task.name}</_.TaskName>
+                                    </_.TaskItem>
                                 )
                             }
                         }
