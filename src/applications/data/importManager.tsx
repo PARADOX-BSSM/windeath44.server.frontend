@@ -9,6 +9,7 @@ import { isLogInedAtom } from "@/atoms/windowManager.ts";
 import { useProcessManager } from "@/hooks/processManager.tsx";
 import { getTaskCreators } from "@/services/windowManager/tasks.tsx";
 import { useStack } from "@/hooks/dataStructure.tsx";
+import MemorialApply from "../applicationList/memorialApply/index.tsx";
 
 const Terminal =  lazy(()=> import("../applicationList/terminal/index.tsx"));
 const Settings = lazy(()=> import("../applicationList/settings/index.tsx"));
@@ -89,7 +90,7 @@ const useApps = (): TaskType[] => {
         "setUpHeight" : 360
     }
   },{
-      "component": <Suspense fallback={null}><MemorialMenu/></Suspense>,
+      "component": <Suspense fallback={null}><MemorialMenu stack={[]} push={undefined} pop={undefined} top={undefined}/></Suspense>,
       "type": "App",
       "id": 2223,
       "name": "추모관",
@@ -102,7 +103,7 @@ const useApps = (): TaskType[] => {
         "setUpHeight" : 464
       }
     },{
-      "component": <Suspense fallback={null}><Memorial /></Suspense>,
+      "component": <Suspense fallback={null}><Memorial stack={[]} push={undefined} pop={undefined} top={undefined} /></Suspense>,
       "type": "App",
       "id": 2224,
       "name": "memorial",
@@ -115,7 +116,7 @@ const useApps = (): TaskType[] => {
         "setUpHeight" : 750,
       }
     },{
-      "component": <Suspense fallback={null}><MemorailHistory/></Suspense>,
+      "component": <Suspense fallback={null}><MemorailHistory stack={[]} push={undefined} pop={undefined} top={undefined}/></Suspense>,
       "type": "App",
       "id": 2225,
       "name": "memorailHistory",
@@ -128,7 +129,7 @@ const useApps = (): TaskType[] => {
         "setUpHeight" : 500,
       }
     },{
-      "component": <Suspense fallback={null}><MemorialCommit/></Suspense>,
+      "component": <Suspense fallback={null}><MemorialCommit stack={[]} push={undefined} pop={undefined} top={undefined}/></Suspense>,
       "type": "App",
       "id": 2226,
       "name": "MemorialCommit",
@@ -141,9 +142,22 @@ const useApps = (): TaskType[] => {
         "setUpHeight" : 500,
       }
     },{
-      "component": <Suspense fallback={null}><MemorialPreview/></Suspense>,
+      "component": <Suspense fallback={null}><MemorialApply stack={[]} push={undefined} pop={undefined} top={undefined}/></Suspense>,
       "type": "App",
       "id": 2227,
+      "name": "MemorialApply",
+      "layer": undefined,
+      "appSetup":{
+        "Image" : "default",
+        "minWidth" : 580,
+        "minHeight" : 420,
+        "setUpWidth" : 850,
+        "setUpHeight" : 500,
+      }
+    },{
+      "component": <Suspense fallback={null}><MemorialPreview/></Suspense>,
+      "type": "App",
+      "id": 2228,
       "name": "MemorialPreview",
       "layer": undefined,
       "appSetup":{
@@ -156,7 +170,7 @@ const useApps = (): TaskType[] => {
     },{
       "component": <Suspense fallback={null}><MemorialMerge/></Suspense>,
       "type": "App",
-      "id": 2228,
+      "id": 2229,
       "name": "MemorialMerge",
       "layer": undefined,
       "appSetup":{
@@ -170,7 +184,7 @@ const useApps = (): TaskType[] => {
         {
         "component": <Suspense fallback={null}><Bow/></Suspense>,
         "type": "App",
-        "id": 2228,
+        "id": 2230,
         "name": "Bow",
         "layer": undefined,
         "appSetup":{
