@@ -8,6 +8,8 @@ const Observer = (props: any) => {
   const [containerLeft, setContainerLeft] = useState<number>(0); //observe에 넘길 container 비율
   const Apps = useApps();
 
+  const visibleApps = Apps.filter((app: TaskType) => app.visible);
+
   useEffect(() => {
     const container = document.getElementById("cursorContainer");
     if (container) {
@@ -21,7 +23,7 @@ const Observer = (props: any) => {
       <_.Logo>
       </_.Logo>
       <_.SnapshotList>
-        {Apps.map((Application: TaskType) => {
+        {visibleApps.map((Application: TaskType) => {
           return (
             <_.Snapshot key={Application.id} onClick={() => {
               props.addTask(Application);

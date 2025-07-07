@@ -31,7 +31,8 @@ const MemorialMerge = lazy(()=> import("../applicationList/memorialMerge/index.t
           "minHeight" : {최소 높이},
           "setUpWidth" : {넓이 초기값},
           "setUpHeight" : {높이 초기값},
-        }
+        },
+        "visible": {바탕화면에 보일지 안보일지 여부}
 }
  */
 const useApps = (): TaskType[] => {
@@ -61,7 +62,8 @@ const useApps = (): TaskType[] => {
         "minHeight" : 150,
         "setUpWidth" : 300,
         "setUpHeight" : 400
-      }
+      },
+      "visible":false,
     },{
       "component": <Suspense fallback={null}><Settings/></Suspense>,
       "type": "App",
@@ -74,7 +76,8 @@ const useApps = (): TaskType[] => {
         "minHeight" : 150,
         "setUpWidth" : 300,
         "setUpHeight" : 400
-      }
+      },
+      "visible":false,
     },{
       "component": <Suspense fallback={null}><Search/></Suspense>,
       "type": "App",
@@ -87,7 +90,8 @@ const useApps = (): TaskType[] => {
         "minHeight" : 360,
         "setUpWidth" : 676,
         "setUpHeight" : 360
-    }
+    },
+    "visible":true,
   },{
       "component": <Suspense fallback={null}><MemorialMenu/></Suspense>,
       "type": "App",
@@ -100,7 +104,8 @@ const useApps = (): TaskType[] => {
         "minHeight" : 464,
         "setUpWidth" : 800,
         "setUpHeight" : 464
-      }
+      },
+      "visible":true,
     },{
       "component": <Suspense fallback={null}><Memorial /></Suspense>,
       "type": "App",
@@ -113,7 +118,8 @@ const useApps = (): TaskType[] => {
         "minHeight" : 420,
         "setUpWidth" : 850,
         "setUpHeight" : 750,
-      }
+      },
+      "visible":false,
     },{
       "component": <Suspense fallback={null}><MemorailHistory/></Suspense>,
       "type": "App",
@@ -126,7 +132,8 @@ const useApps = (): TaskType[] => {
         "minHeight" : 420,
         "setUpWidth" : 850,
         "setUpHeight" : 500,
-      }
+      },
+      "visible":true,
     },{
       "component": <Suspense fallback={null}><MemorialCommit/></Suspense>,
       "type": "App",
@@ -139,7 +146,8 @@ const useApps = (): TaskType[] => {
         "minHeight" : 420,
         "setUpWidth" : 850,
         "setUpHeight" : 500,
-      }
+      },
+      "visible":false,
     },{
       "component": <Suspense fallback={null}><MemorialPreview/></Suspense>,
       "type": "App",
@@ -152,7 +160,8 @@ const useApps = (): TaskType[] => {
         "minHeight" : 420,
         "setUpWidth" : 850,
         "setUpHeight" : 500,
-      }
+      },
+      "visible":false,
     },{
       "component": <Suspense fallback={null}><MemorialMerge/></Suspense>,
       "type": "App",
@@ -165,7 +174,8 @@ const useApps = (): TaskType[] => {
         "minHeight" : 420,
         "setUpWidth" : 850,
         "setUpHeight" : 500,
-      }
+      },
+      "visible":false,
     },
         {
         "component": <Suspense fallback={null}><Bow/></Suspense>,
@@ -179,7 +189,8 @@ const useApps = (): TaskType[] => {
           "minHeight" : 420,
           "setUpWidth" : 850,
           "setUpHeight" : 500,
-        }
+        },
+        "visible":false,
       }
   ];
 
