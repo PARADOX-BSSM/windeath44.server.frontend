@@ -64,7 +64,7 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
             push(taskSearch?.('memorial', stack, push, pop, top));
         }
         if (idx === 2) {
-            push(taskSearch?.('MemorialCommit', stack, push, pop, top));
+            push(taskSearch?.('MemorialApply', stack, push, pop, top));
         }
     };
 
