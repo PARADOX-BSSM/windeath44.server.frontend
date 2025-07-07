@@ -1,21 +1,21 @@
 import React from "react";
 import * as _ from './style';
-import {useProcessManager} from "@/hooks/processManager";
+import { useProcessManager } from "@/hooks/processManager";
+import { useAtom } from "jotai";
+import { focusAtom } from "@/atoms/windowManager";
 
 
 interface TaskBarProps {
     startOption: boolean;
     setStartOption: React.Dispatch<React.SetStateAction<boolean>>;
-    focus : string;
-    setFocus: React.Dispatch<React.SetStateAction<string>>;
     backUpFocus: string;
     setBackUpFocus: React.Dispatch<React.SetStateAction<string>>;
-    setTabDownInterrupt : React.Dispatch<React.SetStateAction<string>>;
 }
 
-const TaskBar = ({startOption, setStartOption, focus, setFocus, backUpFocus, setBackUpFocus, setTabDownInterrupt }:TaskBarProps) => {
-    const [taskList,,] = useProcessManager();
+const TaskBar = ({ startOption, setStartOption, backUpFocus, setBackUpFocus }: TaskBarProps) => {
+    const [taskList, ,] = useProcessManager();
     const taskStyle = { margin: "0.25rem" };
+    const [focus, setFocus] = useAtom(focusAtom);
     const taskButtonStyle = {
         height: "100%",
         backgroundColor: "lightgreen"
@@ -34,16 +34,18 @@ const TaskBar = ({startOption, setStartOption, focus, setFocus, backUpFocus, set
                             return (
                                 <li style={taskStyle} key={"Observer"}>
                                     <button style={startOption ? taskSelectButtonStyle : taskButtonStyle} //스타트 옵션은 프롭스로
-                                            onClick={() => {
-                                                setStartOption(!startOption);
-                                                if (startOption) {
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setStartOption((prev) => {
+                                                if (prev) {
                                                     setFocus(backUpFocus);
                                                 } else {
                                                     setBackUpFocus(focus);
                                                     setFocus("Observer");
                                                 }
-                                            }
-                                            }>Start</button>
+                                                return !prev;
+                                            });
+                                        }}>Start</button>
                                 </li>
                             )
                         } else {
@@ -51,15 +53,17 @@ const TaskBar = ({startOption, setStartOption, focus, setFocus, backUpFocus, set
                                 return (
                                     <li style={taskStyle} key={task.name}>
                                         <button style={taskSelectButtonStyle} onClick={() => {
-                                            setTabDownInterrupt(task.name);
+                                            // setTabDownInterrupt(task.name);
                                         }}>{task.name}</button>
                                     </li>
                                 )
                             } else {
                                 return (
                                     <li style={taskStyle} key={task.name}>
-                                        <button style={taskButtonStyle} onClick={() => {
+                                        <button style={taskButtonStyle} onClick={(e) => {
+                                            e.stopPropagation();
                                             setFocus(task.name);
+                                            console.log(focus);
                                         }}>{task.name}</button>
                                     </li>
                                 )
