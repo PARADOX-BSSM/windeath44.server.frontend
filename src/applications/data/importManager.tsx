@@ -10,7 +10,7 @@ import { useProcessManager } from "@/hooks/processManager.tsx";
 import { getTaskCreators } from "@/services/windowManager/tasks.tsx";
 import MemorialApply from "../applicationList/memorialApply/index.tsx";
 import Alert from "../applicationList/alert/index.tsx";
-import { getPixelFromPercent } from "@/services/kernel.tsx";
+import { getPixelFromPercent } from "@/lib/getPixelFromPercent.tsx";
 import MemorialApproach from "../applicationList/settings/index.tsx";
 
 const Terminal =  lazy(()=> import("../applicationList/terminal/index.tsx"));
