@@ -9,6 +9,7 @@ import { TaskType } from "../../modules/typeModule.tsx";
 import { getTaskCreators } from './tasks';
 import { useTaskTransformFunction } from '@/hooks/taskTransformer.tsx';
 import { useTaskSearchFunction } from '@/hooks/taskSearch.tsx';
+import { useAlerter } from '@/hooks/alerter.tsx';
 import { setCursorImage,CURSOR_IMAGES } from '@/lib/setCursorImg.tsx';
 import { useDrag } from 'react-use-gesture';
 
@@ -54,6 +55,7 @@ const WindowManager = () => {
   // Custom Hook 초기화 역할
   useTaskTransformFunction();
   useTaskSearchFunction();
+  useAlerter();
 
   // 포커스가 바뀔 때마다
   useEffect(() => {

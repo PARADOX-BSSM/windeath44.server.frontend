@@ -2,6 +2,7 @@ import * as _ from './style';
 import MemorialTextarea from '@/applications/components/memorialTextarea';
 import { useAtomValue } from 'jotai';
 import { taskSearchAtom } from '@/atoms/taskTransformer';
+import { useState } from 'react';
 
 interface dataStructureProps {
     stack: any[];
@@ -10,15 +11,16 @@ interface dataStructureProps {
     top: any;
   }
 
-const MemorialCommit = ({ stack, push, pop, top }: dataStructureProps) => {
+const MemorialApply = ({ stack, push, pop, top }: dataStructureProps) => {
     const taskSearch = useAtomValue(taskSearchAtom);
+    const [name, setName] = useState("");
 
     return (
         <_.Container>
             <_.Section1>
                 <_.Header>
                     <_.HeaderTextContainer>
-                        <_.CharacterName>호시노 아이</_.CharacterName>
+                        <_.CharacterNameInput placeholder='이름을 입력해주세요...' onChange={(e) => setName(e.target.value)}></_.CharacterNameInput>
                         <_.Status>문서 수정 중</_.Status>
                     </_.HeaderTextContainer>
                     <_.AuthorshipFrom>@winshine1034의 수정 요청</_.AuthorshipFrom>
@@ -28,7 +30,7 @@ const MemorialCommit = ({ stack, push, pop, top }: dataStructureProps) => {
                         <_.CharacterProfileBox>
                             <_.CharacterProfile>
                                 <_.CharacterProfileImg />
-                                <_.CharacterProfileName>호시노 아이</_.CharacterProfileName>
+                                <_.CharacterProfileName>{name}</_.CharacterProfileName>
                             </_.CharacterProfile>
 
                             <_.CharacterInformation>
@@ -75,7 +77,7 @@ const MemorialCommit = ({ stack, push, pop, top }: dataStructureProps) => {
                 </_.CharacterProfileContainer>
             </_.Section1>
 
-            <MemorialTextarea btnText='이 내용으로 문서에 병합하기' from='winshine1034' content='<목차>마지막 순간</목차>
+            <MemorialTextarea btnText='추모관 신청하기' from='winshine1034' content='<목차>마지막 순간</목차>
 <사진 {80px}>https://buma.wiki/api/image/display/최애의사인/example.png</사진>
 <동영상>https://www.youtube.com/watch?v=oMk46C5Cjws</동영상>'
             isPerson={true}
@@ -84,4 +86,4 @@ const MemorialCommit = ({ stack, push, pop, top }: dataStructureProps) => {
     );
 }
 
-export default MemorialCommit;
+export default MemorialApply;

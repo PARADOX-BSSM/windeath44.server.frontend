@@ -3,8 +3,15 @@ import { useAtomValue } from 'jotai';
 import {useStack} from '@/hooks/dataStructure.tsx'
 import { taskSearchAtom } from "@/atoms/taskTransformer.ts";
 
-const Settings = () => {
-  const [stack, push, pop, top] = useStack();
+interface MemorialApproachProps {
+  window: React.CSSProperties;
+  setWindow: React.Dispatch<React.SetStateAction<React.CSSProperties>>;
+  setUpHeight: number,
+  setUpWidth: number,
+}
+
+const MemorialApproach = ({ window, setWindow, setUpHeight, setUpWidth }: MemorialApproachProps) => {
+  const [stack, push, pop, top] = useStack(window, setWindow, setUpHeight, setUpWidth);
   const taskSearch = useAtomValue(taskSearchAtom);
 
   useEffect(() => {
@@ -21,4 +28,4 @@ const Settings = () => {
     )
 
 }
-export default Settings;
+export default MemorialApproach;

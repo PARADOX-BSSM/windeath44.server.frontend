@@ -2,7 +2,10 @@ import { useEffect, useState } from 'react';
 import { useAtomValue } from 'jotai';
 import MemorialBtn from '@/applications/components/memorialBtn';
 import * as _ from './style.ts';
-import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer.ts';
+import { taskSearchAtom } from '@/atoms/taskTransformer.ts';
+import { alerterAtom } from '@/atoms/alerter.ts';
+import Choten from '@/assets/profile/choten.svg'
+import { useProcessManager } from '@/hooks/processManager.tsx';
 
 interface dataStructureProps {
     stack: any[];
@@ -23,8 +26,9 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
         </>
     );
 
-    const taskTransform = useAtomValue(taskTransformerAtom);
-    const taskSearch= useAtomValue(taskSearchAtom);
+    const setAlert = useAtomValue(alerterAtom);
+    const taskSearch = useAtomValue(taskSearchAtom);
+    const [, , removeTask] = useProcessManager();
 
     useEffect(() => {
         if (selectedIdx === 0) {
@@ -64,7 +68,12 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
             push(taskSearch?.('memorial', stack, push, pop, top));
         }
         if (idx === 2) {
-            push(taskSearch?.('MemorialCommit', stack, push, pop, top));
+            if (setAlert) {
+                setAlert(Choten, <>문제가 발생했습니다.<br />에러가 발생했습니다. 류승찬 나 규카츠사줘<br />예외가 발생했습니당.</>, () => {
+                    push(taskSearch?.('MemorialApply', stack, push, pop, top));
+                    removeTask(taskSearch?.('Alert')!);
+                });
+            }
         }
     };
 
@@ -94,6 +103,9 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
                                     selected={selectedIdx === idx}
                                     onClick={() => setSelectedIdx(idx)}
                                     type="menu"
+                                    fontSize='100%'
+                                    widthPercent={16}
+                                    heightPercent={5}
                                 />
                             ))}
                         </_.BtnInnerWrapper>
@@ -103,7 +115,11 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
                 <_.Footer>
                     <MemorialBtn name="입장하기" type="submit" active={selectedIdx !== null} onClick={() => {
                         moveTo(selectedIdx);
-                    }}/>
+                    }}
+                        fontSize='100%'
+                        widthPercent={16}
+                        heightPercent={5}
+                    />
                 </_.Footer>
             </_.InnerContainer>
         </_.Container>

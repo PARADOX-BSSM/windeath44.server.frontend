@@ -8,11 +8,12 @@ import { useAtom } from 'jotai';
 import { isLogInedAtom } from "@/atoms/windowManager.ts";
 import { useProcessManager } from "@/hooks/processManager.tsx";
 import { getTaskCreators } from "@/services/windowManager/tasks.tsx";
-import { useStack } from "@/hooks/dataStructure.tsx";
+import MemorialApply from "../applicationList/memorialApply/index.tsx";
+import Alert from "../applicationList/alert/index.tsx";
+import { getPixelFromPercent } from "@/services/kernel.tsx";
+import MemorialApproach from "../applicationList/settings/index.tsx";
 
 const Terminal =  lazy(()=> import("../applicationList/terminal/index.tsx"));
-const Settings = lazy(()=> import("../applicationList/settings/index.tsx"));
-const LogIn = lazy(()=> import("../utility/login/index.tsx"));
 const MemorailHistory = lazy(()=> import("../applicationList/memorialHistory/index.tsx"));
 const MemorialCommit = lazy(()=> import("../applicationList/memorialCommit/index.tsx"));
 const MemorialPreview = lazy(()=> import("../applicationList/memorialPreview/index.tsx"));
@@ -65,17 +66,17 @@ const useApps = (): TaskType[] => {
       },
       "visible":false,
     },{
-      "component": <Suspense fallback={null}><Settings/></Suspense>,
+      "component": <Suspense fallback={null}><MemorialApproach/></Suspense>,
       "type": "App",
       "id": 2221,
-      "name": "Settings",
+      "name": "MemorialApproach",
       "layer": undefined,
       "appSetup":{
         "Image" : "default",
-        "minWidth" : 200,
-        "minHeight" : 150,
-        "setUpWidth" : 300,
-        "setUpHeight" : 400
+        "minWidth" : getPixelFromPercent("width", 75),
+        "minHeight" : getPixelFromPercent("height", 55),
+        "setUpWidth" : getPixelFromPercent("width", 75),
+        "setUpHeight" : getPixelFromPercent("height", 55),
       },
       "visible":false,
     },{
@@ -93,21 +94,21 @@ const useApps = (): TaskType[] => {
     },
     "visible":true,
   },{
-      "component": <Suspense fallback={null}><MemorialMenu/></Suspense>,
+      "component": <Suspense fallback={null}><MemorialMenu stack={[]} push={undefined} pop={undefined} top={undefined}/></Suspense>,
       "type": "App",
       "id": 2223,
       "name": "추모관",
       "layer": undefined,
       "appSetup":{
         "Image" : "default",
-        "minWidth" : 800,
-        "minHeight" : 464,
-        "setUpWidth" : 800,
-        "setUpHeight" : 464
+        "minWidth" : getPixelFromPercent("width", 75),
+        "minHeight" : getPixelFromPercent("height", 55),
+        "setUpWidth" : getPixelFromPercent("width", 75),
+        "setUpHeight" : getPixelFromPercent("height", 55),
       },
       "visible":true,
     },{
-      "component": <Suspense fallback={null}><Memorial /></Suspense>,
+      "component": <Suspense fallback={null}><Memorial stack={[]} push={undefined} pop={undefined} top={undefined} /></Suspense>,
       "type": "App",
       "id": 2224,
       "name": "memorial",
@@ -121,7 +122,7 @@ const useApps = (): TaskType[] => {
       },
       "visible":false,
     },{
-      "component": <Suspense fallback={null}><MemorailHistory/></Suspense>,
+      "component": <Suspense fallback={null}><MemorailHistory stack={[]} push={undefined} pop={undefined} top={undefined}/></Suspense>,
       "type": "App",
       "id": 2225,
       "name": "memorailHistory",
@@ -135,7 +136,7 @@ const useApps = (): TaskType[] => {
       },
       "visible":true,
     },{
-      "component": <Suspense fallback={null}><MemorialCommit/></Suspense>,
+      "component": <Suspense fallback={null}><MemorialCommit stack={[]} push={undefined} pop={undefined} top={undefined}/></Suspense>,
       "type": "App",
       "id": 2226,
       "name": "MemorialCommit",
@@ -149,9 +150,23 @@ const useApps = (): TaskType[] => {
       },
       "visible":false,
     },{
-      "component": <Suspense fallback={null}><MemorialPreview/></Suspense>,
+      "component": <Suspense fallback={null}><MemorialApply stack={[]} push={undefined} pop={undefined} top={undefined}/></Suspense>,
       "type": "App",
       "id": 2227,
+      "name": "MemorialApply",
+      "layer": undefined,
+      "appSetup":{
+        "Image" : "default",
+        "minWidth" : 580,
+        "minHeight" : 420,
+        "setUpWidth" : 850,
+        "setUpHeight" : 500,
+      },
+      "visible":false,
+    },{
+      "component": <Suspense fallback={null}><MemorialPreview/></Suspense>,
+      "type": "App",
+      "id": 2228,
       "name": "MemorialPreview",
       "layer": undefined,
       "appSetup":{
@@ -165,7 +180,7 @@ const useApps = (): TaskType[] => {
     },{
       "component": <Suspense fallback={null}><MemorialMerge/></Suspense>,
       "type": "App",
-      "id": 2228,
+      "id": 2229,
       "name": "MemorialMerge",
       "layer": undefined,
       "appSetup":{
@@ -176,19 +191,32 @@ const useApps = (): TaskType[] => {
         "setUpHeight" : 500,
       },
       "visible":false,
-    },
-        {
-        "component": <Suspense fallback={null}><Bow/></Suspense>,
+    },{
+       "component": <Suspense fallback={null}><Bow/></Suspense>,
+       "type": "App",
+       "id": 2230,
+       "name": "Bow",
+       "layer": undefined,
+       "appSetup":{
+         "Image" : "default",
+         "minWidth" : 580,
+         "minHeight" : 420,
+         "setUpWidth" : 850,
+         "setUpHeight" : 500,
+       },
+       "visible":false,
+      },{
+        "component": <Suspense fallback={null}><Alert icon="" text={<></>} onClick={() => undefined}/></Suspense>,
         "type": "App",
-        "id": 2228,
-        "name": "Bow",
+        "id": 2229,
+        "name": "Alert",
         "layer": undefined,
         "appSetup":{
           "Image" : "default",
-          "minWidth" : 580,
-          "minHeight" : 420,
-          "setUpWidth" : 850,
-          "setUpHeight" : 500,
+          "minWidth" : getPixelFromPercent("width", 45),
+          "minHeight" : getPixelFromPercent("height", 30),
+          "setUpWidth" : getPixelFromPercent("width", 45),
+          "setUpHeight" : getPixelFromPercent("height", 30),
         },
         "visible":false,
       }

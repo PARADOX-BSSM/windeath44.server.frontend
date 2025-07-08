@@ -1,5 +1,5 @@
 import * as _ from './style';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useDrag } from 'react-use-gesture';
 import Exit from "@/assets/headerButton/exit.svg";
 import Full from "@/assets/headerButton/full.svg";
@@ -19,6 +19,8 @@ import {
   DragParams,
   ApplicationProps,
 } from './utils';
+
+import React from 'react';
 import { setCursorImage,CURSOR_IMAGES } from '@/lib/setCursorImg';
 
 const Application = (props: ApplicationProps) => {
@@ -27,6 +29,9 @@ const Application = (props: ApplicationProps) => {
   const [focus, setFocus] = useAtom(focusAtom); // 현재 포커스된 창 이름 (전역)
   const [tabDownInterrupt, setTabDownInterrupt] = useAtom(tabDownInterruptAtom); // 단축키 등으로 창 최소화 등 인터럽트 신호 (전역)
   const [isLogIned, setIsLogIned] = useAtom(isLogInedAtom); // 로그인 여부 (전역)
+
+  const setUpHeight = props.setUpHeight;
+  const setUpWidth = props.setUpWidth;
 
   const windowProps: React.CSSProperties = {
     position: "absolute",
@@ -210,7 +215,23 @@ const Application = (props: ApplicationProps) => {
               </_.ExitButton>
         </_.WindowHeader>
         <_.WindowContent {...sizeManager()} onMouseUp={() => setIsFirst(true)}>
-          {props.children}
+          {
+            (() => {
+              const original = props.children;
+              const internal = original.props.children as React.ReactElement;
+              const type = internal.type;
+            
+              if (props.name === "MemorialApproach") {
+                return (
+                  <Suspense fallback={null}>
+                    {React.createElement(type, { window, setWindow, setUpHeight, setUpWidth })}
+                  </Suspense>
+                );
+              } else {
+                return props.children;
+              }
+            })()
+          }
         </_.WindowContent>
       </_.Window>
     );

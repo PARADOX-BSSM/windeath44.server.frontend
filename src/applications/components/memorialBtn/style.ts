@@ -1,9 +1,9 @@
 import styled from '@emotion/styled';
 
-export const Btn = styled.button`
+export const Btn = styled.button<{width?: string; height?: string; fontSize?: string;}>`
     display: flex;
-    width: 180px;
-    height: 42px;
+    width: ${({ width }) => width || "180px"};
+    height: ${({ height }) => height || "42px"};
     padding: 9px 24px;
     justify-content: center;
     align-items: center;
@@ -13,16 +13,16 @@ export const Btn = styled.button`
     border:none;
     text-align: center;
     font-family: Galmuri11;
-    font-size: 20px;
+    font-size: ${({ fontSize }) => fontSize || "20px"};
     font-style: normal;
     font-weight: 400;
     line-height: 15px; /* 75% */
 `
 
-export const SelectedBtn = styled.button`
+export const SelectedBtn = styled.button<{width?: string; height?: string; fontSize?: string;}>`
     display: flex;
-    width: 180px;
-    height: 42px;
+    width: ${({ width }) => width || "180px"};
+    height: ${({ height }) => height || "42px"};
     padding: 9px 24px;
     justify-content: center;
     align-items: center;
@@ -31,17 +31,17 @@ export const SelectedBtn = styled.button`
     color: var(--primary-black);
     text-align: center;
     font-family: Galmuri11;
-    font-size: 20px;
+    font-size: ${({ fontSize }) => fontSize || "20px"};
     font-style: normal;
     font-weight: 400;
     line-height: 15px; /* 75% */
     border:none;
 `
 
-export const SubmitDefault = styled.button`
+export const SubmitDefault = styled.button<{width?: string; height?: string; fontSize?: string;}>`
     display: flex;
-    width: 180px;
-    height: 42px;
+    width: ${({ width }) => width || "180px"};
+    height: ${({ height }) => height || "42px"};
     padding: 9px 24px;
     justify-content: center;
     align-items: center;
@@ -50,16 +50,16 @@ export const SubmitDefault = styled.button`
     color: var(--dark-primary-color);
     text-align: center;
     font-family: Galmuri11;
-    font-size: 20px;
+    font-size: ${({ fontSize }) => fontSize || "20px"};
     font-style: normal;
     font-weight: 400;
     line-height: 15px; /* 75% */
     border : none;
 `
 
-export const SubmitActive = styled.button`
-    height: 42px;
-    width: 180px;
+export const SubmitActive = styled.button<{width?: string; height?: string; fontSize?: string;}>`
+    width: ${({ width }) => width || "180px"};
+    height: ${({ height }) => height || "42px"};s
     padding: 9px 24px;
     justify-content: center;
     align-items: center;
@@ -68,7 +68,7 @@ export const SubmitActive = styled.button`
     color: var(--Black, #2E2E2E);
     text-align: center;
     font-family: Galmuri11;
-    font-size: 20px;
+    font-size: ${({ fontSize }) => fontSize || "20px"};
     font-style: normal;
     font-weight: 400;
     line-height: 15px; /* 75% */
