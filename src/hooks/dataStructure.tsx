@@ -11,7 +11,6 @@ const useStack = (
   const [stack, setStack] = useState<any[]>([]);
   const windowRef = useRef<React.CSSProperties | undefined>(window);
   // …
-}
 
   useEffect(() => {
     if (window) {
