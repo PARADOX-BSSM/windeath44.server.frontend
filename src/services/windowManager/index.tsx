@@ -9,7 +9,7 @@ import { TaskType } from "../../modules/typeModule.tsx";
 import { getTaskCreators } from './tasks';
 import { useTaskTransformFunction } from '@/hooks/taskTransformer.tsx';
 import { useTaskSearchFunction } from '@/hooks/taskSearch.tsx';
-import { setCursorImage } from '@/lib/setCursorImg.tsx';
+import { setCursorImage,CURSOR_IMAGES } from '@/lib/setCursorImg.tsx';
 import { useDrag } from 'react-use-gesture';
 
 const Application = lazy(() => import('../../applications/layout/index.tsx'));
@@ -38,9 +38,9 @@ const WindowManager = () => {
 
       const clickInProgress = clickTimeout.current !== null;
       if (dragging && !clickInProgress && isTextSelecting()) {
-        setCursorImage('/assets/cursor/cursor_drag.svg');
+        setCursorImage(CURSOR_IMAGES.drag);
       } else if (!dragging && !clickInProgress) {
-        setCursorImage('/assets/cursor/cursor_default.svg');
+        setCursorImage(CURSOR_IMAGES.default);
       }
     },
     { pointer: { buttons: [1] } }
@@ -120,12 +120,12 @@ const WindowManager = () => {
       const dragged = Math.abs(dx) > 10 || Math.abs(dy) > 10;
       if (dragged) return;
 
-      setCursorImage('/assets/cursor/cursor_click.gif');
+      setCursorImage(CURSOR_IMAGES.click);
       if (clickTimeout.current) {
         clearTimeout(clickTimeout.current);
       }
       clickTimeout.current = setTimeout(() => {
-        setCursorImage('/assets/cursor/cursor_default.svg');
+        setCursorImage(CURSOR_IMAGES.default);
         clickTimeout.current = null;
       }, 300);
     };

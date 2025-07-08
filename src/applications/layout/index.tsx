@@ -19,7 +19,7 @@ import {
   DragParams,
   ApplicationProps,
 } from './utils';
-import { setCursorImage } from '@/lib/setCursorImg';
+import { setCursorImage,CURSOR_IMAGES } from '@/lib/setCursorImg';
 
 const Application = (props: ApplicationProps) => {
   // jotai 상태 사용
@@ -181,8 +181,8 @@ const Application = (props: ApplicationProps) => {
               <_.FullScreenButton onClick={() =>
                 setIsFullScreen(!isFullScreen)
               }
-                onMouseEnter={() => setCursorImage('/assets/cursor/cursor_hand.svg')}
-                onMouseOut={() => setCursorImage('/assets/cursor/cursor_default.svg')}
+                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                onMouseOut={() => setCursorImage(CURSOR_IMAGES.default)}
                 isFocus={focus === props.name}
               >
                 <img src={Full} alt="" />
@@ -190,8 +190,8 @@ const Application = (props: ApplicationProps) => {
               <_.MinimizeButton onClick={() =>
                 setIsMinimized(!isMinimized)
               }
-                onMouseEnter={() => setCursorImage('/assets/cursor/cursor_hand.svg')}
-                onMouseOut={() => setCursorImage('/assets/cursor/cursor_default.svg')}
+                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                onMouseOut={() => setCursorImage(CURSOR_IMAGES.default)}
                 isFocus={focus === props.name}
               >
                 <img src={Min} alt="" />
@@ -202,8 +202,8 @@ const Application = (props: ApplicationProps) => {
                   setIsLogIned(true);
                 }
               }}
-                onMouseEnter={() => setCursorImage('/assets/cursor/cursor_hand.svg')}
-                onMouseOut={() => setCursorImage('/assets/cursor/cursor_default.svg')}
+                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                onMouseOut={() => setCursorImage(CURSOR_IMAGES.default)}
                 isFocus={focus === props.name}
               >
                 <img src={Exit} alt="" />
