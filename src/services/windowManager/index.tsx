@@ -9,6 +9,7 @@ import { TaskType } from "../../modules/typeModule.tsx";
 import { getTaskCreators } from './tasks';
 import { useTaskTransformFunction } from '@/hooks/taskTransformer.tsx';
 import { useTaskSearchFunction } from '@/hooks/taskSearch.tsx';
+import { setCursorImage } from '@/lib/setCursorImg.tsx';
 
 const Application = lazy(() => import('../../applications/layout/index.tsx'));
 
@@ -90,10 +91,10 @@ const WindowManager = () => {
     if (!cursor) return;
 
     const handleClick = () => {
-      cursor.style.backgroundImage = "url('/assets/cursor/cursor_click.gif')";
+      setCursorImage('/assets/cursor/cursor_click.gif');
 
       setTimeout(() => {
-        cursor.style.backgroundImage = "url('/assets/cursor/cursor_default.svg')";
+        setCursorImage('/assets/cursor/cursor_default.svg');
       }, 300);
     };
 
