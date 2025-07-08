@@ -166,7 +166,7 @@ const WindowManager = () => {
               )
             })
           }
-          {startOption ? <Observer addTask={addTask} /> : <></>}
+          {startOption ? <Observer /> : <></>}
         </_.Display>
         <_.BackgroundDiv width={sideWidth}></_.BackgroundDiv>
       </Suspense>
