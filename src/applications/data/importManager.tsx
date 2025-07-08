@@ -71,10 +71,10 @@ const useApps = (): TaskType[] => {
       "layer": undefined,
       "appSetup":{
         "Image" : "default",
-        "minWidth" : 200,
-        "minHeight" : 150,
-        "setUpWidth" : 800,
-        "setUpHeight" : 464
+        "minWidth" : getPixelFromPercent("width", 75),
+        "minHeight" : getPixelFromPercent("height", 55),
+        "setUpWidth" : getPixelFromPercent("width", 75),
+        "setUpHeight" : getPixelFromPercent("height", 55),
       }
     },{
       "component": <Suspense fallback={null}><Search/></Suspense>,
@@ -97,10 +97,10 @@ const useApps = (): TaskType[] => {
       "layer": undefined,
       "appSetup":{
         "Image" : "default",
-        "minWidth" : 800,
-        "minHeight" : 464,
-        "setUpWidth" : 800,
-        "setUpHeight" : 464
+        "minWidth" : getPixelFromPercent("width", 75),
+        "minHeight" : getPixelFromPercent("height", 55),
+        "setUpWidth" : getPixelFromPercent("width", 75),
+        "setUpHeight" : getPixelFromPercent("height", 55),
       }
     },{
       "component": <Suspense fallback={null}><Memorial stack={[]} push={undefined} pop={undefined} top={undefined} /></Suspense>,
@@ -203,10 +203,10 @@ const useApps = (): TaskType[] => {
       "layer": undefined,
       "appSetup":{
         "Image" : "default",
-        "minWidth" : getPixelFromPercent("width", 40),
-        "minHeight" : 220,
-        "setUpWidth" : getPixelFromPercent("width", 40),
-        "setUpHeight" : 220,
+        "minWidth" : getPixelFromPercent("width", 45),
+        "minHeight" : getPixelFromPercent("height", 30),
+        "setUpWidth" : getPixelFromPercent("width", 45),
+        "setUpHeight" : getPixelFromPercent("height", 30),
       }
     },
   ];

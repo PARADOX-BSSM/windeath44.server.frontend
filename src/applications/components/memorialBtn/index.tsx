@@ -1,3 +1,4 @@
+import { getPixelFromPercent } from '@/services/kernel';
 import * as _ from './style';
 
 interface PropsType {
@@ -12,23 +13,26 @@ interface PropsType {
 }
 
 const MemorialBtn = ({ name, selected = false, onClick, type = "none", active, widthPercent, heightPercent, fontSize = "20px" }: PropsType) => {
+    const width = `${getPixelFromPercent('width', widthPercent!)}px`;
+    const height = `${getPixelFromPercent('height', heightPercent!)}px`;
+
     if (type === "submit") {
         return !active ? (
-            <_.SubmitDefault width={widthPercent} height={heightPercent} fontSize={fontSize}>
+            <_.SubmitDefault width={width} height={height} fontSize={fontSize}>
                 {name}
             </_.SubmitDefault>
         ) : (
-            <_.SubmitActive onClick={onClick} width={widthPercent} height={heightPercent} fontSize={fontSize}>
+            <_.SubmitActive onClick={onClick} width={width} height={height} fontSize={fontSize}>
                 {name}
             </_.SubmitActive>
         )
     } else if (type === "menu") {
         return !selected ? (
-            <_.Btn onClick={onClick} width={widthPercent} height={heightPercent} fontSize={fontSize}>
+            <_.Btn onClick={onClick} width={width} height={height} fontSize={fontSize}>
                 {name}
             </_.Btn>
         ) : (
-            <_.SelectedBtn width={widthPercent} height={heightPercent} fontSize={fontSize}>
+            <_.SelectedBtn width={width} height={height} fontSize={fontSize}>
                 {name}
             </_.SelectedBtn>
         );

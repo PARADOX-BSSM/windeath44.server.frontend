@@ -27,7 +27,7 @@ export const place = styled.div`
     gap: 36px;
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     box-sizing: border-box;
 `;

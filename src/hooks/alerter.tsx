@@ -4,6 +4,7 @@ import { Suspense, useEffect } from 'react';
 import React from 'react';
 import { alerterAtom } from '@/atoms/alerter';
 import { useProcessManager } from './processManager';
+import { getPixelFromPercent } from '@/services/kernel';
 
 export const useAlerter = () => {
   const setAlerterAtom = useSetAtom(alerterAtom);
@@ -27,6 +28,14 @@ export const useAlerter = () => {
           {React.createElement(type, { icon, text, onClick })}
         </Suspense>
       );
+
+      foundTask.appSetup = {
+        Image: "default",
+        minWidth: getPixelFromPercent("width", 60),
+        minHeight: getPixelFromPercent("height", 30),
+        setUpWidth: getPixelFromPercent("width", 60),
+        setUpHeight: getPixelFromPercent("height", 30),
+      };
 
       addTask(foundTask);
     }

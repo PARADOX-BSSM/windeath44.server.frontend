@@ -1,10 +1,9 @@
-import { getPixelFromPercent } from '@/services/kernel';
 import styled from '@emotion/styled';
 
-export const Btn = styled.button<{width?: number; height?: number; fontSize?: string;}>`
+export const Btn = styled.button<{width?: string; height?: string; fontSize?: string;}>`
     display: flex;
-    width: ${({ width }) => getPixelFromPercent("width", width!) || "180px"};
-    height: ${({ height }) => getPixelFromPercent("height", height!) || "42px"};
+    width: ${({ width }) => width || "180px"};
+    height: ${({ height }) => height || "42px"};
     padding: 9px 24px;
     justify-content: center;
     align-items: center;
@@ -20,10 +19,10 @@ export const Btn = styled.button<{width?: number; height?: number; fontSize?: st
     line-height: 15px; /* 75% */
 `
 
-export const SelectedBtn = styled.button<{width?: number; height?: number; fontSize?: string;}>`
+export const SelectedBtn = styled.button<{width?: string; height?: string; fontSize?: string;}>`
     display: flex;
-    width: ${({ width }) => getPixelFromPercent("width", width!) || "180px"};
-    height: ${({ height }) => getPixelFromPercent("height", height!) || "42px"};
+    width: ${({ width }) => width || "180px"};
+    height: ${({ height }) => height || "42px"};
     padding: 9px 24px;
     justify-content: center;
     align-items: center;
@@ -39,10 +38,10 @@ export const SelectedBtn = styled.button<{width?: number; height?: number; fontS
     border:none;
 `
 
-export const SubmitDefault = styled.button<{width?: number; height?: number; fontSize?: string;}>`
+export const SubmitDefault = styled.button<{width?: string; height?: string; fontSize?: string;}>`
     display: flex;
-    width: ${({ width }) => getPixelFromPercent("width", width!) || "180px"};
-    height: ${({ height }) => getPixelFromPercent("height", height!) || "42px"};
+    width: ${({ width }) => width || "180px"};
+    height: ${({ height }) => height || "42px"};
     padding: 9px 24px;
     justify-content: center;
     align-items: center;
@@ -58,9 +57,9 @@ export const SubmitDefault = styled.button<{width?: number; height?: number; fon
     border : none;
 `
 
-export const SubmitActive = styled.button<{width?: number; height?: number; fontSize?: string;}>`
-    width: ${({ width }) => getPixelFromPercent("width", width!) || "180px"};
-    height: ${({ height }) => getPixelFromPercent("height", height!) || "42px"};s
+export const SubmitActive = styled.button<{width?: string; height?: string; fontSize?: string;}>`
+    width: ${({ width }) => width || "180px"};
+    height: ${({ height }) => height || "42px"};s
     padding: 9px 24px;
     justify-content: center;
     align-items: center;

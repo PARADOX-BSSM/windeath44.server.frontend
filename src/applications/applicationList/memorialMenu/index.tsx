@@ -69,7 +69,7 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
         }
         if (idx === 2) {
             if (setAlert) {
-                setAlert(Choten, <>문제가 발생했습니다.<br />에러가 발생했습니다.<br />예외가 발생했습니당.</>, () => {
+                setAlert(Choten, <>문제가 발생했습니다.<br />에러가 발생했습니다. 류승찬 나 규카츠사줘<br />예외가 발생했습니당.</>, () => {
                     push(taskSearch?.('MemorialApply', stack, push, pop, top));
                     removeTask(taskSearch?.('Alert')!);
                 });
@@ -103,6 +103,9 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
                                     selected={selectedIdx === idx}
                                     onClick={() => setSelectedIdx(idx)}
                                     type="menu"
+                                    fontSize='100%'
+                                    widthPercent={16}
+                                    heightPercent={5}
                                 />
                             ))}
                         </_.BtnInnerWrapper>
@@ -112,7 +115,11 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
                 <_.Footer>
                     <MemorialBtn name="입장하기" type="submit" active={selectedIdx !== null} onClick={() => {
                         moveTo(selectedIdx);
-                    }}/>
+                    }}
+                        fontSize='100%'
+                        widthPercent={16}
+                        heightPercent={5}
+                    />
                 </_.Footer>
             </_.InnerContainer>
         </_.Container>
