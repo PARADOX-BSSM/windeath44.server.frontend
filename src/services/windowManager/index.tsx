@@ -9,8 +9,6 @@ import { TaskType } from "../../modules/typeModule.tsx";
 import { getTaskCreators } from './tasks';
 import { useTaskTransformFunction } from '@/hooks/taskTransformer.tsx';
 import { useTaskSearchFunction } from '@/hooks/taskSearch.tsx';
-// import cursorDefault from '@/assets/cursor/cursor_default.svg';
-// import cursorClick from '@/assets/cursor/cursor_drag.svg';
 
 const Application = lazy(() => import('../../applications/layout/index.tsx'));
 
@@ -92,11 +90,11 @@ const WindowManager = () => {
     if (!cursor) return;
 
     const handleClick = () => {
-      cursor.style.backgroundImage = `url(${cursorClick})`;
+      cursor.style.backgroundImage = "url('/assets/cursor/cursor_click.gif')";
 
       setTimeout(() => {
-        cursor.style.backgroundImage = `url(${cursorDefault})`;
-      }, 150);
+        cursor.style.backgroundImage = "url('/assets/cursor/cursor_default.svg')";
+      }, 300);
     };
 
     document.addEventListener("mousedown", handleClick);
