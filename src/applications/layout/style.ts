@@ -25,14 +25,17 @@ export const HeaderButton = styled.button`
 export const MinimizeButton = styled(HeaderButton)`
   background-color: rgba(0, 0, 0, 0);
   border: none;
+  cursor:none;
 `;
 export const FullScreenButton = styled(HeaderButton)`
   background-color: rgba(0, 0, 0, 0);
-    border: none;
+  border: none;
+  cursor:none;
 `;
 export const ExitButton = styled(HeaderButton)`
   background-color: rgba(0, 0, 0, 0);
     border: none;
+    cursor:none;
 `;
 export const WindowContent = styled.section`
     position : absolute;

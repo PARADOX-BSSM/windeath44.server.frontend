@@ -19,6 +19,7 @@ import {
   DragParams,
   ApplicationProps,
 } from './utils';
+import { setCursorImage } from '@/lib/setCursorImg';
 
 const Application = (props: ApplicationProps) => {
   // jotai 상태 사용
@@ -97,7 +98,7 @@ const Application = (props: ApplicationProps) => {
   }, [focus]);
 
 
-  
+
   // 전체화면 처리 : 전체화면 진입 시 창 상태 백업 후 화면 전체로 확장, 해제 시 복원
   useEffect(() => {
     if (isFullScreen) {
@@ -181,12 +182,18 @@ const Application = (props: ApplicationProps) => {
             <>
               <_.FullScreenButton onClick={() =>
                 setIsFullScreen(!isFullScreen)
-              }>
+              }
+                onMouseEnter={() => setCursorImage('/assets/cursor/cursor_hand.svg')}
+                onMouseOut={() => setCursorImage('/assets/cursor/cursor_default.svg')}
+              >
                 <img src={Full} alt="" />
               </_.FullScreenButton>
               <_.MinimizeButton onClick={() =>
                 setIsMinimized(!isMinimized)
-              }>
+              }
+                onMouseEnter={() => setCursorImage('/assets/cursor/cursor_hand.svg')}
+                onMouseOut={() => setCursorImage('/assets/cursor/cursor_default.svg')}
+              >
                 <img src={Min} alt="" />
               </_.MinimizeButton>
               <_.ExitButton onClick={() => {
@@ -194,7 +201,10 @@ const Application = (props: ApplicationProps) => {
                 if (!isLogIned) {
                   setIsLogIned(true);
                 }
-              }}>
+              }}
+                onMouseEnter={() => setCursorImage('/assets/cursor/cursor_hand.svg')}
+                onMouseOut={() => setCursorImage('/assets/cursor/cursor_default.svg')}
+              >
                 <img src={Exit} alt="" />
               </_.ExitButton>
             </> :
