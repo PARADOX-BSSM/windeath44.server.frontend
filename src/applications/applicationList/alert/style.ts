@@ -42,6 +42,7 @@ export const text = styled.p`
     word-wrap: break-word
 `;
 export const btnContainer = styled.div`
+    display: flex;
     width: 100%;
     height: 100%;
     justify-content: center;

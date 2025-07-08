@@ -8,26 +8,27 @@ interface PropsType {
     active?: boolean;
     widthPercent?: number;
     heightPercent?: number;
+    fontSize?: string;
 }
 
-const MemorialBtn = ({ name, selected = false, onClick, type = "none", active, widthPercent, heightPercent }: PropsType) => {
+const MemorialBtn = ({ name, selected = false, onClick, type = "none", active, widthPercent, heightPercent, fontSize = "20px" }: PropsType) => {
     if (type === "submit") {
         return !active ? (
-            <_.SubmitDefault width={widthPercent} height={heightPercent}>
+            <_.SubmitDefault width={widthPercent} height={heightPercent} fontSize={fontSize}>
                 {name}
             </_.SubmitDefault>
         ) : (
-            <_.SubmitActive onClick={onClick} width={widthPercent} height={heightPercent}>
+            <_.SubmitActive onClick={onClick} width={widthPercent} height={heightPercent} fontSize={fontSize}>
                 {name}
             </_.SubmitActive>
         )
     } else if (type === "menu") {
         return !selected ? (
-            <_.Btn onClick={onClick} width={widthPercent} height={heightPercent}>
+            <_.Btn onClick={onClick} width={widthPercent} height={heightPercent} fontSize={fontSize}>
                 {name}
             </_.Btn>
         ) : (
-            <_.SelectedBtn width={widthPercent} height={heightPercent}>
+            <_.SelectedBtn width={widthPercent} height={heightPercent} fontSize={fontSize}>
                 {name}
             </_.SelectedBtn>
         );

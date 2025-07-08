@@ -16,7 +16,7 @@ const Alert = ({ onClick }: AlertProps) => {
                     <_.text>문제가 발생했습니다.<br />에러가 발생했습니다.<br />예외가 발생했습니당.</_.text>
                 </_.place>
                 <_.btnContainer>
-                    <MemorialBtn name={"확인"} type="submit" active={true} onClick={onClick}></MemorialBtn>
+                    <MemorialBtn name={"확인"} type="submit" active={true} onClick={onClick} widthPercent={12} heightPercent={5} fontSize="16px"></MemorialBtn>
                 </_.btnContainer>
             </_.container>
         </_.main>

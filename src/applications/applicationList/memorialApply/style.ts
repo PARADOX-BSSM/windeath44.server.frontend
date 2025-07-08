@@ -75,6 +75,7 @@ export const CharacterNameInput = styled(TextareaAutosize)`
     line-height: normal;
     align-self: stretch;
     placeholder: "asdf";
+    outline: none;
 `
 
 export const Status = styled.p`
