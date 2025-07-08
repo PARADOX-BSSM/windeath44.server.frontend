@@ -22,18 +22,18 @@ export const HeaderButton = styled.button`
   padding : 0;
   //margin : 0;
 `;
-export const MinimizeButton = styled(HeaderButton)`
-  background-color: rgba(0, 0, 0, 0);
+export const MinimizeButton = styled(HeaderButton)<{isFocus:boolean}>`
+  background-color: ${({isFocus})=> isFocus ? 'rgba(0, 0, 0, 0)':'rgba(0, 0, 0, 0.2)'};
   border: none;
   cursor:none;
 `;
-export const FullScreenButton = styled(HeaderButton)`
-  background-color: rgba(0, 0, 0, 0);
+export const FullScreenButton = styled(HeaderButton)<{isFocus:boolean}>`
+  background-color: ${({isFocus})=> isFocus ? 'rgba(0, 0, 0, 0)':'rgba(0, 0, 0, 0.2)'};
   border: none;
   cursor:none;
 `;
-export const ExitButton = styled(HeaderButton)`
-  background-color: rgba(0, 0, 0, 0);
+export const ExitButton = styled(HeaderButton)<{isFocus:boolean}>`
+  background-color: ${({isFocus})=> isFocus ? 'rgba(0, 0, 0, 0)':'rgba(0, 0, 0, 0.2)'};
     border: none;
     cursor:none;
 `;

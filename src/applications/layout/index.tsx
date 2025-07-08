@@ -178,13 +178,12 @@ const Application = (props: ApplicationProps) => {
     return (
       <_.Window style={window} onMouseDown={() => setFocus(props.name)}>
         <_.WindowHeader {...moveManager()}>
-          {focus === props.name ?
-            <>
               <_.FullScreenButton onClick={() =>
                 setIsFullScreen(!isFullScreen)
               }
                 onMouseEnter={() => setCursorImage('/assets/cursor/cursor_hand.svg')}
                 onMouseOut={() => setCursorImage('/assets/cursor/cursor_default.svg')}
+                isFocus={focus === props.name}
               >
                 <img src={Full} alt="" />
               </_.FullScreenButton>
@@ -193,6 +192,7 @@ const Application = (props: ApplicationProps) => {
               }
                 onMouseEnter={() => setCursorImage('/assets/cursor/cursor_hand.svg')}
                 onMouseOut={() => setCursorImage('/assets/cursor/cursor_default.svg')}
+                isFocus={focus === props.name}
               >
                 <img src={Min} alt="" />
               </_.MinimizeButton>
@@ -204,22 +204,10 @@ const Application = (props: ApplicationProps) => {
               }}
                 onMouseEnter={() => setCursorImage('/assets/cursor/cursor_hand.svg')}
                 onMouseOut={() => setCursorImage('/assets/cursor/cursor_default.svg')}
+                isFocus={focus === props.name}
               >
                 <img src={Exit} alt="" />
               </_.ExitButton>
-            </> :
-            <>
-              <_.HeaderButton onClick={() =>
-                props.removeTask(props.removeCompnent)
-              }></_.HeaderButton>
-              <_.HeaderButton onClick={() =>
-                setIsFullScreen(!isFullScreen)
-              }></_.HeaderButton>
-              <_.HeaderButton onClick={() =>
-                setIsMinimized(!isMinimized)
-              }> </_.HeaderButton>
-            </>
-          }
         </_.WindowHeader>
         <_.WindowContent {...sizeManager()} onMouseUp={() => setIsFirst(true)}>
           {props.children}
