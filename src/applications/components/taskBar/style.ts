@@ -1,5 +1,4 @@
 import styled from "@emotion/styled";
-import { css } from "@emotion/react";
 
 
 export const TTaskBar = styled.footer`
@@ -77,19 +76,11 @@ export const Observer = styled.div<{ selected?: boolean }>`
     padding: 4px 12px;
     justify-content: center;
     align-items: center;
-    ${({ selected }) =>
-        selected
-            ? css`
-              background: var(--dark-primary-color);
-              box-shadow: -1.5px -1.5px 0px 0px #FFF inset,
-                          1.5px 1.5px 0px 0px var(--primary-black) inset,
-                          -3px -3px 0px 0px var(--secondary-color) inset,
-                          3px 3px 0px 0px var(--dark-primary-color) inset;
-          `
-            : css``
-    }
-    background: var(--light-primary-color);
-    box-shadow: -1.539px -1.539px 0px 0px var(--secondary-color) inset, 1.539px 1.539px 0px 0px #FFF inset, -3.078px -3.078px 0px 0px #DCAFDD inset;
+    background: ${({ selected }) =>
+        selected ? "var(--dark-primary-color)" : "var(--light-primary-color)"};
+    box-shadow: -1.539px -1.539px 0px 0px var(--secondary-color) inset,
+                1.539px 1.539px 0px 0px #FFF inset,
+                -3.078px -3.078px 0px 0px #DCAFDD inset;
 `
 
 export const StartImg = styled.img`
