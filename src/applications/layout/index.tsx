@@ -19,6 +19,7 @@ import {
   DragParams,
   ApplicationProps,
 } from './utils';
+import { setCursorImage,CURSOR_IMAGES } from '@/lib/setCursorImg';
 
 const Application = (props: ApplicationProps) => {
   // jotai 상태 사용
@@ -97,7 +98,7 @@ const Application = (props: ApplicationProps) => {
   }, [focus]);
 
 
-  
+
   // 전체화면 처리 : 전체화면 진입 시 창 상태 백업 후 화면 전체로 확장, 해제 시 복원
   useEffect(() => {
     if (isFullScreen) {
@@ -177,16 +178,22 @@ const Application = (props: ApplicationProps) => {
     return (
       <_.Window style={window} onMouseDown={() => setFocus(props.name)}>
         <_.WindowHeader {...moveManager()}>
-          {focus === props.name ?
-            <>
               <_.FullScreenButton onClick={() =>
                 setIsFullScreen(!isFullScreen)
-              }>
+              }
+                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                onMouseOut={() => setCursorImage(CURSOR_IMAGES.default)}
+                isFocus={focus === props.name}
+              >
                 <img src={Full} alt="" />
               </_.FullScreenButton>
               <_.MinimizeButton onClick={() =>
                 setIsMinimized(!isMinimized)
-              }>
+              }
+                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                onMouseOut={() => setCursorImage(CURSOR_IMAGES.default)}
+                isFocus={focus === props.name}
+              >
                 <img src={Min} alt="" />
               </_.MinimizeButton>
               <_.ExitButton onClick={() => {
@@ -194,22 +201,13 @@ const Application = (props: ApplicationProps) => {
                 if (!isLogIned) {
                   setIsLogIned(true);
                 }
-              }}>
+              }}
+                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                onMouseOut={() => setCursorImage(CURSOR_IMAGES.default)}
+                isFocus={focus === props.name}
+              >
                 <img src={Exit} alt="" />
               </_.ExitButton>
-            </> :
-            <>
-              <_.HeaderButton onClick={() =>
-                props.removeTask(props.removeCompnent)
-              }></_.HeaderButton>
-              <_.HeaderButton onClick={() =>
-                setIsFullScreen(!isFullScreen)
-              }></_.HeaderButton>
-              <_.HeaderButton onClick={() =>
-                setIsMinimized(!isMinimized)
-              }> </_.HeaderButton>
-            </>
-          }
         </_.WindowHeader>
         <_.WindowContent {...sizeManager()} onMouseUp={() => setIsFirst(true)}>
           {props.children}
