@@ -9,6 +9,8 @@ import { TaskType } from "../../modules/typeModule.tsx";
 import { getTaskCreators } from './tasks';
 import { useTaskTransformFunction } from '@/hooks/taskTransformer.tsx';
 import { useTaskSearchFunction } from '@/hooks/taskSearch.tsx';
+// import cursorDefault from '@/assets/cursor/cursor_default.svg';
+// import cursorClick from '@/assets/cursor/cursor_drag.svg';
 
 const Application = lazy(() => import('../../applications/layout/index.tsx'));
 
@@ -81,6 +83,24 @@ const WindowManager = () => {
     updateSideWidth();
     window.addEventListener('resize', updateSideWidth);
     return () => window.removeEventListener('resize', updateSideWidth);
+  }, []);
+
+
+  // 커서 클릭 감지 이벤트
+  useEffect(() => {
+    const cursor = document.getElementById("cursor");
+    if (!cursor) return;
+
+    const handleClick = () => {
+      cursor.style.backgroundImage = `url(${cursorClick})`;
+
+      setTimeout(() => {
+        cursor.style.backgroundImage = `url(${cursorDefault})`;
+      }, 150);
+    };
+
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
   return (

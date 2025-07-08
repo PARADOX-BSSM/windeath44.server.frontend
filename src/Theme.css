@@ -45,6 +45,7 @@ body {
     height: 32px;
     background-image: url('./assets/cursor/cursor_default.svg');
     position: absolute;
+    background-size: contain;
     pointer-events: none;
     z-index: 999;
 }
