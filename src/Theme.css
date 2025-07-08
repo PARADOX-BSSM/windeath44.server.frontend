@@ -41,10 +41,9 @@ body {
 }
 
 #cursor {
-    width: 5px;
-    height: 5px;
-    background-color: red;
-    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    background-image: url('./assets/cursor/cursor_default.svg');
     position: absolute;
     pointer-events: none;
     z-index: 999;
