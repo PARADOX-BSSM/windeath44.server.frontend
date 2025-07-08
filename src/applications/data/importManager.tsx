@@ -8,8 +8,9 @@ import { useAtom } from 'jotai';
 import { isLogInedAtom } from "@/atoms/windowManager.ts";
 import { useProcessManager } from "@/hooks/processManager.tsx";
 import { getTaskCreators } from "@/services/windowManager/tasks.tsx";
-import { useStack } from "@/hooks/dataStructure.tsx";
 import MemorialApply from "../applicationList/memorialApply/index.tsx";
+import Alert from "../applicationList/alert/index.tsx";
+import { getPixelFromPercent } from "@/services/kernel.tsx";
 
 const Terminal =  lazy(()=> import("../applicationList/terminal/index.tsx"));
 const Settings = lazy(()=> import("../applicationList/settings/index.tsx"));
@@ -181,7 +182,7 @@ const useApps = (): TaskType[] => {
         "setUpHeight" : 500,
       }
     },
-        {
+      {
         "component": <Suspense fallback={null}><Bow/></Suspense>,
         "type": "App",
         "id": 2230,
@@ -194,7 +195,21 @@ const useApps = (): TaskType[] => {
           "setUpWidth" : 850,
           "setUpHeight" : 500,
         }
+      },
+    {
+      "component": <Suspense fallback={null}><Alert onClick={() => undefined}/></Suspense>,
+      "type": "App",
+      "id": 2229,
+      "name": "Alert",
+      "layer": undefined,
+      "appSetup":{
+        "Image" : "default",
+        "minWidth" : getPixelFromPercent("width", 40),
+        "minHeight" : 220,
+        "setUpWidth" : getPixelFromPercent("width", 40),
+        "setUpHeight" : 220,
       }
+    },
   ];
 
   return baseApps;

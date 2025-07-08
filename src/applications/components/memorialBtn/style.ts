@@ -1,9 +1,9 @@
 import styled from '@emotion/styled';
 
-export const Btn = styled.button`
+export const Btn = styled.button<{width?: number; height?: number;}>`
     display: flex;
-    width: 180px;
-    height: 42px;
+    width: ${({ width }) => width || "180px"};
+    height: ${({ height }) => height || "42px"};
     padding: 9px 24px;
     justify-content: center;
     align-items: center;
@@ -19,10 +19,10 @@ export const Btn = styled.button`
     line-height: 15px; /* 75% */
 `
 
-export const SelectedBtn = styled.button`
+export const SelectedBtn = styled.button<{width?: number; height?: number;}>`
     display: flex;
-    width: 180px;
-    height: 42px;
+    width: ${({ width }) => width || "180px"};
+    height: ${({ height }) => height || "42px"};
     padding: 9px 24px;
     justify-content: center;
     align-items: center;
@@ -38,10 +38,10 @@ export const SelectedBtn = styled.button`
     border:none;
 `
 
-export const SubmitDefault = styled.button`
+export const SubmitDefault = styled.button<{width?: number; height?: number;}>`
     display: flex;
-    width: 180px;
-    height: 42px;
+    width: ${({ width }) => width || "180px"};
+    height: ${({ height }) => height || "42px"};
     padding: 9px 24px;
     justify-content: center;
     align-items: center;
@@ -57,9 +57,9 @@ export const SubmitDefault = styled.button`
     border : none;
 `
 
-export const SubmitActive = styled.button`
-    height: 42px;
-    width: 180px;
+export const SubmitActive = styled.button<{width?: number; height?: number;}>`
+    width: ${({ width }) => width || "180px"};
+    height: ${({ height }) => height || "42px"};
     padding: 9px 24px;
     justify-content: center;
     align-items: center;

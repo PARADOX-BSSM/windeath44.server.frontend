@@ -6,10 +6,10 @@ type TaskType = {
   "name" : string,
   "appSetup" : {
     "Image" : string | undefined,
-    "minWidth" : number | undefined,
-    "minHeight" : number | undefined,
-    "setUpWidth" : number | undefined,
-    "setUpHeight" : number | undefined,
+    "minWidth" : number | string | undefined,
+    "minHeight" : number | string | undefined,
+    "setUpWidth" : number | string | undefined,
+    "setUpHeight" : number | string | undefined,
   } | undefined,
 }
 
