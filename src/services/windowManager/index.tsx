@@ -90,8 +90,8 @@ const WindowManager = () => {
     document.addEventListener("mousemove", (event: MouseEvent) => {
       let x = event.clientX - bounds.x + bounds.left;
       let y = event.clientY - bounds.y;
-      x = Math.max(bounds.left, Math.min(bounds.width - 5 + bounds.left, x));
-      y = Math.max(0, Math.min(bounds.height - 5, y));
+      x = Math.max(bounds.left, Math.min(bounds.width - 1 + bounds.left, x));
+      y = Math.max(0, Math.min(bounds.height - 1, y));
       cursor.style.left = `${x}px`;
       cursor.style.top = `${y}px`;
       setCursorVec([x, y]);
