@@ -1,5 +1,5 @@
 import * as _ from './style';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useDrag } from 'react-use-gesture';
 import Exit from "@/assets/headerButton/exit.svg";
 import Full from "@/assets/headerButton/full.svg";
@@ -19,6 +19,8 @@ import {
   DragParams,
   ApplicationProps,
 } from './utils';
+import React from 'react';
+import Settings from '../applicationList/settings';
 
 const Application = (props: ApplicationProps) => {
   // jotai 상태 사용
@@ -212,7 +214,23 @@ const Application = (props: ApplicationProps) => {
           }
         </_.WindowHeader>
         <_.WindowContent {...sizeManager()} onMouseUp={() => setIsFirst(true)}>
-          {props.children}
+          {
+            (() => {
+              const original = props.children;
+              const internal = original.props.children as React.ReactElement;
+              const type = internal.type;
+            
+              if (type === Settings) {
+                return (
+                  <Suspense fallback={null}>
+                    {React.createElement(type, { window, setWindow })}
+                  </Suspense>
+                );
+              } else {
+                return props.children;
+              }
+            })()
+          }
         </_.WindowContent>
       </_.Window>
     );

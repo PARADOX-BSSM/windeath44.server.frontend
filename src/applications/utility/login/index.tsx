@@ -56,6 +56,7 @@ const LogIn = ({ setIsLogIned, changeToSignUp , changeToEmailCheck}: Props) => {
           <_.tempButtons>
             <Button props="확인" onClick={() => checkLogIn(inputID, inputPW)}/>
             <Button props="취소" onClick={() => {
+              console.log(setIsLogIned);
               setIsLogIned(true);
               taskTransform?.('LogIn', '');
             }}/>
