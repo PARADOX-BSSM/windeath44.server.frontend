@@ -2,21 +2,20 @@ import React from "react";
 import * as _ from './style';
 import { useProcessManager } from "@/hooks/processManager";
 import { useAtom } from "jotai";
-import { focusAtom } from "@/atoms/windowManager";
+import { focusAtom, startOptionAtom } from "@/atoms/windowManager";
 import FileImg from '@/assets/search/folder.svg';
 import StartImg from '@/assets/Start.svg';
 
 
 interface TaskBarProps {
-    startOption: boolean;
-    setStartOption: React.Dispatch<React.SetStateAction<boolean>>;
     backUpFocus: string;
     setBackUpFocus: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const TaskBar = ({ startOption, setStartOption, backUpFocus, setBackUpFocus }: TaskBarProps) => {
+const TaskBar = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
     const [taskList, ,] = useProcessManager();
     const [focus, setFocus] = useAtom(focusAtom);
+    const [startOption, setStartOption] = useAtom(startOptionAtom);
 
 
     return (
@@ -35,6 +34,7 @@ const TaskBar = ({ startOption, setStartOption, backUpFocus, setBackUpFocus }: T
                                             setBackUpFocus(focus);
                                             setFocus("Observer");
                                         }
+                                        console.log(startOption);
                                         return !prev;
                                     });
                                 }}>

@@ -39,7 +39,7 @@ const WindowManager = () => {
     if (isLogIned) {
       removeTask(logIn)
       const discover: TaskType = {
-        "component": <Discover startOption={startOption} setStartOption={setStartOption} backUpFocus={backUpFocus} setBackUpFocus={setBackUpFocus} />,
+        "component": <Discover backUpFocus={backUpFocus} setBackUpFocus={setBackUpFocus} />,
         "type": "Shell",
         "id": 0,
         "layer": -3,
