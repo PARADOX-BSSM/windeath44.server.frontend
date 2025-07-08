@@ -39,7 +39,7 @@ export const text = styled.p`
     color: #2E2E2E;
     font-size: 18px;
     font-weight: 400;
-    word-wrap: break-word
+    word-wrap: break-word;
 `;
 export const btnContainer = styled.div`
     display: flex;

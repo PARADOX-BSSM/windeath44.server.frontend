@@ -2,9 +2,16 @@ import { TaskType } from "@/modules/typeModule";
 import {useEffect, useRef, useState} from "react";
 
 
-const useStack = (window?: React.CSSProperties, setWindow?: React.Dispatch<React.SetStateAction<React.CSSProperties>>, setUpHeight?: number, setUpWidth?: number) => {
+const useStack = (
+  window?: React.CSSProperties,
+  setWindow?: React.Dispatch<React.SetStateAction<React.CSSProperties>>,
+  setUpHeight?: number,
+  setUpWidth?: number
+) => {
   const [stack, setStack] = useState<any[]>([]);
-  const windowRef = useRef<React.CSSProperties>(window!);
+  const windowRef = useRef<React.CSSProperties | undefined>(window);
+  // …
+}
 
   useEffect(() => {
     if (window) {

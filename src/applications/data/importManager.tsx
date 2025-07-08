@@ -32,7 +32,8 @@ const MemorialMerge = lazy(()=> import("../applicationList/memorialMerge/index.t
           "minHeight" : {최소 높이},
           "setUpWidth" : {넓이 초기값},
           "setUpHeight" : {높이 초기값},
-        }
+        },
+        "visible": {바탕화면에 보일지 안보일지 여부}
 }
  */
 const useApps = (): TaskType[] => {
@@ -62,7 +63,8 @@ const useApps = (): TaskType[] => {
         "minHeight" : 150,
         "setUpWidth" : 300,
         "setUpHeight" : 400
-      }
+      },
+      "visible":false,
     },{
       "component": <Suspense fallback={null}><MemorialApproach/></Suspense>,
       "type": "App",
@@ -75,7 +77,8 @@ const useApps = (): TaskType[] => {
         "minHeight" : getPixelFromPercent("height", 55),
         "setUpWidth" : getPixelFromPercent("width", 75),
         "setUpHeight" : getPixelFromPercent("height", 55),
-      }
+      },
+      "visible":false,
     },{
       "component": <Suspense fallback={null}><Search/></Suspense>,
       "type": "App",
@@ -88,7 +91,8 @@ const useApps = (): TaskType[] => {
         "minHeight" : 360,
         "setUpWidth" : 676,
         "setUpHeight" : 360
-    }
+    },
+    "visible":true,
   },{
       "component": <Suspense fallback={null}><MemorialMenu stack={[]} push={undefined} pop={undefined} top={undefined}/></Suspense>,
       "type": "App",
@@ -101,7 +105,8 @@ const useApps = (): TaskType[] => {
         "minHeight" : getPixelFromPercent("height", 55),
         "setUpWidth" : getPixelFromPercent("width", 75),
         "setUpHeight" : getPixelFromPercent("height", 55),
-      }
+      },
+      "visible":true,
     },{
       "component": <Suspense fallback={null}><Memorial stack={[]} push={undefined} pop={undefined} top={undefined} /></Suspense>,
       "type": "App",
@@ -114,7 +119,8 @@ const useApps = (): TaskType[] => {
         "minHeight" : 420,
         "setUpWidth" : 850,
         "setUpHeight" : 750,
-      }
+      },
+      "visible":false,
     },{
       "component": <Suspense fallback={null}><MemorailHistory stack={[]} push={undefined} pop={undefined} top={undefined}/></Suspense>,
       "type": "App",
@@ -127,7 +133,8 @@ const useApps = (): TaskType[] => {
         "minHeight" : 420,
         "setUpWidth" : 850,
         "setUpHeight" : 500,
-      }
+      },
+      "visible":true,
     },{
       "component": <Suspense fallback={null}><MemorialCommit stack={[]} push={undefined} pop={undefined} top={undefined}/></Suspense>,
       "type": "App",
@@ -140,7 +147,8 @@ const useApps = (): TaskType[] => {
         "minHeight" : 420,
         "setUpWidth" : 850,
         "setUpHeight" : 500,
-      }
+      },
+      "visible":false,
     },{
       "component": <Suspense fallback={null}><MemorialApply stack={[]} push={undefined} pop={undefined} top={undefined}/></Suspense>,
       "type": "App",
@@ -153,7 +161,8 @@ const useApps = (): TaskType[] => {
         "minHeight" : 420,
         "setUpWidth" : 850,
         "setUpHeight" : 500,
-      }
+      },
+      "visible":false,
     },{
       "component": <Suspense fallback={null}><MemorialPreview/></Suspense>,
       "type": "App",
@@ -166,7 +175,8 @@ const useApps = (): TaskType[] => {
         "minHeight" : 420,
         "setUpWidth" : 850,
         "setUpHeight" : 500,
-      }
+      },
+      "visible":false,
     },{
       "component": <Suspense fallback={null}><MemorialMerge/></Suspense>,
       "type": "App",
@@ -179,36 +189,37 @@ const useApps = (): TaskType[] => {
         "minHeight" : 420,
         "setUpWidth" : 850,
         "setUpHeight" : 500,
-      }
-    },
-      {
-        "component": <Suspense fallback={null}><Bow/></Suspense>,
+      },
+      "visible":false,
+    },{
+       "component": <Suspense fallback={null}><Bow/></Suspense>,
+       "type": "App",
+       "id": 2230,
+       "name": "Bow",
+       "layer": undefined,
+       "appSetup":{
+         "Image" : "default",
+         "minWidth" : 580,
+         "minHeight" : 420,
+         "setUpWidth" : 850,
+         "setUpHeight" : 500,
+       },
+       "visible":false,
+      },{
+        "component": <Suspense fallback={null}><Alert icon="" text={<></>} onClick={() => undefined}/></Suspense>,
         "type": "App",
-        "id": 2230,
-        "name": "Bow",
+        "id": 2231,
+        "name": "Alert",
         "layer": undefined,
         "appSetup":{
           "Image" : "default",
-          "minWidth" : 580,
-          "minHeight" : 420,
-          "setUpWidth" : 850,
-          "setUpHeight" : 500,
-        }
-      },
-    {
-      "component": <Suspense fallback={null}><Alert icon="" text={<></>} onClick={() => undefined}/></Suspense>,
-      "type": "App",
-      "id": 2231,
-      "name": "Alert",
-      "layer": undefined,
-      "appSetup":{
-        "Image" : "default",
-        "minWidth" : getPixelFromPercent("width", 45),
-        "minHeight" : getPixelFromPercent("height", 30),
-        "setUpWidth" : getPixelFromPercent("width", 45),
-        "setUpHeight" : getPixelFromPercent("height", 30),
+          "minWidth" : getPixelFromPercent("width", 45),
+          "minHeight" : getPixelFromPercent("height", 30),
+          "setUpWidth" : getPixelFromPercent("width", 45),
+          "setUpHeight" : getPixelFromPercent("height", 30),
+        },
+        "visible":false,
       }
-    },
   ];
 
   return baseApps;
