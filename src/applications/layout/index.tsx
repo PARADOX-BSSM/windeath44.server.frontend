@@ -29,6 +29,9 @@ const Application = (props: ApplicationProps) => {
   const [tabDownInterrupt, setTabDownInterrupt] = useAtom(tabDownInterruptAtom); // 단축키 등으로 창 최소화 등 인터럽트 신호 (전역)
   const [isLogIned, setIsLogIned] = useAtom(isLogInedAtom); // 로그인 여부 (전역)
 
+  const setUpHeight = props.setUpHeight;
+  const setUpWidth = props.setUpWidth;
+
   const windowProps: React.CSSProperties = {
     position: "absolute",
     height: props.setUpHeight,
@@ -220,10 +223,10 @@ const Application = (props: ApplicationProps) => {
               const internal = original.props.children as React.ReactElement;
               const type = internal.type;
             
-              if (type === Settings) {
+              if (props.name === "MemorialApproach") {
                 return (
                   <Suspense fallback={null}>
-                    {React.createElement(type, { window, setWindow })}
+                    {React.createElement(type, { window, setWindow, setUpHeight, setUpWidth })}
                   </Suspense>
                 );
               } else {

@@ -1,12 +1,29 @@
 import { TaskType } from "@/modules/typeModule";
-import {useState} from "react";
+import {useEffect, useRef, useState} from "react";
 
 
-const useStack = () => {
+const useStack = (window?: React.CSSProperties, setWindow?: React.Dispatch<React.SetStateAction<React.CSSProperties>>, setUpHeight?: number, setUpWidth?: number) => {
   const [stack, setStack] = useState<any[]>([]);
+  const windowRef = useRef<React.CSSProperties>(window!);
+
+  useEffect(() => {
+    if (window) {
+      windowRef.current = window;
+    }
+  }, [window])
 
   const push:any = (value:any) => {
     setStack(prev => [...prev, value]);
+    const latestWindow = windowRef.current;
+    if (setWindow && latestWindow) {
+      setWindow({
+        ...latestWindow,
+        top: latestWindow.top!,
+        left: latestWindow.left!,
+        height: value.appSetup.setUpHeight,
+        width: value.appSetup.setUpWidth,
+      });
+    }
   }
   const pop = () => {
     setStack(prev => {

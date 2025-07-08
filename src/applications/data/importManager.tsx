@@ -11,10 +11,9 @@ import { getTaskCreators } from "@/services/windowManager/tasks.tsx";
 import MemorialApply from "../applicationList/memorialApply/index.tsx";
 import Alert from "../applicationList/alert/index.tsx";
 import { getPixelFromPercent } from "@/services/kernel.tsx";
+import MemorialApproach from "../applicationList/settings/index.tsx";
 
 const Terminal =  lazy(()=> import("../applicationList/terminal/index.tsx"));
-const Settings = lazy(()=> import("../applicationList/settings/index.tsx"));
-const LogIn = lazy(()=> import("../utility/login/index.tsx"));
 const MemorailHistory = lazy(()=> import("../applicationList/memorialHistory/index.tsx"));
 const MemorialCommit = lazy(()=> import("../applicationList/memorialCommit/index.tsx"));
 const MemorialPreview = lazy(()=> import("../applicationList/memorialPreview/index.tsx"));
@@ -65,17 +64,17 @@ const useApps = (): TaskType[] => {
         "setUpHeight" : 400
       }
     },{
-      "component": <Suspense fallback={null}><Settings/></Suspense>,
+      "component": <Suspense fallback={null}><MemorialApproach/></Suspense>,
       "type": "App",
       "id": 2221,
-      "name": "Settings",
+      "name": "MemorialApproach",
       "layer": undefined,
       "appSetup":{
         "Image" : "default",
         "minWidth" : 200,
         "minHeight" : 150,
-        "setUpWidth" : 300,
-        "setUpHeight" : 400
+        "setUpWidth" : 800,
+        "setUpHeight" : 464
       }
     },{
       "component": <Suspense fallback={null}><Search/></Suspense>,
