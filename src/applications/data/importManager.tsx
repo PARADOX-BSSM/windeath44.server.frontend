@@ -208,7 +208,7 @@ const useApps = (): TaskType[] => {
       },{
         "component": <Suspense fallback={null}><Alert icon="" text={<></>} onClick={() => undefined}/></Suspense>,
         "type": "App",
-        "id": 2229,
+        "id": 2231,
         "name": "Alert",
         "layer": undefined,
         "appSetup":{
