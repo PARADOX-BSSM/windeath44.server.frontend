@@ -2,17 +2,17 @@ import styled from "@emotion/styled";
 
 export const Window = styled.article`
     border: 2.5px solid #FF8EF6;
-    padding : 0.5rem;
+    padding : 0.4rem;
     display : flex;
     flex-direction: column;
 `
 export const WindowHeader = styled.header`
     background-color: #FFD3FB;
-    padding : 0 0.5rem;
+    padding : 0 0.2rem;
     display : flex;
     justify-content: flex-end;
     align-items: center;
-    height : 30px;
+    height : 24px;
     border: 2.5px solid #E774DD;
 `;
 export const HeaderButton = styled.button`
@@ -40,7 +40,7 @@ export const WindowContent = styled.section`
     left : 0;
     right : 0;
     bottom : 0;
-    margin : 0.5rem;
+    margin : 0 0.4rem 0.4rem 0.4rem;
     box-sizing: border-box;
     border : solid 2.5px #E774DD;
 `;
