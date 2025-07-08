@@ -1,5 +1,5 @@
-import {TaskType} from "@/modules/typeModule.tsx"
-import {useProcessManager} from "@/hooks/processManager";
+import { TaskType } from "@/modules/typeModule.tsx"
+import { useProcessManager } from "@/hooks/processManager";
 import useApps from "@/applications/data/importManager";
 import TaskBar from "@/applications/components/taskBar";
 import React from "react";
@@ -10,15 +10,17 @@ interface TaskBarProps {
   setBackUpFocus: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Discover = ({ backUpFocus, setBackUpFocus }:TaskBarProps) => {
-  const [, addTask, ] = useProcessManager();
+const Discover = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
+  const [, addTask,] = useProcessManager();
   const Apps = useApps();
-  return(
+  const visibleApps = Apps.filter((app: TaskType) => app.visible);
+
+  return (
     <>
-      <Seori/>
-      {Apps.map((Application:TaskType) => {
+      <Seori />
+      {visibleApps.map((Application: TaskType) => {
         return (
-          <div key={Application.name} className="app-button" style={{zIndex: "0"}}>
+          <div key={Application.name} className="app-button" style={{ zIndex: "0" }}>
             <button onDoubleClick={() => {
               addTask(Application);
             }}>
@@ -27,7 +29,7 @@ const Discover = ({ backUpFocus, setBackUpFocus }:TaskBarProps) => {
           </div>
         )
       })}
-      <TaskBar backUpFocus={backUpFocus} setBackUpFocus={setBackUpFocus}/>
+      <TaskBar backUpFocus={backUpFocus} setBackUpFocus={setBackUpFocus} />
     </>
   )
 }

@@ -31,6 +31,8 @@ const WindowManager = () => {
   const dragOffset = useRef([0, 0]);
   const clickTimeout = useRef<NodeJS.Timeout | null>(null);
 
+  
+
   // Drag 감지해서 Cursor 변경
   const bindDrag = useDrag(
     ({ dragging, movement: [mx, my] }) => {

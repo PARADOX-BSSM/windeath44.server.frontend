@@ -64,7 +64,7 @@ const useApps = (): TaskType[] => {
         "setUpWidth" : 300,
         "setUpHeight" : 400
       },
-      "visible":false,
+      "visible":true,
     },{
       "component": <Suspense fallback={null}><MemorialApproach/></Suspense>,
       "type": "App",
@@ -78,7 +78,7 @@ const useApps = (): TaskType[] => {
         "setUpWidth" : getPixelFromPercent("width", 75),
         "setUpHeight" : getPixelFromPercent("height", 55),
       },
-      "visible":false,
+      "visible":true,
     },{
       "component": <Suspense fallback={null}><Search/></Suspense>,
       "type": "App",
@@ -92,7 +92,7 @@ const useApps = (): TaskType[] => {
         "setUpWidth" : 676,
         "setUpHeight" : 360
     },
-    "visible":true,
+    "visible":false,
   },{
       "component": <Suspense fallback={null}><MemorialMenu stack={[]} push={undefined} pop={undefined} top={undefined}/></Suspense>,
       "type": "App",
@@ -106,7 +106,7 @@ const useApps = (): TaskType[] => {
         "setUpWidth" : getPixelFromPercent("width", 75),
         "setUpHeight" : getPixelFromPercent("height", 55),
       },
-      "visible":true,
+      "visible":false,
     },{
       "component": <Suspense fallback={null}><Memorial stack={[]} push={undefined} pop={undefined} top={undefined} /></Suspense>,
       "type": "App",
