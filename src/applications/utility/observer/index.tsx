@@ -1,11 +1,14 @@
 import * as _ from './style';
 import useApps from "@/applications/data/importManager";
-import {TaskType} from "@/modules/typeModule.tsx";
-import {useState,useEffect} from 'react';
+import { TaskType } from "@/modules/typeModule.tsx";
+import { useState, useEffect } from 'react';
+import File from '@/assets/File.svg';
 
-const Observer = (props:any) => {
+const Observer = (props: any) => {
   const [containerLeft, setContainerLeft] = useState<number>(0); //observe에 넘길 container 비율
   const Apps = useApps();
+
+  const visibleApps = Apps.filter((app: TaskType) => app.visible);
 
   useEffect(() => {
     const container = document.getElementById("cursorContainer");
@@ -20,12 +23,13 @@ const Observer = (props:any) => {
       <_.Logo>
       </_.Logo>
       <_.SnapshotList>
-        {Apps.map((Application:TaskType)=>{
-          return(
-            <_.Snapshot key={Application.id}>
-              <button onClick={() => {
-                props.addTask(Application);
-              }}>{Application.name}</button>
+        {visibleApps.map((Application: TaskType) => {
+          return (
+            <_.Snapshot key={Application.id} onClick={() => {
+              props.addTask(Application);
+            }}>
+              <_.SnapshotImg src={File}/>
+              <_.SnapshotText >{Application.name}</_.SnapshotText>
             </_.Snapshot>
           )
         })}

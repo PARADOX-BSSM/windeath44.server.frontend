@@ -11,6 +11,7 @@ type TaskType = {
     "setUpWidth" : number | string | undefined,
     "setUpHeight" : number | string | undefined,
   } | undefined,
+  "visible":boolean | undefined,
 }
 
 const toNumber = (to:string|any) => (to as any as number)
