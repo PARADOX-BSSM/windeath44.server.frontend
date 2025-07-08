@@ -1,4 +1,3 @@
-import MergeBtn from '@/applications/components/mergeBtn';
 import * as _ from './style';
 import MemorialTextarea from '@/applications/components/memorialTextarea';
 import { useAtomValue } from 'jotai';
