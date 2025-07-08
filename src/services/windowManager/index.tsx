@@ -2,7 +2,7 @@ import * as _ from './style.ts';
 import { useEffect, useState, Suspense, lazy, useRef } from 'react';
 import { useAtom } from 'jotai';
 import { isLogInedAtom, focusAtom, backUpFocusAtom, startOptionAtom } from '@/atoms/windowManager.ts';
-import Discover from "../../applications/discover.tsx";
+import Discover from "../../applications/discover/index.tsx";
 import Observer from "../../applications/utility/observer/index.tsx";
 import { useProcessManager } from "../../hooks/processManager.tsx";
 import { TaskType } from "../../modules/typeModule.tsx";
