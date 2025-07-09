@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import '@/assets/font.css';
 
-export const Black = styled.div`
+export const Black = styled.button`
     width: 116px;
     height: 36px;
     border-width: 1.5px 3px 3px 1.5px; 
