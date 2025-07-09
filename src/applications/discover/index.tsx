@@ -26,7 +26,7 @@ const Discover = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
               addTask(Application);
             }}>
             </_.AppBtn>
-            <span className="app-title">{Application.name}</span>
+            <_.AppName>{Application.name}</_.AppName>
           </_.AppContainer>
         )
       })}

@@ -69,12 +69,6 @@ body {
     cursor: none;
 }
 
-.app-title {
-    height: 1rem;
-    font-size: 0.8rem;
-    margin: 0 auto;
-}
-
 #display {
     position: relative;
 }
