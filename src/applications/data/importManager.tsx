@@ -19,6 +19,11 @@ const MemorialCommit = lazy(()=> import("../applicationList/memorialCommit/index
 const MemorialPreview = lazy(()=> import("../applicationList/memorialPreview/index.tsx"));
 const MemorialMerge = lazy(()=> import("../applicationList/memorialMerge/index.tsx"));
 
+import memorialApproach from '@/assets/appIcons/search.svg';
+import myComputer from '@/assets/appIcons/my_computer.svg';
+import trashBin from '@/assets/appIcons/empty_bin.svg';
+import setting from '@/assets/appIcons/setting.svg';
+
 //Application Import 형식 예시
 /*
 {
@@ -72,7 +77,7 @@ const useApps = (): TaskType[] => {
       "name": "MemorialApproach",
       "layer": undefined,
       "appSetup":{
-        "Image" : "default",
+        "Image" : memorialApproach,
         "minWidth" : getPixelFromPercent("width", 75),
         "minHeight" : getPixelFromPercent("height", 55),
         "setUpWidth" : getPixelFromPercent("width", 75),

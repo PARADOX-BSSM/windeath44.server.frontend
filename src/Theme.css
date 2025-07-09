@@ -54,7 +54,7 @@ body {
     background-color: var(--secondary-color);
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(5rem, 5rem));
-    grid-template-rows: repeat(auto-fill, minmax(5rem, 5rem));
+    grid-template-rows: repeat(auto-fill, minmax(6rem, 6rem));
     grid-auto-flow: column;
     height: 100%;
     width: 100%;

@@ -236,7 +236,6 @@ const Application = (props: ApplicationProps) => {
       </_.Window>
     );
   } else if (props.type === "Shell") {
-    console.log(props.children)
     return (
       <_.Shell className="shell" onClick={() => setFocus("Discover")}>
         {props.children}
