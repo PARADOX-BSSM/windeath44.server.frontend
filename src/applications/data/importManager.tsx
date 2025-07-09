@@ -59,7 +59,7 @@ const useApps = (): TaskType[] => {
       "component": <Suspense fallback={null}><Terminal/></Suspense>,
       "type": "App",
       "id": 2210,
-      "name": "Terminal",
+      "name": "쓰레기통",
       "layer": undefined,
       "appSetup":{
         "Image" : trashBin,
@@ -73,7 +73,7 @@ const useApps = (): TaskType[] => {
       "component": <Suspense fallback={null}><MemorialApproach/></Suspense>,
       "type": "App",
       "id": 2221,
-      "name": "MemorialApproach",
+      "name": "추모관 검색",
       "layer": undefined,
       "appSetup":{
         "Image" : memorialApproach,

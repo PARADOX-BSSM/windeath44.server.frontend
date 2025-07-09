@@ -16,7 +16,7 @@ export const AppBtn = styled.div<{ url?: string }>`
 `
 
 export const AppName = styled.p`
-    margin: 0 auto;
+    margin: 0.5em auto;
     color: var(--primary-black);
     text-align: center;
     font-family: Galmuri11;

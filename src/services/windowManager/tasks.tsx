@@ -41,7 +41,7 @@ export function getTaskCreators(
     component: <Suspense fallback={null}><LogIn setIsLogIned={setIsLogIned} changeToSignUp={changeToSignUp} changeToEmailCheck={changeToEmailCheck} /></Suspense>,
     type: "App",
     id: 1,
-    name: "LogIn",
+    name: "내 컴퓨터",
     layer: undefined,
     appSetup: {
       Image: myComputer,
