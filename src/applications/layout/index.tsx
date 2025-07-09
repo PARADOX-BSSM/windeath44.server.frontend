@@ -21,7 +21,7 @@ import {
 } from './utils';
 
 import React from 'react';
-import { setCursorImage,CURSOR_IMAGES } from '@/lib/setCursorImg';
+import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
 
 const Application = (props: ApplicationProps) => {
   // jotai 상태 사용
@@ -183,36 +183,37 @@ const Application = (props: ApplicationProps) => {
     return (
       <_.Window style={window} onMouseDown={() => setFocus(props.name)}>
         <_.WindowHeader {...moveManager()}>
-              <_.FullScreenButton onClick={() =>
-                setIsFullScreen(!isFullScreen)
-              }
-                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
-                onMouseOut={() => setCursorImage(CURSOR_IMAGES.default)}
-                isFocus={focus === props.name}
-              >
-                <img src={Full} alt="" />
-              </_.FullScreenButton>
-              <_.MinimizeButton onClick={() =>
-                setIsMinimized(!isMinimized)
-              }
-                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
-                onMouseOut={() => setCursorImage(CURSOR_IMAGES.default)}
-                isFocus={focus === props.name}
-              >
-                <img src={Min} alt="" />
-              </_.MinimizeButton>
-              <_.ExitButton onClick={() => {
-                props.removeTask(props.removeCompnent);
-                if (!isLogIned) {
-                  setIsLogIned(true);
-                }
-              }}
-                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
-                onMouseOut={() => setCursorImage(CURSOR_IMAGES.default)}
-                isFocus={focus === props.name}
-              >
-                <img src={Exit} alt="" />
-              </_.ExitButton>
+          <_.MinimizeButton onClick={() =>
+            setIsMinimized(!isMinimized)
+          }
+            onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+            onMouseOut={() => setCursorImage(CURSOR_IMAGES.default)}
+            isFocus={focus === props.name}
+          >
+            <img src={Min} alt="" />
+          </_.MinimizeButton>
+          <_.FullScreenButton onClick={() =>
+            setIsFullScreen(!isFullScreen)
+          }
+            onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+            onMouseOut={() => setCursorImage(CURSOR_IMAGES.default)}
+            isFocus={focus === props.name}
+          >
+            <img src={Full} alt="" />
+          </_.FullScreenButton>
+
+          <_.ExitButton onClick={() => {
+            props.removeTask(props.removeCompnent);
+            if (!isLogIned) {
+              setIsLogIned(true);
+            }
+          }}
+            onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+            onMouseOut={() => setCursorImage(CURSOR_IMAGES.default)}
+            isFocus={focus === props.name}
+          >
+            <img src={Exit} alt="" />
+          </_.ExitButton>
         </_.WindowHeader>
         <_.WindowContent {...sizeManager()} onMouseUp={() => setIsFirst(true)}>
           {
@@ -220,8 +221,8 @@ const Application = (props: ApplicationProps) => {
               const original = props.children;
               const internal = original.props.children as React.ReactElement;
               const type = internal.type;
-            
-              if (props.name === "MemorialApproach") {
+
+              if (props.name === "추모관 검색") {
                 return (
                   <Suspense fallback={null}>
                     {React.createElement(type, { window, setWindow, setUpHeight, setUpWidth })}

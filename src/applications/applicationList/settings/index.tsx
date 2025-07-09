@@ -19,7 +19,7 @@ const MemorialApproach = ({ window, setWindow, setUpHeight, setUpWidth }: Memori
     console.log("top: ", top());
   }, [stack]);
   useEffect(() => {
-    push(taskSearch?.("추모관", stack, push, pop, top));
+    push(taskSearch?.("memorialMenu", stack, push, pop, top));
   }, [])
     return (
       <>

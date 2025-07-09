@@ -3,12 +3,13 @@ import useApps from "@/applications/data/importManager";
 import { TaskType } from "@/modules/typeModule.tsx";
 import { useState, useEffect } from 'react';
 import File from '@/assets/File.svg';
+import { useProcessManager } from '@/hooks/processManager';
 
-const Observer = (props: any) => {
+const Observer = () => {
   const [containerLeft, setContainerLeft] = useState<number>(0); //observe에 넘길 container 비율
   const Apps = useApps();
-
   const visibleApps = Apps.filter((app: TaskType) => app.visible);
+  const [ ,addTask, ] = useProcessManager();
 
   useEffect(() => {
     const container = document.getElementById("cursorContainer");
@@ -26,7 +27,7 @@ const Observer = (props: any) => {
         {visibleApps.map((Application: TaskType) => {
           return (
             <_.Snapshot key={Application.id} onClick={() => {
-              props.addTask(Application);
+              addTask(Application);
             }}>
               <_.SnapshotImg src={File}/>
               <_.SnapshotText >{Application.name}</_.SnapshotText>

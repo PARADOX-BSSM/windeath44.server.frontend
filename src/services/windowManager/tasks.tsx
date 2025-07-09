@@ -4,6 +4,7 @@ import SignUp from '@/applications/utility/signUp';
 import EmailChack from 'applications/utility/emailCheck';
 import Auth from '@/applications/utility/auth';
 import { TaskType } from '../../modules/typeModule.tsx';
+import myComputer from '@/assets/appIcons/my_computer.svg';
 
 type SetIsLogIned = React.Dispatch<React.SetStateAction<boolean>>;
 type AddTask = (task: TaskType) => void;
@@ -40,15 +41,16 @@ export function getTaskCreators(
     component: <Suspense fallback={null}><LogIn setIsLogIned={setIsLogIned} changeToSignUp={changeToSignUp} changeToEmailCheck={changeToEmailCheck} /></Suspense>,
     type: "App",
     id: 1,
-    name: "LogIn",
+    name: "내 컴퓨터",
     layer: undefined,
     appSetup: {
-      Image: "default",
+      Image: myComputer,
       minWidth: 748,
       minHeight: 464,
       setUpWidth: 748,
       setUpHeight: 464
-    }
+    },
+    visible : true
   };
 
   signUp = {
@@ -63,7 +65,8 @@ export function getTaskCreators(
       minHeight: 550,
       setUpWidth: 748,
       setUpHeight: 550
-    }
+    },
+    visible : false
   };
 
   emailChack = {
@@ -78,7 +81,8 @@ export function getTaskCreators(
       minHeight: 464,
       setUpWidth: 748,
       setUpHeight: 464
-    }
+    },
+    visible : false
   };
 
   auth = {
@@ -93,7 +97,8 @@ export function getTaskCreators(
       minHeight: 464,
       setUpWidth: 748,
       setUpHeight: 464
-    }
+    },
+    visible : false
   };
 
   return { logIn, signUp, emailChack, auth };

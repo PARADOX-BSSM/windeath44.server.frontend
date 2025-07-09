@@ -10,7 +10,7 @@ import { useProcessManager } from "@/hooks/processManager.tsx";
 import { getTaskCreators } from "@/services/windowManager/tasks.tsx";
 import MemorialApply from "../applicationList/memorialApply/index.tsx";
 import Alert from "../applicationList/alert/index.tsx";
-import { getPixelFromPercent } from "@/services/kernel.tsx";
+import { getPixelFromPercent } from "@/lib/getPixelFromPercent.tsx";
 import MemorialApproach from "../applicationList/settings/index.tsx";
 
 const Terminal =  lazy(()=> import("../applicationList/terminal/index.tsx"));
@@ -18,6 +18,10 @@ const MemorailHistory = lazy(()=> import("../applicationList/memorialHistory/ind
 const MemorialCommit = lazy(()=> import("../applicationList/memorialCommit/index.tsx"));
 const MemorialPreview = lazy(()=> import("../applicationList/memorialPreview/index.tsx"));
 const MemorialMerge = lazy(()=> import("../applicationList/memorialMerge/index.tsx"));
+
+import memorialApproach from '@/assets/appIcons/search.svg';
+import trashBin from '@/assets/appIcons/empty_bin.svg';
+import setting from '@/assets/appIcons/setting.svg';
 
 //Application Import 형식 예시
 /*
@@ -55,30 +59,30 @@ const useApps = (): TaskType[] => {
       "component": <Suspense fallback={null}><Terminal/></Suspense>,
       "type": "App",
       "id": 2210,
-      "name": "Terminal",
+      "name": "휴지통",
       "layer": undefined,
       "appSetup":{
-        "Image" : "default",
+        "Image" : trashBin,
         "minWidth" : 200,
         "minHeight" : 150,
         "setUpWidth" : 300,
         "setUpHeight" : 400
       },
-      "visible":false,
+      "visible":true,
     },{
       "component": <Suspense fallback={null}><MemorialApproach/></Suspense>,
       "type": "App",
       "id": 2221,
-      "name": "MemorialApproach",
+      "name": "추모관",
       "layer": undefined,
       "appSetup":{
-        "Image" : "default",
+        "Image" : memorialApproach,
         "minWidth" : getPixelFromPercent("width", 75),
         "minHeight" : getPixelFromPercent("height", 55),
         "setUpWidth" : getPixelFromPercent("width", 75),
         "setUpHeight" : getPixelFromPercent("height", 55),
       },
-      "visible":false,
+      "visible":true,
     },{
       "component": <Suspense fallback={null}><Search/></Suspense>,
       "type": "App",
@@ -92,12 +96,12 @@ const useApps = (): TaskType[] => {
         "setUpWidth" : 676,
         "setUpHeight" : 360
     },
-    "visible":true,
+    "visible":false,
   },{
       "component": <Suspense fallback={null}><MemorialMenu stack={[]} push={undefined} pop={undefined} top={undefined}/></Suspense>,
       "type": "App",
       "id": 2223,
-      "name": "추모관",
+      "name": "memorialMenu",
       "layer": undefined,
       "appSetup":{
         "Image" : "default",
@@ -106,7 +110,7 @@ const useApps = (): TaskType[] => {
         "setUpWidth" : getPixelFromPercent("width", 75),
         "setUpHeight" : getPixelFromPercent("height", 55),
       },
-      "visible":true,
+      "visible":false,
     },{
       "component": <Suspense fallback={null}><Memorial stack={[]} push={undefined} pop={undefined} top={undefined} /></Suspense>,
       "type": "App",
@@ -134,7 +138,7 @@ const useApps = (): TaskType[] => {
         "setUpWidth" : 850,
         "setUpHeight" : 500,
       },
-      "visible":true,
+      "visible":false,
     },{
       "component": <Suspense fallback={null}><MemorialCommit stack={[]} push={undefined} pop={undefined} top={undefined}/></Suspense>,
       "type": "App",
