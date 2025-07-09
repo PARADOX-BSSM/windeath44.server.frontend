@@ -3,6 +3,8 @@ import styled from "@emotion/styled";
 export const AppContainer = styled.div`
     width:100%;
     height:90px;
+    margin-top: 3rem;
+    margin-left: 2rem;
 `
 
 export const AppBtn = styled.div<{ url?: string }>`
@@ -13,7 +15,8 @@ export const AppBtn = styled.div<{ url?: string }>`
     background-position: center;
 `
 
-export const AppName = styled.span`
+export const AppName = styled.p`
+    margin: 0 auto;
     color: var(--primary-black);
     text-align: center;
     font-family: Galmuri11;
