@@ -73,7 +73,7 @@ const useApps = (): TaskType[] => {
       "component": <Suspense fallback={null}><MemorialApproach/></Suspense>,
       "type": "App",
       "id": 2221,
-      "name": "추모관 검색",
+      "name": "추모관",
       "layer": undefined,
       "appSetup":{
         "Image" : memorialApproach,
@@ -101,7 +101,7 @@ const useApps = (): TaskType[] => {
       "component": <Suspense fallback={null}><MemorialMenu stack={[]} push={undefined} pop={undefined} top={undefined}/></Suspense>,
       "type": "App",
       "id": 2223,
-      "name": "추모관",
+      "name": "memorialMenu",
       "layer": undefined,
       "appSetup":{
         "Image" : "default",
