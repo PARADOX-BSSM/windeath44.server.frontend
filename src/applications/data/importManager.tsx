@@ -62,7 +62,7 @@ const useApps = (): TaskType[] => {
       "name": "Terminal",
       "layer": undefined,
       "appSetup":{
-        "Image" : "default",
+        "Image" : trashBin,
         "minWidth" : 200,
         "minHeight" : 150,
         "setUpWidth" : 300,
@@ -138,7 +138,7 @@ const useApps = (): TaskType[] => {
         "setUpWidth" : 850,
         "setUpHeight" : 500,
       },
-      "visible":true,
+      "visible":false,
     },{
       "component": <Suspense fallback={null}><MemorialCommit stack={[]} push={undefined} pop={undefined} top={undefined}/></Suspense>,
       "type": "App",
