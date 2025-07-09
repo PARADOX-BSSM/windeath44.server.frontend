@@ -50,5 +50,18 @@ export const tempButtonsStyle = styled.div`
     bottom: 0;
     right: 0;
 `;
+export const set = styled.div`
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    font-family: "Galmuri11";
+    font-size: 20px;
+`
+export const btnSet = styled.div`
+    width: 70%;
+    display: flex;
+    gap: 1rem;
+`
+
 
 

@@ -2,7 +2,7 @@ import * as _ from './style';
 import Logo from '@/assets/windeath44.svg';
 import {useEffect, useState} from "react";
 import Button from "@/applications/components/button";
-import Inputs from "@/applications/components/inputs";
+import Inputs, {Inputs2} from "@/applications/components/inputs";
 import {signUp} from '@/api/user'
 import {emailValidationRequest,verifyEmailCode} from '@/api/auth'
 
@@ -16,11 +16,6 @@ const SignUp = ({changeToLogIn}: Props) => {
     const [pw, setPw] = useState<string>('');
     const [checkingPw, setCheckingPw] = useState<string>('');
     const [check, setCheck] = useState<string>('');
-    useEffect(() => {
-        if (check.length >= 5) {
-            verifyCode();
-        }
-    }, [check]);
     const sendAuth = (e: React.MouseEvent<HTMLButtonElement>) => {
         if (pw !== checkingPw) {
             alert("비밀번호가 일치하지 않습니다.");
@@ -29,12 +24,18 @@ const SignUp = ({changeToLogIn}: Props) => {
         signUp({ name, email, pw, changeToLogIn });
         e.preventDefault();
     };
-    const sendEmail = () => {
+    const sendEmail = (e: React.MouseEvent<HTMLButtonElement>) => {
         emailValidationRequest({email});
+        e.preventDefault();
     }
 
-    const verifyCode = () => {
-        verifyEmailCode({email,check})
+    const verifyCode = (e: React.MouseEvent<HTMLButtonElement>) => {
+        if (check.length >= 5) {
+            verifyEmailCode({email,check})
+        }else{
+            alert("인증코드 5자리를 입력하지 않았습니다.")
+        }
+        e.preventDefault();
     }
 
     return (
@@ -46,12 +47,20 @@ const SignUp = ({changeToLogIn}: Props) => {
             <_.tempMainStyle>
                 <_.tempInputsStyle>
                     <Inputs label={"사용자 이름:"} value={name} setValue={setName} type={"text"} />
-                    <div>
-                        <Inputs label={"이메일:"} value={email} setValue={setEmail} type={"text"} />
-                        <button type="button" onClick={sendEmail}>확인</button>
-                    </div>
-                    <Inputs label={"인증코드"} value={check} setValue={setCheck} type={"text"} />
-                    
+                    <_.set>
+                        <span>이메일 :</span>
+                        <_.btnSet>
+                            <Inputs2 value={email} setValue={setEmail} type={"text"}/>
+                            <Button onClick={sendEmail} props="코드 전송"/>
+                        </_.btnSet>
+                    </_.set>
+                    <_.set>
+                        <span>인증코드 :</span>
+                        <_.btnSet>
+                            <Inputs2 value={check} setValue={setCheck} type={"text"} />
+                            <Button onClick={verifyCode} props="확인"/>
+                        </_.btnSet>
+                    </_.set>
                     <Inputs label={"비밀번호:"} value={pw} setValue={setPw} type={"password"} />
                     <Inputs label={"비밀번호 재입력:"} value={checkingPw} setValue={setCheckingPw} type={"password"} />
                 </_.tempInputsStyle>
