@@ -4,7 +4,7 @@ import {useEffect, useState} from "react";
 import Button from "@/applications/components/button";
 import Inputs from "@/applications/components/inputs";
 import axios from 'axios';
-import {API_BASE_URL_AUTH, API_BASE_URL_USER} from "@/config";
+import {auth, user} from "@/config";
 
 type Props = {
     changeToLogIn: () => void;
@@ -27,7 +27,7 @@ const SignUp = ({ changeToLogIn }: Props) => {
         }
     }, [check]);
 
-    const sendAuth = () => {
+    const sendAuth = (e: React.MouseEvent<HTMLButtonElement>) => {
         if (pw !== checkingPw) {
             alert("비밀번호가 일치하지 않습니다.");
             return;
@@ -41,8 +41,8 @@ const SignUp = ({ changeToLogIn }: Props) => {
         });
 
         const config = {
-            method: 'patch',
-            url: `${API_BASE_URL_USER}/register`,
+            method: 'post',
+            url: `${user}/register`,
             withCredentials: true,
             headers: { 'Content-Type': 'application/json' },
             data: data
@@ -52,11 +52,13 @@ const SignUp = ({ changeToLogIn }: Props) => {
             .then(function (response: any) {
                 console.log(JSON.stringify(response.data));
                 alert("회원가입이 완료되었습니다.");
+                changeToLogIn();
             })
             .catch(function (error: any) {
                 console.error(error);
                 alert("회원가입 중 오류가 발생했습니다.");
             });
+        e.preventDefault();
     };
 
     const sendEmail = () => {
@@ -66,7 +68,7 @@ const SignUp = ({ changeToLogIn }: Props) => {
 
         const config = {
             method: 'post',
-            url: `${API_BASE_URL_AUTH}/email`,
+            url: `${auth}/email`,
             withCredentials: true,
             headers: {
                 'Content-Type': 'application/json'
@@ -90,7 +92,7 @@ const SignUp = ({ changeToLogIn }: Props) => {
 
         const config = {
             method: 'patch',
-            url: `${API_BASE_URL_AUTH}/email/valid`,
+            url: `${auth}/email/valid`,
             withCredentials: true,
             headers: {
                 'Content-Type': 'application/json'
