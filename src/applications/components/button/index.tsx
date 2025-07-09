@@ -8,7 +8,13 @@ type ButtonProps = {
 const Button = ({props,onClick}:ButtonProps) =>{
     return(
         <_.Black onClick={onClick}>
-                <_.Pink>{props}</_.Pink>
+            <div>
+                <div>
+                    <div>
+                        <div>{props}</div>
+                    </div>
+                </div>
+            </div>
         </_.Black>
     );
 }
