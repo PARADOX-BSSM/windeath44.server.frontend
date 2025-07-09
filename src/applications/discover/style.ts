@@ -2,17 +2,18 @@ import styled from "@emotion/styled";
 
 export const AppContainer = styled.div`
     width:100%;
-    height:90px;
+    height:100%;
     margin-top: 3rem;
     margin-left: 2rem;
 `
 
 export const AppBtn = styled.div<{ url?: string }>`
-    width: 80%;
-    height: 80%;
+    height:75%;
+    aspect-ratio: 1/1;
+    margin: 0 auto;
     background-image: url('${({ url }) => url}');
-    background-size: cover;
     background-position: center;
+    background-repeat: no-repeat;
 `
 
 export const AppName = styled.p`

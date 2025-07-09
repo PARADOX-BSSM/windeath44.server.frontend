@@ -59,7 +59,7 @@ const useApps = (): TaskType[] => {
       "component": <Suspense fallback={null}><Terminal/></Suspense>,
       "type": "App",
       "id": 2210,
-      "name": "쓰레기통",
+      "name": "휴지통",
       "layer": undefined,
       "appSetup":{
         "Image" : trashBin,
