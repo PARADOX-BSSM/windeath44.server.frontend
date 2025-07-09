@@ -20,7 +20,6 @@ const MemorialPreview = lazy(()=> import("../applicationList/memorialPreview/ind
 const MemorialMerge = lazy(()=> import("../applicationList/memorialMerge/index.tsx"));
 
 import memorialApproach from '@/assets/appIcons/search.svg';
-import myComputer from '@/assets/appIcons/my_computer.svg';
 import trashBin from '@/assets/appIcons/empty_bin.svg';
 import setting from '@/assets/appIcons/setting.svg';
 
