@@ -5,7 +5,7 @@ export const Container = styled.div`
     width: 100%;
     height: 100%;
     background: var(--light-primary-color);
-    padding: 26px 32px;
+    padding: 10px 22px;
     box-sizing : border-box;
 `
 
@@ -14,7 +14,7 @@ export const InnerContainer = styled.div`
     padding: 8px 0px;
     flex-direction: column;
     justify-content: center;
-    gap: 24px;
+    gap: 14px;
     align-self: stretch;
 `
 
@@ -29,7 +29,7 @@ export const Title = styled.h2`
     leading-trim: both;
     text-edge: cap;
     font-family: Galmuri11;
-    font-size: 38px;
+    font-size: 180%;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
@@ -45,7 +45,7 @@ export const Version = styled.p`
     leading-trim: both;
     text-edge: cap;
     font-family: Galmuri11;
-    font-size: 20px;
+    font-size: 110%;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
@@ -54,17 +54,17 @@ export const Version = styled.p`
 export const MainContainer = styled.div`
     display: flex;
     align-items: center;
-    gap: 24px;
+    gap: 20px;
     flex: 1 0 0;
     align-self: stretch;
 `
 
 export const DescriptionBox = styled.div`
     display: flex;
-    padding: 24px;
+    padding: 16px;
     flex-direction: column;
     align-items: flex-start;
-    gap: 24px;
+    gap: 16px;
     flex: 1 0 0;
     align-self: stretch;
     background: #FFF;
@@ -76,7 +76,7 @@ export const Description = styled.p`
     align-self: stretch;
     color: #2E2E2E;
     font-family: Galmuri11;
-    font-size: 20px;
+    font-size: 110%;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
@@ -84,7 +84,6 @@ export const Description = styled.p`
 
 export const BtnWrapper = styled.div`
     display: flex;
-    width: 180px;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
@@ -95,7 +94,7 @@ export const BtnInnerWrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 16px;
+    gap: 12px;
 `
 
 export const BtnVoid = styled.div`

@@ -44,5 +44,5 @@ export interface ApplicationProps {
   cursorVec: number[];
   removeTask: (task: any) => void;
   removeCompnent: any;
-  children: React.ReactNode;
+  children: React.ReactElement;
 }

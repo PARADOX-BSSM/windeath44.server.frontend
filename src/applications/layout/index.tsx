@@ -1,5 +1,5 @@
 import * as _ from './style';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useDrag } from 'react-use-gesture';
 import Exit from "@/assets/headerButton/exit.svg";
 import Full from "@/assets/headerButton/full.svg";
@@ -20,12 +20,18 @@ import {
   ApplicationProps,
 } from './utils';
 
+import React from 'react';
+import { setCursorImage,CURSOR_IMAGES } from '@/lib/setCursorImg';
+
 const Application = (props: ApplicationProps) => {
   // jotai 상태 사용
   const [layer, setLayer] = useAtom(layerAtom); // 창의 z-index(레이어)
   const [focus, setFocus] = useAtom(focusAtom); // 현재 포커스된 창 이름 (전역)
   const [tabDownInterrupt, setTabDownInterrupt] = useAtom(tabDownInterruptAtom); // 단축키 등으로 창 최소화 등 인터럽트 신호 (전역)
   const [isLogIned, setIsLogIned] = useAtom(isLogInedAtom); // 로그인 여부 (전역)
+
+  const setUpHeight = props.setUpHeight;
+  const setUpWidth = props.setUpWidth;
 
   const windowProps: React.CSSProperties = {
     position: "absolute",
@@ -97,7 +103,7 @@ const Application = (props: ApplicationProps) => {
   }, [focus]);
 
 
-  
+
   // 전체화면 처리 : 전체화면 진입 시 창 상태 백업 후 화면 전체로 확장, 해제 시 복원
   useEffect(() => {
     if (isFullScreen) {
@@ -177,16 +183,22 @@ const Application = (props: ApplicationProps) => {
     return (
       <_.Window style={window} onMouseDown={() => setFocus(props.name)}>
         <_.WindowHeader {...moveManager()}>
-          {focus === props.name ?
-            <>
               <_.FullScreenButton onClick={() =>
                 setIsFullScreen(!isFullScreen)
-              }>
+              }
+                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                onMouseOut={() => setCursorImage(CURSOR_IMAGES.default)}
+                isFocus={focus === props.name}
+              >
                 <img src={Full} alt="" />
               </_.FullScreenButton>
               <_.MinimizeButton onClick={() =>
                 setIsMinimized(!isMinimized)
-              }>
+              }
+                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                onMouseOut={() => setCursorImage(CURSOR_IMAGES.default)}
+                isFocus={focus === props.name}
+              >
                 <img src={Min} alt="" />
               </_.MinimizeButton>
               <_.ExitButton onClick={() => {
@@ -194,25 +206,32 @@ const Application = (props: ApplicationProps) => {
                 if (!isLogIned) {
                   setIsLogIned(true);
                 }
-              }}>
+              }}
+                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                onMouseOut={() => setCursorImage(CURSOR_IMAGES.default)}
+                isFocus={focus === props.name}
+              >
                 <img src={Exit} alt="" />
               </_.ExitButton>
-            </> :
-            <>
-              <_.HeaderButton onClick={() =>
-                props.removeTask(props.removeCompnent)
-              }></_.HeaderButton>
-              <_.HeaderButton onClick={() =>
-                setIsFullScreen(!isFullScreen)
-              }></_.HeaderButton>
-              <_.HeaderButton onClick={() =>
-                setIsMinimized(!isMinimized)
-              }> </_.HeaderButton>
-            </>
-          }
         </_.WindowHeader>
         <_.WindowContent {...sizeManager()} onMouseUp={() => setIsFirst(true)}>
-          {props.children}
+          {
+            (() => {
+              const original = props.children;
+              const internal = original.props.children as React.ReactElement;
+              const type = internal.type;
+            
+              if (props.name === "MemorialApproach") {
+                return (
+                  <Suspense fallback={null}>
+                    {React.createElement(type, { window, setWindow, setUpHeight, setUpWidth })}
+                  </Suspense>
+                );
+              } else {
+                return props.children;
+              }
+            })()
+          }
         </_.WindowContent>
       </_.Window>
     );

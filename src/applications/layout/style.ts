@@ -2,17 +2,17 @@ import styled from "@emotion/styled";
 
 export const Window = styled.article`
     border: 2.5px solid #FF8EF6;
-    padding : 0.5rem;
+    padding : 0.4rem;
     display : flex;
     flex-direction: column;
 `
 export const WindowHeader = styled.header`
     background-color: #FFD3FB;
-    padding : 0 0.5rem;
+    padding : 0 0.2rem;
     display : flex;
     justify-content: flex-end;
     align-items: center;
-    height : 30px;
+    height : 24px;
     border: 2.5px solid #E774DD;
 `;
 export const HeaderButton = styled.button`
@@ -22,17 +22,20 @@ export const HeaderButton = styled.button`
   padding : 0;
   //margin : 0;
 `;
-export const MinimizeButton = styled(HeaderButton)`
-  background-color: rgba(0, 0, 0, 0);
+export const MinimizeButton = styled(HeaderButton)<{isFocus:boolean}>`
+  background-color: ${({isFocus})=> isFocus ? 'rgba(0, 0, 0, 0)':'rgba(0, 0, 0, 0.2)'};
   border: none;
+  cursor:none;
 `;
-export const FullScreenButton = styled(HeaderButton)`
-  background-color: rgba(0, 0, 0, 0);
-    border: none;
+export const FullScreenButton = styled(HeaderButton)<{isFocus:boolean}>`
+  background-color: ${({isFocus})=> isFocus ? 'rgba(0, 0, 0, 0)':'rgba(0, 0, 0, 0.2)'};
+  border: none;
+  cursor:none;
 `;
-export const ExitButton = styled(HeaderButton)`
-  background-color: rgba(0, 0, 0, 0);
+export const ExitButton = styled(HeaderButton)<{isFocus:boolean}>`
+  background-color: ${({isFocus})=> isFocus ? 'rgba(0, 0, 0, 0)':'rgba(0, 0, 0, 0.2)'};
     border: none;
+    cursor:none;
 `;
 export const WindowContent = styled.section`
     position : absolute;
@@ -40,7 +43,7 @@ export const WindowContent = styled.section`
     left : 0;
     right : 0;
     bottom : 0;
-    margin : 0.5rem;
+    margin : 0 0.4rem 0.4rem 0.4rem;
     box-sizing: border-box;
     border : solid 2.5px #E774DD;
 `;

@@ -1,23 +1,48 @@
-import {useState} from "react";
+import { TaskType } from "@/modules/typeModule";
+import {useEffect, useRef, useState} from "react";
 
 
-const useStack = () => {
+const useStack = (
+  window?: React.CSSProperties,
+  setWindow?: React.Dispatch<React.SetStateAction<React.CSSProperties>>,
+  setUpHeight?: number,
+  setUpWidth?: number
+) => {
   const [stack, setStack] = useState<any[]>([]);
+  const windowRef = useRef<React.CSSProperties | undefined>(window);
+  // …
+
+  useEffect(() => {
+    if (window) {
+      windowRef.current = window;
+    }
+  }, [window])
+
   const push:any = (value:any) => {
-    setStack([...stack , value]);
-  }
-  const pop:any  = () => {
-    if(stack.length>0) {
-      let copy:any[] = [...stack];
-      copy.splice(-1,1)
-      setStack([...copy])
+    setStack(prev => [...prev, value]);
+    const latestWindow = windowRef.current;
+    if (setWindow && latestWindow) {
+      setWindow({
+        ...latestWindow,
+        top: latestWindow.top!,
+        left: latestWindow.left!,
+        height: value.appSetup.setUpHeight,
+        width: value.appSetup.setUpWidth,
+      });
     }
   }
-  const top:any = () => {
+  const pop = () => {
+    setStack(prev => {
+      const copy = [...prev];
+      copy.pop();
+      return copy;
+    });
+  };
+  const top:any = (): TaskType | null => {
     if(stack.length>0)
       return stack[stack.length - 1];
     else
-      return 0;
+      return null;
   }
 
   return [stack, push, pop, top];
