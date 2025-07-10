@@ -2,7 +2,7 @@ import * as _ from './style.ts';
 import { useEffect, useState, Suspense, lazy, useRef } from 'react';
 import { useAtom } from 'jotai';
 import { isLogInedAtom, focusAtom, backUpFocusAtom, startOptionAtom } from '@/atoms/windowManager.ts';
-import Discover from "../../applications/discover.tsx";
+import Discover from "../../applications/discover/index.tsx";
 import Observer from "../../applications/utility/observer/index.tsx";
 import { useProcessManager } from "../../hooks/processManager.tsx";
 import { TaskType } from "../../modules/typeModule.tsx";
@@ -30,6 +30,8 @@ const WindowManager = () => {
   const isDragging = useRef(false);
   const dragOffset = useRef([0, 0]);
   const clickTimeout = useRef<NodeJS.Timeout | null>(null);
+
+  
 
   // Drag 감지해서 Cursor 변경
   const bindDrag = useDrag(
@@ -164,7 +166,7 @@ const WindowManager = () => {
               )
             })
           }
-          {startOption ? <Observer addTask={addTask} /> : <></>}
+          {startOption ? <Observer /> : <></>}
         </_.Display>
         <_.BackgroundDiv width={sideWidth}></_.BackgroundDiv>
       </Suspense>

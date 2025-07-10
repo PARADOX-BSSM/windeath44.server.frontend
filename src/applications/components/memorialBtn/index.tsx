@@ -1,4 +1,4 @@
-import { getPixelFromPercent } from '@/services/kernel';
+import { getPixelFromPercent } from '@/lib/getPixelFromPercent';
 import * as _ from './style';
 
 interface PropsType {
