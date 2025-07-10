@@ -3,8 +3,8 @@ import Logo from '@/assets/windeath44.svg';
 import {useEffect, useState} from "react";
 import Button from "@/applications/components/button";
 import Inputs, {Inputs2} from "@/applications/components/inputs";
-import {signUp} from '@/api/user'
-import {emailValidationRequest,verifyEmailCode} from '@/api/auth'
+import { useSignUp } from '@/api/user';
+import { useEmailValidation, useVerifyEmail } from '@/api/auth';
 type Props = {
     changeToLogIn: () => void;
 };
@@ -15,40 +15,39 @@ const SignUp = ({changeToLogIn}: Props) => {
     const [checkingPw, setCheckingPw] = useState<string>('');
     const [check, setCheck] = useState<string>('');
     const [click, setClick] = useState(false);
-    const [timeLeft, setTimeLeft] = useState(180); // 3분 = 180초
+    const [timeLeft, setTimeLeft] = useState(180);
+    const signUpMutation = useSignUp();
+    const emailValidationMutation = useEmailValidation();
+    const verifyEmailMutation = useVerifyEmail();
     const sendAuth = (e: React.MouseEvent<HTMLButtonElement>) => {
         if (pw !== checkingPw) {
             alert("비밀번호가 일치하지 않습니다.");
             return;
         }
-        signUp({ name, email, pw, changeToLogIn });
+        signUpMutation.mutate({ name, email, pw, changeToLogIn });
         e.preventDefault();
     };
     const sendEmail = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        try {
-            const isValid = await emailValidationRequest({ email });
-
-            if (isValid) {
-                setClick(true);
-                setTimeLeft(180);
+        emailValidationMutation.mutate({ email }, {
+                onSuccess: () => {
+                    setClick(true);
+                    setTimeLeft(180);
+                }
             }
-        } catch (error) {
-            console.error('이메일 검증 중 오류가 발생했습니다:', error);
-        }
+        );
     }
     const verifyCode = (e: React.MouseEvent<HTMLButtonElement>) => {
-        if (check.length >= 5) {
-            verifyEmailCode({email,check})
-            setClick(false);
-        }else{
-            alert("인증코드 5자리를 입력하지 않았습니다.")
-        }
         e.preventDefault();
+        if (check.length >= 5) {
+            verifyEmailMutation.mutate({ email, check });
+            setClick(false);
+        } else {
+            alert("인증코드 5자리를 입력하지 않았습니다.");
+        }
     }
     useEffect(() => {
         if (!click || timeLeft <= 0) return;
-
         const timer = setInterval(() => {
             setTimeLeft(prev => {
                 if (prev <= 1) {
@@ -58,7 +57,6 @@ const SignUp = ({changeToLogIn}: Props) => {
                 return prev - 1;
             });
         }, 1000);
-
         return () => clearInterval(timer);
     }, [click]);
     const formatTime = (seconds: number): string => {
