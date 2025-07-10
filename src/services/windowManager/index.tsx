@@ -2,10 +2,10 @@ import * as _ from './style.ts';
 import { useEffect, useState, Suspense, lazy, useRef } from 'react';
 import { useAtom } from 'jotai';
 import { isLogInedAtom, focusAtom, backUpFocusAtom, startOptionAtom } from '@/atoms/windowManager.ts';
-import Discover from "../../applications/discover/index.tsx";
-import Observer from "../../applications/utility/observer/index.tsx";
-import { useProcessManager } from "../../hooks/processManager.tsx";
-import { TaskType } from "../../modules/typeModule.tsx";
+import Discover from "@/applications/discover/index.tsx";
+import Observer from "@/applications/utility/observer/index.tsx";
+import { useProcessManager } from "@/hooks/processManager.tsx";
+import { TaskType } from "@/modules/typeModule.tsx";
 import { getTaskCreators } from './tasks';
 import { useTaskTransformFunction } from '@/hooks/taskTransformer.tsx';
 import { useTaskSearchFunction } from '@/hooks/taskSearch.tsx';
@@ -13,7 +13,7 @@ import { useAlerter } from '@/hooks/alerter.tsx';
 import { setCursorImage,CURSOR_IMAGES } from '@/lib/setCursorImg.tsx';
 import { useDrag } from 'react-use-gesture';
 
-const Application = lazy(() => import('../../applications/layout/index.tsx'));
+const Application = lazy(() => import('@/applications/layout/index.tsx'));
 
 const WindowManager = () => {
   const [cursorVec, setCursorVec] = useState<number[]>([0, 0, 0, 0]);

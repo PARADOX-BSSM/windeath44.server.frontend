@@ -1,6 +1,6 @@
-import { TaskType } from '../modules/typeModule.tsx'
+import { TaskType } from '@/modules/typeModule.tsx'
 import { useAtom } from 'jotai'
-import { taskManagerAtom } from '../atoms/processManager.ts'
+import { taskManagerAtom } from '@/atoms/processManager.ts'
 
 const useProcessManager: () => [TaskType[], (component: TaskType) => void, (component: TaskType) => void] = () => {
   const [taskList, setTaskList] = useAtom(taskManagerAtom)

@@ -50,6 +50,7 @@ export const WindowContent = styled.section`
 export const Shell = styled.article`
     height : 100%;
     width : 100%;
+    z-index: 9999;
 `;
 
 export const BtnContainer = styled.div`
