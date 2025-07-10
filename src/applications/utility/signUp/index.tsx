@@ -24,6 +24,10 @@ const SignUp = ({changeToLogIn}: Props) => {
             alert("비밀번호가 일치하지 않습니다.");
             return;
         }
+        if (pw.length < 8 || pw.length > 20) {
+            alert("비밀번호는 8~20 문자만 허용합니다.\n 다시 입력해 주세요!!");
+            return;
+        }
         signUpMutation.mutate({ name, email, pw, changeToLogIn });
         e.preventDefault();
     };

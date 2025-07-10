@@ -1,5 +1,5 @@
 import axios, {AxiosResponse} from "axios";
-import {auth} from "@/config";
+import {user} from "@/config";
 import {useMutation} from "@tanstack/react-query";
 interface SignUpParams {
     name: string;
@@ -16,7 +16,7 @@ export const signUp = async ({ name, email, pw, changeToLogIn }: SignUpParams):P
         password: pw
     };
     try {
-        const response: AxiosResponse = await axios.post(`${auth}/email`,data, {
+        const response: AxiosResponse = await axios.post(`${user}/email`,data, {
             withCredentials: true,
             headers: { 'Content-Type': 'application/json' },
         });
