@@ -4,26 +4,42 @@ import '@/assets/font.css';
 export const inputsDiv = styled.div`
     font-family: "Galmuri11";
     font-size: 20px;
-    width: 95%;
-    display: flex;
+    width: 100%;
+    display: inline-flex;
     justify-content: space-between;
 `;
 export const inputs = styled.input`
-    margin: 1.5px 0 0 1.5px;
-    width: 476.5px;
-    height: 26px;
+    width: 100%;
+    height: auto;
+    display: block;
+    box-sizing: border-box;
     font-family: "Galmuri11";
-    padding: 0 4px;
+    font-size: 16px;
+    padding: 2px 4px;
     outline: none;
-    border-color: #DCAFDD;
-    border-style: solid;
-    border-width: 2px;
+    border: none;
 `;
-export const Shadow = styled.div`
-    width: 490px;
-    height: 32px;
-    background-color: #000;
+interface Props {
+    p?: string;
+}
+export const Shadow = styled.div<Props>`
+    width: ${props => props.p?props.p:'70%'};
+    height: fit-content;
+    display: inline-block;
     border-width: 0 1.5px 1.5px 0;
     border-style: solid;
     border-color: #fff;
+    &>div{
+        width: 100%;
+        display: inline-block;
+        box-sizing: border-box;
+        border-width: 1.5px 0 0 1.5px;
+        border-style: solid;
+        border-color: #000;
+        &>div{
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid var(--dark-primary-color);
+        }
+    }
 `;

@@ -2,23 +2,35 @@ import * as _ from './style';
 import {Shadow} from "./style";
 
 type inputProps = {
-    label: string;
+    label?: string;
     value: string;
     type: "text" | "password";
     setValue: (value: string) => void;
 }
 
 const Inputs = ({label, value, type, setValue}:inputProps) =>{
+    const inputElement = (
+        <Shadow p={label ? undefined : "100%"}>
+            <div>
+                <div>
+                    <_.inputs
+                        type={type}
+                        value={value}
+                        onChange={(e) => setValue(e.target.value)}
+                    />
+                </div>
+            </div>
+        </Shadow>
+    );
+
+    if (!label) {
+        return inputElement;
+    }
+
     return(
         <_.inputsDiv>
             <span>{label}</span>
-            <Shadow>
-                <_.inputs
-                    type={type}
-                    value={value}
-                    onChange={(e) => setValue(e.target.value)}
-                />
-            </Shadow>
+            {inputElement}
         </_.inputsDiv>
     );
 }

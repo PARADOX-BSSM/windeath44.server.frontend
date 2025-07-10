@@ -1,25 +1,29 @@
 import styled from "@emotion/styled";
 import '@/assets/font.css';
 
-export const Black = styled.div`
-    width: 116px;
-    height: 36px;
+export const Black = styled.button`
+    height: fit-content;
     border-width: 1.5px 3px 3px 1.5px; 
     border-style: solid;
     border-color: #000000;    
-    background-color: #FFFFFF;
-`;
-export const Pink = styled.button`
-    width: 114.5px;
-    height: 34.5px;
-    padding: 0 2px;
-    margin-top: 1.5px;
-    margin-left: 1.5px;
-    font-size: 16px;
-    line-height: 12px;
-    font-family: "Galmuri11";
-    border-width: 1.5px; 
-    border-style: solid;
-    border-color: #DCAFDD;
-    background-color: #FFD3FB;
+    & > div{
+        border-width: 1.5px 0 0  1.5px;
+        border-style: solid;
+        border-color: #FFFFFF;
+        & > div{
+            border-width: 0 1.5px 1.5px 0;
+            border-style: solid;
+            border-color: var(--dark-primary-color);
+            & > div{
+                border-width: 1.5px 0 0  1.5px;
+                border-style: solid;
+                border-color: var(--secondary-color);
+                background-color: var(--light-primary-color);
+                font-family: "Galmuri11";
+                font-size: 0.5rem;
+                white-space: nowrap;
+                padding: 0.25rem 1.25rem;
+            }
+        }
+    }
 `;
