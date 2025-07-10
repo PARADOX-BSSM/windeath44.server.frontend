@@ -4,7 +4,7 @@ import {Shadow} from "./style";
 type inputProps = {
     label?: string;
     value: string;
-    type: "text" | "password";
+    type: string;
     setValue: (value: string) => void;
 }
 
