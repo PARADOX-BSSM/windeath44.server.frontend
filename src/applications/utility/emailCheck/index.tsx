@@ -17,6 +17,8 @@ const EmailChack = ({changeToLogIn,changeToAuth}:Props) =>{
         { label: "아이디:", value: name, setValue: setName, type: "text" },
         { label: "이메일:", value: email, setValue: setEmail, type: "text" },
     ];
+
+
     return (
             <_.tempMain>
                 <_.tempImageStyle>

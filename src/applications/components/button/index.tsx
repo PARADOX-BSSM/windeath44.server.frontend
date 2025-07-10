@@ -2,13 +2,19 @@ import * as _ from './style';
 
 type ButtonProps = {
     props: string;
-    onClick?: () => void;
+    onClick?:React.MouseEventHandler<HTMLButtonElement>;
 }
 
 const Button = ({props,onClick}:ButtonProps) =>{
     return(
         <_.Black onClick={onClick}>
-                <_.Pink>{props}</_.Pink>
+            <div>
+                <div>
+                    <div>
+                        <div>{props}</div>
+                    </div>
+                </div>
+            </div>
         </_.Black>
     );
 }

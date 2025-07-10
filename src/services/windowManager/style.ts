@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import bgImg from '@/assets/Background.png';
+import bgImg from '@/assets/Background.svg';
 import skeleton from '@/assets/skeleton.png';
 
 export const Display = styled.main`
