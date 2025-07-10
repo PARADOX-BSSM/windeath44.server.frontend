@@ -1,28 +1,27 @@
 import {Suspense, lazy} from "react";
 import {TaskType} from "@/modules/typeModule.tsx";
 import Search from "@/applications/applicationList/search";
-import MemorialMenu from "../applicationList/memorialMenu/index.tsx";
-import Memorial from "../applicationList/memorial/index.tsx";
+import MemorialMenu from "@/applications/applicationList/memorialMenu/index.tsx";
+import Memorial from "@/applications/applicationList/memorial/index.tsx";
 import Bow from "@/applications/applicationList/bow";
 import { useAtom } from 'jotai';
 import { isLogInedAtom } from "@/atoms/windowManager.ts";
 import { useProcessManager } from "@/hooks/processManager.tsx";
 import { getTaskCreators } from "@/services/windowManager/tasks.tsx";
-import MemorialApply from "../applicationList/memorialApply/index.tsx";
-import Alert from "../applicationList/alert/index.tsx";
+import MemorialApply from "@/applications/applicationList/memorialApply/index.tsx";
+import Alert from "@/applications/applicationList/alert/index.tsx";
 import { getPixelFromPercent } from "@/lib/getPixelFromPercent.tsx";
-import MemorialApproach from "../applicationList/settings/index.tsx";
+import MemorialApproach from "@/applications/applicationList/settings/index.tsx";
 
-const Terminal =  lazy(()=> import("../applicationList/terminal/index.tsx"));
-const MemorailHistory = lazy(()=> import("../applicationList/memorialHistory/index.tsx"));
-const MemorialCommit = lazy(()=> import("../applicationList/memorialCommit/index.tsx"));
-const MemorialPreview = lazy(()=> import("../applicationList/memorialPreview/index.tsx"));
-const MemorialMerge = lazy(()=> import("../applicationList/memorialMerge/index.tsx"));
+const Terminal =  lazy(()=> import("@/applications/applicationList/terminal/index.tsx"));
+const MemorailHistory = lazy(()=> import("@/applications/applicationList/memorialHistory/index.tsx"));
+const MemorialCommit = lazy(()=> import("@/applications/applicationList/memorialCommit/index.tsx"));
+const MemorialPreview = lazy(()=> import("@/applications/applicationList/memorialPreview/index.tsx"));
+const MemorialMerge = lazy(()=> import("@/applications/applicationList/memorialMerge/index.tsx"));
 
 import memorialApproach from '@/assets/appIcons/search.svg';
 import trashBin from '@/assets/appIcons/empty_bin.svg';
-import setting from '@/assets/appIcons/setting.svg';
-import AnimationSelect from "../applicationList/animationSelect/index.tsx";
+import AnimationSelect from "@/applications/applicationList/animationSelect/index.tsx";
 
 //Application Import 형식 예시
 /*

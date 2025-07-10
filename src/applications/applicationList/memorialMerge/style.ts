@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import TextareaAutosize from 'react-textarea-autosize';
 
 export const Main = styled.main`
     display: flex;
