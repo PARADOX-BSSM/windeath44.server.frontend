@@ -10,26 +10,23 @@ export const useTaskTransformFunction = () => {
 
   const Apps = useApps();
 
-  const taskTransform = (fromTask: string, toTask: string) => {
-    const from = Apps.filter((app) => {
-        return app.name === fromTask;
-    })[0];
-    console.log(from);
-    const to = Apps.filter((app) => {
-        return app.name === toTask;
-    })[0];
-
-    console.log(to);
-    
-    if (to) {
-        addTask(to);
-    }
-    if (from) {
-        removeTask(from);
-    }
-  };
-
   useEffect(() => {
+    const ready = Apps.every(app => 
+      app.appSetup &&
+      app.appSetup.setUpWidth! > 0 &&
+      app.appSetup.setUpHeight! > 0
+    );
+
+    if (!ready) return;
+
+    const taskTransform = (fromTask: string, toTask: string) => {
+      const from = Apps.find(app => app.name === fromTask);
+      const to = Apps.find(app => app.name === toTask);
+
+      if (to) addTask(to);
+      if (from) removeTask(from);
+    };
+
     setTaskTransformerAtom(() => taskTransform);
-  }, []);
+  }, [Apps]);
 };
