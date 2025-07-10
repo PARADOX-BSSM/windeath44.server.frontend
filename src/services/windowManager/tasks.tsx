@@ -3,7 +3,7 @@ import LogIn from '@/applications/utility/login';
 import SignUp from '@/applications/utility/signUp';
 import EmailChack from 'applications/utility/emailCheck';
 import Auth from '@/applications/utility/auth';
-import { TaskType } from '../../modules/typeModule.tsx';
+import { TaskType } from '@/modules/typeModule.tsx';
 import myComputer from '@/assets/appIcons/my_computer.svg';
 
 type SetIsLogIned = React.Dispatch<React.SetStateAction<boolean>>;
