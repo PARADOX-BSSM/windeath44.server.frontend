@@ -1,29 +1,33 @@
 import styled from "@emotion/styled";
 import '@/assets/font.css';
 
-export const inputsDiv = styled.div`
+export const inputsDiv = styled.div<{fontSize?: string;}>`
     font-family: "Galmuri11";
-    font-size: 20px;
-    width: 95%;
+    font-size: ${({ fontSize }) => fontSize || "1rem"};
+    width: 100%;
+    height: fit-content;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
+    flex-direction: column;
 `;
-export const inputs = styled.input`
+export const inputs = styled.input<{width: string;}>`
     margin: 1.5px 0 0 1.5px;
-    width: 476.5px;
-    height: 26px;
+    width: 100%;
+    height: 100%;
     font-family: "Galmuri11";
-    padding: 0 4px;
+    padding: 0 0px 0 0;
     outline: none;
     border-color: #DCAFDD;
     border-style: solid;
     border-width: 2px;
+    box-sizing: border-box;
 `;
-export const Shadow = styled.div`
-    width: 490px;
-    height: 32px;
+export const Shadow = styled.div<{width: string;}>`
+    width: ${({ width }) => width || "491px"};
+    height: 28px;
     background-color: #000;
     border-width: 0 1.5px 1.5px 0;
     border-style: solid;
     border-color: #fff;
+    padding: 0.5px 1.5px 1.5px 0.5px;
 `;

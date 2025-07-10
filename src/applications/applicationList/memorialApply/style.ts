@@ -156,6 +156,7 @@ export const CharacterInformationInner = styled.div`
 export const CharacterInformationRow = styled.div`
     display: flex;
     width: 328px;
+    height: 100%;
     align-items: flex-start;
     gap: -1px;
 `
@@ -163,6 +164,7 @@ export const CharacterInformationRow = styled.div`
 export const CharacterInformationRowAttribute = styled.div`
     display: flex;
     width: 100px;
+    height: fit-content;
     padding: 4px;
     justify-content: center;
     align-items: center;
@@ -173,7 +175,7 @@ export const CharacterInformationRowAttribute = styled.div`
 
 export const CharacterInformationRowAttributeText = styled.p`
     width: 100%;
-    height: 20px;
+    height: fit-content;
     flex-shrink: 0;
     color: var(--off, #FD51A7);
     text-align: center;
@@ -187,16 +189,16 @@ export const CharacterInformationRowAttributeText = styled.p`
 export const CharacterInformationRowValue = styled.div`
     display: flex;
     padding: 4px;
+    height: 100%;
     justify-content: center;
     align-items: center;
     flex: 1 0 0;
-    align-self: stretch;
     border: 1px solid var(--Stroke, #E774DD);
 `
 
 export const CharacterInformationRowValueText = styled.p`
     width: 100%;
-    height: 20px;
+    height: 100%;
     color: #2E2E2E;
     text-align: center;
     font-family: Galmuri11;
