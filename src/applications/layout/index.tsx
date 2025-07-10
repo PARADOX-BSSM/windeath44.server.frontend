@@ -4,6 +4,7 @@ import { useDrag } from 'react-use-gesture';
 import Exit from "@/assets/headerButton/exit.svg";
 import Full from "@/assets/headerButton/full.svg";
 import Min from "@/assets/headerButton/min.svg";
+import Heart from '@/assets/headerButton/heart.svg';
 import { useAtom } from 'jotai';
 import {
   isLogInedAtom,
@@ -183,37 +184,43 @@ const Application = (props: ApplicationProps) => {
     return (
       <_.Window style={window} onMouseDown={() => setFocus(props.name)}>
         <_.WindowHeader {...moveManager()}>
-          <_.MinimizeButton onClick={() =>
-            setIsMinimized(!isMinimized)
-          }
-            onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
-            onMouseOut={() => setCursorImage(CURSOR_IMAGES.default)}
-            isFocus={focus === props.name}
-          >
-            <img src={Min} alt="" />
-          </_.MinimizeButton>
-          <_.FullScreenButton onClick={() =>
-            setIsFullScreen(!isFullScreen)
-          }
-            onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
-            onMouseOut={() => setCursorImage(CURSOR_IMAGES.default)}
-            isFocus={focus === props.name}
-          >
-            <img src={Full} alt="" />
-          </_.FullScreenButton>
-
-          <_.ExitButton onClick={() => {
-            props.removeTask(props.removeCompnent);
-            if (!isLogIned) {
-              setIsLogIned(true);
+          <_.TitleContainer>
+            <_.HeartImg src={Heart}/>
+            <_.Title>{props.name}</_.Title>
+          </_.TitleContainer>
+          <_.BtnContainer>
+            <_.MinimizeButton onClick={() =>
+              setIsMinimized(!isMinimized)
             }
-          }}
-            onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
-            onMouseOut={() => setCursorImage(CURSOR_IMAGES.default)}
-            isFocus={focus === props.name}
-          >
-            <img src={Exit} alt="" />
-          </_.ExitButton>
+              onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+              onMouseOut={() => setCursorImage(CURSOR_IMAGES.default)}
+              isFocus={focus === props.name}
+            >
+              <img src={Min} alt="" />
+            </_.MinimizeButton>
+            <_.FullScreenButton onClick={() =>
+              setIsFullScreen(!isFullScreen)
+            }
+              onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+              onMouseOut={() => setCursorImage(CURSOR_IMAGES.default)}
+              isFocus={focus === props.name}
+            >
+              <img src={Full} alt="" />
+            </_.FullScreenButton>
+
+            <_.ExitButton onClick={() => {
+              props.removeTask(props.removeCompnent);
+              if (!isLogIned) {
+                setIsLogIned(true);
+              }
+            }}
+              onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+              onMouseOut={() => setCursorImage(CURSOR_IMAGES.default)}
+              isFocus={focus === props.name}
+            >
+              <img src={Exit} alt="" />
+            </_.ExitButton>
+          </_.BtnContainer>
         </_.WindowHeader>
         <_.WindowContent {...sizeManager()} onMouseUp={() => setIsFirst(true)}>
           {
