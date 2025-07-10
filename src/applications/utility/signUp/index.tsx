@@ -24,11 +24,18 @@ const SignUp = ({changeToLogIn}: Props) => {
         signUp({ name, email, pw, changeToLogIn });
         e.preventDefault();
     };
-    const sendEmail = (e: React.MouseEvent<HTMLButtonElement>) => {
-        emailValidationRequest({email});
-        setClick(true);
-        setTimeLeft(180);
+    const sendEmail = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
+        try {
+            const isValid = await emailValidationRequest({ email });
+
+            if (isValid) {
+                setClick(true);
+                setTimeLeft(180);
+            }
+        } catch (error) {
+            console.error('이메일 검증 중 오류가 발생했습니다:', error);
+        }
     }
     const verifyCode = (e: React.MouseEvent<HTMLButtonElement>) => {
         if (check.length >= 5) {
