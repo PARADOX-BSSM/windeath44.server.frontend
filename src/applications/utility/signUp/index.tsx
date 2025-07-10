@@ -43,7 +43,7 @@ const SignUp = ({changeToLogIn}: Props) => {
     }
     const verifyCode = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        if (check.length >= 5) {
+        if (check.length == 5) {
             verifyEmailMutation.mutate({ email, check });
             setClick(false);
         } else {
