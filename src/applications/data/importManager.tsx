@@ -21,7 +21,7 @@ const MemorialMerge = lazy(()=> import("@/applications/applicationList/memorialM
 
 import memorialApproach from '@/assets/appIcons/search.svg';
 import trashBin from '@/assets/appIcons/empty_bin.svg';
-import AnimationSelect from "../applicationList/animationSelect/index.tsx";
+import AnimationSelect from "@/applications/applicationList/animationSelect/index.tsx";
 
 //Application Import 형식 예시
 /*
