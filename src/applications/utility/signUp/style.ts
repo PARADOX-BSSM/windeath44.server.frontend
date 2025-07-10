@@ -1,5 +1,4 @@
 import styled from "@emotion/styled";
-
 export const tempMain = styled.div`
     width: 100%;
     height: 100%;
@@ -7,7 +6,6 @@ export const tempMain = styled.div`
     flex-direction: column;
     align-items: center;
 `;
-
 export const tempImageStyle = styled.div`
     width: 100%;
     height: 180px;
@@ -18,20 +16,17 @@ export const tempImageStyle = styled.div`
         width: 100%;
     }
 `;
-
 export const tempBulkStyle = styled.div`
     width: 100%;
     height: 10px;
     background-color: #FFBBF5;
 `;
-
 export const tempMainStyle = styled.div`
     background-color: #FFD3FB;
     width: 100%;
     height: 100%;
     position: relative;
 `;
-
 export const tempInputsStyle = styled.div`
     display: flex;
     flex-direction: column;
@@ -39,7 +34,6 @@ export const tempInputsStyle = styled.div`
     gap: 12px;
     padding: 20px;
 `;
-
 export const tempButtonsStyle = styled.div`
     display: flex;
     flex-direction: row;
@@ -56,12 +50,17 @@ export const set = styled.div`
     justify-content: space-between;
     font-family: "Galmuri11";
     font-size: 20px;
-`
+`;
 export const btnSet = styled.div`
     width: 70%;
     display: flex;
     gap: 1rem;
-`
+    align-items: center;
+`;
+export const emailCode = styled.div`
+    font-size: 0.75rem;
+`;
+
 
 
 
