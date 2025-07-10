@@ -1,6 +1,5 @@
 import styled from "@emotion/styled";
 import '@/assets/font.css';
-import * as string_decoder from "node:string_decoder";
 
 export const inputsDiv = styled.div`
     font-family: "Galmuri11";

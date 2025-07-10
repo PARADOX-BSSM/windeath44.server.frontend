@@ -2,7 +2,7 @@ import * as _ from './style';
 import Logo from '@/assets/windeath44.svg';
 import {useEffect, useState} from "react";
 import Button from "@/applications/components/button";
-import Inputs, {Inputs2} from "@/applications/components/inputs";
+import Inputs from "@/applications/components/inputs";
 import { useSignUp } from '@/api/user';
 import { useEmailValidation, useVerifyEmail } from '@/api/auth';
 type Props = {
@@ -80,14 +80,14 @@ const SignUp = ({changeToLogIn}: Props) => {
                     <_.set>
                         <span>이메일 :</span>
                         <_.btnSet>
-                            <Inputs2 value={email} setValue={setEmail} type={"text"}/>
+                            <Inputs value={email} setValue={setEmail} type={"text"}/>
                             <Button onClick={sendEmail} props={click?"코드 재전송":"코드전송"}/>
                         </_.btnSet>
                     </_.set>
                     <_.set>
                         <span>인증코드 :</span>
                         <_.btnSet>
-                            <Inputs2 value={check} setValue={setCheck} type={"text"} />
+                            <Inputs value={check} setValue={setCheck} type={"text"} />
                             <div style={{ fontSize: '0.75rem'}}>
                                 {formatTime(timeLeft)}
                             </div>

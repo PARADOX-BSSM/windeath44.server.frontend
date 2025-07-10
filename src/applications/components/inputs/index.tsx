@@ -9,38 +9,29 @@ type inputProps = {
 }
 
 const Inputs = ({label, value, type, setValue}:inputProps) =>{
+    const inputElement = (
+        <Shadow p={label ? undefined : "100%"}>
+            <div>
+                <div>
+                    <_.inputs
+                        type={type}
+                        value={value}
+                        onChange={(e) => setValue(e.target.value)}
+                    />
+                </div>
+            </div>
+        </Shadow>
+    );
+
+    if (!label) {
+        return inputElement;
+    }
+
     return(
         <_.inputsDiv>
             <span>{label}</span>
-            <Shadow>
-                <div>
-                    <div>
-                        <_.inputs
-                            type={type}
-                            value={value}
-                            onChange={(e) => setValue(e.target.value)}
-                        />
-                    </div>
-                </div>
-            </Shadow>
+            {inputElement}
         </_.inputsDiv>
     );
 }
-
-export const Inputs2 = ({value, type, setValue}:inputProps) =>{
-    return(
-            <Shadow p={"100%"}>
-                <div>
-                    <div>
-                        <_.inputs
-                            type={type}
-                            value={value}
-                            onChange={(e) => setValue(e.target.value)}
-                        />
-                    </div>
-                </div>
-            </Shadow>
-    );
-}
-
 export default Inputs;
