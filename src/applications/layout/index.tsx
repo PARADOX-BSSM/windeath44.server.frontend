@@ -245,7 +245,10 @@ const Application = (props: ApplicationProps) => {
     );
   } else if (props.type === "Shell") {
     return (
-      <_.Shell className="shell" onClick={() => setFocus("Discover")}>
+      <_.Shell className="shell" onClick={() => {
+        console.log(1234);
+        setFocus("Discover")
+      }}>
         {props.children}
       </_.Shell>
     );

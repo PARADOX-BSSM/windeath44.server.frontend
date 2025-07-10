@@ -1,9 +1,14 @@
+
+import { focusAtom } from "@/atoms/windowManager";
+import { useAtom } from "jotai";
 import { MouseConstraint, Mouse, Bodies, Body, Engine, Events, Render, Runner, World } from "matter-js"
-import { MutableRefObject, useEffect, useRef } from "react";
+import { MutableRefObject, useEffect, useLayoutEffect, useRef } from "react";
 
 export default function Seori() {
   // 설이 Ref
   const shapeRef = useRef<Body | null>(null) as MutableRefObject<Body | null>;
+
+  const [, setFocus] = useAtom(focusAtom);
 
   // 설이 스프라이트 변경 함수
   const setSpriteTexture = (path: string) => {
@@ -34,7 +39,7 @@ export default function Seori() {
     // setSpriteTexture(texturePath);
   }, [directionRef.current, stateRef.current])
   
-  useEffect(() => {
+  useLayoutEffect(() => {
     const container = document.getElementById("cursorContainer");
     const taskbar = document.getElementById("taskbarContainer");
 
@@ -59,6 +64,10 @@ export default function Seori() {
     render.canvas.style.zIndex = "0";
     render.canvas.style.position = "absolute";
     render.canvas.style.pointerEvents = "auto";
+
+    render.canvas.onclick! = () => {
+      setFocus("Discover");
+    };
 
     const secondDiv = container.querySelector("div");
     if (secondDiv) {
