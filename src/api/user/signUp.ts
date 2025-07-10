@@ -16,7 +16,7 @@ export const signUp = async ({ name, email, pw, changeToLogIn }: SignUpParams):P
         password: pw
     };
     try {
-        const response: AxiosResponse = await axios.post(`${user}/email`,data, {
+        const response: AxiosResponse = await axios.post(`${user}/register`,data, {
             withCredentials: true,
             headers: { 'Content-Type': 'application/json' },
         });

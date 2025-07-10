@@ -1,26 +1,23 @@
 import * as _ from './style';
-import {Shadow} from "./style";
-
 type inputProps = {
+    width: string;
+    fontSize: string;
     label?: string;
     value: string;
-    type: "text" | "password";
+    type: string;
     setValue: (value: string) => void;
 }
 
-const Inputs = ({label, value, type, setValue}:inputProps) =>{
+const Inputs = ({width, fontSize, label, value, type, setValue}:inputProps) =>{
     const inputElement = (
-        <Shadow p={label ? undefined : "100%"}>
-            <div>
-                <div>
-                    <_.inputs
-                        type={type}
-                        value={value}
-                        onChange={(e) => setValue(e.target.value)}
-                    />
-                </div>
-            </div>
-        </Shadow>
+        <_.Shadow  width={width}>
+            <_.inputs
+                type={type}
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+                width={width}
+            />
+        </_.Shadow>
     );
 
     if (!label) {
@@ -28,7 +25,7 @@ const Inputs = ({label, value, type, setValue}:inputProps) =>{
     }
 
     return(
-        <_.inputsDiv>
+        <_.inputsDiv fontSize={fontSize}>
             <span>{label}</span>
             {inputElement}
         </_.inputsDiv>

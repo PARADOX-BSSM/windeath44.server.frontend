@@ -1,45 +1,33 @@
 import styled from "@emotion/styled";
 import '@/assets/font.css';
 
-export const inputsDiv = styled.div`
+export const inputsDiv = styled.div<{fontSize?: string;}>`
     font-family: "Galmuri11";
-    font-size: 20px;
+    font-size: ${({ fontSize }) => fontSize || "1rem"};
     width: 100%;
-    display: inline-flex;
-    justify-content: space-between;
-`;
-export const inputs = styled.input`
-    width: 100%;
-    height: auto;
-    display: block;
-    box-sizing: border-box;
-    font-family: "Galmuri11";
-    font-size: 16px;
-    padding: 2px 4px;
-    outline: none;
-    border: none;
-`;
-interface Props {
-    p?: string;
-}
-export const Shadow = styled.div<Props>`
-    width: ${props => props.p?props.p:'70%'};
     height: fit-content;
-    display: inline-block;
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+`;
+export const inputs = styled.input<{width: string;}>`
+    margin: 1.5px 0 0 1.5px;
+    width: 100%;
+    height: 100%;
+    font-family: "Galmuri11";
+    padding: 0 0px 0 0;
+    outline: none;
+    border-color: #DCAFDD;
+    border-style: solid;
+    border-width: 2px;
+    box-sizing: border-box;
+`;
+export const Shadow = styled.div<{width: string;}>`
+    width: ${({ width }) => width || "491px"};
+    height: 28px;
+    background-color: #000;
     border-width: 0 1.5px 1.5px 0;
     border-style: solid;
     border-color: #fff;
-    &>div{
-        width: 100%;
-        display: inline-block;
-        box-sizing: border-box;
-        border-width: 1.5px 0 0 1.5px;
-        border-style: solid;
-        border-color: #000;
-        &>div{
-            width: 100%;
-            box-sizing: border-box;
-            border: 1px solid var(--dark-primary-color);
-        }
-    }
+    padding: 0.5px 1.5px 1.5px 0.5px;
 `;
