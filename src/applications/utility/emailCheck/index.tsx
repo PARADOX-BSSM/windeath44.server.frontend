@@ -10,15 +10,10 @@ interface Props {
 };
 
 const EmailChack = ({changeToLogIn,changeToAuth}:Props) =>{
-    const [name, setName] = useState('');
     const [email, setEmail] = useState('');
-
     const inputList = [
-        { label: "아이디:", value: name, setValue: setName, type: "text" },
         { label: "이메일:", value: email, setValue: setEmail, type: "text" },
     ];
-
-
     return (
             <_.tempMain>
                 <_.tempImageStyle>
