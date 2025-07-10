@@ -17,29 +17,15 @@ const LogIn = ({ setIsLogIned, changeToSignUp , changeToEmailCheck}: Props) => {
   const [inputPW, setInputPW] = useState("");
 
   const taskTransform = useAtomValue(taskTransformerAtom);
-
-  const dummyAccount = [
-    {
-      id: "Roena0516",
-      password: "1234",
-      nickname: "로에나"
-    }
-  ]
   const inputList = [
     { label: "사용자 이름:", value: inputID, setValue: setInputID, type: "text" },
     { label: "비밀번호:", value: inputPW, setValue: setInputPW, type: "password" },
   ];
 
-  let checkLogIn = (id: string, password: string) => {
-    const foundUser = dummyAccount.find(
-        (element) => element.id === id && element.password === password
-    );
-    if (foundUser) {
-      setIsLogIned(true);
-      taskTransform?.('LogIn', 'none');
-      console.log(id, password);
-    }
+  const checkLogIn = () => {
+
   };
+
 
     return (
       <_.tempMain>
@@ -54,9 +40,8 @@ const LogIn = ({ setIsLogIned, changeToSignUp , changeToEmailCheck}: Props) => {
             ))}
           </_.tempInputs>
           <_.tempButtons>
-            <Button props="확인" onClick={() => checkLogIn(inputID, inputPW)}/>
+            <Button props="확인" onClick={checkLogIn}/>
             <Button props="취소" onClick={() => {
-              console.log(setIsLogIned);
               setIsLogIned(true);
               taskTransform?.('LogIn', '');
             }}/>
