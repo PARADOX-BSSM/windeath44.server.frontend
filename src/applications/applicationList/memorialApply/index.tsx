@@ -1,8 +1,9 @@
 import * as _ from './style';
 import MemorialTextarea from '@/applications/components/memorialTextarea';
 import { useAtomValue } from 'jotai';
-import { taskSearchAtom } from '@/atoms/taskTransformer';
+import { taskTransformerAtom } from '@/atoms/taskTransformer';
 import { useState } from 'react';
+import MemorialBtn from '@/applications/components/memorialBtn';
 
 interface dataStructureProps {
     stack: any[];
@@ -12,7 +13,7 @@ interface dataStructureProps {
   }
 
 const MemorialApply = ({ stack, push, pop, top }: dataStructureProps) => {
-    const taskSearch = useAtomValue(taskSearchAtom);
+    const taskTransform = useAtomValue(taskTransformerAtom);
     const [name, setName] = useState("");
 
     return (
@@ -67,7 +68,16 @@ const MemorialApply = ({ stack, push, pop, top }: dataStructureProps) => {
                                             <_.CharacterInformationRowAttributeText>애니메이션</_.CharacterInformationRowAttributeText>
                                         </_.CharacterInformationRowAttribute>
                                         <_.CharacterInformationRowValue>
-                                            <_.CharacterInformationRowValueText>최애의 아이</_.CharacterInformationRowValueText>
+                                            <_.CharacterInformationRowValueText>
+                                                <MemorialBtn name='애니메이션 찾기' onClick={
+                                                    () => {
+                                                        console.log(taskTransform);
+                                                        if (taskTransform) {
+                                                            taskTransform('', '애니메이션 선택');
+                                                        }
+                                                    }
+                                                } type='submit' active={true} widthPercent={15} heightPercent={5} fontSize='1rem' />
+                                            </_.CharacterInformationRowValueText>
                                         </_.CharacterInformationRowValue>
                                     </_.CharacterInformationRow>
                                 </_.CharacterInformationInner>

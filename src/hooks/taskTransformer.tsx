@@ -18,6 +18,8 @@ export const useTaskTransformFunction = () => {
     const to = Apps.filter((app) => {
         return app.name === toTask;
     })[0];
+
+    console.log(to);
     
     if (to) {
         addTask(to);
