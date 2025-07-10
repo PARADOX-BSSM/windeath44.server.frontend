@@ -196,7 +196,7 @@ const Application = (props: ApplicationProps) => {
               onMouseOut={() => setCursorImage(CURSOR_IMAGES.default)}
               isFocus={focus === props.name}
             >
-              <img src={Min} alt="" />
+              <img src={Min} alt="" width="70%" />
             </_.MinimizeButton>
             <_.FullScreenButton onClick={() =>
               setIsFullScreen(!isFullScreen)
@@ -205,7 +205,7 @@ const Application = (props: ApplicationProps) => {
               onMouseOut={() => setCursorImage(CURSOR_IMAGES.default)}
               isFocus={focus === props.name}
             >
-              <img src={Full} alt="" />
+              <img src={Full} alt="" width="70%" />
             </_.FullScreenButton>
 
             <_.ExitButton onClick={() => {
@@ -218,7 +218,7 @@ const Application = (props: ApplicationProps) => {
               onMouseOut={() => setCursorImage(CURSOR_IMAGES.default)}
               isFocus={focus === props.name}
             >
-              <img src={Exit} alt="" />
+              <img src={Exit} alt="" width="70%" />
             </_.ExitButton>
           </_.BtnContainer>
         </_.WindowHeader>
