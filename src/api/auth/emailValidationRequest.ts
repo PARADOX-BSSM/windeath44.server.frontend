@@ -20,7 +20,7 @@ export const emailValidationRequest = async ({ email }:authParams): Promise<bool
         } else {
             alert("이메일 전송 중 오류가 발생했습니다.");
         }
-        return false;
+        throw error;
     }
 };
 export const useEmailValidation = () => {

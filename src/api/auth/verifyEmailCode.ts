@@ -27,7 +27,7 @@ export const verifyEmailCode = async ({ email, check }:authParams): Promise<bool
         } else {
             alert("인증코드 확인 중 오류가 발생했습니다.");
         }
-        return false;
+        throw error;
     }
 };
 export const useVerifyEmail = () => {
