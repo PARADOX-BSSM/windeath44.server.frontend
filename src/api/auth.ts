@@ -35,38 +35,32 @@ export const useEmailValidation = () => {
         }
     });
 };
-export const verifyEmailCode = ({ email, check }:authParams): void => {
+export const verifyEmailCode = async ({ email, check }:authParams): Promise<boolean> => {
     const data = {
         authorizationCode: check,
         email,
     };
-    const config = {
-        method: 'patch',
-        url: `${auth}/email/valid`,
-        withCredentials: true,
-        headers: {'Content-Type': 'application/json'},
-        data: data
-    };
-    axios(config)
-        .then(function (response: AxiosResponse) {
-            console.log(JSON.stringify(response.data));
-            alert("인증이 완료되었습니다.");
-        })
-        .catch(function (error: AxiosError) {
-            console.log(error);
-            if (error.response?.data) {
-                alert(`인증 실패: 다시 입력해 주세요!`);
-                console.log(`인증 실패: ${JSON.stringify(error.response.data)}`);
-            } else {
-                alert("인증코드 확인 중 오류가 발생했습니다.");
-            }
+    try {
+        const response: AxiosResponse = await axios.patch(`${auth}/email/valid`,data, {
+            withCredentials: true,
+            headers: { 'Content-Type': 'application/json' },
         });
+        console.log(JSON.stringify(response.data));
+        alert("인증이 완료되었습니다.");
+        return true;
+    }catch(error) {
+            const axiosError = error as AxiosError;
+        if (axiosError.response?.data) {
+            alert(`인증 실패: 다시 입력해 주세요!`);
+            console.log(`인증 실패: ${JSON.stringify(axiosError.response.data)}`);
+        } else {
+            alert("인증코드 확인 중 오류가 발생했습니다.");
+        }
+        return false;
+    }
 };
 export const useVerifyEmail = () => {
     return useMutation({
-        mutationFn: (params: { email: string; check?: string }) => {
-            verifyEmailCode(params);
-            return Promise.resolve();
-        },
+        mutationFn: verifyEmailCode,
     });
 };

@@ -37,14 +37,6 @@ export const signUp = async ({ name, email, pw, changeToLogIn }: SignUpParams):P
 };
 export const useSignUp = () => {
     return useMutation({
-        mutationFn: (params: {
-            name: string;
-            email: string;
-            pw: string;
-            changeToLogIn: () => void;
-        }) => {
-            signUp(params);
-            return Promise.resolve();
-        },
+        mutationFn: signUp,
     });
 }
