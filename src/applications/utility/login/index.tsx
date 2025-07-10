@@ -4,6 +4,7 @@ import Button from "@/applications/components/button";
 import Inputs from "@/applications/components/inputs";
 import { useAtomValue } from 'jotai';
 import {useState} from "react";
+import { useLogIn } from '@/api/auth/logIn';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
 
 type Props = {
@@ -11,22 +12,25 @@ type Props = {
   changeToSignUp: () => void;
   changeToEmailCheck: () => void;
 };
-
 const LogIn = ({ setIsLogIned, changeToSignUp , changeToEmailCheck}: Props) => {
-  const [inputID, setInputID] = useState("");
-  const [inputPW, setInputPW] = useState("");
-
+  const [userId, setUserId] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const logInMutation = useLogIn();
   const taskTransform = useAtomValue(taskTransformerAtom);
   const inputList = [
-    { label: "사용자 이름:", value: inputID, setValue: setInputID, type: "text" },
-    { label: "비밀번호:", value: inputPW, setValue: setInputPW, type: "password" },
+    { label: "사용자 이름:", value: userId, setValue: setUserId, type: "text" },
+    { label: "비밀번호:", value: password, setValue: setPassword, type: "password" },
   ];
-
-  const checkLogIn = () => {
-
+  const checkLogIn = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    logInMutation.mutate({ userId, password }, {
+          onSuccess: () => {
+            setIsLogIned(true);
+            taskTransform?.('LogIn', '');
+          }
+        }
+    );
   };
-
-
     return (
       <_.tempMain>
         <_.tempImage>
