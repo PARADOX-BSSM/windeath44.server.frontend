@@ -2,16 +2,16 @@ import axios, {AxiosError, AxiosResponse} from "axios";
 import {auth} from "@/config";
 import {useMutation} from "@tanstack/react-query";
 interface authParams {
-    userId: string;
+    id: string;
     password: string;
 }
-const logIn = async ({ userId, password }:authParams): Promise<boolean> => {
+const logIn = async ({ id, password }:authParams): Promise<boolean> => {
     const data = {
-        userId,
+        userId : id,
         password
     };
     try {
-        const response: AxiosResponse = await axios.post(`${auth}/email/valid`,data, {
+        const response: AxiosResponse = await axios.post(`${auth}/login`,data, {
             withCredentials: true,
             headers: { 'Content-Type': 'application/json' },
         });
@@ -25,7 +25,7 @@ const logIn = async ({ userId, password }:authParams): Promise<boolean> => {
         } else {
             alert("로그인 중 오류가 발생했습니다.");
         }
-        return false;
+        throw error;
     }
 };
 export const useLogIn = () => {

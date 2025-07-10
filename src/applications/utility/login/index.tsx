@@ -23,8 +23,8 @@ const LogIn = ({ setIsLogIned, changeToSignUp , changeToEmailCheck}: Props) => {
   ];
   const checkLogIn = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    setUserId(userId.split('@')[0],)
-    logInMutation.mutate({ userId, password }, {
+    const id = userId.split('@')[0]
+    logInMutation.mutate({ id, password }, {
           onSuccess: () => {
             setIsLogIned(true);
             taskTransform?.('LogIn', '');
