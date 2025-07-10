@@ -29,7 +29,7 @@ export const Title = styled.h2`
     leading-trim: both;
     text-edge: cap;
     font-family: Galmuri11;
-    font-size: 180%;
+    font-size: 1.8rem;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
@@ -45,7 +45,7 @@ export const Version = styled.p`
     leading-trim: both;
     text-edge: cap;
     font-family: Galmuri11;
-    font-size: 110%;
+    font-size: 1.1rem;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
@@ -76,7 +76,7 @@ export const Description = styled.p`
     align-self: stretch;
     color: #2E2E2E;
     font-family: Galmuri11;
-    font-size: 110%;
+    font-size: 1.1rem;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
