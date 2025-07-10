@@ -13,16 +13,12 @@ type inputProps = {
 const Inputs = ({width, fontSize, label, value, type, setValue}:inputProps) =>{
     const inputElement = (
         <Shadow p={label ? undefined : "100%"} width={width}>
-            <div>
-                <div>
-                    <_.inputs
-                        type={type}
-                        value={value}
-                        onChange={(e) => setValue(e.target.value)}
-                        width={width}
-                    />
-                </div>
-            </div>
+            <_.inputs
+                type={type}
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+                width={width}
+            />
         </Shadow>
     );
 
