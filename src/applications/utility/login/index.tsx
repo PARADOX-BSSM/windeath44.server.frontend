@@ -4,6 +4,7 @@ import Button from "@/applications/components/button";
 import Inputs from "@/applications/components/inputs";
 import { useAtomValue } from 'jotai';
 import {useState} from "react";
+import { useLogIn } from '@/api/auth/logIn';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
 
 type Props = {
@@ -11,36 +12,26 @@ type Props = {
   changeToSignUp: () => void;
   changeToEmailCheck: () => void;
 };
-
 const LogIn = ({ setIsLogIned, changeToSignUp , changeToEmailCheck}: Props) => {
-  const [inputID, setInputID] = useState("");
-  const [inputPW, setInputPW] = useState("");
-
+  const [userId, setUserId] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const logInMutation = useLogIn();
   const taskTransform = useAtomValue(taskTransformerAtom);
-
-  const dummyAccount = [
-    {
-      id: "Roena0516",
-      password: "1234",
-      nickname: "로에나"
-    }
-  ]
   const inputList = [
-    { label: "사용자 이름:", value: inputID, setValue: setInputID, type: "text" },
-    { label: "비밀번호:", value: inputPW, setValue: setInputPW, type: "password" },
+    { label: "이메일:", value: userId, setValue: setUserId, type: "text" },
+    { label: "비밀번호:", value: password, setValue: setPassword, type: "password" },
   ];
-
-  let checkLogIn = (id: string, password: string) => {
-    const foundUser = dummyAccount.find(
-        (element) => element.id === id && element.password === password
+  const checkLogIn = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    const id = userId.split('@')[0]
+    logInMutation.mutate({ id, password }, {
+          onSuccess: () => {
+            setIsLogIned(true);
+            taskTransform?.('LogIn', '');
+          }
+        }
     );
-    if (foundUser) {
-      setIsLogIned(true);
-      taskTransform?.('LogIn', 'none');
-      console.log(id, password);
-    }
   };
-
     return (
       <_.tempMain>
         <_.tempImage>
@@ -54,9 +45,8 @@ const LogIn = ({ setIsLogIned, changeToSignUp , changeToEmailCheck}: Props) => {
             ))}
           </_.tempInputs>
           <_.tempButtons>
-            <Button props="확인" onClick={() => checkLogIn(inputID, inputPW)}/>
+            <Button props="확인" onClick={checkLogIn}/>
             <Button props="취소" onClick={() => {
-              console.log(setIsLogIned);
               setIsLogIned(true);
               taskTransform?.('LogIn', '');
             }}/>

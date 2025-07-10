@@ -6,7 +6,7 @@ type inputProps = {
     fontSize: string;
     label?: string;
     value: string;
-    type: "text" | "password";
+    type: string;
     setValue: (value: string) => void;
 }
 
