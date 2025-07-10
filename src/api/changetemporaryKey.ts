@@ -1,10 +1,13 @@
 import axios, {AxiosResponse} from "axios";
 import {auth} from "@/config";
 import {useMutation} from "@tanstack/react-query";
-const changeTemporaryKey = async () => {
+interface auth{
+    email:string
+}
+const changeTemporaryKey = async ({email}:auth) => {
     const data = {
-        "userId": "pdh0128",
-        "email": "kdoornega@gmail.com"
+        userId: email.split('@')[0],
+        email
     };
     try{
         const response: AxiosResponse = await axios.post(`${auth}/password/valid`, data,{
