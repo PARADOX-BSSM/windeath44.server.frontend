@@ -6,6 +6,8 @@ import React from "react";
 import Seori from "@/applications/seori";
 import * as _ from './style';
 import { setCursorImage,CURSOR_IMAGES } from '@/lib/setCursorImg';
+import { useAtom } from "jotai";
+import { focusAtom } from "@/atoms/windowManager";
 
 interface TaskBarProps {
   backUpFocus: string;
@@ -14,6 +16,7 @@ interface TaskBarProps {
 
 const Discover = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
   const [, addTask,] = useProcessManager();
+  const [, setFocus] = useAtom(focusAtom);
   const Apps = useApps();
   const visibleApps = Apps.filter((app: TaskType) => app.visible);
   return (
