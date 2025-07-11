@@ -8,7 +8,7 @@ interface Props {
     changeToEmailCheck: () => void;
 };
 
-const Auth: React.FC = ({changeToLogIn,changeToEmailCheck}:Props) =>{
+const Auth = ({changeToLogIn,changeToEmailCheck}:Props) =>{
     const inputLength = 6;
     const [code, setCode] = useState<string[]>(Array(inputLength).fill(''));
     const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
@@ -59,12 +59,10 @@ const Auth: React.FC = ({changeToLogIn,changeToEmailCheck}:Props) =>{
                                         onChange={(e) => handleChange(e.target.value, idx)}
                                         onKeyDown={(e) => handleKeyDown(e, idx)}
                                         ref={(el) => (inputRefs.current[idx] = el)}
-
                                     />
                                 </_.outside>
                             ))}
                         </_.inputStyle>
-                        {/*<button onClick={handleSubmit}>제출</button>*/}
                     </_.inputs>
                 </_.tempInputsStyle>
                 <_.note>* 숫자 및 알파벳만 입력가능합니다.</_.note>
