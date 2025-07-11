@@ -8,7 +8,7 @@ interface Props {
   changeToEmailCheck: () => void;
 }
 const Auth = ({ changeToLogIn, changeToEmailCheck }: Props) => {
-  const inputLength = 6;
+  const inputLength = 5;
   const [code, setCode] = useState<string[]>(Array(inputLength).fill(''));
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
   const mutationChangeTemporaryKey = useChangeTemporaryKey();
@@ -27,7 +27,8 @@ const Auth = ({ changeToLogIn, changeToEmailCheck }: Props) => {
       inputRefs.current[index - 1]?.focus();
     }
   };
-  const handleSubmit = () => {
+  const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     const authorizationCode = code.join('');
     mutationChangeTemporaryKey.mutate(
       { authorizationCode },

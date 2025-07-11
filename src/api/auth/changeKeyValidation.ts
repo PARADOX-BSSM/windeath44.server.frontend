@@ -9,7 +9,7 @@ const changeKeyValidation = async ({ authorizationCode }: ChangeKeyValidation) =
     authorizationCode,
   };
   try {
-    const response: AxiosResponse = await axios.patch(`${auth}/password`, data, {
+    const response: AxiosResponse = await axios.patch(`${auth}/password/valid`, data, {
       withCredentials: true,
       headers: { 'Content-Type': 'application/json' },
     });
