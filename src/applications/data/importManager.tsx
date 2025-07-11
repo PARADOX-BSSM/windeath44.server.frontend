@@ -77,10 +77,10 @@ const useApps = (): TaskType[] => {
       "layer": undefined,
       "appSetup":{
         "Image" : memorialApproach,
-        "minWidth" : getPixelFromPercent("width", 75),
-        "minHeight" : getPixelFromPercent("height", 55),
-        "setUpWidth" : getPixelFromPercent("width", 75),
-        "setUpHeight" : getPixelFromPercent("height", 55),
+        "minWidth" : getPixelFromPercent("width", 45),
+        "minHeight" : getPixelFromPercent("height", 45),
+        "setUpWidth" : getPixelFromPercent("width", 65),
+        "setUpHeight" : getPixelFromPercent("height", 45),
       },
       "visible":true,
     },{
@@ -105,10 +105,10 @@ const useApps = (): TaskType[] => {
       "layer": undefined,
       "appSetup":{
         "Image" : "default",
-        "minWidth" : getPixelFromPercent("width", 75),
-        "minHeight" : getPixelFromPercent("height", 55),
-        "setUpWidth" : getPixelFromPercent("width", 75),
-        "setUpHeight" : getPixelFromPercent("height", 55),
+        "minWidth" : getPixelFromPercent("width", 55),
+        "minHeight" : getPixelFromPercent("height", 35),
+        "setUpWidth" : getPixelFromPercent("width", 55),
+        "setUpHeight" : getPixelFromPercent("height", 35),
       },
       "visible":false,
     },{

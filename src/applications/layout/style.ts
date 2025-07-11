@@ -1,26 +1,25 @@
+import { getPixelFromPercent } from "@/lib/getPixelFromPercent";
 import styled from "@emotion/styled";
 
 export const Window = styled.article`
-    border: 2.5px solid #FF8EF6;
-    padding : 0.4rem;
+    border: ${getPixelFromPercent("width", 0.25)}px solid #FF8EF6;
+    padding : ${getPixelFromPercent("width", 0.5)}px;
     display : flex;
     flex-direction: column;
 `
 export const WindowHeader = styled.header`
     background-color: #FFD3FB;
-    padding : 0 0.2rem;
+    // padding : 0 ${getPixelFromPercent("width", 0.275)}px;
     display : flex;
     justify-content: space-between;
     align-items: center;
-    height : 24px;
-    border: 2.5px solid #E774DD;
+    height : ${getPixelFromPercent("height", 2.6)}px;
+    border: ${getPixelFromPercent("width", 0.25)}px solid #E774DD;
 `;
 export const HeaderButton = styled.button`
-    height : 20px;
-    width : 20px;
-    margin-left: 5px;
+    height : ${getPixelFromPercent("height", 2.6)}px;
+    width : ${getPixelFromPercent("width", 2.6)}px;
   padding : 0;
-  //margin : 0;
 `;
 export const MinimizeButton = styled(HeaderButton) <{ isFocus: boolean }>`
   background-color: ${({ isFocus }) => isFocus ? 'rgba(0, 0, 0, 0)' : 'rgba(0, 0, 0, 0.2)'};
@@ -39,18 +38,17 @@ export const ExitButton = styled(HeaderButton) <{ isFocus: boolean }>`
 `;
 export const WindowContent = styled.section`
     position : absolute;
-    top : 40px;
+    top : ${getPixelFromPercent("height", 4.3)}px;
     left : 0;
     right : 0;
     bottom : 0;
-    margin : 0 0.4rem 0.4rem 0.4rem;
+    margin : 0 ${getPixelFromPercent("width", 0.5)}px ${getPixelFromPercent("width", 0.5)}px ${getPixelFromPercent("width", 0.5)}px;
     box-sizing: border-box;
-    border : solid 2.5px #E774DD;
+    border : solid ${getPixelFromPercent("width", 0.25)}px #E774DD;
 `;
 export const Shell = styled.article`
     height : 100%;
     width : 100%;
-    z-index: 9999;
 `;
 
 export const BtnContainer = styled.div`
@@ -63,18 +61,19 @@ export const TitleContainer = styled.div`
     display : flex;
     justify-content: flex-start;
     align-items: center;
-    gap: 0.4em;
+    gap: ${getPixelFromPercent("width", 0.5)}px;
 `
 
 export const Title = styled.p`
   color: #E774DD;
   font-family: DOSIyagiBoldface;
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-style: normal;
   font-weight: 500;
   line-height: normal;
 `
 
 export const HeartImg = styled.img`
-  width:1.25em;
+  padding: 0px ${getPixelFromPercent("width", 0.3)}px;
+  width: 1em;
 `
