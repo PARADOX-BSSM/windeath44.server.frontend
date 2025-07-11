@@ -12,11 +12,9 @@ interface Props {
 
 const EmailChack = ({changeToLogIn,changeToAuth}:Props) =>{
     const [email, setEmail] = useState('');
-    const inputList = [
-        { label: "이메일:", value: email, setValue: setEmail, type: "text" },
-    ];
-    const mutationChangeKey = useChangeTemporaryKey;
-    const checkEmail = () => {
+    const mutationChangeKey = useChangeTemporaryKey();
+    const checkEmail = async (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
         mutationChangeKey.mutate({email},{
                 onSuccess: () => {
                     changeToAuth()
@@ -32,9 +30,7 @@ const EmailChack = ({changeToLogIn,changeToAuth}:Props) =>{
                 <_.tempBulkStyle />
                 <_.tempMainStyle>
                     <_.tempInputsStyle>
-                        {inputList.map((item) => (
-                            <Inputs {...item}/>
-                        ))}
+                        <Inputs label={"이메일:"} value={email} setValue={setEmail} type={"text"} flex={true}/>
                     </_.tempInputsStyle>
                     <_.tempButtonsStyle>
                         <Button onClick={checkEmail} props="확인"/>
