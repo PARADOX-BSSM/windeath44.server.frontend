@@ -3,7 +3,7 @@ import * as _ from "@/applications/utility/emailCheck/style.ts";
 import Logo from "@/assets/windeath44.svg";
 import Button from "@/applications/components/button";
 import Inputs from "@/applications/components/inputs";
-import {useChangeTemporaryKey} from "@/api/changetemporaryKey.ts";
+import {useChangeTemporaryKey} from "@/api/auth/changetemporaryKey.ts";
 
 interface Props {
     changeToLogIn: () => void;

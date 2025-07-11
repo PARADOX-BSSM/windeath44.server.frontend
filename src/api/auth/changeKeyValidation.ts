@@ -1,9 +1,12 @@
 import axios, {AxiosResponse} from "axios";
 import {auth} from "@/config";
 import {useMutation} from "@tanstack/react-query";
-const changeKeyValidation = async () => {
+interface ChangeKeyValidation {
+    authorizationCode: string;
+}
+const changeKeyValidation = async ({authorizationCode}:ChangeKeyValidation) => {
     const data = {
-        "authorizationCode": "asd2g"
+        authorizationCode
     };
     try{
         const response: AxiosResponse = await axios.patch(`${auth}/password`, data,{

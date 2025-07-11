@@ -2,43 +2,39 @@ import React, {useRef, useState} from "react";
 import * as _ from "@/applications/utility/auth/style.ts";
 import Logo from "@/assets/windeath44.svg";
 import Button from "@/applications/components/button";
-
+import {useChangeTemporaryKey} from "@/api/auth/changeKeyValidation.ts";
 interface Props {
     changeToLogIn: () => void;
     changeToEmailCheck: () => void;
-};
-
+}
 const Auth = ({changeToLogIn,changeToEmailCheck}:Props) =>{
     const inputLength = 6;
     const [code, setCode] = useState<string[]>(Array(inputLength).fill(''));
     const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
-
+    const mutationChangeTemporaryKey = useChangeTemporaryKey();
     const handleChange = (value: string, index: number) => {
         if (!/^[a-zA-Z0-9]?$/.test(value)) return; // 숫자 & 알파벳만 허용
-
         const newCode = [...code];
         newCode[index] = value.toUpperCase();
         setCode(newCode);
-
         // 다음 칸으로 이동
         if (value && index < inputLength - 1) {
             inputRefs.current[index + 1]?.focus();
         }
     };
-
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
         if (e.key === 'Backspace' && code[index] === '' && index > 0) {
             inputRefs.current[index - 1]?.focus();
         }
     };
-
     const handleSubmit = () => {
-        const finalCode = code.join('');
-        console.log('인증 코드:', finalCode);
-        changeToLogIn();
+        const authorizationCode = code.join('');
+        mutationChangeTemporaryKey.mutate({authorizationCode},{
+            onSuccess:()=>{
+                changeToLogIn();
+            }
+        })
     };
-
-
     return (
         <_.tempMain>
             <_.tempImageStyle>
