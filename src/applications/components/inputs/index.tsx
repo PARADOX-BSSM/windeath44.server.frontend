@@ -1,14 +1,14 @@
 import * as _ from './style';
 type inputProps = {
-    width: string;
-    fontSize: string;
+    width?: string;
+    fontSize?: string;
+    flex?:boolean;
     label?: string;
     value: string;
     type: string;
     setValue: (value: string) => void;
 }
-
-const Inputs = ({width, fontSize, label, value, type, setValue}:inputProps) =>{
+const Inputs = ({width, fontSize,flex, label, value, type, setValue}:inputProps) =>{
     const inputElement = (
         <_.Shadow  width={width}>
             <_.inputs
@@ -25,7 +25,7 @@ const Inputs = ({width, fontSize, label, value, type, setValue}:inputProps) =>{
     }
 
     return(
-        <_.inputsDiv fontSize={fontSize}>
+        <_.inputsDiv fontSize={fontSize} flex={flex}>
             <span>{label}</span>
             {inputElement}
         </_.inputsDiv>

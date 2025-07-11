@@ -49,7 +49,7 @@ export const set = styled.div`
     display: flex;
     justify-content: space-between;
     font-family: "Galmuri11";
-    font-size: 20px;
+    font-size: 1rem;
 `;
 export const btnSet = styled.div`
     width: 70%;

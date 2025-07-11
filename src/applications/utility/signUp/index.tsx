@@ -77,7 +77,7 @@ const SignUp = ({changeToLogIn}: Props) => {
             <_.tempBulkStyle />
             <_.tempMainStyle>
                 <_.tempInputsStyle>
-                    <Inputs label={"사용자 이름:"} value={name} setValue={setName} type={"text"} />
+                    <Inputs label={"사용자 이름:"} value={name} setValue={setName} type={"text"} flex={true}/>
                     <_.set>
                         <span>이메일 :</span>
                         <_.btnSet>
@@ -95,8 +95,8 @@ const SignUp = ({changeToLogIn}: Props) => {
                             <Button onClick={verifyCode} props="확인"/>
                         </_.btnSet>
                     </_.set>
-                    <Inputs label={"비밀번호:"} value={pw} setValue={setPw} type={"password"} />
-                    <Inputs label={"비밀번호 재입력:"} value={checkingPw} setValue={setCheckingPw} type={"password"} />
+                    <Inputs label={"비밀번호:"} value={pw} setValue={setPw} type={"password"} flex={true}/>
+                    <Inputs label={"비밀번호 재입력:"} value={checkingPw} setValue={setCheckingPw} type={"password"} flex={true}/>
                 </_.tempInputsStyle>
                 <_.tempButtonsStyle>
                     <Button onClick={sendAuth} props="확인" />

@@ -41,7 +41,7 @@ const LogIn = ({ setIsLogIned, changeToSignUp , changeToEmailCheck}: Props) => {
         <_.tempMainStyle>
           <_.tempInputs>
             {inputList.map((item) => (
-                <Inputs  {...item}/>
+                <Inputs  {...item} flex={true}/>
             ))}
           </_.tempInputs>
           <_.tempButtons>
