@@ -1,20 +1,32 @@
 import { getPixelFromPercent } from '@/lib/getPixelFromPercent';
 import styled from '@emotion/styled';
 
+const shadow = `
+  -${getPixelFromPercent("width", 0.125)}px -${getPixelFromPercent("width", 0.125)}px 0px 0px #FFF inset,
+  ${getPixelFromPercent("width", 0.125)}px ${getPixelFromPercent("width", 0.125)}px 0px 0px var(--primary-black) inset,
+  -${getPixelFromPercent("width", 0.25)}px -${getPixelFromPercent("width", 0.25)}px 0px 0px var(--dark-primary-color) inset,
+  ${getPixelFromPercent("width", 0.25)}px ${getPixelFromPercent("width", 0.25)}px 0px 0px var(--dark-primary-color) inset
+`;
+
 export const Container = styled.div`
     display: flex;
+    flex-direction: column;
     width: 100%;
     height: 100%;
     background: var(--light-primary-color);
-    padding: ${getPixelFromPercent("width", 5)}px ${getPixelFromPercent("height", 2.5)}px;
+    justify-content: flex-start;
+    padding: 0px ${getPixelFromPercent("width", 2.5)}px;
     box-sizing : border-box;
 `
 
 export const InnerContainer = styled.div`
+    width: 100%;
+    height: 100%;
+    min-height: 0;
     display: flex;
     padding: ${getPixelFromPercent("height", 2.5)}px 0;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     gap: ${getPixelFromPercent("width", 1.3)}px;
     align-self: stretch;
 `
@@ -22,7 +34,7 @@ export const InnerContainer = styled.div`
 export const TextContainer = styled.div`
     display: flex;
     align-items: center;
-    gap: ${getPixelFromPercent("width", 1.3)}px;
+    gap: ${getPixelFromPercent("width", 1.1)}px;
 `
 
 export const Title = styled.h2`
@@ -30,7 +42,7 @@ export const Title = styled.h2`
     leading-trim: both;
     text-edge: cap;
     font-family: Galmuri11;
-    font-size: 1rem;
+    font-size: 1.5rem;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
@@ -38,7 +50,7 @@ export const Title = styled.h2`
 
 export const Version = styled.p`
     display: flex;
-    width: ${getPixelFromPercent("width", 24)}px
+    width: ${getPixelFromPercent("width", 24)}px;
     flex-direction: column;
     justify-content: flex-end;
     align-self: stretch;
@@ -53,37 +65,41 @@ export const Version = styled.p`
 `
 
 export const MainContainer = styled.div`
+    width: 100%;
     display: flex;
     align-items: center;
-    gap: ${getPixelFromPercent("width", 5)}p;
     flex: 1 0 0;
+    min-height: 0;
     align-self: stretch;
 `
 
 export const DescriptionBox = styled.div`
+    width: 100%;
+    height: auto;
     display: flex;
-    padding: ${getPixelFromPercent("width", 2)}px;
+    padding: ${getPixelFromPercent("width", 1.8)}px;
     flex-direction: column;
     align-items: flex-start;
     gap: ${getPixelFromPercent("width", 2)}px;
-    flex: 1 0 0;
+    flex: 1 1 0;
     align-self: stretch;
     background: #FFF;
-    box-shadow: -1px -1px 0px 0px #FFF inset, 1px 1px 0px 0px var(--primary-black) inset, -2px -2px 0px 0px var(--dark-primary-color) inset, 2px 2px 0px 0px var(--dark-primary-color) inset;
+    box-shadow: ${shadow};
 `
 
 export const Description = styled.p`
-    flex: 1 0 0;
+    flex: 1 1 0;
     align-self: stretch;
     color: #2E2E2E;
     font-family: Galmuri11;
-    font-size: 1.1rem;
+    font-size: 0.9rem;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
 `
 
 export const BtnWrapper = styled.div`
+    padding: 0 0 0 ${getPixelFromPercent("width", 1.6)}px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -103,7 +119,7 @@ export const BtnVoid = styled.div`
     flex-direction: column;
     align-self: stretch;
     background: #FFF;
-    box-shadow: -1px -1px 0px 0px #FFF inset, 1px 1px 0px 0px var(--Black, #2E2E2E) inset, -2px -2px 0px 0px var(--DarkPrimary, #DCAFDD) inset, 2px 2px 0px 0px var(--DarkPrimary, #DCAFDD) inset;
+    box-shadow: ${shadow};
 `
 
 
