@@ -1,4 +1,5 @@
 import { getPixelFromPercent } from '@/lib/getPixelFromPercent';
+
 import styled from '@emotion/styled';
 
 const shadow = `
