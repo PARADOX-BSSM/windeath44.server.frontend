@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useAtomValue } from 'jotai';
 import MemorialBtn from '@/applications/components/memorialBtn';
 import * as _ from './style.ts';
@@ -6,6 +6,7 @@ import { taskSearchAtom } from '@/atoms/taskTransformer.ts';
 import { alerterAtom } from '@/atoms/alerter.ts';
 import Choten from '@/assets/profile/choten.svg'
 import { useProcessManager } from '@/hooks/processManager.tsx';
+import MemorialPreview from '@/applications/applicationList/memorialPreview/index.tsx';
 
 interface dataStructureProps {
     stack: any[];
@@ -28,7 +29,23 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
 
     const setAlert = useAtomValue(alerterAtom);
     const taskSearch = useAtomValue(taskSearchAtom);
-    const [, , removeTask] = useProcessManager();
+    const [,addTask , removeTask] = useProcessManager();
+
+    const memorialPreview = {
+          "component": <Suspense fallback={null}><MemorialPreview/></Suspense>,
+          "type": "App",
+          "id": 2228,
+          "name": "미리보기",
+          "layer": undefined,
+          "appSetup":{
+            "Image" : "default",
+            "minWidth" : 580,
+            "minHeight" : 420,
+            "setUpWidth" : 850,
+            "setUpHeight" : 500,
+          },
+          "visible":false,
+    }
 
     useEffect(() => {
         if (selectedIdx === 0) {
@@ -72,6 +89,7 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
                 setAlert(Choten, <>문제가 발생했습니다.<br />에러가 발생했습니다. 류승찬 나 규카츠사줘<br />예외가 발생했습니당.</>, () => {
                     push(taskSearch?.('MemorialApply', stack, push, pop, top));
                     removeTask(taskSearch?.('Alert')!);
+                    addTask(memorialPreview);
                 });
             }
         }

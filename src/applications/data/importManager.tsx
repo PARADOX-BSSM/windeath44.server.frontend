@@ -168,20 +168,6 @@ const useApps = (): TaskType[] => {
       },
       "visible":false,
     },{
-      "component": <Suspense fallback={null}><MemorialPreview/></Suspense>,
-      "type": "App",
-      "id": 2228,
-      "name": "MemorialPreview",
-      "layer": undefined,
-      "appSetup":{
-        "Image" : "default",
-        "minWidth" : 580,
-        "minHeight" : 420,
-        "setUpWidth" : 850,
-        "setUpHeight" : 500,
-      },
-      "visible":false,
-    },{
       "component": <Suspense fallback={null}><MemorialMerge/></Suspense>,
       "type": "App",
       "id": 2229,
