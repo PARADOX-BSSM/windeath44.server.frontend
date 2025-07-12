@@ -15,7 +15,7 @@ const MemorialTextarea = ({ btnText="", from, content, isReadonly=false, isPerso
     return (
         <>
             <_.Container>
-                {isPerson? <_.Title>- @{from}의 수정안</_.Title> : <_.Title>{from}</_.Title>}
+                {isPerson? <_.Title>- @{from}의 작성안</_.Title> : <_.Title>{from}</_.Title>}
                 <_.CommitAreaContainer>
                     <_.CommitArea value={value} onChange={e => setValue(e.target.value)} readOnly={isReadonly}></_.CommitArea>
                 </_.CommitAreaContainer>

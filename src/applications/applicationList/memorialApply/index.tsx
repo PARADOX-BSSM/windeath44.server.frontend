@@ -15,6 +15,7 @@ interface dataStructureProps {
 const MemorialApply = ({ stack, push, pop, top }: dataStructureProps) => {
     const taskTransform = useAtomValue(taskTransformerAtom);
     const [name, setName] = useState("");
+    const userName = "winshine0326"
 
     return (
         <_.Container>
@@ -24,7 +25,7 @@ const MemorialApply = ({ stack, push, pop, top }: dataStructureProps) => {
                         <_.CharacterNameInput placeholder='이름을 입력해주세요...' onChange={(e) => setName(e.target.value)}></_.CharacterNameInput>
                         <_.Status>문서 수정 중</_.Status>
                     </_.HeaderTextContainer>
-                    <_.AuthorshipFrom>@winshine1034의 수정 요청</_.AuthorshipFrom>
+                    <_.AuthorshipFrom>@{userName}의  요청</_.AuthorshipFrom>
                 </_.Header>
                 <_.CharacterProfileContainer>
                     <_.CharacterProfileInnerContainer>
@@ -87,7 +88,7 @@ const MemorialApply = ({ stack, push, pop, top }: dataStructureProps) => {
                 </_.CharacterProfileContainer>
             </_.Section1>
 
-            <MemorialTextarea btnText='추모관 신청하기' from='winshine1034' content='<목차>마지막 순간</목차>
+            <MemorialTextarea btnText='추모관 신청하기' from={userName} content='<목차>마지막 순간</목차>
 <사진 {80px}>https://buma.wiki/api/image/display/최애의사인/example.png</사진>
 <동영상>https://www.youtube.com/watch?v=oMk46C5Cjws</동영상>'
             isPerson={true}
