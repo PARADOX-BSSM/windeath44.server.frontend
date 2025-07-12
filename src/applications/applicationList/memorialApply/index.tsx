@@ -42,7 +42,7 @@ const MemorialApply = ({ stack, push, pop, top }: dataStructureProps) => {
                                             <_.CharacterInformationRowAttributeText>나이</_.CharacterInformationRowAttributeText>
                                         </_.CharacterInformationRowAttribute>
                                         <_.CharacterInformationRowValue>
-                                            <_.CharacterInformationRowValueText>향년 20세</_.CharacterInformationRowValueText>
+                                            <_.CharacterInformationRowValueText><_.CharacterInforInput type='text' placeholder='예) 향년 20세'></_.CharacterInforInput></_.CharacterInformationRowValueText>
                                         </_.CharacterInformationRowValue>
                                     </_.CharacterInformationRow>
 
@@ -51,7 +51,7 @@ const MemorialApply = ({ stack, push, pop, top }: dataStructureProps) => {
                                             <_.CharacterInformationRowAttributeText>사망 날짜</_.CharacterInformationRowAttributeText>
                                         </_.CharacterInformationRowAttribute>
                                         <_.CharacterInformationRowValue>
-                                            <_.CharacterInformationRowValueText>2023.04.12</_.CharacterInformationRowValueText>
+                                            <_.CharacterInformationRowValueText><_.CharacterInforInput type='text' placeholder='예) 2023.04.12'></_.CharacterInforInput></_.CharacterInformationRowValueText>
                                         </_.CharacterInformationRowValue>
                                     </_.CharacterInformationRow>
 
@@ -60,7 +60,7 @@ const MemorialApply = ({ stack, push, pop, top }: dataStructureProps) => {
                                             <_.CharacterInformationRowAttributeText>생존 기간</_.CharacterInformationRowAttributeText>
                                         </_.CharacterInformationRowAttribute>
                                         <_.CharacterInformationRowValue>
-                                            <_.CharacterInformationRowValueText>1일</_.CharacterInformationRowValueText>
+                                            <_.CharacterInformationRowValueText><_.CharacterInforInput type='text' placeholder='예) 1일'></_.CharacterInforInput></_.CharacterInformationRowValueText>
                                         </_.CharacterInformationRowValue>
                                     </_.CharacterInformationRow>
 

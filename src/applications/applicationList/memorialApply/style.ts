@@ -210,3 +210,17 @@ export const CharacterInformationRowValueText = styled.p`
     line-height: normal;
 `
 
+export const CharacterInforInput = styled.input`
+    width: 100%;
+    height: 100%;
+    color: #2E2E2E;
+    text-align: center;
+    font-family: Galmuri11;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    border:none;
+    background:transparent;
+    outline:none;
+`
