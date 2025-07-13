@@ -15,7 +15,6 @@ interface dataStructureProps {
 
 const MemorialApply = ({}: dataStructureProps) => {
     const taskTransform = useAtomValue(taskTransformerAtom);
-    const [name, setName] = useState("");
     const userName = "winshine0326"
     const [inputValue,setInputValue] = useAtom(inputPortage);
 
@@ -24,7 +23,7 @@ const MemorialApply = ({}: dataStructureProps) => {
             <_.Section1>
                 <_.Header>
                     <_.HeaderTextContainer>
-                        <_.CharacterNameInput placeholder='이름을 입력해주세요...' onChange={(e) => setName(e.target.value)}></_.CharacterNameInput>
+                        <_.CharacterNameInput placeholder='이름을 입력해주세요...' onChange={(e) => setInputValue(prev=>({...prev, name: e.target.value}))}></_.CharacterNameInput>
                         <_.Status>문서 수정 중</_.Status>
                     </_.HeaderTextContainer>
                     <_.AuthorshipFrom>@{userName}의  요청</_.AuthorshipFrom>
@@ -34,7 +33,7 @@ const MemorialApply = ({}: dataStructureProps) => {
                         <_.CharacterProfileBox>
                             <_.CharacterProfile>
                                 <_.CharacterProfileImg />
-                                <_.CharacterProfileName>{name}</_.CharacterProfileName>
+                                <_.CharacterProfileName>{inputValue.name}</_.CharacterProfileName>
                             </_.CharacterProfile>
 
                             <_.CharacterInformation>

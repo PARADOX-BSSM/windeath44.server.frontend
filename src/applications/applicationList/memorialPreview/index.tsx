@@ -16,7 +16,7 @@ const MemorialPreview = () => {
           <_.Section1>
             <_.Header>
               <_.TextContainer>
-                <_.Title>호시노 아이</_.Title>
+                <_.Title>{inputValue.name}</_.Title>
                 <_.Subtitle>최근 수정: 2025-07-04 12:34:56</_.Subtitle>
               </_.TextContainer>
               <_.CurrentPage>문서 수정본 미리보기</_.CurrentPage>
@@ -38,7 +38,7 @@ const MemorialPreview = () => {
                 <_.ProfileInnerContainer>
                   <_.PictureContainer>
                     <_.Picture imgUrl={characterUrl} />
-                    <_.Name>호시노 아이</_.Name>
+                    <_.Name>{inputValue.name}</_.Name>
                   </_.PictureContainer>
                   <_.Information>
                     <_.Row>
