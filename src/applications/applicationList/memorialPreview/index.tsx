@@ -26,18 +26,21 @@ const MemorialPreview = () => {
                 <_.Quote>이 말은 절대로 거짓말이 아니야.</_.Quote>
                 <_.Index>
                   <_.IndexTitle>목차</_.IndexTitle>
-                  {
-                    index_data.map((item, idx) => {
-                      // console.log(idx);
-                      return <IndexMenu text={item} idx={idx}></IndexMenu>
-                    })
-                  }
+                  {index_data.map((item, idx) => {
+                    // console.log(idx);
+                    return (
+                      <IndexMenu
+                        text={item}
+                        idx={idx}
+                      ></IndexMenu>
+                    );
+                  })}
                 </_.Index>
               </_.IndexWrapper>
               <_.ProfileContainer>
                 <_.ProfileInnerContainer>
                   <_.PictureContainer>
-                    <_.Picture imgUrl={characterUrl} />
+                    <_.Picture imgUrl={inputValue.profileImage} />
                     <_.Name>{inputValue.name}</_.Name>
                   </_.PictureContainer>
                   <_.Information>
@@ -70,15 +73,13 @@ const MemorialPreview = () => {
           <_.Section2>
             <_.ArticleContainer>
               <_.ArticleTitle>1. 마지막 순간</_.ArticleTitle>
-              <_.ArticleContent>
-                {contentIn.content}
-              </_.ArticleContent>
+              <_.ArticleContent>{contentIn.content}</_.ArticleContent>
             </_.ArticleContainer>
           </_.Section2>
         </_.InnerContainer>
       </_.Container>
     </_.Main>
   );
-}
+};
 
 export default MemorialPreview;

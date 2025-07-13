@@ -71,6 +71,7 @@ const MemorialApply = ({}: dataStructureProps) => {
   const handleCropConfirm = () => {
     if (editorRef.current) {
       const canvas = editorRef.current.getImageScaledToCanvas().toDataURL();
+      setInputValue((prev) => ({ ...prev, profileImage: canvas }));
       setProfileImage(canvas);
       setIsCropping(false);
     }
