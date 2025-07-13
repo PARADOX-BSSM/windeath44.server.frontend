@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { Number } from './style';
 const Booting = () => {
   const [sideWidth, setSideWidth] = useState<number>(0);
+  const [percentage, setPercentage] = useState(0);
   useEffect(() => {
     const updateSideWidth = () => {
       const fullWidth = window.innerWidth;
@@ -16,6 +17,15 @@ const Booting = () => {
     window.addEventListener('resize', updateSideWidth);
     return () => window.removeEventListener('resize', updateSideWidth);
   }, []);
+
+  useEffect(() => {
+    if (percentage < 100) {
+      const timer = setTimeout(() => {
+        setPercentage((prev) => prev + 1);
+      }, 50);
+      return () => clearTimeout(timer);
+    }
+  }, [percentage]);
   return (
     <_.Container>
       <_.BackgroundDiv width={sideWidth}></_.BackgroundDiv>
@@ -33,7 +43,13 @@ const Booting = () => {
             </_.MainTexts>
           </_.Title>
         </_.Info>
-        <_.Bar>0%</_.Bar>
+        <_.Bar>
+          <_.Fill
+            className="gauge-fill"
+            style={{ width: `${percentage}%` }}
+          />
+          <_.Gauge>{percentage}%</_.Gauge>
+        </_.Bar>
       </_.Main>
       <_.BackgroundDiv width={sideWidth}></_.BackgroundDiv>
     </_.Container>

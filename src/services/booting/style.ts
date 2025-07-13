@@ -33,13 +33,27 @@ export const Bar = styled.div`
   width: 60%;
   height: 4%;
   margin-top: 5vmin;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: relative;
   background-color: var(--light-primary-color);
   font-family: 'Galmuri11';
+  overflow: hidden;
+`;
+export const Fill = styled.div`
+  height: 100%;
+  background-color: var(--primary-color);
+  width: 0;
+  transition: width 0.1s;
+`;
+export const Gauge = styled.div`
+  position: absolute;
+  width: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  text-align: center;
+  color: black;
   font-size: 2.5vmin;
 `;
+
 export const Info = styled.div`
   width: fit-content;
   height: fit-content;
