@@ -21,7 +21,7 @@ const Discover = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
   const visibleApps = Apps.filter((app: TaskType) => app.visible);
   return (
     <>
-      <Seori />
+      {/* <Seori /> */}
       {visibleApps.map((Application: TaskType) => {
         console.log(Application.appSetup?.Image);
         return (
