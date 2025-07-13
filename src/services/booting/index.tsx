@@ -19,20 +19,20 @@ const Booting = () => {
     <_.Container>
       <_.BackgroundDiv width={sideWidth}></_.BackgroundDiv>
       <_.Main>
-        <div>
+        <_.Info>
           <img
             src={Window}
             alt={'Window'}
           />
-          <div>
-            <div>Microsoft</div>
-            <div>
-              <span>Windeath</span>
+          <_.Title>
+            <_.Sub>Microsoft</_.Sub>
+            <_.MainTexts>
+              <_.Text>Windeath</_.Text>
               <span>44</span>
-            </div>
-          </div>
-        </div>
-        <div>바</div>
+            </_.MainTexts>
+          </_.Title>
+        </_.Info>
+        <_.Bar>0%</_.Bar>
       </_.Main>
       <_.BackgroundDiv width={sideWidth}></_.BackgroundDiv>
     </_.Container>
