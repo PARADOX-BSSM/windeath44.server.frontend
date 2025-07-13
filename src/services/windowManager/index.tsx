@@ -118,7 +118,6 @@ const WindowManager = () => {
       const [dx, dy] = dragOffset.current;
       const dragged = Math.abs(dx) > 10 || Math.abs(dy) > 10;
       if (dragged) return;
-
       setCursorImage(CURSOR_IMAGES.click);
       if (clickTimeout.current) {
         clearTimeout(clickTimeout.current);

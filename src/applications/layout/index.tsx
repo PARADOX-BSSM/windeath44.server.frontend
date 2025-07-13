@@ -1,9 +1,9 @@
 import * as _ from './style';
 import { Suspense, useEffect, useState } from 'react';
 import { useDrag } from 'react-use-gesture';
-import Exit from "@/assets/headerButton/exit.svg";
-import Full from "@/assets/headerButton/full.svg";
-import Min from "@/assets/headerButton/min.svg";
+import Exit from '@/assets/headerButton/exit.svg';
+import Full from '@/assets/headerButton/full.svg';
+import Min from '@/assets/headerButton/min.svg';
 import Heart from '@/assets/headerButton/heart.svg';
 import { useAtom } from 'jotai';
 import {
@@ -36,14 +36,14 @@ const Application = (props: ApplicationProps) => {
   const setUpWidth = props.setUpWidth;
 
   const windowProps: React.CSSProperties = {
-    position: "absolute",
+    position: 'absolute',
     height: props.setUpHeight,
     width: props.setUpWidth,
     top: (20 * globalThis.innerHeight) / 100,
     left: (30 * globalThis.innerWidth) / 100,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     zIndex: layer,
-    filter: "dropShadow(gray 0px 0px 15px)",
+    filter: 'dropShadow(gray 0px 0px 15px)',
   };
   const [window, setWindow] = useState<React.CSSProperties>(windowProps); // 현재 창의 상태 (위치, 크기, 스타일 등)
   const [backupWindow, setBackupWindow] = useState<React.CSSProperties>(window); // 전체화면 진입 전 창의 상태 백업
@@ -54,46 +54,41 @@ const Application = (props: ApplicationProps) => {
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false); // 전체화면 여부
   const [isMinimized, setIsMinimized] = useState<boolean>(false); // 최소화 여부
 
-
   // 커서 위치 동기화 : props로 받은 커서 위치(props.cursorVec)를 로컬 상태(cursor)로 동기화
   useEffect(() => {
     setBeforeMoveParams(cursor);
     setCursor(props.cursorVec);
   }, [props.cursorVec]);
 
-
   // UX 개선 : 현재 창의 상태가 바뀌면 focus를 현재 창으로 변경
   useEffect(() => {
-    if (!isMinimized && (focus !== props.name)) {
+    if (!isMinimized && focus !== props.name) {
       setFocus(props.name);
     }
   }, [window]);
-
 
   // 최소화 처리 : 최소화 시 창을 숨기고, 포커스를 "Discover"로 이동
   useEffect(() => {
     if (isMinimized) {
       setWindow({
         ...window,
-        display: "none",
+        display: 'none',
       });
-      setFocus("Discover");
+      setFocus('Discover');
     }
   }, [isMinimized]);
-
 
   // Tab 인터럽트 처리 : tabDownInterrupt가 내 창이면 최소화 후 인터럽트 상태 초기화
   useEffect(() => {
     if (tabDownInterrupt === props.name) {
       setIsMinimized(true);
-      setTabDownInterrupt("empty");
+      setTabDownInterrupt('empty');
     }
   }, [tabDownInterrupt]);
 
-
   // 포커스 관리 : 창이 최소화되지 않았고, 포커스가 내 창이 아니면 내 창으로 포커스 이동
   useEffect(() => {
-    if (props.type !== "Shell" && focus === props.name) {
+    if (props.type !== 'Shell' && focus === props.name) {
       setLayer(layer + 1);
       setIsMinimized(false);
       setWindow({
@@ -104,22 +99,20 @@ const Application = (props: ApplicationProps) => {
     }
   }, [focus]);
 
-
-
   // 전체화면 처리 : 전체화면 진입 시 창 상태 백업 후 화면 전체로 확장, 해제 시 복원
   useEffect(() => {
     if (isFullScreen) {
-      const container = document.getElementById("cursorContainer") as HTMLElement;
+      const container = document.getElementById('cursorContainer') as HTMLElement;
       const bounds = container.getBoundingClientRect();
       setBackupWindow(window);
       setWindow({
         ...window,
-        height: `calc(100vh - 2.75rem - ${getPixelFromPercent("width", 1.5)}px)`,
-        width: `calc(${bounds.width}px - ${getPixelFromPercent("width", 1.5)}px)`,
+        height: `calc(100vh - 2.75rem - ${getPixelFromPercent('width', 1.5)}px)`,
+        width: `calc(${bounds.width}px - ${getPixelFromPercent('width', 1.5)}px)`,
         top: bounds.top,
         left: bounds.left,
         zIndex: layer - 1,
-        filter: undefined
+        filter: undefined,
       });
     } else if (!isFullScreen) {
       setWindow(backupWindow);
@@ -131,7 +124,7 @@ const Application = (props: ApplicationProps) => {
 
   const widthLimit = (params: DragParams) => {
     const [nearRight] = corner;
-    if (window.width as unknown as number >= props.appSetup.minWidth) {
+    if ((window.width as unknown as number) >= props.appSetup.minWidth) {
       if (nearRight) {
         return Number(window.width) + params.offset[0] - beforeSizeParams[0];
       } else {
@@ -141,20 +134,24 @@ const Application = (props: ApplicationProps) => {
     return props.appSetup.minWidth;
   };
   const heightLimit = (params: DragParams) => {
-    if (window.height as unknown as number >= props.appSetup.minHeight) {
+    if ((window.height as unknown as number) >= props.appSetup.minHeight) {
       return Number(window.height) + params.offset[1] - beforeSizeParams[1];
     }
     return props.appSetup.minHeight;
   };
   const leftLimit = (params: DragParams) => {
-    if (window.width as unknown as number >= props.appSetup.minWidth) {
+    if ((window.width as unknown as number) >= props.appSetup.minWidth) {
       return Number(window.left) + params.offset[0] - beforeSizeParams[0];
     }
     return window.left;
   };
 
   const sizeManager = useDrag((params) => {
-    if (isFirst && !isFullScreen && (heightCondition(corner) || widthCondition(corner) || leftCondition(corner))) {
+    if (
+      isFirst &&
+      !isFullScreen &&
+      (heightCondition(corner) || widthCondition(corner) || leftCondition(corner))
+    ) {
       setWindow({
         ...window,
         height: heightCondition(corner) ? heightLimit(params) : window.height,
@@ -181,75 +178,93 @@ const Application = (props: ApplicationProps) => {
     }
   });
 
-  if (props.type === "App") {
+  if (props.type === 'App') {
     return (
-      <_.Window style={window} onMouseDown={() => setFocus(props.name)}>
+      <_.Window
+        style={window}
+        onMouseDown={() => setFocus(props.name)}
+      >
         <_.WindowHeader {...moveManager()}>
           <_.TitleContainer>
-            <_.HeartImg src={Heart}/>
+            <_.HeartImg src={Heart} />
             <_.Title>{props.name}</_.Title>
           </_.TitleContainer>
           <_.BtnContainer>
-            <_.MinimizeButton onClick={() =>
-              setIsMinimized(!isMinimized)
-            }
-              onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
-              onMouseOut={() => setCursorImage(CURSOR_IMAGES.default)}
+            <_.MinimizeButton
+              onClick={() => setIsMinimized(!isMinimized)}
               isFocus={focus === props.name}
             >
-              <img src={Min} alt="" width="70%" />
+              <img
+                src={Min}
+                alt=""
+                width="70%"
+                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+              />
             </_.MinimizeButton>
-            <_.FullScreenButton onClick={() =>
-              setIsFullScreen(!isFullScreen)
-            }
-              onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
-              onMouseOut={() => setCursorImage(CURSOR_IMAGES.default)}
+            <_.FullScreenButton
+              onClick={() => setIsFullScreen(!isFullScreen)}
               isFocus={focus === props.name}
             >
-              <img src={Full} alt="" width="70%" />
+              <img
+                src={Full}
+                alt=""
+                width="70%"
+                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+              />
             </_.FullScreenButton>
 
-            <_.ExitButton onClick={() => {
-              props.removeTask(props.removeCompnent);
-              if (!isLogIned) {
-                setIsLogIned(true);
-              }
-            }}
-              onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
-              onMouseOut={() => setCursorImage(CURSOR_IMAGES.default)}
+            <_.ExitButton
+              onClick={() => {
+                props.removeTask(props.removeCompnent);
+                if (!isLogIned) {
+                  setIsLogIned(true);
+                }
+              }}
               isFocus={focus === props.name}
             >
-              <img src={Exit} alt="" width="70%" />
+              <img
+                src={Exit}
+                alt=""
+                width="70%"
+                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+              />
             </_.ExitButton>
           </_.BtnContainer>
         </_.WindowHeader>
-        <_.WindowContent {...sizeManager()} onMouseUp={() => setIsFirst(true)}>
-          {
-            (() => {
-              const original = props.children;
-              const internal = original.props.children as React.ReactElement;
-              const type = internal.type;
+        <_.WindowContent
+          {...sizeManager()}
+          onMouseUp={() => setIsFirst(true)}
+        >
+          {(() => {
+            const original = props.children;
+            const internal = original.props.children as React.ReactElement;
+            const type = internal.type;
 
-              if (props.name === "추모관 검색") {
-                return (
-                  <Suspense fallback={null}>
-                    {React.createElement(type, { window, setWindow, setUpHeight, setUpWidth })}
-                  </Suspense>
-                );
-              } else {
-                return props.children;
-              }
-            })()
-          }
+            if (props.name === '추모관 검색') {
+              return (
+                <Suspense fallback={null}>
+                  {React.createElement(type, { window, setWindow, setUpHeight, setUpWidth })}
+                </Suspense>
+              );
+            } else {
+              return props.children;
+            }
+          })()}
         </_.WindowContent>
       </_.Window>
     );
-  } else if (props.type === "Shell") {
+  } else if (props.type === 'Shell') {
     return (
-      <_.Shell className="shell" onClick={() => {
-        console.log(1234);
-        setFocus("Discover")
-      }}>
+      <_.Shell
+        className="shell"
+        onClick={() => {
+          console.log(1234);
+          setFocus('Discover');
+        }}
+      >
         {props.children}
       </_.Shell>
     );

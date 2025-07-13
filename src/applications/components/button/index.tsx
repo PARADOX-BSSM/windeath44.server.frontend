@@ -1,3 +1,4 @@
+import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
 import * as _ from './style';
 
 type ButtonProps = {
@@ -7,7 +8,10 @@ type ButtonProps = {
 
 const Button = ({props,onClick}:ButtonProps) =>{
     return(
-        <_.Black onClick={onClick}>
+        <_.Black onClick={onClick}
+        onMouseEnter={()=>setCursorImage(CURSOR_IMAGES.hand)}
+        onMouseLeave={()=>setCursorImage(CURSOR_IMAGES.default)}
+        >
             <div>
                 <div>
                     <div>
