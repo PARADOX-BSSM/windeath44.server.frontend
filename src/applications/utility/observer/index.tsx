@@ -2,7 +2,6 @@ import * as _ from './style';
 import useApps from "@/applications/data/importManager";
 import { TaskType } from "@/modules/typeModule.tsx";
 import { useState, useEffect } from 'react';
-import File from '@/assets/File.svg';
 import { useProcessManager } from '@/hooks/processManager';
 
 const Observer = () => {
@@ -29,7 +28,7 @@ const Observer = () => {
             <_.Snapshot key={Application.id} onClick={() => {
               addTask(Application);
             }}>
-              <_.SnapshotImg src={File}/>
+              <_.SnapshotImg src={Application.appSetup?.Image}/>
               <_.SnapshotText >{Application.name}</_.SnapshotText>
             </_.Snapshot>
           )
