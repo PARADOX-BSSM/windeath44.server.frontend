@@ -1,2 +1,27 @@
 import styled from '@emotion/styled';
-export const Container = styled.div``;
+import bgImg from '@/assets/Background.svg';
+import skeleton from '@/assets/skeleton.png';
+
+export const Container = styled.div`
+  margin: 0;
+  padding: 0;
+  display: flex;
+`;
+export const BackgroundDiv = styled.div<{ width: number }>`
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  width: ${({ width }) => `${width}px`};
+  z-index: 9999;
+  background-image: url('${bgImg}');
+  background-size: cover;
+`;
+export const Main = styled.main`
+  height: 100vh;
+  aspect-ratio: 4/3;
+  inset: 0;
+  margin: 0 auto;
+  cursor: none;
+  background-color: var(--dark-primary-color);
+  background-size: cover;
+`;

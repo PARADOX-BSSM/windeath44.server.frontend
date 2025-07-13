@@ -16,12 +16,12 @@ function Kernel() {
   }, []);
 
   useEffect(() => {
-    if (isBooting) {
-      setTimeout(() => {
-        localStorage.setItem('hasBooted', 'true');
-        setIsBooting(false);
-      }, 2000);
-    }
+    // if (isBooting) {
+    //   setTimeout(() => {
+    //     localStorage.setItem('hasBooted', 'true');
+    //     setIsBooting(false);
+    //   }, 2000);
+    // }
   }, [isBooting]);
 
   if (isBooting) {
