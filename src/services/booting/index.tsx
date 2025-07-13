@@ -22,7 +22,7 @@ const Booting = () => {
     if (percentage < 100) {
       const timer = setTimeout(() => {
         setPercentage((prev) => prev + 1);
-      }, 50);
+      }, 20);
       return () => clearTimeout(timer);
     }
   }, [percentage]);

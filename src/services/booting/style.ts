@@ -42,7 +42,7 @@ export const Fill = styled.div`
   height: 100%;
   background-color: var(--primary-color);
   width: 0;
-  transition: width 0.1s;
+  transition: width 0.04s;
 `;
 export const Gauge = styled.div`
   position: absolute;
