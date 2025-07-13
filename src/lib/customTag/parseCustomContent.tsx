@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import * as _ from './style';
+import { index_data } from '@/applications/applicationList/memorialPreview/data';
 
 export const parseCustomContent = (content: string): React.ReactNode[] => {
   const elements: React.ReactNode[] = [];
+  index_data.length = 0;
   let indexIdx = 0;
 
   // 전체를 반복하며 커스텀 태그를 찾음
@@ -25,6 +27,7 @@ export const parseCustomContent = (content: string): React.ReactNode[] => {
     if (match[1]) {
       // 목차
       indexIdx += 1;
+      index_data.push(match[1]);
       elements.push(
         <>
           <_.Horizon />
