@@ -1,13 +1,12 @@
 import IndexMenu from '@/applications/components/indexMenu';
 import * as _ from './style';
 import { index_data } from './data';
-import characterUrl from '@/assets/character/hosino.svg';
 import { useAtom } from 'jotai';
 import { inputContent, inputPortage } from '@/atoms/inputManager';
 
 const MemorialPreview = () => {
-  const [inputValue, setInputValue] = useAtom(inputPortage);
-  const [contentIn, setContentIn] = useAtom(inputContent);
+  const [inputValue] = useAtom(inputPortage);
+  const [contentIn] = useAtom(inputContent);
 
   return (
     <_.Main>
