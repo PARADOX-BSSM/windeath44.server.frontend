@@ -8,6 +8,7 @@ export const inputPortage = atom({
   anime: '',
   age: '',
   profileImage: '',
+  phrase: '',
 });
 
 export const inputContent = atom({ characterId: '', content: '' });

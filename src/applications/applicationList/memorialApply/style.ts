@@ -333,3 +333,30 @@ export const Connnnn = styled.div`
   justify-content: center;
   align-items: center;
 `;
+
+export const PhraseContainer = styled.input`
+  width: 80%;
+  height: 100%;
+  color: #2e2e2e;
+  text-align: center;
+  font-family: Galmuri11;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  border: none;
+  background: transparent;
+  outline: none;
+  background: var(--VeryLightPrimary, #ffeefd);
+`;
+
+export const TextAreaContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  display: flex;
+  gap: 2em;
+  padding: 0 10%;
+  box-sizing: border-box;
+`;
