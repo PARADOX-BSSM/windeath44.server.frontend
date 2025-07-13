@@ -3,6 +3,7 @@ import * as _ from './style';
 import { index_data } from './data';
 import { useAtom } from 'jotai';
 import { inputContent, inputPortage } from '@/atoms/inputManager';
+import { parseCustomContent } from '@/lib/parseCustomContent';
 
 const MemorialPreview = () => {
   const [inputValue] = useAtom(inputPortage);
@@ -72,7 +73,7 @@ const MemorialPreview = () => {
           <_.Section2>
             <_.ArticleContainer>
               <_.ArticleTitle>1. 마지막 순간</_.ArticleTitle>
-              <_.ArticleContent>{contentIn.content}</_.ArticleContent>
+              <_.ArticleContent>{parseCustomContent(contentIn.content)}</_.ArticleContent>
             </_.ArticleContainer>
           </_.Section2>
         </_.InnerContainer>
