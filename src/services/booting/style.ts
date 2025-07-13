@@ -33,7 +33,7 @@ export const Bar = styled.div`
   height: 4%;
   margin-top: 5vmin;
   position: relative;
-  background-color: var(--light-primary-color);
+  background-color: #ffe9fd;
   font-family: 'Galmuri11';
   overflow: hidden;
 `;
@@ -80,7 +80,7 @@ export const Sub = styled.div`
   font-size: clamp(7vmin, 7vmin, 7vmin);
   font-weight: 400;
   letter-spacing: -0.3vmin;
-  color: var(--light-primary-color);
+  color: #ffe9fd;
 `;
 export const MainTexts = styled.div`
   width: 100%;
@@ -99,5 +99,5 @@ export const Number = styled.div`
   font-size: clamp(15vmin, 15vmin, 15vmin);
   letter-spacing: -1vmin;
   font-weight: 400;
-  color: var(--light-primary-color);
+  color: #ffe9fd;
 `;
