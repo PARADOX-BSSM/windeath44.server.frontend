@@ -5,7 +5,8 @@ export const Black = styled.button`
     height: fit-content;
     border-width: 1.5px 3px 3px 1.5px; 
     border-style: solid;
-    border-color: #000000;    
+    border-color: #000000;   
+    cursor: none;
     & > div{
         border-width: 1.5px 0 0  1.5px;
         border-style: solid;

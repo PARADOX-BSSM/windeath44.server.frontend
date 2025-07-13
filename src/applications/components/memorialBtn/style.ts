@@ -17,6 +17,7 @@ export const Btn = styled.button<{width?: string; height?: string; fontSize?: st
     font-style: normal;
     font-weight: 400;
     line-height: 15px; /* 75% */
+    cursor: none;
 `
 
 export const SelectedBtn = styled.button<{width?: string; height?: string; fontSize?: string;}>`
@@ -36,6 +37,7 @@ export const SelectedBtn = styled.button<{width?: string; height?: string; fontS
     font-weight: 400;
     line-height: 15px; /* 75% */
     border:none;
+    cursor: none;
 `
 
 export const SubmitDefault = styled.button<{width?: string; height?: string; fontSize?: string;}>`
@@ -55,6 +57,7 @@ export const SubmitDefault = styled.button<{width?: string; height?: string; fon
     font-weight: 400;
     line-height: 15px; /* 75% */
     border : none;
+    cursor: none;
 `
 
 export const SubmitActive = styled.button<{width?: string; height?: string; fontSize?: string;}>`
@@ -73,4 +76,5 @@ export const SubmitActive = styled.button<{width?: string; height?: string; font
     font-weight: 400;
     line-height: 15px; /* 75% */
     border : none;
+    cursor: none;
 `
