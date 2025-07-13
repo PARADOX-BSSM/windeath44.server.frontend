@@ -26,9 +26,12 @@ export const parseCustomContent = (content: string): React.ReactNode[] => {
       // 목차
       indexIdx += 1;
       elements.push(
-        <_.Index key={`목차-${match.index}`}>
-          {indexIdx}. {match[1]}
-        </_.Index>,
+        <>
+          <_.Horizon />
+          <_.Index key={`목차-${match.index}`}>
+            {indexIdx}. {match[1]}
+          </_.Index>
+        </>,
       );
     } else if (match[2] && match[3]) {
       // 사진
