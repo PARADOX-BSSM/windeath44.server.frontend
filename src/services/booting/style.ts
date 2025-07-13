@@ -21,7 +21,6 @@ export const Main = styled.main`
   aspect-ratio: 4/3;
   inset: 0;
   margin: 0 auto;
-  cursor: none;
   background-color: var(--dark-primary-color);
   background-size: cover;
   display: flex;
