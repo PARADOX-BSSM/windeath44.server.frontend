@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import MergeBtn from '../mergeBtn';
 import * as _ from './style';
+import { useAtom } from 'jotai';
+import { inputContent } from '@/atoms/inputManager';
 
 interface PropsType {
     btnText?: string,
@@ -11,17 +13,24 @@ interface PropsType {
 }
 
 const MemorialTextarea = ({ btnText="", from, content, isReadonly=false, isPerson=false }: PropsType) => {
-    const [value, setValue] = useState(content);
+    const [contentIn, setContentIn] = useAtom(inputContent);
+
+    useEffect(() => {
+        setContentIn(prev => ({
+            ...prev,
+            content: content
+        }));
+    }, [content, setContentIn]);
+    
     return (
         <>
             <_.Container>
                 {isPerson? <_.Title>- @{from}의 작성안</_.Title> : <_.Title>{from}</_.Title>}
                 <_.CommitAreaContainer>
-                    <_.CommitArea value={value} onChange={e => setValue(e.target.value)} readOnly={isReadonly}></_.CommitArea>
+                    <_.CommitArea value={contentIn.content} onChange={e => setContentIn(prev => ({...prev, content: e.target.value}))} readOnly={isReadonly}></_.CommitArea>
                 </_.CommitAreaContainer>
             </_.Container>
             {isPerson? <MergeBtn text={btnText} /> : <></>}
-            
         </>
     );
 }

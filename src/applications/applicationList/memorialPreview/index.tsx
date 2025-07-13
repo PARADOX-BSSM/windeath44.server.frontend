@@ -3,10 +3,11 @@ import * as _ from './style';
 import { index_data } from './data';
 import characterUrl from '@/assets/character/hosino.svg';
 import { useAtom } from 'jotai';
-import { inputPortage } from '@/atoms/inputManager';
+import { inputContent, inputPortage } from '@/atoms/inputManager';
 
 const MemorialPreview = () => {
   const [inputValue, setInputValue] = useAtom(inputPortage);
+  const [contentIn, setContentIn] = useAtom(inputContent);
 
   return (
     <_.Main>
@@ -70,7 +71,7 @@ const MemorialPreview = () => {
             <_.ArticleContainer>
               <_.ArticleTitle>1. 마지막 순간</_.ArticleTitle>
               <_.ArticleContent>
-                돔공연 축하해....
+                {contentIn.content}
               </_.ArticleContent>
             </_.ArticleContainer>
           </_.Section2>
