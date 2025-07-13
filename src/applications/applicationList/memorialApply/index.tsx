@@ -200,21 +200,32 @@ const MemorialApply = ({}: dataStructureProps) => {
                       </_.CharacterInformationRowAttributeText>
                     </_.CharacterInformationRowAttribute>
                     <_.CharacterInformationRowValue>
-                      <_.CharacterInformationRowValueText>
-                        <MemorialBtn
-                          name="애니메이션 찾기"
-                          onClick={() => {
-                            console.log(taskTransform);
-                            if (taskTransform) {
-                              taskTransform('', '애니메이션 선택');
-                            }
-                          }}
-                          type="submit"
-                          active={true}
-                          widthPercent={15}
-                          heightPercent={5}
-                          fontSize="1rem"
-                        />
+                      <_.CharacterInformationRowValueText
+                        onClick={() => {
+                          console.log(taskTransform);
+                          if (taskTransform) {
+                            taskTransform('', '애니메이션 선택');
+                          }
+                        }}
+                        onMouseEnter={() => {
+                          setCursorImage(CURSOR_IMAGES.hand);
+                        }}
+                        onMouseLeave={() => {
+                          setCursorImage(CURSOR_IMAGES.default);
+                        }}
+                      >
+                        {inputValue.anime == '' ? (
+                          <MemorialBtn
+                            name="애니메이션 찾기"
+                            type="submit"
+                            active={true}
+                            widthPercent={15}
+                            heightPercent={5}
+                            fontSize="1rem"
+                          />
+                        ) : (
+                          inputValue.anime
+                        )}
                       </_.CharacterInformationRowValueText>
                     </_.CharacterInformationRowValue>
                   </_.CharacterInformationRow>
