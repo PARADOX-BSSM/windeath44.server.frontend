@@ -2,8 +2,12 @@ import IndexMenu from '@/applications/components/indexMenu';
 import * as _ from './style';
 import { index_data } from './data';
 import characterUrl from '@/assets/character/hosino.svg';
+import { useAtom } from 'jotai';
+import { inputPortage } from '@/atoms/inputManager';
 
 const MemorialPreview = () => {
+  const [inputValue, setInputValue] = useAtom(inputPortage);
+
   return (
     <_.Main>
       <_.Container>
@@ -38,19 +42,19 @@ const MemorialPreview = () => {
                   <_.Information>
                     <_.Row>
                       <_.Attribute>나이</_.Attribute>
-                      <_.Value>향년 20세</_.Value>
+                      <_.Value>{inputValue.age}</_.Value>
                     </_.Row>
                     <_.Row>
                       <_.Attribute>사망 날짜</_.Attribute>
-                      <_.Value>2023.04.12</_.Value>
+                      <_.Value>{inputValue.date}</_.Value>
                     </_.Row>
                     <_.Row>
                       <_.Attribute>생존 기간</_.Attribute>
-                      <_.Value>1일</_.Value>
+                      <_.Value>{inputValue.lifeCycle}</_.Value>
                     </_.Row>
                     <_.Row>
                       <_.Attribute>애니메이션</_.Attribute>
-                      <_.Value>최애의 아이</_.Value>
+                      <_.Value>{inputValue.anime}</_.Value>
                     </_.Row>
                   </_.Information>
                 </_.ProfileInnerContainer>
