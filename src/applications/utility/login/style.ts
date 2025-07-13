@@ -2,19 +2,19 @@ import styled from "@emotion/styled";
 
 export const tempImage = styled.div`
     width: 100%;
-    height: 180px;
+    height: 6.75rem;
     background-color: #ffffff;
     display: flex;
     justify-content: center;
-    img{
+    img {
         width: 100%;
     }
 `;
 
 export const tempBulk = styled.div`
-  width: 100%;
-  height: 10px;
-  background-color: #ffbbf5;
+    width: 100%;
+    height: 0.625rem;
+    background-color: #ffbbf5;
 `;
 
 export const tempMain = styled.div`
@@ -24,26 +24,28 @@ export const tempMain = styled.div`
     flex-direction: column;
     align-items: center;
 `;
+
 export const tempMainStyle = styled.div`
     background-color: #FFD3FB;
     width: 100%;
     height: 100%;
     position: relative;
 `;
+
 export const tempInputs = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 1rem;
 `;
 
 export const tempButtons = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
-    padding: 20px;
-    gap: 10px;
+    padding: 1rem;
+    gap: 0.35rem;
     position: absolute;
     bottom: 0;
     right: 0;

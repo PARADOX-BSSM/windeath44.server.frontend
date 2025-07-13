@@ -4,7 +4,7 @@ import * as _ from './style';
 interface PropsType {
     name: string;
     selected?: boolean;
-    onClick?: () => void;
+    onClick?: (() => void) | ((e: React.MouseEvent<HTMLButtonElement>) => Promise<void>);
     type?: string;
     active?: boolean;
     widthPercent?: number;

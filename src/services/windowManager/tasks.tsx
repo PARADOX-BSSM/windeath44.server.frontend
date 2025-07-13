@@ -5,6 +5,7 @@ import EmailChack from 'applications/utility/emailCheck';
 import Auth from '@/applications/utility/auth';
 import { TaskType } from '@/modules/typeModule.tsx';
 import myComputer from '@/assets/appIcons/my_computer.svg';
+import { getPixelFromPercent } from '@/lib/getPixelFromPercent';
 
 type SetIsLogIned = React.Dispatch<React.SetStateAction<boolean>>;
 type AddTask = (task: TaskType) => void;
@@ -45,10 +46,10 @@ export function getTaskCreators(
     layer: undefined,
     appSetup: {
       Image: myComputer,
-      minWidth: 748,
-      minHeight: 464,
-      setUpWidth: 748,
-      setUpHeight: 464
+      minWidth: getPixelFromPercent("width", 60),
+      minHeight: getPixelFromPercent("height", 50),
+      setUpWidth: getPixelFromPercent("width", 60),
+      setUpHeight: getPixelFromPercent("height", 50)
     },
     visible : true
   };
