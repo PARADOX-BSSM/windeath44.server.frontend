@@ -70,6 +70,15 @@ const MemorialApply = ({}: dataStructureProps) => {
 
                                     <_.CharacterInformationRow>
                                         <_.CharacterInformationRowAttribute>
+                                            <_.CharacterInformationRowAttributeText>사인</_.CharacterInformationRowAttributeText>
+                                        </_.CharacterInformationRowAttribute>
+                                        <_.CharacterInformationRowValue>
+                                            <_.CharacterInformationRowValueText><_.CharacterInforInput type='text' placeholder='예) 흉기에 의한 사망' onChange={(e)=>{setInputValue(prev => ({...prev,deathReason: e.target.value,}))}}></_.CharacterInforInput></_.CharacterInformationRowValueText>
+                                        </_.CharacterInformationRowValue>
+                                    </_.CharacterInformationRow>
+
+                                    <_.CharacterInformationRow>
+                                        <_.CharacterInformationRowAttribute>
                                             <_.CharacterInformationRowAttributeText>애니메이션</_.CharacterInformationRowAttributeText>
                                         </_.CharacterInformationRowAttribute>
                                         <_.CharacterInformationRowValue>

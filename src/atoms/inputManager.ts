@@ -1,3 +1,3 @@
 import { atom } from 'jotai';
 
-export const inputPortage = atom({name: "", content: "", date: "", lifeCycle: "", anime: "", age: ""});
+export const inputPortage = atom({name: "", deathReason: "", date: "", lifeCycle: "", anime: "", age: ""});
