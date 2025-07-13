@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useAtomValue } from 'jotai';
 import MemorialBtn from '@/applications/components/memorialBtn';
 import * as _ from './style.ts';
@@ -6,6 +6,7 @@ import { taskSearchAtom } from '@/atoms/taskTransformer.ts';
 import { alerterAtom } from '@/atoms/alerter.ts';
 import Choten from '@/assets/profile/choten.svg'
 import { useProcessManager } from '@/hooks/processManager.tsx';
+import MemorialPreview from '@/applications/applicationList/memorialPreview/index.tsx';
 
 interface dataStructureProps {
     stack: any[];
@@ -28,7 +29,23 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
 
     const setAlert = useAtomValue(alerterAtom);
     const taskSearch = useAtomValue(taskSearchAtom);
-    const [, , removeTask] = useProcessManager();
+    const [,addTask , removeTask] = useProcessManager();
+
+    const memorialPreview = {
+          "component": <Suspense fallback={null}><MemorialPreview/></Suspense>,
+          "type": "App",
+          "id": 2228,
+          "name": "미리보기",
+          "layer": undefined,
+          "appSetup":{
+            "Image" : "default",
+            "minWidth" : 580,
+            "minHeight" : 420,
+            "setUpWidth" : 850,
+            "setUpHeight" : 500,
+          },
+          "visible":false,
+    }
 
     useEffect(() => {
         if (selectedIdx === 0) {
@@ -36,7 +53,7 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
                 <>
                     "추모관 검색"에서 다양한 캐릭터의 추모관을 찾아볼 수 있습니다. 
                     <br/><br/>
-                    <span style={{fontSize: 18}}>* 추모관에서 다른 사람들과 함께 캐릭터에 대한 기억을 나눠볼 수 있습니다.</span>
+                    <span style={{fontSize: "0.9rem"}}>* 추모관에서 다른 사람들과 함께 캐릭터에 대한 기억을 나눠볼 수 있습니다.</span>
                 </>
             );
         }
@@ -45,7 +62,7 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
                 <>
                     "즐겨찾기"에서 이전에 즐겨찾기에 등록해놓은 추모관을 볼 수 있습니다.
                     <br/><br/>
-                    <span style={{fontSize: 18}}>* 추모관을 즐겨찾기에 등록하여 편리하게 이동할 수 있습니다.</span>
+                    <span style={{fontSize: "0.9rem"}}>* 추모관을 즐겨찾기에 등록하여 편리하게 이동할 수 있습니다.</span>
                 </>
             );
         }
@@ -54,7 +71,7 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
                 <>
                     "추모관 신청"에서 최애의 사인에 존재하지 않는 추모관을 신청할 수 있습니다.
                     <br/><br/>
-                    <span style={{fontSize: 18}}>* 추모관 신청은 주로 1~2일 내에 받아들여집니다.</span>
+                    <span style={{fontSize: "0.9rem"}}>* 추모관 신청은 주로 1~2일 내에 받아들여집니다.</span>
                 </>
             );
         }
@@ -72,6 +89,7 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
                 setAlert(Choten, <>문제가 발생했습니다.<br />에러가 발생했습니다. 류승찬 나 규카츠사줘<br />예외가 발생했습니당.</>, () => {
                     push(taskSearch?.('MemorialApply', stack, push, pop, top));
                     removeTask(taskSearch?.('Alert')!);
+                    addTask(memorialPreview);
                 });
             }
         }
@@ -103,9 +121,9 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
                                     selected={selectedIdx === idx}
                                     onClick={() => setSelectedIdx(idx)}
                                     type="menu"
-                                    fontSize='100%'
-                                    widthPercent={16}
-                                    heightPercent={5}
+                                    fontSize='0.85rem'
+                                    widthPercent={13.5}
+                                    heightPercent={4.4}
                                 />
                             ))}
                         </_.BtnInnerWrapper>
@@ -116,9 +134,9 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
                     <MemorialBtn name="입장하기" type="submit" active={selectedIdx !== null} onClick={() => {
                         moveTo(selectedIdx);
                     }}
-                        fontSize='100%'
-                        widthPercent={16}
-                        heightPercent={5}
+                        fontSize='0.85rem'
+                        widthPercent={13.5}
+                        heightPercent={4.4}
                     />
                 </_.Footer>
             </_.InnerContainer>

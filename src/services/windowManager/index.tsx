@@ -54,11 +54,6 @@ const WindowManager = () => {
     return selection && selection.type === 'Range' && selection.toString().trim().length > 0;
   };
 
-  // Custom Hook 초기화 역할
-  useTaskTransformFunction();
-  useTaskSearchFunction();
-  useAlerter();
-
   // 포커스가 바뀔 때마다
   useEffect(() => {
     if (focus !== "Observer") {
@@ -123,7 +118,6 @@ const WindowManager = () => {
       const [dx, dy] = dragOffset.current;
       const dragged = Math.abs(dx) > 10 || Math.abs(dy) > 10;
       if (dragged) return;
-
       setCursorImage(CURSOR_IMAGES.click);
       if (clickTimeout.current) {
         clearTimeout(clickTimeout.current);
@@ -137,6 +131,11 @@ const WindowManager = () => {
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
   }, []); 
+
+  // Custom Hook 초기화 역할
+  useTaskTransformFunction();
+  useTaskSearchFunction();
+  useAlerter();
 
 
 
