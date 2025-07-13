@@ -124,8 +124,8 @@ export const CharacterProfile = styled.div`
 `;
 
 export const CharacterProfileImg = styled.div`
-  width: 194px;
-  height: 237.229px;
+  height: 10em;
+  width: 7.25em;
   border: 18.418px solid #000;
   background: #fff;
 `;
