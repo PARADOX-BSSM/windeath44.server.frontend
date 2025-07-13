@@ -222,7 +222,7 @@ const useApps = (): TaskType[] => {
           "setUpWidth" : getPixelFromPercent("width", 60),
           "setUpHeight" : getPixelFromPercent("height", 55),
         },
-        "visible":true,
+        "visible":false,
       }
   ];
 
