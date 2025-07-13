@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
+import * as _ from './style';
 
 export const parseCustomContent = (content: string): React.ReactNode[] => {
   const elements: React.ReactNode[] = [];
+  let indexIdx = 0;
 
   // 전체를 반복하며 커스텀 태그를 찾음
   const tagRegex =
@@ -22,7 +24,12 @@ export const parseCustomContent = (content: string): React.ReactNode[] => {
 
     if (match[1]) {
       // 목차
-      elements.push(<h2 key={`목차-${match.index}`}>{match[1]}</h2>);
+      indexIdx += 1;
+      elements.push(
+        <_.Index key={`목차-${match.index}`}>
+          {indexIdx}. {match[1]}
+        </_.Index>,
+      );
     } else if (match[2] && match[3]) {
       // 사진
       elements.push(
