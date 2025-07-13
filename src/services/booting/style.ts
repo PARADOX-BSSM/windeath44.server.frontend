@@ -32,34 +32,59 @@ export const Main = styled.main`
 export const Bar = styled.div`
   width: 60%;
   height: 4%;
-  margin-top: 5%;
+  margin-top: 5vmin;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: var(--light-primary-color);
   font-family: 'Galmuri11';
+  font-size: 2.5vmin;
 `;
 export const Info = styled.div`
   width: fit-content;
   height: fit-content;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+export const Image = styled.img`
+  width: 70%;
+  height: 70%;
+  margin-bottom: -7%;
 `;
 export const Title = styled.div`
   width: fit-content;
   height: fit-content;
+  margin-left: -20%;
   font-family: 'Pretendard';
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 `;
 export const Sub = styled.div`
-  font-size: 270%;
+  margin-bottom: -5%;
+  font-size: clamp(7vmin, 7vmin, 7vmin);
   font-weight: 400;
+  letter-spacing: -0.3vmin;
   color: var(--light-primary-color);
 `;
 export const MainTexts = styled.div`
-  width: fit-content;
-  height: fit-content;
+  width: 100%;
+  height: 100%;
+  margin-left: 10%;
+  display: flex;
+  justify-content: center;
 `;
 export const Text = styled.div`
-  font-size: 600%;
+  font-size: clamp(15vmin, 15vmin, 15vmin);
+  letter-spacing: -1vmin;
   font-weight: 900;
-  letter-spacing: -6px;
   color: #2e2e2e;
+`;
+export const Number = styled.div`
+  font-size: clamp(15vmin, 15vmin, 15vmin);
+  letter-spacing: -1vmin;
+  font-weight: 400;
+  color: var(--light-primary-color);
 `;

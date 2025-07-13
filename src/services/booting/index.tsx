@@ -1,6 +1,7 @@
 import Window from '@/assets/window.svg';
 import * as _ from './style';
 import { useEffect, useState } from 'react';
+import { Number } from './style';
 const Booting = () => {
   const [sideWidth, setSideWidth] = useState<number>(0);
   useEffect(() => {
@@ -20,7 +21,7 @@ const Booting = () => {
       <_.BackgroundDiv width={sideWidth}></_.BackgroundDiv>
       <_.Main>
         <_.Info>
-          <img
+          <_.Image
             src={Window}
             alt={'Window'}
           />
@@ -28,7 +29,7 @@ const Booting = () => {
             <_.Sub>Microsoft</_.Sub>
             <_.MainTexts>
               <_.Text>Windeath</_.Text>
-              <span>44</span>
+              <_.Number>44</_.Number>
             </_.MainTexts>
           </_.Title>
         </_.Info>
