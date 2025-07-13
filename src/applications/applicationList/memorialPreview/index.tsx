@@ -23,7 +23,7 @@ const MemorialPreview = () => {
             </_.Header>
             <_.ContentContainer>
               <_.IndexWrapper>
-                <_.Quote>이 말은 절대로 거짓말이 아니야.</_.Quote>
+                <_.Quote>{inputValue.phrase}</_.Quote>
                 <_.Index>
                   <_.IndexTitle>목차</_.IndexTitle>
                   {index_data.map((item, idx) => {

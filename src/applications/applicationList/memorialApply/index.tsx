@@ -228,6 +228,9 @@ const MemorialApply = ({}: dataStructureProps) => {
       <_.PhraseContainer
         type="text"
         placeholder="고인의 명언을 입력하세요..."
+        onChange={(e) => {
+          setInputValue((prev) => ({ ...prev, phrase: e.target.value }));
+        }}
       ></_.PhraseContainer>
 
       <_.TextAreaContainer>
