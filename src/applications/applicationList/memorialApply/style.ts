@@ -153,6 +153,7 @@ export const CharacterInformationInner = styled.div`
   flex-direction: column;
   align-items: center;
   gap: -1px;
+  height: 100%;
   border: 1px solid var(--Stroke, #e774dd);
 `;
 
@@ -167,18 +168,22 @@ export const CharacterInformationRow = styled.div`
 export const CharacterInformationRowAttribute = styled.div`
   display: flex;
   width: 100px;
-  height: fit-content;
+  align-self: stretch;
   padding: 4px;
   justify-content: center;
   align-items: center;
+  align-contents: center;
   flex-shrink: 0;
   border: 1px solid var(--Stroke, #e774dd);
   background: var(--LightPrimary, #ffd3fb);
 `;
 
 export const CharacterInformationRowAttributeText = styled.p`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 100%;
-  height: fit-content;
+  height: 100%;
   flex-shrink: 0;
   color: var(--off, #fd51a7);
   text-align: center;

@@ -206,6 +206,7 @@ export const Attribute = styled.div`
   display: flex;
   width: 100px;
   padding: 4px;
+  align-self: stretch;
   justify-content: center;
   align-items: center;
   flex-shrink: 0;
