@@ -123,7 +123,6 @@ export const Quote = styled.h2`
 
 export const Index = styled.div`
   display: flex;
-  height: 322px;
   padding: 12px 24px;
   flex-direction: column;
   align-items: flex-start;
