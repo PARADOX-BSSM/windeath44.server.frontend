@@ -15,7 +15,7 @@ const Auth = ({ changeToLogIn, changeToEmailCheck }: Props) => {
   const handleChange = (value: string, index: number) => {
     if (!/^[a-zA-Z0-9]?$/.test(value)) return; // 숫자 & 알파벳만 허용
     const newCode = [...code];
-    newCode[index] = value.toUpperCase();
+    newCode[index] = value.toLowerCase();
     setCode(newCode);
     // 다음 칸으로 이동
     if (value && index < inputLength - 1) {
