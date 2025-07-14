@@ -5,6 +5,8 @@ import EmailChack from 'applications/utility/emailCheck';
 import Auth from '@/applications/utility/auth';
 import { TaskType } from '@/modules/typeModule.tsx';
 import myComputer from '@/assets/appIcons/my_computer.svg';
+import { getPixelFromPercent } from '@/lib/getPixelFromPercent';
+import PasswordChange from '@/applications/utility/passwordChange';
 
 type SetIsLogIned = React.Dispatch<React.SetStateAction<boolean>>;
 type AddTask = (task: TaskType) => void;
@@ -13,9 +15,13 @@ type RemoveTask = (task: TaskType) => void;
 export function getTaskCreators(
   setIsLogIned: SetIsLogIned,
   addTask: AddTask,
-  removeTask: RemoveTask
+  removeTask: RemoveTask,
 ) {
-  let logIn: TaskType, signUp: TaskType, emailChack: TaskType, auth: TaskType;
+  let logIn: TaskType,
+    signUp: TaskType,
+    emailChack: TaskType,
+    auth: TaskType,
+    passwordChange: TaskType;
 
   const changeToSignUp = () => {
     addTask(signUp);
@@ -25,7 +31,7 @@ export function getTaskCreators(
     addTask(logIn);
     removeTask(signUp);
     removeTask(emailChack);
-    removeTask(auth);
+    removeTask(passwordChange);
   };
   const changeToEmailCheck = () => {
     addTask(emailChack);
@@ -36,63 +42,113 @@ export function getTaskCreators(
     addTask(auth);
     removeTask(emailChack);
   };
+  const changeToPassword = () => {
+    addTask(passwordChange);
+    removeTask(auth);
+  };
 
   logIn = {
-    component: <Suspense fallback={null}><LogIn setIsLogIned={setIsLogIned} changeToSignUp={changeToSignUp} changeToEmailCheck={changeToEmailCheck} /></Suspense>,
-    type: "App",
+    component: (
+      <Suspense fallback={null}>
+        <LogIn
+          setIsLogIned={setIsLogIned}
+          changeToSignUp={changeToSignUp}
+          changeToEmailCheck={changeToEmailCheck}
+        />
+      </Suspense>
+    ),
+    type: 'App',
     id: 1,
-    name: "내 컴퓨터",
+    name: '내 컴퓨터',
     layer: undefined,
     appSetup: {
       Image: myComputer,
-      minWidth: 748,
-      minHeight: 464,
-      setUpWidth: 748,
-      setUpHeight: 464
+      minWidth: getPixelFromPercent('width', 60),
+      minHeight: getPixelFromPercent('height', 50),
+      setUpWidth: getPixelFromPercent('width', 60),
+      setUpHeight: getPixelFromPercent('height', 50),
     },
-    visible : true
+    visible: true,
   };
 
   signUp = {
-    component: <Suspense fallback={null}><SignUp changeToLogIn={changeToLogIn} /></Suspense>,
-    type: "App",
+    component: (
+      <Suspense fallback={null}>
+        <SignUp changeToLogIn={changeToLogIn} />
+      </Suspense>
+    ),
+    type: 'App',
     id: 2,
-    name: "SignUp",
+    name: '회원가입',
     layer: undefined,
     appSetup: {
-      Image: "default",
-      minWidth: 748,
-      minHeight: 550,
-      setUpWidth: 748,
-      setUpHeight: 550
+      Image: 'default',
+      minWidth: getPixelFromPercent('width', 60),
+      minHeight: getPixelFromPercent('height', 63),
+      setUpWidth: getPixelFromPercent('width', 60),
+      setUpHeight: getPixelFromPercent('height', 63),
     },
-    visible : false
+    visible: false,
   };
 
   emailChack = {
-    component: <Suspense fallback={null}><EmailChack changeToLogIn={changeToLogIn} changeToAuth={changeToAuth} /></Suspense>,
-    type: "App",
+    component: (
+      <Suspense fallback={null}>
+        <EmailChack
+          changeToLogIn={changeToLogIn}
+          changeToAuth={changeToAuth}
+        />
+      </Suspense>
+    ),
+    type: 'App',
     id: 3,
-    name: "EmailChack",
+    name: '이메일 인증',
     layer: undefined,
     appSetup: {
-      Image: "default",
-      minWidth: 748,
-      minHeight: 464,
-      setUpWidth: 748,
-      setUpHeight: 464
+      Image: 'default',
+      minWidth: getPixelFromPercent('width', 60),
+      minHeight: getPixelFromPercent('height', 50),
+      setUpWidth: getPixelFromPercent('width', 60),
+      setUpHeight: getPixelFromPercent('height', 50),
     },
-    visible : false
+    visible: false,
   };
 
   auth = {
-    component: <Suspense fallback={null}><Auth changeToLogIn={changeToLogIn} changeToEmailCheck={changeToEmailCheck} /></Suspense>,
-    type: "App",
+    component: (
+      <Suspense fallback={null}>
+        <Auth
+          changeToPassword={changeToPassword}
+          changeToEmailCheck={changeToEmailCheck}
+        />
+      </Suspense>
+    ),
+    type: 'App',
     id: 4,
-    name: "auth",
+    name: '인증코드 입력',
     layer: undefined,
     appSetup: {
-      Image: "default",
+      Image: 'default',
+      minWidth: getPixelFromPercent('width', 60),
+      minHeight: getPixelFromPercent('height', 50),
+      setUpWidth: getPixelFromPercent('width', 60),
+      setUpHeight: getPixelFromPercent('height', 50),
+    },
+    visible: false
+  };
+
+  passwordChange = {
+    component: (
+      <Suspense fallback={null}>
+        <PasswordChange changeToLogIn={changeToLogIn} />
+      </Suspense>
+    ),
+    type: 'App',
+    id: 5,
+    name: '비밀번호 재설정',
+    layer: undefined,
+    appSetup: {
+      Image: 'default',
       minWidth: 748,
       minHeight: 464,
       setUpWidth: 748,
@@ -101,5 +157,5 @@ export function getTaskCreators(
     visible : false
   };
 
-  return { logIn, signUp, emailChack, auth };
+  return { logIn, signUp, emailChack, auth, passwordChange };
 }

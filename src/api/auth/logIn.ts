@@ -34,7 +34,6 @@ const logIn = async ({ id, password }: authParams): Promise<string> => {
     throw error;
   }
 };
-
 export const useLogIn = () => {
   return useMutation({
     mutationFn: logIn,
