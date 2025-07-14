@@ -14,7 +14,7 @@ type RemoveTask = (task: TaskType) => void;
 export function getTaskCreators(
   setIsLogIned: SetIsLogIned,
   addTask: AddTask,
-  removeTask: RemoveTask
+  removeTask: RemoveTask,
 ) {
   let logIn: TaskType, signUp: TaskType, emailChack: TaskType, auth: TaskType;
 
@@ -39,67 +39,93 @@ export function getTaskCreators(
   };
 
   logIn = {
-    component: <Suspense fallback={null}><LogIn setIsLogIned={setIsLogIned} changeToSignUp={changeToSignUp} changeToEmailCheck={changeToEmailCheck} /></Suspense>,
-    type: "App",
+    component: (
+      <Suspense fallback={null}>
+        <LogIn
+          setIsLogIned={setIsLogIned}
+          changeToSignUp={changeToSignUp}
+          changeToEmailCheck={changeToEmailCheck}
+        />
+      </Suspense>
+    ),
+    type: 'App',
     id: 1,
-    name: "내 컴퓨터",
+    name: '내 컴퓨터',
     layer: undefined,
     appSetup: {
       Image: myComputer,
-      minWidth: getPixelFromPercent("width", 60),
-      minHeight: getPixelFromPercent("height", 50),
-      setUpWidth: getPixelFromPercent("width", 60),
-      setUpHeight: getPixelFromPercent("height", 50)
+      minWidth: getPixelFromPercent('width', 60),
+      minHeight: getPixelFromPercent('height', 50),
+      setUpWidth: getPixelFromPercent('width', 60),
+      setUpHeight: getPixelFromPercent('height', 50),
     },
-    visible : true
+    visible: true,
   };
 
   signUp = {
-    component: <Suspense fallback={null}><SignUp changeToLogIn={changeToLogIn} /></Suspense>,
-    type: "App",
+    component: (
+      <Suspense fallback={null}>
+        <SignUp changeToLogIn={changeToLogIn} />
+      </Suspense>
+    ),
+    type: 'App',
     id: 2,
-    name: "SignUp",
+    name: 'SignUp',
     layer: undefined,
     appSetup: {
-      Image: "default",
-      minWidth: 748,
-      minHeight: 550,
-      setUpWidth: 748,
-      setUpHeight: 550
+      Image: 'default',
+      minWidth: getPixelFromPercent('width', 60),
+      minHeight: getPixelFromPercent('height', 63),
+      setUpWidth: getPixelFromPercent('width', 60),
+      setUpHeight: getPixelFromPercent('height', 63),
     },
-    visible : false
+    visible: false,
   };
 
   emailChack = {
-    component: <Suspense fallback={null}><EmailChack changeToLogIn={changeToLogIn} changeToAuth={changeToAuth} /></Suspense>,
-    type: "App",
+    component: (
+      <Suspense fallback={null}>
+        <EmailChack
+          changeToLogIn={changeToLogIn}
+          changeToAuth={changeToAuth}
+        />
+      </Suspense>
+    ),
+    type: 'App',
     id: 3,
-    name: "EmailChack",
+    name: 'EmailChack',
     layer: undefined,
     appSetup: {
-      Image: "default",
+      Image: 'default',
       minWidth: 748,
       minHeight: 464,
       setUpWidth: 748,
-      setUpHeight: 464
+      setUpHeight: 464,
     },
-    visible : false
+    visible: false,
   };
 
   auth = {
-    component: <Suspense fallback={null}><Auth changeToLogIn={changeToLogIn} changeToEmailCheck={changeToEmailCheck} /></Suspense>,
-    type: "App",
+    component: (
+      <Suspense fallback={null}>
+        <Auth
+          changeToLogIn={changeToLogIn}
+          changeToEmailCheck={changeToEmailCheck}
+        />
+      </Suspense>
+    ),
+    type: 'App',
     id: 4,
-    name: "auth",
+    name: 'auth',
     layer: undefined,
     appSetup: {
-      Image: "default",
+      Image: 'default',
       minWidth: 748,
       minHeight: 464,
       setUpWidth: 748,
-      setUpHeight: 464
+      setUpHeight: 464,
     },
-    visible : false
+    visible: false,
   };
 
   return { logIn, signUp, emailChack, auth };

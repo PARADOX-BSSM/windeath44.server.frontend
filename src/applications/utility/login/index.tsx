@@ -1,6 +1,5 @@
 import * as _ from './style';
 import Logo from '@/assets/windeath44.svg';
-import Button from '@/applications/components/button';
 import Inputs from '@/applications/components/inputs';
 import { useAtomValue } from 'jotai';
 import { useState } from 'react';
@@ -24,7 +23,7 @@ const LogIn = ({ setIsLogIned, changeToSignUp, changeToEmailCheck }: Props) => {
       setValue: setUserId,
       type: 'text',
       width: '80%',
-      fontSize: '0.8rem',
+      fontSize: '0.9rem',
     },
     {
       label: '비밀번호:',
@@ -32,7 +31,7 @@ const LogIn = ({ setIsLogIned, changeToSignUp, changeToEmailCheck }: Props) => {
       setValue: setPassword,
       type: 'password',
       width: '80%',
-      fontSize: '0.8rem',
+      fontSize: '0.9rem',
     },
   ];
   const checkLogIn = async (e: React.MouseEvent<HTMLButtonElement>) => {
