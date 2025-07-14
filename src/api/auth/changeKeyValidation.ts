@@ -25,7 +25,7 @@ const changeKeyValidation = async ({ authorizationCode }: ChangeKeyValidation) =
     return false;
   }
 };
-export const useChangeKeyValidationy = () => {
+export const useChangeKeyValidation = () => {
   return useMutation({
     mutationFn: changeKeyValidation,
   });
