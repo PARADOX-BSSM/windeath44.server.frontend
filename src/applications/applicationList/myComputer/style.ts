@@ -9,7 +9,7 @@ export const Container = styled.div`
   height: 100%;
   background: var(--light-primary-color);
   justify-content: flex-start;
-  padding: 1.25rem;
+  padding: 1rem;
   box-sizing: border-box;
 `;
 

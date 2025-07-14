@@ -18,7 +18,7 @@ const MyComputer = () => {
         }}
         type="submit"
         active={true}
-        widthPercent={13.5}
+        widthPercent={12}
         heightPercent={4.4}
         fontSize="0.85rem"
       />
@@ -30,7 +30,9 @@ const MyComputer = () => {
       <_.LeftContainer>
         <_.ProfileContainer>
           <_.ProfileImg src={Choten} />
-          <_.ProfileName>유승찬</_.ProfileName>
+          <_.ProfileName>
+            {localStorage.getItem('isLogIned') === 'true' ? '유승찬' : '게스트'}
+          </_.ProfileName>
         </_.ProfileContainer>
         {renderMemorialBtn()}
       </_.LeftContainer>
