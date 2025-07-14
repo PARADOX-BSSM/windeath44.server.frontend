@@ -84,9 +84,9 @@ export function getTaskCreators(
     appSetup: {
       Image: 'default',
       minWidth: getPixelFromPercent('width', 60),
-      minHeight: getPixelFromPercent('height', 63),
+      minHeight: getPixelFromPercent('height', 68),
       setUpWidth: getPixelFromPercent('width', 60),
-      setUpHeight: getPixelFromPercent('height', 63),
+      setUpHeight: getPixelFromPercent('height', 68),
     },
     visible: false,
   };
@@ -134,7 +134,7 @@ export function getTaskCreators(
       setUpWidth: getPixelFromPercent('width', 60),
       setUpHeight: getPixelFromPercent('height', 50),
     },
-    visible: false
+    visible: false,
   };
 
   passwordChange = {
@@ -152,9 +152,9 @@ export function getTaskCreators(
       minWidth: 748,
       minHeight: 464,
       setUpWidth: 748,
-      setUpHeight: 464
+      setUpHeight: 464,
     },
-    visible : false
+    visible: false,
   };
 
   return { logIn, signUp, emailChack, auth, passwordChange };
