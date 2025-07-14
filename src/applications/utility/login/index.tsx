@@ -27,7 +27,8 @@ const LogIn = ({ setIsLogIned, changeToSignUp, changeToEmailCheck }: Props) => {
     logInMutation.mutate(
       { id, password },
       {
-        onSuccess: () => {
+        onSuccess: (token) => {
+          console.log('로그인 성공 토큰 :', token);
           setIsLogIned(true);
           taskTransform?.('LogIn', '');
         },
