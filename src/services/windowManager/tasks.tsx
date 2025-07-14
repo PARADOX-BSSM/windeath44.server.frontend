@@ -59,7 +59,7 @@ export function getTaskCreators(
     ),
     type: 'App',
     id: 1,
-    name: '내 컴퓨터',
+    name: '로그인',
     layer: undefined,
     appSetup: {
       Image: myComputer,
