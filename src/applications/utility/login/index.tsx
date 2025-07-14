@@ -44,8 +44,9 @@ const LogIn = ({ setIsLogIned, changeToSignUp, changeToEmailCheck }: Props) => {
       <_.tempBulk />
       <_.tempMainStyle>
         <_.tempInputs>
-          {inputList.map((item) => (
+          {inputList.map((item, index) => (
             <Inputs
+              key={index}
               {...item}
               flex={true}
             />
