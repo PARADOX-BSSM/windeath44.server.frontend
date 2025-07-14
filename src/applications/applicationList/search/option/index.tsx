@@ -12,7 +12,12 @@ const Option = ({ list, onChange }: OptionsProps) => {
         <_.white>
           <_.dark>
             {list.map((item) => (
-              <_.options onClick={() => onChange(item)}>{item}</_.options>
+              <_.options
+                key={item}
+                onClick={() => onChange(item)}
+              >
+                {item}
+              </_.options>
             ))}
           </_.dark>
         </_.white>
