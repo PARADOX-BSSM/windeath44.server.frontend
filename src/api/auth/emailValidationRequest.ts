@@ -1,12 +1,13 @@
 import axios from 'axios';
 import { useMutation } from '@tanstack/react-query';
+import { AxiosResponse } from 'axios';
 import { auth } from '@/config';
 interface authParams {
   email: string;
 }
 export const emailValidationRequest = async ({ email }: authParams): Promise<boolean> => {
   try {
-    await axios.post(
+    const response: AxiosResponse = await axios.post(
       `${auth}/email`,
       { email },
       {
@@ -14,6 +15,7 @@ export const emailValidationRequest = async ({ email }: authParams): Promise<boo
         headers: { 'Content-Type': 'application/json' },
       },
     );
+    console.log(JSON.stringify(response.data));
     return true;
   } catch (error: any) {
     if (error.response?.data) {

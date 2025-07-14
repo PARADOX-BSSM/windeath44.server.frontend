@@ -1,6 +1,7 @@
-import {useEffect, useState} from "react";
-import styled from "@emotion/styled";
-import {useQueue} from "@/hooks/dataStructure";
+import { useEffect, useState } from 'react';
+import styled from '@emotion/styled';
+import { useQueue } from '@/hooks/dataStructure';
+import { useGetUserMutation } from '@/api/user/getUser';
 
 const Input = styled.input`
     background-color: none;
@@ -12,35 +13,52 @@ const Input = styled.input`
     bottom: 5px;x
 `;
 const TerminalContent = styled.div`
-    display: flex;
-    align-items: flex-end;
-    background-color: black;
-    height: 100%;
-    width: 100%;
-`
+  display: flex;
+  align-items: flex-end;
+  background-color: black;
+  height: 100%;
+  width: 100%;
+`;
 
-const Terminal = () =>{
-  const [command,setCommand] = useState("");
-  const [history, Push ,Pop,] = useQueue();
+const Terminal = () => {
+  const [command, setCommand] = useState('');
+  const [history, Push, Pop] = useQueue();
+  const { mutate: getUser, data, isPending, error } = useGetUserMutation();
 
   useEffect(() => {
-    if(history.length > 100){
+    if (history.length > 100) {
       Pop();
     }
-  },[history]);
+  }, [history]);
 
   return (
     <TerminalContent>
-      <Input onKeyDown={(e)=>{
-        if(e.key==="Enter") {
-          console.log("enter");
-          Push(e.target.value);
-          console.log(history);
-          e.target.value = "";
-        }
-        setCommand(e.target.value);
-        }}></Input>
+      <Input
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            console.log('enter');
+            Push(e.target.value);
+            console.log(history);
+            e.target.value = '';
+          }
+          setCommand(e.target.value);
+        }}
+      ></Input>
+      <button
+        onClick={() => {
+          getUser(undefined, {
+            onSuccess: (data) => {
+              console.log('성공:', data);
+            },
+            onError: (err) => {
+              console.error('에러:', err);
+            },
+          });
+        }}
+      >
+        테스트용
+      </button>
     </TerminalContent>
-  )
-}
-export default Terminal
+  );
+};
+export default Terminal;

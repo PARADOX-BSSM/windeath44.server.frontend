@@ -18,7 +18,7 @@ const LogIn = ({ setIsLogIned, changeToSignUp, changeToEmailCheck }: Props) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
   const inputList = [
     {
-      label: '이메일:',
+      label: '아이디:',
       value: userId,
       setValue: setUserId,
       type: 'text',
@@ -36,13 +36,17 @@ const LogIn = ({ setIsLogIned, changeToSignUp, changeToEmailCheck }: Props) => {
   ];
   const checkLogIn = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const id = userId.split('@')[0];
+    const id = userId;
     logInMutation.mutate(
       { id, password },
       {
-        onSuccess: () => {
+        onSuccess: (token) => {
+          console.log('로그인 성공 토큰 :', token);
           setIsLogIned(true);
           taskTransform?.('LogIn', '');
+        },
+        onError: (error) => {
+          console.error('로그인 실패', error);
         },
       },
     );

@@ -1,8 +1,9 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { user } from '@/config';
 import { useMutation } from '@tanstack/react-query';
 interface SignUpParams {
   name: string;
+  userId: string;
   email: string;
   pw: string;
   changeToLogIn: () => void;
@@ -10,21 +11,23 @@ interface SignUpParams {
 
 export const signUp = async ({
   name,
+  userId,
   email,
   pw,
   changeToLogIn,
 }: SignUpParams): Promise<boolean> => {
   const data = {
-    userId: email.split('@')[0],
+    userId,
     email,
     name,
     password: pw,
   };
   try {
-    await axios.post(`${user}/register`, data, {
+    const response: AxiosResponse = await axios.post(`${user}/register`, data, {
       withCredentials: true,
       headers: { 'Content-Type': 'application/json' },
     });
+    console.log(JSON.stringify(response.data));
     alert('회원가입이 완료되었습니다.');
     changeToLogIn();
     return true;

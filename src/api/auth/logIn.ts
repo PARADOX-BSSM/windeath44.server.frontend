@@ -1,26 +1,34 @@
-import axios, { AxiosError } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { auth } from '@/config';
 import { useMutation } from '@tanstack/react-query';
 interface authParams {
   id: string;
   password: string;
 }
-const logIn = async ({ id, password }: authParams): Promise<boolean> => {
-  const data = {
-    userId: id,
-    password,
-  };
+const logIn = async ({ id, password }: authParams): Promise<string> => {
+  console.log(auth);
+  const data = { userId: id, password };
   try {
-    await axios.post(`${auth}/login`, data, {
+    const response: AxiosResponse = await axios.post(`${auth}/login`, data, {
       withCredentials: true,
       headers: { 'Content-Type': 'application/json' },
     });
-    return true;
+    // console.log(response.headers);
+
+    const accessToken: string | undefined = response.headers['accesstoken'];
+
+    console.log(accessToken);
+
+    if (!accessToken) {
+      throw new Error('accessToken 없음');
+    }
+    localStorage.setItem('access_token', accessToken);
+    return accessToken;
   } catch (error) {
     const axiosError = error as AxiosError;
-    if (axiosError.response?.data) {
+    if (axiosError.response?.headers) {
       alert(`로그인 실패: 다시 입력해 주세요!`);
-      console.log(`로그인 실패: ${JSON.stringify(axiosError.response.data)}`);
+      console.log(`로그인 실패: ${JSON.stringify(axiosError.response.headers)}`);
     } else {
       alert('로그인 중 오류가 발생했습니다.');
     }

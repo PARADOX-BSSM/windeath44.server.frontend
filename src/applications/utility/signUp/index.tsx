@@ -11,15 +11,18 @@ type Props = {
 };
 const SignUp = ({ changeToLogIn }: Props) => {
   const [name, setName] = useState<string>('');
+  const [userId, setUserId] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [pw, setPw] = useState<string>('');
   const [checkingPw, setCheckingPw] = useState<string>('');
   const [check, setCheck] = useState<string>('');
   const [click, setClick] = useState(false);
   const [timeLeft, setTimeLeft] = useState(180);
+
   const signUpMutation = useSignUp();
   const emailValidationMutation = useEmailValidation();
   const verifyEmailMutation = useVerifyEmail();
+
   const sendAuth = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (pw !== checkingPw) {
       alert('비밀번호가 일치하지 않습니다.');
@@ -29,9 +32,10 @@ const SignUp = ({ changeToLogIn }: Props) => {
       alert('비밀번호는 8~20 문자만 허용합니다.\n 다시 입력해 주세요!!');
       return;
     }
-    signUpMutation.mutate({ name, email, pw, changeToLogIn });
+    signUpMutation.mutate({ name, userId, email, pw, changeToLogIn });
     e.preventDefault();
   };
+
   const sendEmail = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     emailValidationMutation.mutate(
@@ -91,6 +95,15 @@ const SignUp = ({ changeToLogIn }: Props) => {
             label={'사용자 이름:'}
             value={name}
             setValue={setName}
+            type={'text'}
+            width={'70%'}
+            fontSize="0.9rem"
+            flex={true}
+          />
+          <Inputs
+            label={'아이디:'}
+            value={userId}
+            setValue={setUserId}
             type={'text'}
             width={'70%'}
             fontSize="0.9rem"
