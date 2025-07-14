@@ -1,15 +1,10 @@
 import * as _ from './style.ts';
 
-interface dataStructureProps {
-  stack: any[];
-  push: any;
-  pop: any;
-  top: any;
-}
-
-const MyComputer = ({ stack, push, pop, top }: dataStructureProps) => {
-  
+const MyComputer = () => {
   return (
+    <_.Container>
+      <_.Btn></_.Btn>
+    </_.Container>
   );
 };
 

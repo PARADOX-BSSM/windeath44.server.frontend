@@ -12,6 +12,7 @@ import MemorialApply from '@/applications/applicationList/memorialApply/index.ts
 import Alert from '@/applications/applicationList/alert/index.tsx';
 import { getPixelFromPercent } from '@/lib/getPixelFromPercent.tsx';
 import MemorialApproach from '@/applications/applicationList/settings/index.tsx';
+import myComputer from '@/assets/appIcons/my_computer.svg';
 
 const Terminal = lazy(() => import('@/applications/applicationList/terminal/index.tsx'));
 const MemorailHistory = lazy(
@@ -326,7 +327,7 @@ const useApps = (): TaskType[] => {
       name: '내 컴퓨터',
       layer: undefined,
       appSetup: {
-        Image: 'default',
+        Image: myComputer,
         minWidth: getPixelFromPercent('width', 60),
         minHeight: getPixelFromPercent('height', 55),
         setUpWidth: getPixelFromPercent('width', 60),
