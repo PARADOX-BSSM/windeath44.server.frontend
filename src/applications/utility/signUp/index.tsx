@@ -1,7 +1,6 @@
 import * as _ from './style';
 import Logo from '@/assets/windeath44.svg';
 import { useEffect, useState } from 'react';
-import Button from '@/applications/components/button';
 import Inputs from '@/applications/components/inputs';
 import { useSignUp } from '@/api/user/signUp.ts';
 import { useEmailValidation } from '@/api/auth/emailValidationRequest.ts';

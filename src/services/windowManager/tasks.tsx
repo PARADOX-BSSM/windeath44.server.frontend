@@ -120,12 +120,12 @@ export function getTaskCreators(
     layer: undefined,
     appSetup: {
       Image: 'default',
-      minWidth: 748,
-      minHeight: 464,
-      setUpWidth: 748,
-      setUpHeight: 464,
+      minWidth: getPixelFromPercent('width', 60),
+      minHeight: getPixelFromPercent('height', 50),
+      setUpWidth: getPixelFromPercent('width', 60),
+      setUpHeight: getPixelFromPercent('height', 50),
     },
-    visible: false,
+    visible: true,
   };
 
   return { logIn, signUp, emailChack, auth };
