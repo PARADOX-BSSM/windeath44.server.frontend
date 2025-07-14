@@ -1,2 +1,6 @@
-/*import './fonts.css'; 해서 쓰세용*/
+/*import '@/assets/fonts.css'; 해서 쓰셈*/
 @import url('https://fastly.jsdelivr.net/npm/galmuri@latest/dist/galmuri.css');
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+}

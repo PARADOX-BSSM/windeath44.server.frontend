@@ -1,6 +1,12 @@
-import styled from "@emotion/styled";
+import styled from '@emotion/styled';
 
 export const tempImage = styled.div`
+  width: 100%;
+  height: 180px;
+  background-color: #ffffff;
+  display: flex;
+  justify-content: center;
+  img {
     width: 100%;
     height: 6.75rem;
     background-color: #ffffff;
@@ -18,18 +24,18 @@ export const tempBulk = styled.div`
 `;
 
 export const tempMain = styled.div`
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 export const tempMainStyle = styled.div`
-    background-color: #FFD3FB;
-    width: 100%;
-    height: 100%;
-    position: relative;
+  background-color: #ffd3fb;
+  width: 100%;
+  height: 100%;
+  position: relative;
 `;
 
 export const tempInputs = styled.div`

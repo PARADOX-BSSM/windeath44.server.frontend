@@ -1,19 +1,38 @@
-import { getPixelFromPercent } from '@/lib/getPixelFromPercent.tsx';
+import { useEffect, useState } from 'react';
+import Booting from '@/services/booting/index.tsx';
 import WindowManager from './windowManager/index.tsx';
+import { getPixelFromPercent } from '@/lib/getPixelFromPercent.tsx';
 
 function Kernel() {
-  //작업 관리를 위한 메니저 호출
+  const [isBooting, setIsBooting] = useState(() => {
+    return localStorage.getItem('hasBooted') !== 'true';
+  });
 
-  const px = getPixelFromPercent("width", 1.75);
-  if (px > 0) {
-    document.documentElement.style.fontSize = `${px}px`;
+  useEffect(() => {
+    const px = getPixelFromPercent('width', 1.75);
+    if (px > 0) {
+      document.documentElement.style.fontSize = `${px}px`;
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isBooting) {
+      setTimeout(() => {
+        localStorage.setItem('hasBooted', 'true');
+        setIsBooting(false);
+      }, 2700);
+    }
+  }, [isBooting]);
+
+  if (isBooting) {
+    return <Booting />;
   }
 
   return (
     <div className="kernel">
       <WindowManager />
     </div>
-  )
+  );
 }
 
 export default Kernel;
