@@ -70,7 +70,7 @@ const PasswordChange = ({ changeToLogIn }: Props) => {
         <_.tempButtonsStyle>
           <Button
             onClick={handleSubmit}
-            props="확인"
+            props={mutateResetPassword.isPending ? '처리중...' : '확인'}
           />
         </_.tempButtonsStyle>
       </_.tempMainStyle>
