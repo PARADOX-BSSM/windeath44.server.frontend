@@ -28,6 +28,7 @@ const MemorialMerge = lazy(() => import('@/applications/applicationList/memorial
 import memorialApproach from '@/assets/appIcons/search.svg';
 import trashBin from '@/assets/appIcons/empty_bin.svg';
 import AnimationSelect from '@/applications/applicationList/animationSelect/index.tsx';
+import Help from '@/applications/applicationList/help';
 
 //Application Import 형식 예시
 /*
@@ -304,6 +305,25 @@ const useApps = (): TaskType[] => {
       type: 'App',
       id: 2232,
       name: '애니메이션 선택',
+      layer: undefined,
+      appSetup: {
+        Image: 'default',
+        minWidth: getPixelFromPercent('width', 60),
+        minHeight: getPixelFromPercent('height', 55),
+        setUpWidth: getPixelFromPercent('width', 60),
+        setUpHeight: getPixelFromPercent('height', 55),
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <Help />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2233,
+      name: '도움말',
       layer: undefined,
       appSetup: {
         Image: 'default',
