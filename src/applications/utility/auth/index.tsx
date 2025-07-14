@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import * as _ from '@/applications/utility/auth/style.ts';
 import Logo from '@/assets/windeath44.svg';
 import Button from '@/applications/components/button';
-import { useChangeTemporaryKey } from '@/api/auth/changeKeyValidation.ts';
+import { useChangeKeyValidationy } from '@/api/auth/changeKeyValidation.ts';
 interface Props {
   changeToLogIn: () => void;
   changeToEmailCheck: () => void;
@@ -11,7 +11,7 @@ const Auth = ({ changeToLogIn, changeToEmailCheck }: Props) => {
   const inputLength = 5;
   const [code, setCode] = useState<string[]>(Array(inputLength).fill(''));
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
-  const mutationChangeTemporaryKey = useChangeTemporaryKey();
+  const mutationChangeTemporaryKey = useChangeKeyValidationy();
   const handleChange = (value: string, index: number) => {
     if (!/^[a-zA-Z0-9]?$/.test(value)) return; // 숫자 & 알파벳만 허용
     const newCode = [...code];
