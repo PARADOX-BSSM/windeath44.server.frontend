@@ -1,7 +1,6 @@
 import Window from '@/assets/window.svg';
 import * as _ from './style';
 import { useEffect, useState } from 'react';
-import { Number } from './style';
 const Booting = () => {
   const [sideWidth, setSideWidth] = useState<number>(0);
   const [percentage, setPercentage] = useState(0);
