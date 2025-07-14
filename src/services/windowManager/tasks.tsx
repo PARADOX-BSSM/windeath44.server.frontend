@@ -8,7 +8,7 @@ import myComputer from '@/assets/appIcons/my_computer.svg';
 import { getPixelFromPercent } from '@/lib/getPixelFromPercent';
 import PasswordChange from '@/applications/utility/passwordChange';
 
-type SetIsLogIned = React.Dispatch<React.SetStateAction<boolean>>;
+type SetIsLogIned = React.Dispatch<React.SetStateAction<string>>;
 type AddTask = (task: TaskType) => void;
 type RemoveTask = (task: TaskType) => void;
 
@@ -51,7 +51,6 @@ export function getTaskCreators(
     component: (
       <Suspense fallback={null}>
         <LogIn
-          setIsLogIned={setIsLogIned}
           changeToSignUp={changeToSignUp}
           changeToEmailCheck={changeToEmailCheck}
         />
