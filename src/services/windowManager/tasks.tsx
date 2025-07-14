@@ -6,6 +6,7 @@ import Auth from '@/applications/utility/auth';
 import { TaskType } from '@/modules/typeModule.tsx';
 import myComputer from '@/assets/appIcons/my_computer.svg';
 import { getPixelFromPercent } from '@/lib/getPixelFromPercent';
+import PasswordChange from '@/applications/utility/passwordChange';
 
 type SetIsLogIned = React.Dispatch<React.SetStateAction<boolean>>;
 type AddTask = (task: TaskType) => void;
@@ -16,7 +17,11 @@ export function getTaskCreators(
   addTask: AddTask,
   removeTask: RemoveTask,
 ) {
-  let logIn: TaskType, signUp: TaskType, emailChack: TaskType, auth: TaskType;
+  let logIn: TaskType,
+    signUp: TaskType,
+    emailChack: TaskType,
+    auth: TaskType,
+    passwordChange: TaskType;
 
   const changeToSignUp = () => {
     addTask(signUp);
@@ -26,7 +31,7 @@ export function getTaskCreators(
     addTask(logIn);
     removeTask(signUp);
     removeTask(emailChack);
-    removeTask(auth);
+    removeTask(passwordChange);
   };
   const changeToEmailCheck = () => {
     addTask(emailChack);
@@ -36,6 +41,10 @@ export function getTaskCreators(
   const changeToAuth = () => {
     addTask(auth);
     removeTask(emailChack);
+  };
+  const changeToPassword = () => {
+    addTask(passwordChange);
+    removeTask(auth);
   };
 
   logIn = {
@@ -70,7 +79,7 @@ export function getTaskCreators(
     ),
     type: 'App',
     id: 2,
-    name: 'SignUp',
+    name: '회원가입',
     layer: undefined,
     appSetup: {
       Image: 'default',
@@ -93,7 +102,7 @@ export function getTaskCreators(
     ),
     type: 'App',
     id: 3,
-    name: 'EmailChack',
+    name: '이메일 인증',
     layer: undefined,
     appSetup: {
       Image: 'default',
@@ -109,14 +118,14 @@ export function getTaskCreators(
     component: (
       <Suspense fallback={null}>
         <Auth
-          changeToLogIn={changeToLogIn}
+          changeToPassword={changeToPassword}
           changeToEmailCheck={changeToEmailCheck}
         />
       </Suspense>
     ),
     type: 'App',
     id: 4,
-    name: 'auth',
+    name: '인증코드 입력',
     layer: undefined,
     appSetup: {
       Image: 'default',
@@ -125,8 +134,28 @@ export function getTaskCreators(
       setUpWidth: getPixelFromPercent('width', 60),
       setUpHeight: getPixelFromPercent('height', 50),
     },
-    visible: false,
+    visible: false
   };
 
-  return { logIn, signUp, emailChack, auth };
+  passwordChange = {
+    component: (
+      <Suspense fallback={null}>
+        <PasswordChange changeToLogIn={changeToLogIn} />
+      </Suspense>
+    ),
+    type: 'App',
+    id: 5,
+    name: '비밀번호 재설정',
+    layer: undefined,
+    appSetup: {
+      Image: 'default',
+      minWidth: 748,
+      minHeight: 464,
+      setUpWidth: 748,
+      setUpHeight: 464
+    },
+    visible : false
+  };
+
+  return { logIn, signUp, emailChack, auth, passwordChange };
 }
