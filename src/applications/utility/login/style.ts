@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 
 export const tempImage = styled.div`
   width: 100%;
-  height: 180px;
+  height: 11.25rem;
   background-color: #ffffff;
   display: flex;
   justify-content: center;
@@ -18,9 +18,9 @@ export const tempImage = styled.div`
 `;
 
 export const tempBulk = styled.div`
-    width: 100%;
-    height: 0.625rem;
-    background-color: #ffbbf5;
+  width: 100%;
+  height: 0.625rem;
+  background-color: #ffbbf5;
 `;
 
 export const tempMain = styled.div`
@@ -39,20 +39,20 @@ export const tempMainStyle = styled.div`
 `;
 
 export const tempInputs = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-    padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 1rem;
 `;
 
 export const tempButtons = styled.div`
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-    padding: 1rem;
-    gap: 0.35rem;
-    position: absolute;
-    bottom: 0;
-    right: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  padding: 1rem;
+  gap: 0.35rem;
+  position: absolute;
+  bottom: 0;
+  right: 0;
 `;

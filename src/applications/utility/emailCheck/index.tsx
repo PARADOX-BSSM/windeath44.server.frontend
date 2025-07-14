@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import * as _ from '@/applications/utility/emailCheck/style.ts';
 import Logo from '@/assets/windeath44.svg';
-import Button from '@/applications/components/button';
 import Inputs from '@/applications/components/inputs';
 import { useChangeTemporaryKey } from '@/api/auth/changetemporaryKey.ts';
+import MemorialBtn from '@/applications/components/memorialBtn';
 
 interface Props {
   changeToLogIn: () => void;
@@ -24,6 +24,11 @@ const EmailChack = ({ changeToLogIn, changeToAuth }: Props) => {
       },
     );
   };
+
+  const buttonWidth = 11.5;
+  const buttonHeight = 4.4;
+  const buttonFontSize = '0.85rem';
+
   return (
     <_.tempMain>
       <_.tempImageStyle>
@@ -37,6 +42,8 @@ const EmailChack = ({ changeToLogIn, changeToAuth }: Props) => {
         <_.tempInputsStyle>
           <Inputs
             label={'이메일:'}
+            width="80%"
+            fontSize="0.9rem"
             value={email}
             setValue={setEmail}
             type={'text'}
@@ -44,13 +51,23 @@ const EmailChack = ({ changeToLogIn, changeToAuth }: Props) => {
           />
         </_.tempInputsStyle>
         <_.tempButtonsStyle>
-          <Button
+          <MemorialBtn
+            name="확인"
             onClick={checkEmail}
-            props="확인"
+            type="submit"
+            active={true}
+            widthPercent={buttonWidth}
+            heightPercent={buttonHeight}
+            fontSize={buttonFontSize}
           />
-          <Button
+          <MemorialBtn
+            name="취소"
             onClick={changeToLogIn}
-            props="뒤로가기"
+            type="submit"
+            active={true}
+            widthPercent={buttonWidth}
+            heightPercent={buttonHeight}
+            fontSize={buttonFontSize}
           />
         </_.tempButtonsStyle>
       </_.tempMainStyle>

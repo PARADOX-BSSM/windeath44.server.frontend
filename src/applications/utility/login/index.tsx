@@ -1,6 +1,5 @@
 import * as _ from './style';
 import Logo from '@/assets/windeath44.svg';
-import Button from '@/applications/components/button';
 import Inputs from '@/applications/components/inputs';
 import { useAtomValue } from 'jotai';
 import { useState } from 'react';
@@ -18,8 +17,22 @@ const LogIn = ({ setIsLogIned, changeToSignUp, changeToEmailCheck }: Props) => {
   const logInMutation = useLogIn();
   const taskTransform = useAtomValue(taskTransformerAtom);
   const inputList = [
-    { label: "이메일:", value: userId, setValue: setUserId, type: "text", width: "100%", fontSize: "0.8rem" },
-    { label: "비밀번호:", value: password, setValue: setPassword, type: "password", width: "100%", fontSize: "0.8rem"  },
+    {
+      label: '이메일:',
+      value: userId,
+      setValue: setUserId,
+      type: 'text',
+      width: '80%',
+      fontSize: '0.9rem',
+    },
+    {
+      label: '비밀번호:',
+      value: password,
+      setValue: setPassword,
+      type: 'password',
+      width: '80%',
+      fontSize: '0.9rem',
+    },
   ];
   const checkLogIn = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -34,10 +47,10 @@ const LogIn = ({ setIsLogIned, changeToSignUp, changeToEmailCheck }: Props) => {
       },
     );
   };
-  
+
   const buttonWidth = 11.5;
   const buttonHeight = 4.4;
-  const buttonFontSize = "0.85rem"
+  const buttonFontSize = '0.85rem';
   return (
     <_.tempMain>
       <_.tempImage>
@@ -59,39 +72,39 @@ const LogIn = ({ setIsLogIned, changeToSignUp, changeToEmailCheck }: Props) => {
         </_.tempInputs>
         <_.tempButtons>
           <MemorialBtn
-            name='확인'
+            name="확인"
             onClick={checkLogIn}
-            type='submit'
+            type="submit"
             widthPercent={buttonWidth}
             heightPercent={buttonHeight}
             fontSize={buttonFontSize}
             active={true}
           />
           <MemorialBtn
-            name='취소'
+            name="취소"
             onClick={() => {
               setIsLogIned(true);
               taskTransform?.('LogIn', '');
             }}
-            type='submit'
+            type="submit"
             widthPercent={buttonWidth}
             heightPercent={buttonHeight}
             fontSize={buttonFontSize}
             active={true}
           />
           <MemorialBtn
-            name='비밀번호 찾기'
+            name="비밀번호 찾기"
             onClick={() => changeToEmailCheck()}
-            type='submit'
+            type="submit"
             widthPercent={buttonWidth}
             heightPercent={buttonHeight}
             fontSize={buttonFontSize}
             active={true}
           />
           <MemorialBtn
-            name='회원가입'
+            name="회원가입"
             onClick={() => changeToSignUp()}
-            type='submit'
+            type="submit"
             widthPercent={buttonWidth}
             heightPercent={buttonHeight}
             fontSize={buttonFontSize}

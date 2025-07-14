@@ -3,6 +3,7 @@ import * as _ from '@/applications/utility/auth/style.ts';
 import Logo from '@/assets/windeath44.svg';
 import Button from '@/applications/components/button';
 import { useChangeKeyValidation } from '@/api/auth/changeKeyValidation.ts';
+import MemorialBtn from '@/applications/components/memorialBtn';
 interface Props {
   changeToPassword: () => void;
   changeToEmailCheck: () => void;
@@ -39,6 +40,11 @@ const Auth = ({ changeToPassword, changeToEmailCheck }: Props) => {
       },
     );
   };
+
+  const buttonWidth = 11.5;
+  const buttonHeight = 4.4;
+  const buttonFontSize = '0.85rem';
+
   return (
     <_.tempMain>
       <_.tempImageStyle>
@@ -70,13 +76,23 @@ const Auth = ({ changeToPassword, changeToEmailCheck }: Props) => {
         </_.tempInputsStyle>
         <_.note>* 숫자 및 알파벳만 입력가능합니다.</_.note>
         <_.tempButtonsStyle>
-          <Button
+          <MemorialBtn
+            name="확인"
             onClick={handleSubmit}
-            props="확인"
+            type="submit"
+            active={true}
+            widthPercent={buttonWidth}
+            heightPercent={buttonHeight}
+            fontSize={buttonFontSize}
           />
-          <Button
+          <MemorialBtn
+            name="취소"
             onClick={changeToEmailCheck}
-            props="뒤로가기"
+            type="submit"
+            active={true}
+            widthPercent={buttonWidth}
+            heightPercent={buttonHeight}
+            fontSize={buttonFontSize}
           />
         </_.tempButtonsStyle>
       </_.tempMainStyle>

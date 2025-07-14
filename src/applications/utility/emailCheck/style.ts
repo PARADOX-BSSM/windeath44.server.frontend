@@ -10,18 +10,25 @@ export const tempMain = styled.div`
 
 export const tempImageStyle = styled.div`
   width: 100%;
-  height: 180px;
+  height: 11.25rem;
   background-color: #ffffff;
   display: flex;
   justify-content: center;
   img {
     width: 100%;
+    height: 6.75rem;
+    background-color: #ffffff;
+    display: flex;
+    justify-content: center;
+    img {
+      width: 100%;
+    }
   }
 `;
 
 export const tempBulkStyle = styled.div`
   width: 100%;
-  height: 10px;
+  height: 0.625rem;
   background-color: #ffbbf5;
 `;
 
@@ -36,16 +43,16 @@ export const tempInputsStyle = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 12px;
-  padding: 20px;
+  gap: 0.5rem;
+  padding: 1rem;
 `;
 
 export const tempButtonsStyle = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
-  padding: 20px;
-  gap: 10px;
+  padding: 1rem;
+  gap: 0.35rem;
   position: absolute;
   bottom: 0;
   right: 0;

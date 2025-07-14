@@ -59,16 +59,16 @@ export function getTaskCreators(
     ),
     type: 'App',
     id: 1,
-    name: "내 컴퓨터",
+    name: '내 컴퓨터',
     layer: undefined,
     appSetup: {
       Image: myComputer,
-      minWidth: getPixelFromPercent("width", 60),
-      minHeight: getPixelFromPercent("height", 50),
-      setUpWidth: getPixelFromPercent("width", 60),
-      setUpHeight: getPixelFromPercent("height", 50)
+      minWidth: getPixelFromPercent('width', 60),
+      minHeight: getPixelFromPercent('height', 50),
+      setUpWidth: getPixelFromPercent('width', 60),
+      setUpHeight: getPixelFromPercent('height', 50),
     },
-    visible : true
+    visible: true,
   };
 
   signUp = {
@@ -82,13 +82,13 @@ export function getTaskCreators(
     name: '회원가입',
     layer: undefined,
     appSetup: {
-      Image: "default",
-      minWidth: 748,
-      minHeight: 550,
-      setUpWidth: 748,
-      setUpHeight: 550
+      Image: 'default',
+      minWidth: getPixelFromPercent('width', 60),
+      minHeight: getPixelFromPercent('height', 63),
+      setUpWidth: getPixelFromPercent('width', 60),
+      setUpHeight: getPixelFromPercent('height', 63),
     },
-    visible : false
+    visible: false,
   };
 
   emailChack = {
@@ -105,13 +105,13 @@ export function getTaskCreators(
     name: '이메일 인증',
     layer: undefined,
     appSetup: {
-      Image: "default",
-      minWidth: 748,
-      minHeight: 464,
-      setUpWidth: 748,
-      setUpHeight: 464
+      Image: 'default',
+      minWidth: getPixelFromPercent('width', 60),
+      minHeight: getPixelFromPercent('height', 50),
+      setUpWidth: getPixelFromPercent('width', 60),
+      setUpHeight: getPixelFromPercent('height', 50),
     },
-    visible : false
+    visible: false,
   };
 
   auth = {
@@ -128,11 +128,11 @@ export function getTaskCreators(
     name: '인증코드 입력',
     layer: undefined,
     appSetup: {
-      Image: "default",
-      minWidth: 748,
-      minHeight: 464,
-      setUpWidth: 748,
-      setUpHeight: 464
+      Image: 'default',
+      minWidth: getPixelFromPercent('width', 60),
+      minHeight: getPixelFromPercent('height', 50),
+      setUpWidth: getPixelFromPercent('width', 60),
+      setUpHeight: getPixelFromPercent('height', 50),
     },
     visible: false
   };

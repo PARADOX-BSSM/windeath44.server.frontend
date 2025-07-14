@@ -1,11 +1,11 @@
 import * as _ from './style';
 import Logo from '@/assets/windeath44.svg';
 import { useEffect, useState } from 'react';
-import Button from '@/applications/components/button';
 import Inputs from '@/applications/components/inputs';
 import { useSignUp } from '@/api/user/signUp.ts';
 import { useEmailValidation } from '@/api/auth/emailValidationRequest.ts';
 import { useVerifyEmail } from '@/api/auth/verifyEmailCode.ts';
+import MemorialBtn from '@/applications/components/memorialBtn';
 type Props = {
   changeToLogIn: () => void;
 };
@@ -71,6 +71,11 @@ const SignUp = ({ changeToLogIn }: Props) => {
     const sec = seconds % 60;
     return `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
   };
+
+  const buttonWidth = 11.5;
+  const buttonHeight = 4.4;
+  const buttonFontSize = '0.85rem';
+
   return (
     <_.tempMain>
       <_.tempImageStyle>
@@ -88,34 +93,47 @@ const SignUp = ({ changeToLogIn }: Props) => {
             setValue={setName}
             type={'text'}
             width={'70%'}
+            fontSize="0.9rem"
             flex={true}
           />
           <_.set>
-            <span>이메일 :</span>
+            <_.label>이메일 :</_.label>
             <_.btnSet>
               <Inputs
                 value={email}
                 setValue={setEmail}
                 type={'text'}
+                width={'100%'}
               />
-              <Button
+              <MemorialBtn
+                name={click ? '코드 재전송' : '코드전송'}
                 onClick={sendEmail}
-                props={click ? '코드 재전송' : '코드전송'}
+                type="submit"
+                active={true}
+                widthPercent={17}
+                heightPercent={buttonHeight}
+                fontSize={buttonFontSize}
               />
             </_.btnSet>
           </_.set>
           <_.set>
-            <span>인증코드 :</span>
+            <_.label>인증코드 :</_.label>
             <_.btnSet>
               <Inputs
                 value={check}
                 setValue={setCheck}
                 type={'text'}
+                width={'100%'}
               />
               <div style={{ fontSize: '0.75rem' }}>{formatTime(timeLeft)}</div>
-              <Button
+              <MemorialBtn
+                name="확인"
                 onClick={verifyCode}
-                props="확인"
+                type="submit"
+                active={true}
+                widthPercent={15}
+                heightPercent={buttonHeight}
+                fontSize={buttonFontSize}
               />
             </_.btnSet>
           </_.set>
@@ -125,6 +143,7 @@ const SignUp = ({ changeToLogIn }: Props) => {
             setValue={setPw}
             type={'password'}
             width={'70%'}
+            fontSize="0.9rem"
             flex={true}
           />
           <Inputs
@@ -133,17 +152,28 @@ const SignUp = ({ changeToLogIn }: Props) => {
             setValue={setCheckingPw}
             type={'password'}
             width={'70%'}
+            fontSize="0.9rem"
             flex={true}
           />
         </_.tempInputsStyle>
         <_.tempButtonsStyle>
-          <Button
+          <MemorialBtn
+            name="확인"
             onClick={sendAuth}
-            props="확인"
+            type="submit"
+            active={true}
+            widthPercent={buttonWidth}
+            heightPercent={buttonHeight}
+            fontSize={buttonFontSize}
           />
-          <Button
+          <MemorialBtn
+            name="취소"
             onClick={changeToLogIn}
-            props="취소"
+            type="submit"
+            active={true}
+            widthPercent={buttonWidth}
+            heightPercent={buttonHeight}
+            fontSize={buttonFontSize}
           />
         </_.tempButtonsStyle>
       </_.tempMainStyle>
