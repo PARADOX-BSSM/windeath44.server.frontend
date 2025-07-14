@@ -1,10 +1,10 @@
 import { auth } from '@/config';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-interface auth {
+interface authParams {
   email: string;
 }
-const changeTemporaryKey = async ({ email }: auth) => {
+const changeTemporaryKey = async ({ email }: authParams) => {
   const data = {
     userId: email.split('@')[0],
     email,
