@@ -3,7 +3,7 @@ import Up from '@/assets/search/point_up.svg';
 import Down from '@/assets/search/point_down.svg';
 import { Dispatch, useState } from 'react';
 import Option from '@/applications/applicationList/search/option';
-import { SetStateAction } from 'jotai/vanilla/typeUtils';
+import { SetStateAction } from 'react';
 
 interface FilterBlockProps {
   label: string;
