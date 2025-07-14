@@ -5,6 +5,7 @@ import EmailChack from 'applications/utility/emailCheck';
 import Auth from '@/applications/utility/auth';
 import { TaskType } from '@/modules/typeModule.tsx';
 import myComputer from '@/assets/appIcons/my_computer.svg';
+import { getPixelFromPercent } from '@/lib/getPixelFromPercent';
 import PasswordChange from '@/applications/utility/passwordChange';
 
 type SetIsLogIned = React.Dispatch<React.SetStateAction<boolean>>;
@@ -58,16 +59,16 @@ export function getTaskCreators(
     ),
     type: 'App',
     id: 1,
-    name: '내 컴퓨터',
+    name: "내 컴퓨터",
     layer: undefined,
     appSetup: {
       Image: myComputer,
-      minWidth: 748,
-      minHeight: 464,
-      setUpWidth: 748,
-      setUpHeight: 464,
+      minWidth: getPixelFromPercent("width", 60),
+      minHeight: getPixelFromPercent("height", 50),
+      setUpWidth: getPixelFromPercent("width", 60),
+      setUpHeight: getPixelFromPercent("height", 50)
     },
-    visible: true,
+    visible : true
   };
 
   signUp = {
@@ -81,13 +82,13 @@ export function getTaskCreators(
     name: '회원가입',
     layer: undefined,
     appSetup: {
-      Image: 'default',
+      Image: "default",
       minWidth: 748,
       minHeight: 550,
       setUpWidth: 748,
-      setUpHeight: 550,
+      setUpHeight: 550
     },
-    visible: false,
+    visible : false
   };
 
   emailChack = {
@@ -104,13 +105,13 @@ export function getTaskCreators(
     name: '이메일 인증',
     layer: undefined,
     appSetup: {
-      Image: 'default',
+      Image: "default",
       minWidth: 748,
       minHeight: 464,
       setUpWidth: 748,
-      setUpHeight: 464,
+      setUpHeight: 464
     },
-    visible: false,
+    visible : false
   };
 
   auth = {
@@ -127,13 +128,13 @@ export function getTaskCreators(
     name: '인증코드 입력',
     layer: undefined,
     appSetup: {
-      Image: 'default',
+      Image: "default",
       minWidth: 748,
       minHeight: 464,
       setUpWidth: 748,
-      setUpHeight: 464,
+      setUpHeight: 464
     },
-    visible: false,
+    visible: false
   };
 
   passwordChange = {
@@ -151,9 +152,9 @@ export function getTaskCreators(
       minWidth: 748,
       minHeight: 464,
       setUpWidth: 748,
-      setUpHeight: 464,
+      setUpHeight: 464
     },
-    visible: false,
+    visible : false
   };
 
   return { logIn, signUp, emailChack, auth, passwordChange };
