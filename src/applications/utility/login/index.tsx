@@ -18,7 +18,7 @@ const LogIn = ({ setIsLogIned, changeToSignUp, changeToEmailCheck }: Props) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
   const inputList = [
     {
-      label: '이메일:',
+      label: '아이디:',
       value: userId,
       setValue: setUserId,
       type: 'text',

@@ -6,6 +6,7 @@ interface authParams {
   password: string;
 }
 const logIn = async ({ id, password }: authParams): Promise<string> => {
+  console.log(auth);
   const data = { userId: id, password };
   try {
     const response: AxiosResponse = await axios.post(`${auth}/login`, data, {
