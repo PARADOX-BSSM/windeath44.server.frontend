@@ -44,7 +44,20 @@ const Terminal = () => {
           setCommand(e.target.value);
         }}
       ></Input>
-      <button onClick={() => getUser('ilovecat')}>테스트용</button>
+      <button
+        onClick={() => {
+          getUser(undefined, {
+            onSuccess: (data) => {
+              console.log('성공:', data);
+            },
+            onError: (err) => {
+              console.error('에러:', err);
+            },
+          });
+        }}
+      >
+        테스트용
+      </button>
     </TerminalContent>
   );
 };
