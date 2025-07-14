@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosResponse } from 'axios';
+import axios, { AxiosError } from 'axios';
 import { auth } from '@/config';
 import { useMutation } from '@tanstack/react-query';
 interface authParams {
@@ -11,11 +11,10 @@ const logIn = async ({ id, password }: authParams): Promise<boolean> => {
     password,
   };
   try {
-    const response: AxiosResponse = await axios.post(`${auth}/login`, data, {
+    await axios.post(`${auth}/login`, data, {
       withCredentials: true,
       headers: { 'Content-Type': 'application/json' },
     });
-    console.log(JSON.stringify(response.data));
     return true;
   } catch (error) {
     const axiosError = error as AxiosError;

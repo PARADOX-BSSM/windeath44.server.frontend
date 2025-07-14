@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import { user } from '@/config';
 import { useMutation } from '@tanstack/react-query';
 interface SignUpParams {
@@ -21,11 +21,10 @@ export const signUp = async ({
     password: pw,
   };
   try {
-    const response: AxiosResponse = await axios.post(`${user}/register`, data, {
+    await axios.post(`${user}/register`, data, {
       withCredentials: true,
       headers: { 'Content-Type': 'application/json' },
     });
-    console.log(JSON.stringify(response.data));
     alert('회원가입이 완료되었습니다.');
     changeToLogIn();
     return true;

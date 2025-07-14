@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useMutation } from '@tanstack/react-query';
-import { AxiosResponse, AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import { auth } from '@/config';
 interface authParams {
   email: string;
@@ -12,11 +12,10 @@ export const verifyEmailCode = async ({ email, check }: authParams): Promise<boo
     email,
   };
   try {
-    const response: AxiosResponse = await axios.patch(`${auth}/email/valid`, data, {
+    await axios.patch(`${auth}/email/valid`, data, {
       withCredentials: true,
       headers: { 'Content-Type': 'application/json' },
     });
-    console.log(JSON.stringify(response.data));
     alert('인증이 완료되었습니다.');
     return true;
   } catch (error) {
