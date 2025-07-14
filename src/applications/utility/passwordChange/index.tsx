@@ -8,14 +8,14 @@ interface Props {
   changeToLogIn: () => void;
 }
 const PasswordChange = ({ changeToLogIn }: Props) => {
-  const [pw, setPw] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
   const [checkingPw, setCheckingPw] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const mutateResetPassword = useResetPassword();
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     mutateResetPassword.mutate(
-      { email, pw },
+      { email, password },
       {
         onSuccess: () => {
           changeToLogIn();
@@ -44,8 +44,8 @@ const PasswordChange = ({ changeToLogIn }: Props) => {
           />
           <Inputs
             label={'비밀번호:'}
-            value={pw}
-            setValue={setPw}
+            value={password}
+            setValue={setPassword}
             type={'password'}
             width={'70%'}
             flex={true}

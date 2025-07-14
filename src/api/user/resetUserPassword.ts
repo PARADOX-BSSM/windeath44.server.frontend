@@ -3,12 +3,12 @@ import { user } from '@/config';
 import { useMutation } from '@tanstack/react-query';
 interface ResetPasswordParams {
   email: string;
-  pw: string;
+  password: string;
 }
-const resetPassword = async ({ email, pw }: ResetPasswordParams): Promise<boolean> => {
+const resetPassword = async ({ email, password }: ResetPasswordParams): Promise<boolean> => {
   const data = {
     email,
-    password: pw,
+    password,
   };
   try {
     await axios.patch(`${user}/retrieve/password`, data, {
