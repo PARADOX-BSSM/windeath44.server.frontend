@@ -16,7 +16,6 @@ export const verifyEmailCode = async ({ email, check }: authParams): Promise<boo
       withCredentials: true,
       headers: { 'Content-Type': 'application/json' },
     });
-    alert('인증이 완료되었습니다.');
     return true;
   } catch (error) {
     const axiosError = error as AxiosError;
