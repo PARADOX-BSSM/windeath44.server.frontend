@@ -125,7 +125,7 @@ export function getTaskCreators(
       setUpWidth: getPixelFromPercent('width', 60),
       setUpHeight: getPixelFromPercent('height', 50),
     },
-    visible: true,
+    visible: false,
   };
 
   return { logIn, signUp, emailChack, auth };
