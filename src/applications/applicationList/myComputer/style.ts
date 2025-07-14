@@ -97,7 +97,7 @@ export const Inputs = styled.div`
   background-color: #ffffff;
   overflow-y: auto;
   overflow-x: hidden;
-  gap: 2rem;
+  gap: 1.5rem;
   flex-wrap: wrap;
 `;
 
