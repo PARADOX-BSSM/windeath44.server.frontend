@@ -1,11 +1,11 @@
 import axios from 'axios';
 import { user } from '@/config';
 import { useMutation } from '@tanstack/react-query';
-interface SignUpParams {
+interface ResetPasswordParams {
   email: string;
   pw: string;
 }
-const resetPassword = async ({ email, pw }: SignUpParams): Promise<boolean> => {
+const resetPassword = async ({ email, pw }: ResetPasswordParams): Promise<boolean> => {
   const data = {
     email,
     password: pw,
