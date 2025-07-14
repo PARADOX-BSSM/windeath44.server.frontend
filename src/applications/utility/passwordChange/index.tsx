@@ -14,6 +14,14 @@ const PasswordChange = ({ changeToLogIn }: Props) => {
   const mutateResetPassword = useResetPassword();
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    if (!email || !password || !checkingPw) {
+      alert('모든 필드를 입력해주세요.');
+      return;
+    }
+    if (password !== checkingPw) {
+      alert('비밀번호가 일치하지 않습니다.');
+      return;
+    }
     mutateResetPassword.mutate(
       { email, password },
       {
