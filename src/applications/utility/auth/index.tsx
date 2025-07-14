@@ -4,10 +4,10 @@ import Logo from '@/assets/windeath44.svg';
 import Button from '@/applications/components/button';
 import { useChangeKeyValidation } from '@/api/auth/changeKeyValidation.ts';
 interface Props {
-  changeToLogIn: () => void;
+  changeToPassword: () => void;
   changeToEmailCheck: () => void;
 }
-const Auth = ({ changeToLogIn, changeToEmailCheck }: Props) => {
+const Auth = ({ changeToPassword, changeToEmailCheck }: Props) => {
   const inputLength = 5;
   const [code, setCode] = useState<string[]>(Array(inputLength).fill(''));
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
@@ -34,7 +34,7 @@ const Auth = ({ changeToLogIn, changeToEmailCheck }: Props) => {
       { authorizationCode },
       {
         onSuccess: () => {
-          changeToLogIn();
+          changeToPassword();
         },
       },
     );
