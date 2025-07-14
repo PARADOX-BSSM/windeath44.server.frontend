@@ -37,14 +37,14 @@ const MemorialTextarea = ({
   return (
     <>
       <_.Container>
-        <div>
+        <_.Set>
           {isPerson ? <_.Title>- @{from}의 작성안</_.Title> : <_.Title>{from}</_.Title>}
-          <img
+          <_.Image
             src={Help}
             alt={'help'}
             onClick={handleClickOpen}
           />
-        </div>
+        </_.Set>
         <_.CommitAreaContainer>
           <_.CommitArea
             value={contentIn.content}
