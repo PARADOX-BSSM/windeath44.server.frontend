@@ -1,4 +1,5 @@
 import { getPixelFromPercent } from '@/lib/getPixelFromPercent';
+import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
 import * as _ from './style';
 
 interface PropsType {
@@ -18,21 +19,33 @@ const MemorialBtn = ({ name, selected = false, onClick, type = "none", active, w
 
     if (type === "submit") {
         return !active ? (
-            <_.SubmitDefault width={width} height={height} fontSize={fontSize}>
+            <_.SubmitDefault width={width} height={height} fontSize={fontSize}
+            onMouseEnter={()=>setCursorImage(CURSOR_IMAGES.block)}
+            onMouseLeave={()=>setCursorImage(CURSOR_IMAGES.default)}
+            >
                 {name}
             </_.SubmitDefault>
         ) : (
-            <_.SubmitActive onClick={onClick} width={width} height={height} fontSize={fontSize}>
+            <_.SubmitActive onClick={onClick} width={width} height={height} fontSize={fontSize}
+            onMouseEnter={()=>setCursorImage(CURSOR_IMAGES.hand)}
+            onMouseLeave={()=>setCursorImage(CURSOR_IMAGES.default)}
+            >
                 {name}
             </_.SubmitActive>
         )
     } else if (type === "menu") {
         return !selected ? (
-            <_.Btn onClick={onClick} width={width} height={height} fontSize={fontSize}>
+            <_.Btn onClick={onClick} width={width} height={height} fontSize={fontSize}
+            onMouseEnter={()=>setCursorImage(CURSOR_IMAGES.hand)}
+            onMouseLeave={()=>setCursorImage(CURSOR_IMAGES.default)}
+            >
                 {name}
             </_.Btn>
         ) : (
-            <_.SelectedBtn width={width} height={height} fontSize={fontSize}>
+            <_.SelectedBtn width={width} height={height} fontSize={fontSize}
+            onMouseEnter={()=>setCursorImage(CURSOR_IMAGES.block)}
+            onMouseLeave={()=>setCursorImage(CURSOR_IMAGES.default)}
+            >
                 {name}
             </_.SelectedBtn>
         );

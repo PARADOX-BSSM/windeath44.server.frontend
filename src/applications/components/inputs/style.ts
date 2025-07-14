@@ -2,14 +2,14 @@ import styled from "@emotion/styled";
 import '@/assets/font.css';
 import { getPixelFromPercent } from "@/lib/getPixelFromPercent";
 
-export const inputsDiv = styled.div<{fontSize?: string;}>`
+export const inputsDiv = styled.div<{fontSize?: string; flex?:boolean;}>`
     font-family: "Galmuri11";
     font-size: ${({ fontSize }) => fontSize || "1rem"};
     width: 100%;
     height: fit-content;
     display: flex;
-    justify-content: flex-start;
-    flex-direction: column;
+    justify-content: ${({flex})=>flex?"space-between":"flex-start"};
+    flex-direction: ${({flex})=>flex?"row":"column"};
 `;
 export const inputs = styled.input<{width: string;}>`
     margin: 0.078rem 0 0 0.078rem;
