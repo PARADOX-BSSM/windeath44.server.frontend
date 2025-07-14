@@ -87,6 +87,7 @@ const SignUp = ({ changeToLogIn }: Props) => {
             value={name}
             setValue={setName}
             type={'text'}
+            width={'70%'}
             flex={true}
           />
           <_.set>
@@ -123,6 +124,7 @@ const SignUp = ({ changeToLogIn }: Props) => {
             value={pw}
             setValue={setPw}
             type={'password'}
+            width={'70%'}
             flex={true}
           />
           <Inputs
@@ -130,6 +132,7 @@ const SignUp = ({ changeToLogIn }: Props) => {
             value={checkingPw}
             setValue={setCheckingPw}
             type={'password'}
+            width={'70%'}
             flex={true}
           />
         </_.tempInputsStyle>
