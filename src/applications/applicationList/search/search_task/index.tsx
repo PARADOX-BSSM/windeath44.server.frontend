@@ -1,4 +1,4 @@
-import * as _ from '@/applications/applicationList/search/search_task/style.ts';
+import * as _ from './style';
 import Up from '@/assets/search/point_up.svg';
 import Down from '@/assets/search/point_down.svg';
 import { Dispatch, useState } from 'react';
