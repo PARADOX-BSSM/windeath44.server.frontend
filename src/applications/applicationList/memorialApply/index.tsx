@@ -8,6 +8,7 @@ import { inputPortage } from '@/atoms/inputManager';
 import AvatarEditor from 'react-avatar-editor';
 import Button from '@/applications/components/button';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
+import { useGetUserMutation } from '@/api/user/getUser';
 
 interface dataStructureProps {
   stack: any[];
@@ -18,8 +19,9 @@ interface dataStructureProps {
 
 const MemorialApply = ({}: dataStructureProps) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
-  const userName = 'winshine0326';
+  const [userName, setUserName] = useState('winshine0326');
   const [inputValue, setInputValue] = useAtom(inputPortage);
+  const { mutate: getUser, data, isPending, error } = useGetUserMutation();
 
   const [profileImage, setProfileImage] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -41,6 +43,15 @@ const MemorialApply = ({}: dataStructureProps) => {
       const innerHeight = rect.height - borderTop * 2;
       setCropSize({ width: Math.floor(innerWidth), height: Math.floor(innerHeight) });
     }
+    getUser(undefined, {
+      onSuccess: (data) => {
+        console.log('성공:', data);
+        setUserName(data.data.userId);
+      },
+      onError: (err) => {
+        console.error('에러:', err);
+      },
+    });
   }, []);
 
   const handleImageClick = () => {
