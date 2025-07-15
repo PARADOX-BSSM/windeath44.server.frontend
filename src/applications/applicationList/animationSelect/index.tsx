@@ -1,42 +1,37 @@
 import * as _ from './style';
 import { useAtom, useAtomValue } from 'jotai';
 import { taskSearchAtom } from '@/atoms/taskTransformer';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import Inputs from '@/applications/components/inputs';
-import Poster from '@/assets/animation/abdks.png';
 import { inputPortage } from '@/atoms/inputManager';
 import { useProcessManager } from '@/hooks/processManager';
 import { CURSOR_IMAGES, setCursorImage } from '@/lib/setCursorImg';
+import { useInfiniteAnime } from '@/api/anime/getAnime';
 
 const AnimationSelect = () => {
   const taskSearch = useAtomValue(taskSearchAtom);
   const [name, setName] = useState('');
   const [, setInputValue] = useAtom(inputPortage);
   const [, , removeTask] = useProcessManager();
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, refetch } = useInfiniteAnime(
+    10,
+    name,
+  );
 
-  const DemoAnimation = {
-    animations: [
-      {
-        image: Poster,
-        name: '그 비스크 돌은 사랑을 한다 2기',
-      },
-      {
-        image: Poster,
-        name: '최애의 아이',
-      },
-      {
-        image: Poster,
-        name: '장송의 프리렌',
-      },
-      {
-        image: Poster,
-        name: '데스노트',
-      },
-      {
-        image: Poster,
-        name: '원피스',
-      },
-    ],
+  const boardRef = useRef<HTMLDivElement | null>(null);
+
+  const handleWheel = (e: React.WheelEvent) => {
+
+    if (e.deltaY <= 0) return;
+
+    const el = boardRef.current;
+    if (!el || !hasNextPage || isFetchingNextPage) return;
+
+    const { scrollTop, scrollHeight, clientHeight } = el;
+
+    if (scrollTop + clientHeight >= scrollHeight - 30) {
+      fetchNextPage();
+    }
   };
 
   return (
@@ -49,39 +44,34 @@ const AnimationSelect = () => {
         type="text"
         setValue={setName}
       />
-      <_.Board>
+      <_.Board
+        ref={boardRef}
+        onWheel={handleWheel}
+      >
         <_.Rows>
-          {(() => {
-            const filtered = DemoAnimation.animations.filter((animation) => {
-              return animation.name.trim().includes(name.trim());
-            });
-
-            return filtered.map((animation) => {
-              const element = (
-                <_.Item
-                  onClick={() => {
-                    setInputValue((prev) => ({ ...prev, anime: animation.name }));
-                    const task = taskSearch?.('애니메이션 선택');
-                    if (task) {
-                      removeTask(task);
-                    }
-                  }}
-                >
-                  <_.Image
-                    src={animation.image}
-                    onMouseEnter={() => {
-                      setCursorImage(CURSOR_IMAGES.hand);
-                    }}
-                    onMouseLeave={() => {
-                      setCursorImage(CURSOR_IMAGES.default);
-                    }}
-                  />
-                  <_.Name>{animation.name}</_.Name>
-                </_.Item>
-              );
-              return element;
-            });
-          })()}
+          {data?.pages.map((page) =>
+            page.data.values.map((animation: any) => (
+              <_.Item
+                key={animation.animeId}
+                onClick={() => {
+                  setInputValue((prev) => ({
+                    ...prev,
+                    anime: animation.name,
+                    animeId: animation.animeId,
+                  }));
+                  const task = taskSearch?.('애니메이션 선택');
+                  if (task) removeTask(task);
+                }}
+              >
+                <_.Image
+                  src={animation.imageUrl}
+                  onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                  onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+                />
+                <_.Name>{animation.name}</_.Name>
+              </_.Item>
+            )),
+          )}
         </_.Rows>
       </_.Board>
     </_.Container>

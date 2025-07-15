@@ -14,9 +14,9 @@ const MergeBtn = ({ text }: PropsType) => {
   const handleSubmit = (e: React.MouseEvent) => {
     e.preventDefault();
     console.log(inputValue);
-    // applyMemorialMutation.mutate(
-    //   {}
-    // )
+    applyMemorialMutation.mutate(
+      
+    )
   };
 
   return <_.SubmitBtn onClick={handleSubmit}>{text}</_.SubmitBtn>;

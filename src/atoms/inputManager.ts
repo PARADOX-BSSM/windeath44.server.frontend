@@ -6,6 +6,7 @@ export const inputPortage = atom({
   date: '',
   lifeCycle: '',
   anime: '',
+  animeId: '',
   age: '',
   profileImage: '',
   phrase: '',
