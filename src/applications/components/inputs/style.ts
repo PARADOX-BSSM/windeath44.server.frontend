@@ -10,7 +10,8 @@ export const inputsDiv = styled.div<{ fontSize?: string; flex?: boolean }>`
   display: flex;
   justify-content: ${({ flex }) => (flex ? 'space-between' : 'flex-start')};
   flex-direction: ${({ flex }) => (flex ? 'row' : 'column')};
-  align-items: center;
+  align-items: ${({ flex }) => (!flex ? 'flex-start' : 'center')};
+  cursor: none;
 `;
 export const label = styled.span`
   font-family: 'Galmuri11';
@@ -26,10 +27,11 @@ export const inputs = styled.input<{ width: string }>`
   border-style: solid;
   border-width: ${getPixelFromPercent('width', 0.125)}px;
   box-sizing: border-box;
+  cursor: none;
 `;
 export const Shadow = styled.div<{ width: string }>`
   width: ${({ width }) => width || '30.688rem'};
-  height: 1.75rem;
+  height: 1.55rem;
   background-color: #000;
   border-width: 0 0.078rem 0.078rem 0;
   border-style: solid;

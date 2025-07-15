@@ -1,92 +1,115 @@
+import { getPixelFromPercent } from '@/lib/getPixelFromPercent';
 import styled from '@emotion/styled';
 
 export const styles = styled.div`
+  display: flex;
   width: 100%;
   height: 100%;
-  border-width: 0 1.5px 1.5px 0;
-  border-style: solid;
-  border-color: var(--primary-black);
-  box-sizing: border-box;
-  & > div {
-    width: 100%;
-    height: 100%;
-    border-width: 1.5px 0 0 1.5px;
-    border-style: solid;
-    border-color: var(--light-primary-color);
-    box-sizing: border-box;
-    & > div {
-      width: 100%;
-      height: 100%;
-      border-width: 0 1.5px 1.5px 0;
-      border-style: solid;
-      border-color: var(--dark-primary-color);
-      box-sizing: border-box;
-      & > div {
-        width: 100%;
-        height: 100%;
-        border-width: 1.5px 0 0 1.5px;
-        border-style: solid;
-        border-color: #ffffff;
-        background-color: var(--light-primary-color);
-        box-sizing: border-box;
-      }
-    }
-  }
+  padding: 0;
+  flex-direction: column;
+  justify-content: center;
+  background: var(--light-primary-color);
+  box-shadow:
+    -0.094rem -0.094rem 0px 0px var(--primary-black) inset,
+    0.094rem 0.094rem 0px 0px #fff inset,
+    -0.188rem -0.188rem 0px 0px var(--dark-primary-color) inset,
+    0.188rem 0.188rem 0px 0px var(--secondary-color) inset;
+  color: var(--primary-black);
+  border: none;
+  cursor: none;
+  gap: 0.5rem;
 `;
-// *검색창
+
+export const Button = styled.div`
+  display: flex;
+  width: 1rem;
+  height: 100%;
+  padding: 0 0.25rem;
+  flex-direction: column;
+  justify-content: center;
+  background: var(--light-primary-color);
+  box-shadow:
+    -0.094rem -0.094rem 0px 0px var(--primary-black) inset,
+    0.094rem 0.094rem 0px 0px #fff inset,
+    -0.188rem -0.188rem 0px 0px var(--dark-primary-color) inset,
+    0.188rem 0.188rem 0px 0px var(--secondary-color) inset;
+  color: var(--primary-black);
+  border: none;
+  cursor: none;
+`;
+
 export const search = styled.div`
   box-sizing: border-box;
   width: 100%;
   height: 100%;
 `;
+
 export const search_main = styled.div`
-  padding: 28px;
+  padding: 0.75rem 1.2rem;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 0.5rem;
 `;
+
 export const black = styled.div`
-  border-width: 1.5px 0 0 1.5px;
+  width: 100%;
+  height: 1.55rem;
+  background-color: #000;
+  border-width: 0 0.078rem 0.078rem 0;
   border-style: solid;
-  border-color: #000000;
+  border-color: #fff;
+  padding: 0.016rem 0.078rem 0.078rem 0.016rem;
 `;
+
 export const white = styled.div`
-  border-width: 0 1.5px 1.5px 0;
-  border-style: solid;
-  border-color: #ffffff;
-`;
-export const dark = styled.div`
-  border-width: 1.5px;
-  border-style: solid;
-  border-color: var(--dark-primary-color);
-  background-color: #ffffff;
   display: flex;
   justify-content: space-between;
-  padding-left: 4px;
+  background-color: #ffffff;
+  margin: 0.078rem 0 0 0.078rem;
+  width: 100%;
+  height: 100%;
+  font-family: 'Galmuri11';
+  padding: 0 0 0 0;
+  outline: none;
+  border-color: #dcafdd;
+  border-style: solid;
+  border-width: ${getPixelFromPercent('width', 0.125)}px;
+  box-sizing: border-box;
 `;
+
+export const Label = styled.label`
+  font-size: 0.8rem;
+`;
+
 export const input = styled.input`
   width: 100%;
   height: 100%;
   background-color: #ffffff;
   font-family: 'Galmuri11';
-  font-size: 16px;
+  font-size: 0.9rem;
   border: none;
   outline: none;
 `;
+
 export const button = styled.button`
-  width: 24px;
-  height: 24px;
-  margin: 1px;
+  height: 90%;
+  margin: 0.063rem;
   border: none;
   display: flex;
 `;
+
 export const option = styled.div`
   margin: auto 0;
+  font-size: 0.8rem;
 `;
+
 export const name = styled.div`
   display: flex;
   flex-direction: column;
 `;
+
 export const filter_block = styled.div`
   position: relative;
+  width: 100%;
+  height: 100%;
 `;

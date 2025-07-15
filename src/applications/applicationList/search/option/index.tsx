@@ -9,18 +9,14 @@ const Option = ({ list, onChange }: OptionsProps) => {
   return (
     <_.option_set>
       <_.black>
-        <_.white>
-          <_.dark>
-            {list.map((item) => (
-              <_.options
-                key={item}
-                onClick={() => onChange(item)}
-              >
-                {item}
-              </_.options>
-            ))}
-          </_.dark>
-        </_.white>
+        {list.map((item) => (
+          <_.options
+            key={item}
+            onClick={() => onChange(item)}
+          >
+            {item}
+          </_.options>
+        ))}
       </_.black>
     </_.option_set>
   );

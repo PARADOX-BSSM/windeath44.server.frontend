@@ -1,3 +1,4 @@
+import { CURSOR_IMAGES, setCursorImage } from '@/lib/setCursorImg';
 import * as _ from './style';
 type inputProps = {
   width: string;
@@ -16,6 +17,8 @@ const Inputs = ({ width, fontSize, flex, label, value, type, setValue }: inputPr
         value={value}
         onChange={(e) => setValue(e.target.value)}
         width={width}
+        onMouseEnter={() => setCursorImage(CURSOR_IMAGES.drag)}
+        onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
       />
     </_.Shadow>
   );
