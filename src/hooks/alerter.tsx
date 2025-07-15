@@ -11,11 +11,11 @@ export const useAlerter = () => {
 
   const Apps = useApps();
 
-  const [, addTask, ] = useProcessManager();
+  const [, addTask] = useProcessManager();
 
   let foundTask = Apps.filter((app) => {
-        return app.name === "Alert";
-    })[0];
+    return app.name === '경고';
+  })[0];
 
   const setAlert = (icon: string, text: string, onClick: () => void) => {
     if (icon && text) {
@@ -24,18 +24,8 @@ export const useAlerter = () => {
       const type = internal.type;
 
       foundTask.component = (
-        <Suspense fallback={null}>
-          {React.createElement(type, { icon, text, onClick })}
-        </Suspense>
+        <Suspense fallback={null}>{React.createElement(type, { icon, text, onClick })}</Suspense>
       );
-
-      foundTask.appSetup = {
-        Image: "default",
-        minWidth: getPixelFromPercent("width", 60),
-        minHeight: getPixelFromPercent("height", 30),
-        setUpWidth: getPixelFromPercent("width", 60),
-        setUpHeight: getPixelFromPercent("height", 30),
-      };
 
       addTask(foundTask);
     }
