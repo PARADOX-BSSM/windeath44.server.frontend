@@ -9,7 +9,7 @@ interface FilterBlockProps {
   isOpen: boolean;
   onClick: () => void;
   list: string[];
-  onChange: (value: string) => void;
+  onChange: (value: deathType) => void;
 }
 
 const FilterBlock = ({ label, option, isOpen, onClick, list, onChange }: FilterBlockProps) => {

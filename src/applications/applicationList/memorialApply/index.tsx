@@ -47,7 +47,7 @@ const MemorialApply = ({}: dataStructureProps) => {
     setDeath(!death);
   };
 
-  const handleDeathChange = (value: string) => {
+  const handleDeathChange = (value: deathType) => {
     setFillDeath(value);
     setDeath(false);
     setInputValue((prev) => ({ ...prev, deathReason: value }));
@@ -159,9 +159,9 @@ const MemorialApply = ({}: dataStructureProps) => {
                       <_.CharacterInformationRowValueText>
                         <_.CharacterInforInput
                           type="text"
-                          placeholder="예) 향년 20세"
+                          placeholder="예) 1"
                           onChange={(e) => {
-                            setInputValue((prev) => ({ ...prev, age: e.target.value }));
+                            setInputValue((prev) => ({ ...prev, age: Number(e.target.value) }));
                           }}
                         ></_.CharacterInforInput>
                       </_.CharacterInformationRowValueText>
@@ -197,7 +197,7 @@ const MemorialApply = ({}: dataStructureProps) => {
                       <_.CharacterInformationRowValueText>
                         <_.CharacterInforInput
                           type="text"
-                          placeholder="예) 1일"
+                          placeholder="예) 1화"
                           onChange={(e) => {
                             setInputValue((prev) => ({ ...prev, lifeCycle: e.target.value }));
                           }}

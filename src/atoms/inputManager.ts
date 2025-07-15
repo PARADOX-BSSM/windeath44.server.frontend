@@ -2,12 +2,12 @@ import { atom } from 'jotai';
 
 export const inputPortage = atom({
   name: '',
-  deathReason: '',
+  deathReason: '자연사(自然死)' as deathType,
   date: '',
   lifeCycle: '',
   anime: '',
   animeId: '',
-  age: '',
+  age: 0,
   profileImage: '',
   phrase: '',
 });
