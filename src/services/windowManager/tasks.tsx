@@ -8,7 +8,7 @@ import myComputer from '@/assets/appIcons/my_computer.svg';
 import { getPixelFromPercent } from '@/lib/getPixelFromPercent';
 import PasswordChange from '@/applications/utility/passwordChange';
 
-type SetIsLogIned = React.Dispatch<React.SetStateAction<boolean>>;
+type SetIsLogIned = React.Dispatch<React.SetStateAction<string>>;
 type AddTask = (task: TaskType) => void;
 type RemoveTask = (task: TaskType) => void;
 
@@ -51,7 +51,6 @@ export function getTaskCreators(
     component: (
       <Suspense fallback={null}>
         <LogIn
-          setIsLogIned={setIsLogIned}
           changeToSignUp={changeToSignUp}
           changeToEmailCheck={changeToEmailCheck}
         />
@@ -59,7 +58,7 @@ export function getTaskCreators(
     ),
     type: 'App',
     id: 1,
-    name: '내 컴퓨터',
+    name: '로그인',
     layer: undefined,
     appSetup: {
       Image: myComputer,
@@ -68,7 +67,7 @@ export function getTaskCreators(
       setUpWidth: getPixelFromPercent('width', 60),
       setUpHeight: getPixelFromPercent('height', 50),
     },
-    visible: true,
+    visible: false,
   };
 
   signUp = {

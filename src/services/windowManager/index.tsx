@@ -1,16 +1,21 @@
 import * as _ from './style.ts';
 import { useEffect, useState, Suspense, lazy, useRef } from 'react';
 import { useAtom } from 'jotai';
-import { isLogInedAtom, focusAtom, backUpFocusAtom, startOptionAtom } from '@/atoms/windowManager.ts';
-import Discover from "@/applications/discover/index.tsx";
-import Observer from "@/applications/utility/observer/index.tsx";
-import { useProcessManager } from "@/hooks/processManager.tsx";
-import { TaskType } from "@/modules/typeModule.tsx";
+import {
+  isLogInedAtom,
+  focusAtom,
+  backUpFocusAtom,
+  startOptionAtom,
+} from '@/atoms/windowManager.ts';
+import Discover from '@/applications/discover/index.tsx';
+import Observer from '@/applications/utility/observer/index.tsx';
+import { useProcessManager } from '@/hooks/processManager.tsx';
+import { TaskType } from '@/modules/typeModule.tsx';
 import { getTaskCreators } from './tasks';
 import { useTaskTransformFunction } from '@/hooks/taskTransformer.tsx';
 import { useTaskSearchFunction } from '@/hooks/taskSearch.tsx';
 import { useAlerter } from '@/hooks/alerter.tsx';
-import { setCursorImage,CURSOR_IMAGES } from '@/lib/setCursorImg.tsx';
+import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg.tsx';
 import { useDrag } from 'react-use-gesture';
 
 const Application = lazy(() => import('@/applications/layout/index.tsx'));
@@ -31,8 +36,6 @@ const WindowManager = () => {
   const dragOffset = useRef([0, 0]);
   const clickTimeout = useRef<NodeJS.Timeout | null>(null);
 
-  
-
   // Drag 감지해서 Cursor 변경
   const bindDrag = useDrag(
     ({ dragging, movement: [mx, my] }) => {
@@ -46,7 +49,7 @@ const WindowManager = () => {
         setCursorImage(CURSOR_IMAGES.default);
       }
     },
-    { pointer: { buttons: [1] } }
+    { pointer: { buttons: [1] } },
   );
 
   const isTextSelecting = () => {
@@ -56,35 +59,45 @@ const WindowManager = () => {
 
   // 포커스가 바뀔 때마다
   useEffect(() => {
-    if (focus !== "Observer") {
+    if (focus !== 'Observer') {
       setStartOption(false);
     }
-  }, [focus])
-  useEffect(() => { //초기 기본 설정
-    if (isLogIned) {
-      removeTask(logIn)
+  }, [focus]);
+  useEffect(() => {
+    //초기 기본 설정
+    localStorage.setItem('isLogIned', isLogIned);
+    if (isLogIned === 'true' || isLogIned === 'guest') {
+      removeTask(logIn);
       const discover: TaskType = {
-        "component": <Discover backUpFocus={backUpFocus} setBackUpFocus={setBackUpFocus} />,
-        "type": "Shell",
-        "id": 0,
-        "layer": -3,
-        "name": "Discover",
-        "appSetup": undefined
-      }
-      setTimeout(() => { addTask(discover) }, 200)
+        component: (
+          <Discover
+            backUpFocus={backUpFocus}
+            setBackUpFocus={setBackUpFocus}
+          />
+        ),
+        type: 'Shell',
+        id: 0,
+        layer: -3,
+        name: 'Discover',
+        appSetup: undefined,
+      };
+      setTimeout(() => {
+        addTask(discover);
+      }, 200);
+    } else {
+      setTimeout(() => {
+        addTask(logIn);
+      }, 200);
     }
-    else {
-      setTimeout(() => { addTask(logIn) }, 200)
-    }
-  }, [isLogIned])
+  }, [isLogIned]);
 
   useEffect(() => {
-    const container: HTMLElement = document.getElementById("cursorContainer") as HTMLElement;
-    const cursor = document.getElementById("cursor");
+    const container: HTMLElement = document.getElementById('cursorContainer') as HTMLElement;
+    const cursor = document.getElementById('cursor');
     if (!container || !cursor) return;
-    cursor.style.zIndex = "9990";
+    cursor.style.zIndex = '9990';
     const bounds = container.getBoundingClientRect();
-    document.addEventListener("mousemove", (event: MouseEvent) => {
+    document.addEventListener('mousemove', (event: MouseEvent) => {
       let x = event.clientX - bounds.x + bounds.left;
       let y = event.clientY - bounds.y;
       x = Math.max(bounds.left, Math.min(bounds.width - 1 + bounds.left, x));
@@ -93,25 +106,24 @@ const WindowManager = () => {
       cursor.style.top = `${y}px`;
       setCursorVec([x, y]);
     });
-  }, [])
+  }, []);
 
   useEffect(() => {
     const updateSideWidth = () => {
       const fullWidth = window.innerWidth;
       const fullHeight = window.innerHeight;
-      const containerWidth = fullHeight * 4 / 3;
+      const containerWidth = (fullHeight * 4) / 3;
       const calculatedSide = (fullWidth - containerWidth) / 2;
       setSideWidth(Math.max(0, calculatedSide));
-    }
+    };
     updateSideWidth();
     window.addEventListener('resize', updateSideWidth);
     return () => window.removeEventListener('resize', updateSideWidth);
   }, []);
 
-
   // 클릭 시 cursor 변경
   useEffect(() => {
-    const cursor = document.getElementById("cursor");
+    const cursor = document.getElementById('cursor');
     if (!cursor) return;
 
     const handleClick = () => {
@@ -128,48 +140,47 @@ const WindowManager = () => {
       }, 300);
     };
 
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, []); 
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, []);
 
   // Custom Hook 초기화 역할
   useTaskTransformFunction();
   useTaskSearchFunction();
   useAlerter();
 
-
-
   return (
     <_.Desktop>
       <Suspense fallback={null}>
         <_.BackgroundDiv width={sideWidth}></_.BackgroundDiv>
-        <_.Display id='cursorContainer' {...bindDrag()}>
+        <_.Display
+          id="cursorContainer"
+          {...bindDrag()}
+        >
           <div id="cursor"></div>
-          {
-            taskList.map((task: TaskType) => {
-              return (
-                <Application
-                  key={task.name}
-                  name={task.name}
-                  uid={task.id}
-                  type={task.type}
-                  appSetup={task.appSetup}
-                  setUpHeight={task.appSetup?.setUpHeight}
-                  setUpWidth={task.appSetup?.setUpWidth}
-                  cursorVec={cursorVec}
-                  removeTask={removeTask}
-                  removeCompnent={task}
-                >
-                  {task.component}
-                </Application>
-              )
-            })
-          }
+          {taskList.map((task: TaskType) => {
+            return (
+              <Application
+                key={task.name}
+                name={task.name}
+                uid={task.id}
+                type={task.type}
+                appSetup={task.appSetup}
+                setUpHeight={task.appSetup?.setUpHeight}
+                setUpWidth={task.appSetup?.setUpWidth}
+                cursorVec={cursorVec}
+                removeTask={removeTask}
+                removeCompnent={task}
+              >
+                {task.component}
+              </Application>
+            );
+          })}
           {startOption ? <Observer /> : <></>}
         </_.Display>
         <_.BackgroundDiv width={sideWidth}></_.BackgroundDiv>
       </Suspense>
     </_.Desktop>
-  )
-}
+  );
+};
 export default WindowManager;

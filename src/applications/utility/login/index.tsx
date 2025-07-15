@@ -1,21 +1,22 @@
 import * as _ from './style';
 import Logo from '@/assets/windeath44.svg';
 import Inputs from '@/applications/components/inputs';
-import { useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { useState } from 'react';
 import { useLogIn } from '@/api/auth/logIn';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
 import MemorialBtn from '@/applications/components/memorialBtn';
+import { isLogInedAtom } from '@/atoms/windowManager';
 type Props = {
-  setIsLogIned: (arg0: boolean) => void;
   changeToSignUp: () => void;
   changeToEmailCheck: () => void;
 };
-const LogIn = ({ setIsLogIned, changeToSignUp, changeToEmailCheck }: Props) => {
+const LogIn = ({ changeToSignUp, changeToEmailCheck }: Props) => {
   const [userId, setUserId] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const logInMutation = useLogIn();
   const taskTransform = useAtomValue(taskTransformerAtom);
+  const [isLogIned, setIsLogIned] = useAtom(isLogInedAtom);
   const inputList = [
     {
       label: '아이디:',
@@ -42,7 +43,7 @@ const LogIn = ({ setIsLogIned, changeToSignUp, changeToEmailCheck }: Props) => {
       {
         onSuccess: (token) => {
           console.log('로그인 성공 토큰 :', token);
-          setIsLogIned(true);
+          setIsLogIned('true');
           taskTransform?.('LogIn', '');
         },
         onError: (error) => {
@@ -87,7 +88,7 @@ const LogIn = ({ setIsLogIned, changeToSignUp, changeToEmailCheck }: Props) => {
           <MemorialBtn
             name="취소"
             onClick={() => {
-              setIsLogIned(true);
+              setIsLogIned('guest');
               taskTransform?.('LogIn', '');
             }}
             type="submit"
