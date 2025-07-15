@@ -12,6 +12,7 @@ import MemorialApply from '@/applications/applicationList/memorialApply/index.ts
 import Alert from '@/applications/applicationList/alert/index.tsx';
 import { getPixelFromPercent } from '@/lib/getPixelFromPercent.tsx';
 import MemorialApproach from '@/applications/applicationList/settings/index.tsx';
+import myComputer from '@/assets/appIcons/my_computer.svg';
 
 const Terminal = lazy(() => import('@/applications/applicationList/terminal/index.tsx'));
 const MemorailHistory = lazy(
@@ -28,6 +29,7 @@ const MemorialMerge = lazy(() => import('@/applications/applicationList/memorial
 import memorialApproach from '@/assets/appIcons/search.svg';
 import trashBin from '@/assets/appIcons/empty_bin.svg';
 import AnimationSelect from '@/applications/applicationList/animationSelect/index.tsx';
+import MyComputer from '../applicationList/myComputer';
 import Help from '@/applications/applicationList/help';
 
 //Application Import 형식 예시
@@ -333,6 +335,25 @@ const useApps = (): TaskType[] => {
         setUpHeight: getPixelFromPercent('height', 55),
       },
       visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <MyComputer />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2233,
+      name: '내 컴퓨터',
+      layer: undefined,
+      appSetup: {
+        Image: myComputer,
+        minWidth: getPixelFromPercent('width', 60),
+        minHeight: getPixelFromPercent('height', 55),
+        setUpWidth: getPixelFromPercent('width', 60),
+        setUpHeight: getPixelFromPercent('height', 55),
+      },
+      visible: true,
     },
   ];
 

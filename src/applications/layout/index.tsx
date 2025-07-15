@@ -219,7 +219,7 @@ const Application = (props: ApplicationProps) => {
               onClick={() => {
                 props.removeTask(props.removeCompnent);
                 if (!isLogIned) {
-                  setIsLogIned(true);
+                  setIsLogIned('guest');
                 }
               }}
               isFocus={focus === props.name}
