@@ -110,6 +110,7 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
                   {comment_data.map((comment, idx) => {
                     return (
                       <Comment
+                        key={idx}
                         nickname={comment.nickname}
                         userid={comment.userid}
                         content={comment.content}
