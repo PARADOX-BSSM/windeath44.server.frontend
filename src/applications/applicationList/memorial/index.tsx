@@ -6,7 +6,7 @@ import characterUrl from '@/assets/character/hosino.svg';
 import { useAtomValue } from 'jotai';
 import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer';
 import { useMemorialGet } from '@/api/memorial/memorialGet.ts';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useGetCharacter } from '@/api/anime/getCharacter.ts';
 
 interface dataStructureProps {
@@ -15,25 +15,60 @@ interface dataStructureProps {
   pop: any;
   top: any;
 }
-
+type CharacterData = {
+  characterId: number;
+  name: string;
+  lifeTime?: number;
+  deathReason?: string;
+  imageUrl?: string;
+  bowCount: number;
+  age?: number;
+  saying?: string;
+  state?: string;
+  deathOfDay?: string;
+};
 const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
   const taskSearch = useAtomValue(taskSearchAtom);
   const mutationMemorialGet = useMemorialGet();
   const mutationGetCharacter = useGetCharacter();
+  const [characterData, setCharacterData] = useState<CharacterData>({
+    characterId: 0,
+    name: '',
+    lifeTime: 0,
+    deathReason: '',
+    imageUrl: '',
+    bowCount: 0,
+    age: 0,
+    saying: '',
+    state: '',
+    deathOfDay: '',
+  });
   useEffect(() => {
     const id = 5;
-    const characterId = 1;
+    const characterId = 11;
     mutationMemorialGet.mutate(id, {
-      onSuccess: () => {
-        console.log('Success!');
+      onSuccess: (data) => {
+        console.log('Memorial API Success:', data);
       },
     });
     mutationGetCharacter.mutate(characterId, {
-      onSuccess: () => {
-        console.log('Success!');
+      onSuccess: (data) => {
+        setCharacterData({
+          characterId: data.characterId,
+          name: '',
+          lifeTime: 0,
+          deathReason: '',
+          imageUrl: '',
+          bowCount: 0,
+          age: data.age,
+          saying: '',
+          state: '',
+          deathOfDay: '',
+        });
       },
     });
+    console.log(characterData);
   }, []);
   return (
     <_.Main>
@@ -42,7 +77,7 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
           <_.Section1>
             <_.Header>
               <_.TextContainer>
-                <_.Title>호시노 아이</_.Title>
+                <_.Title>{characterData.name}</_.Title>
                 <_.Subtitle>최근 수정: 2025-07-04 12:34:56</_.Subtitle>
               </_.TextContainer>
               <_.History
@@ -149,6 +184,6 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
       </_.Container>
     </_.Main>
   );
-}
+};
 
 export default Memorial;

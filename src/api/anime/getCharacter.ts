@@ -1,7 +1,19 @@
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { anime } from '@/config';
-const getCharacter = async (characterId: number): Promise<void> => {
+type CharacterData = {
+  characterId: number;
+  name: string;
+  lifeTime: number;
+  deathReason: string;
+  imageUrl: string;
+  bowCount: number;
+  age: number;
+  saying: string;
+  state: string;
+  deathOfDay: string;
+};
+const getCharacter = async (characterId: number): Promise<CharacterData> => {
   const response = await axios.get(`${anime}/characters/${characterId}`, {
     withCredentials: true,
   });
@@ -10,7 +22,7 @@ const getCharacter = async (characterId: number): Promise<void> => {
 };
 
 export const useGetCharacter = () => {
-  return useMutation({
+  return useMutation<CharacterData, Error, number>({
     mutationFn: getCharacter,
   });
 };

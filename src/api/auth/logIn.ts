@@ -6,20 +6,21 @@ interface authParams {
   password: string;
 }
 const logIn = async ({ id, password }: authParams): Promise<string> => {
-  console.log(auth);
+  // console.log(auth);
   const data = { userId: id, password };
   try {
     const response: AxiosResponse = await axios.post(`${auth}/login`, data, {
       withCredentials: true,
       headers: { 'Content-Type': 'application/json' },
     });
-    // console.log(response.headers);
+    console.log(response.headers);
 
     const accessToken: string | undefined = response.headers['accesstoken'];
 
-    console.log(accessToken);
+    // console.log(accessToken);
 
     if (!accessToken) {
+      // console.log(accessToken);
       throw new Error('accessToken 없음');
     }
     localStorage.setItem('access_token', accessToken);

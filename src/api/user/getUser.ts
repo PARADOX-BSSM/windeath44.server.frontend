@@ -1,15 +1,10 @@
 import { useMutation } from '@tanstack/react-query';
-import axios, { AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import { user } from '@/config';
+import api from '@/api/axiosInstance';
 
 const fetchUser = async (): Promise<AxiosResponse> => {
-  const response = await axios.get(`${user}/profile`, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-    },
-    withCredentials: true,
-  });
-
+  const response = await api.get(`${user}/profile`);
   return response.data;
 };
 
