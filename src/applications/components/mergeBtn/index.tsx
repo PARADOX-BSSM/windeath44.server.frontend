@@ -1,6 +1,6 @@
 import * as _ from './style';
 import { useApplyMemorial } from '@/api/memorial/applyMemorial';
-import { inputPortage } from '@/atoms/inputManager';
+import { inputPortage, inputContent } from '@/atoms/inputManager';
 import { useAtomValue } from 'jotai';
 
 interface PropsType {
@@ -9,14 +9,16 @@ interface PropsType {
 
 const MergeBtn = ({ text }: PropsType) => {
   const inputValue = useAtomValue(inputPortage);
+  const contentValue = useAtomValue(inputContent);
   const applyMemorialMutation = useApplyMemorial();
 
   const handleSubmit = (e: React.MouseEvent) => {
     e.preventDefault();
-    console.log(inputValue);
-    applyMemorialMutation.mutate(
-      
-    )
+    console.log({ ...inputValue, ...contentValue });
+    applyMemorialMutation.mutate({
+      ...inputValue,
+      ...contentValue,
+    });
   };
 
   return <_.SubmitBtn onClick={handleSubmit}>{text}</_.SubmitBtn>;

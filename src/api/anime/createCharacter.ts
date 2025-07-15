@@ -2,8 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import { AxiosResponse } from 'axios';
 import { anime } from '@/config/index';
 import api from '@/api/axiosInstance';
-import { useAtomValue } from 'jotai';
-import { inputPortage } from '@/atoms/inputManager';
+import { InputPortageType } from '@/modules/inputPortageInterface';
 
 interface createCharacterInterface {
   animeId: string;
@@ -15,9 +14,7 @@ interface createCharacterInterface {
   deathOfDay: string;
 }
 
-const createCharacter = async (): Promise<boolean> => {
-  const inputData = useAtomValue(inputPortage);
-
+const createCharacter = async (inputData: InputPortageType): Promise<boolean> => {
   const request: createCharacterInterface = {
     animeId: inputData.animeId,
     name: inputData.name,
@@ -44,4 +41,14 @@ const createCharacter = async (): Promise<boolean> => {
     throw error;
   }
   return true;
+};
+
+export const useApplyMemorial = () => {
+  return useMutation({
+    mutationFn: createCharacter,
+    onSuccess: () => {
+      alert('캐릭터가 성공적으로 등록되었습니다.');
+    },
+    onError: () => {},
+  });
 };
