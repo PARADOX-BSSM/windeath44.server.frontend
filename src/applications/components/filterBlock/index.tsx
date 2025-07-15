@@ -1,6 +1,4 @@
 import Option from '@/applications/components/option';
-import { SetStateAction } from 'react';
-import { Dispatch } from 'react';
 import Up from '@/assets/search/point_up.svg';
 import Down from '@/assets/search/point_down.svg';
 import * as _ from './style';
@@ -11,7 +9,7 @@ interface FilterBlockProps {
   isOpen: boolean;
   onClick: () => void;
   list: string[];
-  onChange: Dispatch<SetStateAction<string>>;
+  onChange: (value: string) => void;
 }
 
 const FilterBlock = ({ label, option, isOpen, onClick, list, onChange }: FilterBlockProps) => {

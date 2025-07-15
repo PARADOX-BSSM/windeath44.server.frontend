@@ -48,6 +48,12 @@ const MemorialApply = ({}: dataStructureProps) => {
     setDeath(!death);
   };
 
+  const handleDeathChange = (value: string) => {
+    setFillDeath(value);
+    setDeath(false);
+    setInputValue((prev) => ({ ...prev, deathReason: value }));
+  };
+
   useEffect(() => {
     if (profileImgRef.current) {
       const el = profileImgRef.current;
@@ -215,11 +221,8 @@ const MemorialApply = ({}: dataStructureProps) => {
                           isOpen={death}
                           onClick={handleDeath}
                           list={deathReason}
-                          onChange={(value) => {
-                            setFillDeath(value);
-                            setDeath(false);
-                          }}
-                        ></FilterBlock>
+                          onChange={handleDeathChange}
+                        />
                         {/* <_.CharacterInforInput
                           type="text"
                           placeholder="예) 흉기에 의한 사망"

@@ -1,9 +1,8 @@
 import * as _ from './style';
-import { Dispatch } from 'react';
-import { SetStateAction } from 'jotai/vanilla/typeUtils';
+
 type OptionsProps = {
   list: string[];
-  onChange: Dispatch<SetStateAction<string>>;
+  onChange: (value: string) => void;
 };
 const Option = ({ list, onChange }: OptionsProps) => {
   return (
