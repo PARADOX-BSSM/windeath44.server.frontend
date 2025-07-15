@@ -4,7 +4,7 @@ export const Btn = styled.button<{ width?: string; height?: string; fontSize?: s
   display: flex;
   width: ${({ width }) => width || '11.25rem'}; /* 180px */
   height: ${({ height }) => height || '2.625rem'}; /* 42px */
-  padding: 0.563rem 1.5rem; /* 9px 24px */
+  padding: 0.563rem 0; /* 9px 24px */
   justify-content: center;
   align-items: center;
   background: var(--light-primary-color);
@@ -28,7 +28,7 @@ export const SelectedBtn = styled.button<{ width?: string; height?: string; font
   display: flex;
   width: ${({ width }) => width || '11.25rem'};
   height: ${({ height }) => height || '2.625rem'};
-  padding: 0.563rem 1.5rem;
+  padding: 0.563rem 0;
   justify-content: center;
   align-items: center;
   background: var(--LightPrimary, #ffd3fb);
@@ -52,7 +52,7 @@ export const SubmitDefault = styled.button<{ width?: string; height?: string; fo
   display: flex;
   width: ${({ width }) => width || '11.25rem'};
   height: ${({ height }) => height || '2.625rem'};
-  padding: 0.563rem 1.5rem;
+  padding: 0.563rem 0;
   justify-content: center;
   align-items: center;
   background: var(--LightPrimary, #ffd3fb);
@@ -75,7 +75,7 @@ export const SubmitDefault = styled.button<{ width?: string; height?: string; fo
 export const SubmitActive = styled.button<{ width?: string; height?: string; fontSize?: string }>`
   width: ${({ width }) => width || '11.25rem'};
   height: ${({ height }) => height || '2.625rem'};
-  padding: 0.563rem 1.5rem;
+  padding: 0.563rem 0;
   justify-content: center;
   align-items: center;
   background: var(--LightPrimary, #ffd3fb);
