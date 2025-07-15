@@ -1,7 +1,20 @@
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { memorial } from '@/config';
-const memorialGet = async (id: number): Promise<void> => {
+type memorialData = {
+  data: any;
+  memorialId: number;
+  characterId: number;
+  chiefs: [];
+  bowCount: number;
+  memorialCommitId: number;
+  content: string;
+  userId: string;
+  createdAt: string;
+  mergerId: string;
+  updatedAt: string;
+};
+const memorialGet = async (id: number): Promise<memorialData> => {
   const response = await axios.get(`${memorial}/${id}`, {
     withCredentials: true,
   });
@@ -10,7 +23,7 @@ const memorialGet = async (id: number): Promise<void> => {
 };
 
 export const useMemorialGet = () => {
-  return useMutation({
+  return useMutation<memorialData, Error, number>({
     mutationFn: memorialGet,
   });
 };

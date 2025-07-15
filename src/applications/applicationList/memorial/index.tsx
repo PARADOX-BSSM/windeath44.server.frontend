@@ -2,7 +2,7 @@ import IndexMenu from '@/applications/components/indexMenu';
 import Comment from '@/applications/components/comment';
 import * as _ from './style';
 import { index_data, comment_data } from './data';
-import characterUrl from '@/assets/character/hosino.svg';
+// import characterUrl from '@/assets/character/hosino.svg';
 import { useAtomValue } from 'jotai';
 import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer';
 import { useMemorialGet } from '@/api/memorial/memorialGet.ts';
@@ -18,20 +18,44 @@ interface dataStructureProps {
 type CharacterData = {
   characterId: number;
   name: string;
-  lifeTime?: number;
-  deathReason?: string;
-  imageUrl?: string;
+  lifeTime: number | null;
+  deathReason: string | null;
+  imageUrl: string | null;
+  bowCount: number | null;
+  age: number | null;
+  saying: string | null;
+  state: string | null;
+  deathOfDay: string | null;
+};
+type memorialData = {
+  memorialId: number;
+  characterId: number;
+  chiefs: [];
   bowCount: number;
-  age?: number;
-  saying?: string;
-  state?: string;
-  deathOfDay?: string;
+  memorialCommitId: number;
+  content: string;
+  userId: string;
+  createdAt: string;
+  mergerId: string;
+  updatedAt: string;
 };
 const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
   const taskSearch = useAtomValue(taskSearchAtom);
   const mutationMemorialGet = useMemorialGet();
   const mutationGetCharacter = useGetCharacter();
+  const [memorialData, setMemorialData] = useState<memorialData>({
+    memorialId: 0,
+    characterId: 0,
+    chiefs: [],
+    bowCount: 0,
+    memorialCommitId: 0,
+    content: '',
+    userId: '',
+    createdAt: '',
+    mergerId: '',
+    updatedAt: '',
+  });
   const [characterData, setCharacterData] = useState<CharacterData>({
     characterId: 0,
     name: '',
@@ -45,31 +69,42 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
     deathOfDay: '',
   });
   useEffect(() => {
-    const id = 5;
-    const characterId = 11;
+    const id = 1;
+    const characterId = 1;
     mutationMemorialGet.mutate(id, {
       onSuccess: (data) => {
-        console.log('Memorial API Success:', data);
+        setMemorialData({
+          memorialId: data.data.memorialId,
+          characterId: data.data.characterId,
+          chiefs: data.data.chiefs,
+          bowCount: data.data.bowCount,
+          memorialCommitId: data.data.memorialCommitId,
+          content: data.data.content,
+          userId: data.data.userId,
+          createdAt: data.data.createdAt,
+          mergerId: data.data.mergerId,
+          updatedAt: data.data.updatedAt,
+        });
       },
     });
     mutationGetCharacter.mutate(characterId, {
       onSuccess: (data) => {
         setCharacterData({
-          characterId: data.characterId,
-          name: '',
-          lifeTime: 0,
-          deathReason: '',
-          imageUrl: '',
-          bowCount: 0,
-          age: data.age,
-          saying: '',
-          state: '',
-          deathOfDay: '',
+          characterId: data.data.characterId,
+          name: data.data.name,
+          lifeTime: data.data.lifeTime,
+          deathReason: data.data.deathReason,
+          imageUrl: data.data.imageUrl,
+          bowCount: data.data.bowCount,
+          age: data.data.age,
+          saying: data.data.saying,
+          state: data.data.state,
+          deathOfDay: data.data.deathOfDay,
         });
       },
     });
-    console.log(characterData);
   }, []);
+  console.log(memorialData);
   return (
     <_.Main>
       <_.Container>
@@ -78,7 +113,7 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
             <_.Header>
               <_.TextContainer>
                 <_.Title>{characterData.name}</_.Title>
-                <_.Subtitle>최근 수정: 2025-07-04 12:34:56</_.Subtitle>
+                <_.Subtitle>최근 수정: {memorialData.updatedAt}</_.Subtitle>
               </_.TextContainer>
               <_.History
                 onClick={() => {
@@ -98,7 +133,7 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
             </_.Header>
             <_.ContentContainer>
               <_.IndexWrapper>
-                <_.Quote>이 말은 절대로 거짓말이 아니야.</_.Quote>
+                <_.Quote>{characterData.saying}</_.Quote>
                 <_.Index>
                   <_.IndexTitle>목차</_.IndexTitle>
                   {index_data.map((item, idx) => {
@@ -115,25 +150,26 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
               <_.ProfileContainer>
                 <_.ProfileInnerContainer>
                   <_.PictureContainer>
-                    <_.Picture imgUrl={characterUrl} />
-                    <_.Name>호시노 아이</_.Name>
+                    <_.Picture imgUrl={characterData.imageUrl} />
+                    <_.Name>{characterData.name}</_.Name>
                   </_.PictureContainer>
                   <_.Information>
                     <_.Row>
                       <_.Attribute>나이</_.Attribute>
-                      <_.Value>향년 20세</_.Value>
+                      <_.Value>향년 {characterData.age}세</_.Value>
                     </_.Row>
                     <_.Row>
                       <_.Attribute>사망 날짜</_.Attribute>
-                      <_.Value>2023.04.12</_.Value>
+                      <_.Value>{characterData.deathOfDay}</_.Value>
                     </_.Row>
                     <_.Row>
                       <_.Attribute>생존 기간</_.Attribute>
-                      <_.Value>1일</_.Value>
+                      <_.Value>{characterData.lifeTime}화</_.Value>
                     </_.Row>
                     <_.Row>
                       <_.Attribute>애니메이션</_.Attribute>
                       <_.Value>최애의 아이</_.Value>
+                      {/*api에 값이 없음*/}
                     </_.Row>
                   </_.Information>
                 </_.ProfileInnerContainer>
@@ -176,8 +212,8 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
             </_.CommentContainer>
 
             <_.ArticleContainer>
-              <_.ArticleTitle>1. 마지막 순간</_.ArticleTitle>
-              <_.ArticleContent>돔공연 축하해....</_.ArticleContent>
+              {/*<_.ArticleTitle>1. 마지막 순간</_.ArticleTitle>*/}
+              <_.ArticleContent>{memorialData.content}</_.ArticleContent>
             </_.ArticleContainer>
           </_.Section2>
         </_.InnerContainer>

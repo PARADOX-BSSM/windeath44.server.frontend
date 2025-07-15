@@ -2,11 +2,12 @@ import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { anime } from '@/config';
 type CharacterData = {
+  data: any;
   characterId: number;
   name: string;
   lifeTime: number;
   deathReason: string;
-  imageUrl: string;
+  imageUrl: string | null;
   bowCount: number;
   age: number;
   saying: string;
