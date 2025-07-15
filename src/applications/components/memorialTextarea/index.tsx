@@ -5,6 +5,7 @@ import { useAtom, useAtomValue } from 'jotai';
 import { inputContent } from '@/atoms/inputManager';
 import Help from '@/assets/help.svg';
 import { taskTransformerAtom } from '@/atoms/taskTransformer.ts';
+import { TitleContainer } from './style';
 
 interface PropsType {
   btnText?: string;
@@ -37,14 +38,14 @@ const MemorialTextarea = ({
   return (
     <>
       <_.Container>
-        <_.Set>
+        <_.TitleContainer>
           {isPerson ? <_.Title>- @{from}의 작성안</_.Title> : <_.Title>{from}</_.Title>}
           <_.Image
             src={Help}
             alt={'help'}
             onClick={handleClickOpen}
           />
-        </_.Set>
+        </_.TitleContainer>
         <_.CommitAreaContainer>
           <_.CommitArea
             value={contentIn.content}

@@ -48,7 +48,7 @@ export const CommitArea = styled(TextareaAutosize)`
   outline: none;
   min-height: 50px;
 `;
-export const Set = styled.div`
+export const TitleContainer = styled.div`
   display: flex;
   align-items: center;
 `;
