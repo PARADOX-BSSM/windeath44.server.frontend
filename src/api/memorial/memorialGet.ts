@@ -2,6 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { memorial } from '@/config';
 type memorialData = {
+  data: string | number[];
   memorialId: number;
   characterId: number;
   chiefs: string[];
