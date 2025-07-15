@@ -14,7 +14,7 @@ interface createCharacterInterface {
   deathOfDay: string;
 }
 
-const createCharacter = async (inputData: InputPortageType): Promise<boolean> => {
+const createCharacter = async (inputData: InputPortageType): Promise<number> => {
   const request: createCharacterInterface = {
     animeId: inputData.animeId,
     name: inputData.name,
@@ -24,7 +24,7 @@ const createCharacter = async (inputData: InputPortageType): Promise<boolean> =>
     age: inputData.age,
     deathOfDay: inputData.date,
   };
-  console.log(request);
+  // console.log(request);
   try {
     const response: AxiosResponse = await api.post(`${anime}/characters`, request, {
       headers: {
@@ -32,6 +32,7 @@ const createCharacter = async (inputData: InputPortageType): Promise<boolean> =>
       },
     });
     console.log(JSON.stringify(response.data));
+    return response.data.data.characterId;
   } catch (error: any) {
     if (error.response?.data) {
       alert(`캐릭터 등록 오류`);
@@ -41,7 +42,6 @@ const createCharacter = async (inputData: InputPortageType): Promise<boolean> =>
     }
     throw error;
   }
-  return true;
 };
 
 export const useCreateCharacter = () => {
