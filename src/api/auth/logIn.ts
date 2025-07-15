@@ -6,7 +6,7 @@ interface authParams {
   password: string;
 }
 const logIn = async ({ id, password }: authParams): Promise<string> => {
-  console.log(auth);
+  // console.log(auth);
   const data = { userId: id, password };
   try {
     const response: AxiosResponse = await axios.post(`${auth}/login`, data, {
@@ -17,7 +17,7 @@ const logIn = async ({ id, password }: authParams): Promise<string> => {
 
     const accessToken: string | undefined = response.headers['accesstoken'];
 
-    console.log(accessToken);
+    // console.log(accessToken);
 
     if (!accessToken) {
       throw new Error('accessToken 없음');
