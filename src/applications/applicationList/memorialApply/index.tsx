@@ -178,7 +178,7 @@ const MemorialApply = ({}: dataStructureProps) => {
                       <_.CharacterInformationRowValueText>
                         <_.CharacterInforInput
                           type="text"
-                          placeholder="예) 2023.04.12"
+                          placeholder="예) 2023-04-12"
                           onChange={(e) => {
                             setInputValue((prev) => ({ ...prev, date: e.target.value }));
                           }}
@@ -197,7 +197,7 @@ const MemorialApply = ({}: dataStructureProps) => {
                       <_.CharacterInformationRowValueText>
                         <_.CharacterInforInput
                           type="number"
-                          placeholder="예) 1화"
+                          placeholder="예) 1"
                           onChange={(e) => {
                             setInputValue((prev) => ({
                               ...prev,
