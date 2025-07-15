@@ -13,13 +13,14 @@ const logIn = async ({ id, password }: authParams): Promise<string> => {
       withCredentials: true,
       headers: { 'Content-Type': 'application/json' },
     });
-    // console.log(response.headers);
+    console.log(response.headers);
 
     const accessToken: string | undefined = response.headers['accesstoken'];
 
     // console.log(accessToken);
 
     if (!accessToken) {
+      // console.log(accessToken);
       throw new Error('accessToken 없음');
     }
     localStorage.setItem('access_token', accessToken);
