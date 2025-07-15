@@ -104,7 +104,6 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
       },
     });
   }, []);
-  console.log(memorialData);
   return (
     <_.Main>
       <_.Container>
