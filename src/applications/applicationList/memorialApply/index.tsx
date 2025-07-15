@@ -9,6 +9,7 @@ import AvatarEditor from 'react-avatar-editor';
 import Button from '@/applications/components/button';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
 import { useGetUserMutation } from '@/api/user/getUser';
+import FilterBlock from '@/applications/components/filterBlock';
 
 interface dataStructureProps {
   stack: any[];
@@ -31,6 +32,21 @@ const MemorialApply = ({}: dataStructureProps) => {
     width: 0,
     height: 0,
   });
+
+  const deathReason = [
+    '모두',
+    '자연사(自然死)',
+    '병사(病死)',
+    '자살(自殺)',
+    '불명사(不明死)',
+    '타살(他殺)',
+    '돌연사(突然死)',
+  ];
+  const [death, setDeath] = useState(false);
+  const [fillDeath, setFillDeath] = useState('모두');
+  const handleDeath = () => {
+    setDeath(!death);
+  };
 
   useEffect(() => {
     if (profileImgRef.current) {
@@ -193,13 +209,24 @@ const MemorialApply = ({}: dataStructureProps) => {
                     </_.CharacterInformationRowAttribute>
                     <_.CharacterInformationRowValue>
                       <_.CharacterInformationRowValueText>
-                        <_.CharacterInforInput
+                        <FilterBlock
+                          label=""
+                          option={fillDeath}
+                          isOpen={death}
+                          onClick={handleDeath}
+                          list={deathReason}
+                          onChange={(value) => {
+                            setFillDeath(value);
+                            setDeath(false);
+                          }}
+                        ></FilterBlock>
+                        {/* <_.CharacterInforInput
                           type="text"
                           placeholder="예) 흉기에 의한 사망"
                           onChange={(e) => {
                             setInputValue((prev) => ({ ...prev, deathReason: e.target.value }));
                           }}
-                        ></_.CharacterInforInput>
+                        ></_.CharacterInforInput> */}
                       </_.CharacterInformationRowValueText>
                     </_.CharacterInformationRowValue>
                   </_.CharacterInformationRow>
