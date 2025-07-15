@@ -5,10 +5,12 @@ import { index_data, comment_data } from './data';
 import characterUrl from '@/assets/character/hosino.svg';
 import { useAtomValue } from 'jotai';
 import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer';
+import { useMemorialGet } from '@/api/memorial/memorialGet.ts';
+import { useEffect } from 'react';
 
 interface dataStructureProps {
   stack: any[];
-  push: any
+  push: any;
   pop: any;
   top: any;
 }
@@ -16,7 +18,15 @@ interface dataStructureProps {
 const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
   const taskSearch = useAtomValue(taskSearchAtom);
-  
+  const mutationMemorialGet = useMemorialGet();
+  useEffect(() => {
+    const id = 5;
+    mutationMemorialGet.mutate(id, {
+      onSuccess: () => {
+        console.log('Success!');
+      },
+    });
+  }, []);
   return (
     <_.Main>
       <_.Container>
@@ -27,25 +37,36 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
                 <_.Title>호시노 아이</_.Title>
                 <_.Subtitle>최근 수정: 2025-07-04 12:34:56</_.Subtitle>
               </_.TextContainer>
-              <_.History onClick={() => { 
-                push(taskSearch?.("memorailHistory", stack, push, pop, top));
-              }}>기록</_.History>
-              <_.DocumentUpdate onClick={() => { 
-                taskTransform?.('', 'MemorialPreview');
-                push(taskSearch?.("MemorialCommit", stack, push, pop, top));
-              }}>문서 수정</_.DocumentUpdate>
+              <_.History
+                onClick={() => {
+                  push(taskSearch?.('memorailHistory', stack, push, pop, top));
+                }}
+              >
+                기록
+              </_.History>
+              <_.DocumentUpdate
+                onClick={() => {
+                  taskTransform?.('', 'MemorialPreview');
+                  push(taskSearch?.('MemorialCommit', stack, push, pop, top));
+                }}
+              >
+                문서 수정
+              </_.DocumentUpdate>
             </_.Header>
             <_.ContentContainer>
               <_.IndexWrapper>
                 <_.Quote>이 말은 절대로 거짓말이 아니야.</_.Quote>
                 <_.Index>
                   <_.IndexTitle>목차</_.IndexTitle>
-                  {
-                    index_data.map((item, idx) => {
-                      // console.log(idx);
-                      return <IndexMenu text={item} idx={idx}></IndexMenu>
-                    })
-                  }
+                  {index_data.map((item, idx) => {
+                    // console.log(idx);
+                    return (
+                      <IndexMenu
+                        text={item}
+                        idx={idx}
+                      ></IndexMenu>
+                    );
+                  })}
                 </_.Index>
               </_.IndexWrapper>
               <_.ProfileContainer>
@@ -77,9 +98,13 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
             </_.ContentContainer>
           </_.Section1>
 
-          <_.GotoBow onClick={() => { 
-                taskTransform?.('', 'Bow');
-              }}>절 하러가기</_.GotoBow>
+          <_.GotoBow
+            onClick={() => {
+              taskTransform?.('', 'Bow');
+            }}
+          >
+            절 하러가기
+          </_.GotoBow>
 
           <_.Section2>
             <_.CommentContainer>
@@ -87,28 +112,34 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
               <_.CommentMain>
                 <_.CommentMainInner>
                   <_.InputComment>
-                    <_.InputCommentText type='text' placeholder='추모글을 입력하세요.'></_.InputCommentText>
+                    <_.InputCommentText
+                      type="text"
+                      placeholder="추모글을 입력하세요."
+                    ></_.InputCommentText>
                   </_.InputComment>
-                  {
-                    comment_data.map((comment, idx) => {
-                      return <Comment nickname={comment.nickname} userid={comment.userid} content={comment.content} idx={idx} />
-                    })
-                  }
+                  {comment_data.map((comment, idx) => {
+                    return (
+                      <Comment
+                        nickname={comment.nickname}
+                        userid={comment.userid}
+                        content={comment.content}
+                        idx={idx}
+                      />
+                    );
+                  })}
                 </_.CommentMainInner>
               </_.CommentMain>
             </_.CommentContainer>
 
             <_.ArticleContainer>
               <_.ArticleTitle>1. 마지막 순간</_.ArticleTitle>
-              <_.ArticleContent>
-                돔공연 축하해....
-              </_.ArticleContent>
+              <_.ArticleContent>돔공연 축하해....</_.ArticleContent>
             </_.ArticleContainer>
           </_.Section2>
         </_.InnerContainer>
       </_.Container>
     </_.Main>
   );
-}
+};
 
 export default Memorial;
