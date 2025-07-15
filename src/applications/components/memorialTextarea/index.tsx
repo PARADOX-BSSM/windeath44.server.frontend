@@ -5,7 +5,6 @@ import { useAtom, useAtomValue } from 'jotai';
 import { inputContent } from '@/atoms/inputManager';
 import Help from '@/assets/help.svg';
 import { taskTransformerAtom } from '@/atoms/taskTransformer.ts';
-import { TitleContainer } from './style';
 
 interface PropsType {
   btnText?: string;
