@@ -4,8 +4,7 @@ import { user } from '@/config';
 import api from '@/api/axiosInstance';
 
 const fetchUser = async (): Promise<AxiosResponse> => {
-  const response = await api.get(`${user}/profile`);
-  return response.data;
+  return (await api.get(`${user}/profile`)).data;
 };
 
 export const useGetUserMutation = () => {

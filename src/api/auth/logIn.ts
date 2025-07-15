@@ -1,26 +1,25 @@
-import axios, { AxiosError, AxiosResponse } from 'axios';
-import { auth } from '@/config';
+import { AxiosError, AxiosResponse } from 'axios';
+import api from '@/api/axiosInstance';
 import { useMutation } from '@tanstack/react-query';
+import { auth } from '@/config';
+
 interface authParams {
   id: string;
   password: string;
 }
+
 const logIn = async ({ id, password }: authParams): Promise<string> => {
-  // console.log(auth);
   const data = { userId: id, password };
   try {
-    const response: AxiosResponse = await axios.post(`${auth}/login`, data, {
-      withCredentials: true,
+    const response: AxiosResponse = await api.post(`${auth}/login`, data, {
       headers: { 'Content-Type': 'application/json' },
     });
+
     console.log(response.headers);
 
     const accessToken: string | undefined = response.headers['accesstoken'];
 
-    // console.log(accessToken);
-
     if (!accessToken) {
-      // console.log(accessToken);
       throw new Error('accessToken 없음');
     }
     localStorage.setItem('access_token', accessToken);
@@ -36,6 +35,7 @@ const logIn = async ({ id, password }: authParams): Promise<string> => {
     throw error;
   }
 };
+
 export const useLogIn = () => {
   return useMutation({
     mutationFn: logIn,
