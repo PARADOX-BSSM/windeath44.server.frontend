@@ -4,6 +4,7 @@ import Down from '@/assets/search/point_down.svg';
 import { Dispatch, useState } from 'react';
 import Option from '@/applications/applicationList/search/option';
 import { SetStateAction } from 'react';
+import Inputs from '@/applications/components/inputs';
 
 interface FilterBlockProps {
   label: string;
@@ -20,6 +21,8 @@ const Search_task = () => {
 
   const [fillDeath, setFillDeath] = useState('모두');
   const [fillAni, setFillAni] = useState('없음');
+
+  const [name, setName] = useState('');
   const deathReason = [
     '모두',
     '자연사(自然死)',
@@ -46,47 +49,40 @@ const Search_task = () => {
   return (
     <_.search>
       <_.styles>
-        <div>
-          <div>
-            <div>
-              <_.search_main>
-                <_.name>
-                  <label>이름</label>
-                  <_.black>
-                    <_.white>
-                      <_.dark>
-                        <_.input type={'text'} />
-                      </_.dark>
-                    </_.white>
-                  </_.black>
-                </_.name>
-                <FilterBlock
-                  label="애니메이션"
-                  option={fillAni}
-                  isOpen={animation}
-                  onClick={handleAnimation}
-                  list={animationType}
-                  onChange={(value) => {
-                    setFillAni(value);
-                    setAnimation(false);
-                  }}
-                />
+        <_.search_main>
+          <Inputs
+            width="100%"
+            fontSize="0.8rem"
+            flex={false}
+            label="이름"
+            type="text"
+            value={name}
+            setValue={setName}
+          />
+          <FilterBlock
+            label="애니메이션"
+            option={fillAni}
+            isOpen={animation}
+            onClick={handleAnimation}
+            list={animationType}
+            onChange={(value) => {
+              setFillAni(value);
+              setAnimation(false);
+            }}
+          />
 
-                <FilterBlock
-                  label="사인"
-                  option={fillDeath}
-                  isOpen={death}
-                  onClick={handleDeath}
-                  list={deathReason}
-                  onChange={(value) => {
-                    setFillDeath(value);
-                    setDeath(false);
-                  }}
-                />
-              </_.search_main>
-            </div>
-          </div>
-        </div>
+          <FilterBlock
+            label="사인"
+            option={fillDeath}
+            isOpen={death}
+            onClick={handleDeath}
+            list={deathReason}
+            onChange={(value) => {
+              setFillDeath(value);
+              setDeath(false);
+            }}
+          />
+        </_.search_main>
       </_.styles>
     </_.search>
   );
@@ -94,26 +90,18 @@ const Search_task = () => {
 const FilterBlock = ({ label, option, isOpen, onClick, list, onChange }: FilterBlockProps) => {
   return (
     <_.filter_block>
-      <label>{label}</label>
+      <_.Label>{label}</_.Label>
       <_.black>
         <_.white>
-          <_.dark>
-            <_.option>{option}</_.option>
-            <_.button onClick={onClick}>
-              <_.styles>
-                <div>
-                  <div>
-                    <div>
-                      <img
-                        src={isOpen ? Up : Down}
-                        alt={isOpen ? 'close' : 'open'}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </_.styles>
-            </_.button>
-          </_.dark>
+          <_.option>{option}</_.option>
+          <_.button onClick={onClick}>
+            <_.Button>
+              <img
+                src={isOpen ? Up : Down}
+                alt={isOpen ? 'close' : 'open'}
+              />
+            </_.Button>
+          </_.button>
         </_.white>
       </_.black>
       {isOpen && (

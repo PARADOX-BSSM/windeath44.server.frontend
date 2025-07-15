@@ -91,7 +91,7 @@ const useApps = (): TaskType[] => {
       appSetup: {
         Image: memorialApproach,
         minWidth: getPixelFromPercent('width', 45),
-        minHeight: getPixelFromPercent('height', 45),
+        minHeight: getPixelFromPercent('height', 40),
         setUpWidth: getPixelFromPercent('width', 65),
         setUpHeight: getPixelFromPercent('height', 45),
       },
@@ -112,7 +112,7 @@ const useApps = (): TaskType[] => {
         minWidth: getPixelFromPercent('width', 55),
         minHeight: getPixelFromPercent('height', 35),
         setUpWidth: getPixelFromPercent('width', 65),
-        setUpHeight: getPixelFromPercent('height', 35),
+        setUpHeight: getPixelFromPercent('height', 40),
       },
       visible: false,
     },

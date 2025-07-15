@@ -7,7 +7,7 @@ export const main = styled.div`
   font-size: 1rem;
   width: 100%;
   height: 100%;
-  padding: 0.65rem 1rem;
+  padding: 0.5rem 1rem;
 `;
 
 export const main_serve = styled.div`
@@ -35,7 +35,7 @@ export const object = styled.div`
   box-sizing: border-box;
   & > div {
     width: 100%;
-    height: 100%;
+    height: fit-content;
     border-width: 0 0.094rem 0.094rem 0;
     border-style: solid;
     border-color: #ffffff;
@@ -46,6 +46,11 @@ export const object = styled.div`
     padding-left: 0.25rem;
     & > div {
       margin: auto 0;
+      font-size: 0.8rem;
+    }
+    & > img {
+      width: 1.25rem;
+      height: 1.25rem;
     }
   }
 `;
