@@ -1,6 +1,7 @@
 import { AxiosError, AxiosResponse } from 'axios';
 import api from '@/api/axiosInstance';
 import { useMutation } from '@tanstack/react-query';
+import { auth } from '@/config';
 
 interface authParams {
   id: string;
@@ -10,7 +11,7 @@ interface authParams {
 const logIn = async ({ id, password }: authParams): Promise<string> => {
   const data = { userId: id, password };
   try {
-    const response: AxiosResponse = await api.post('/login', data, {
+    const response: AxiosResponse = await api.post(`${auth}/login`, data, {
       headers: { 'Content-Type': 'application/json' },
     });
 

@@ -2,7 +2,6 @@ import axios from 'axios';
 import { auth } from '@/config';
 
 const api = axios.create({
-  baseURL: auth,
   withCredentials: true,
 });
 
@@ -10,7 +9,8 @@ api.interceptors.request.use((config) => {
   const token = localStorage.getItem('access_token');
   // console.log('interceptor:', { url: config.url, token });
 
-  if (token && config.url?.includes('/login')) {
+  if (token) {
+    console.log(true);
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
