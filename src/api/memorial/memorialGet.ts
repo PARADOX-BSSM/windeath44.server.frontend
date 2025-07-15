@@ -2,10 +2,9 @@ import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { memorial } from '@/config';
 type memorialData = {
-  data: any;
   memorialId: number;
   characterId: number;
-  chiefs: [];
+  chiefs: string[];
   bowCount: number;
   memorialCommitId: number;
   content: string;
