@@ -1,7 +1,7 @@
-import axios from 'axios';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosResponse } from 'axios';
 import { memorial_application } from '@/config/index';
+import api from '@/api/axiosInstance';
 
 interface ApplyMemorialInterface {
   characterId: string;
@@ -17,10 +17,9 @@ const applyMemorial = async ({
     content: content,
   };
   try {
-    const response: AxiosResponse = await axios.post(`${memorial_application}/email`, data, {
+    const response: AxiosResponse = await api.post(`${memorial_application}/email`, data, {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('access_token')}`,
       },
       withCredentials: true,
     });
