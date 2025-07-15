@@ -7,6 +7,7 @@ import { useAtomValue } from 'jotai';
 import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer';
 import { useMemorialGet } from '@/api/memorial/memorialGet.ts';
 import { useEffect } from 'react';
+import { useGetCharacter } from '@/api/anime/getCharacter.ts';
 
 interface dataStructureProps {
   stack: any[];
@@ -19,9 +20,16 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
   const taskSearch = useAtomValue(taskSearchAtom);
   const mutationMemorialGet = useMemorialGet();
+  const mutationGetCharacter = useGetCharacter();
   useEffect(() => {
     const id = 5;
+    const characterId = 1;
     mutationMemorialGet.mutate(id, {
+      onSuccess: () => {
+        console.log('Success!');
+      },
+    });
+    mutationGetCharacter.mutate(characterId, {
       onSuccess: () => {
         console.log('Success!');
       },
