@@ -103,15 +103,15 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
         setAlert(
           Choten,
           <>
-            문제가 발생했습니다.
+            알림
             <br />
-            에러가 발생했습니다. 류승찬 나 규카츠사줘
+            최애의 사인에 부적합하다고 판단되는 추모관은
             <br />
-            예외가 발생했습니당.
+            거절될 수 있습니다.
           </>,
           () => {
             push(taskSearch?.('MemorialApply', stack, push, pop, top));
-            removeTask(taskSearch?.('Alert')!);
+            removeTask(taskSearch?.('경고')!);
             addTask(memorialPreview);
           },
         );
