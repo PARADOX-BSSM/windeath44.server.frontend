@@ -4,7 +4,6 @@ import { Suspense, useEffect } from 'react';
 import React from 'react';
 import { alerterAtom } from '@/atoms/alerter';
 import { useProcessManager } from './processManager';
-import { getPixelFromPercent } from '@/lib/getPixelFromPercent';
 
 export const useAlerter = () => {
   const setAlerterAtom = useSetAtom(alerterAtom);
