@@ -30,7 +30,7 @@ type CharacterData = {
 type memorialData = {
   memorialId: number;
   characterId: number;
-  chiefs: [];
+  chiefs: string[];
   bowCount: number;
   memorialCommitId: number;
   content: string;
@@ -59,14 +59,14 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
   const [characterData, setCharacterData] = useState<CharacterData>({
     characterId: 0,
     name: '',
-    lifeTime: 0,
-    deathReason: '',
-    imageUrl: '',
-    bowCount: 0,
-    age: 0,
-    saying: '',
-    state: '',
-    deathOfDay: '',
+    lifeTime: null,
+    deathReason: null,
+    imageUrl: null,
+    bowCount: null,
+    age: null,
+    saying: null,
+    state: null,
+    deathOfDay: null,
   });
   useEffect(() => {
     const id = 1;
