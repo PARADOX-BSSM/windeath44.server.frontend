@@ -8,6 +8,8 @@ import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer';
 import { useMemorialGet } from '@/api/memorial/memorialGet.ts';
 import { useEffect, useState } from 'react';
 import { useGetCharacter } from '@/api/anime/getCharacter.ts';
+import type { CharacterData } from '@/api/anime/getCharacter';
+import type { memorialData } from '@/api/memorial/memorialGet';
 
 interface dataStructureProps {
   stack: any[];
@@ -15,30 +17,7 @@ interface dataStructureProps {
   pop: any;
   top: any;
 }
-type CharacterData = {
-  characterId: number;
-  name: string;
-  lifeTime: number | null;
-  deathReason: string | null;
-  imageUrl: string | null;
-  bowCount: number | null;
-  age: number | null;
-  saying: string | null;
-  state: string | null;
-  deathOfDay: string | null;
-};
-type memorialData = {
-  memorialId: number;
-  characterId: number;
-  chiefs: string[];
-  bowCount: number;
-  memorialCommitId: number;
-  content: string;
-  userId: string;
-  createdAt: string;
-  mergerId: string;
-  updatedAt: string;
-};
+
 const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
   const taskSearch = useAtomValue(taskSearchAtom);
