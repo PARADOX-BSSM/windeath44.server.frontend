@@ -4,10 +4,11 @@ import { getPixelFromPercent } from '@/lib/getPixelFromPercent';
 
 export const Container = styled.div`
   display: flex;
-  padding: 28px 24px 36px 24px;
+  width: 100%;
+  padding: 1.75rem 1.5rem 2.25rem 1.5rem;
   flex-direction: column;
   align-items: center;
-  gap: 56px;
+  gap: 3.5rem;
   flex: 1 0 0;
   background: #fff;
   overflow: auto;
@@ -21,7 +22,7 @@ export const Section1 = styled.section`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 16px;
+  gap: 1rem;
   box-sizing: border-box;
 `;
 
@@ -29,23 +30,19 @@ export const SubmitBtn = styled.p`
   color: var(--Stroke, #e774dd);
   text-align: right;
   font-family: Galmuri11;
-  font-size: 36px;
+  font-size: 2rem;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
   text-decoration-line: underline;
   text-decoration-style: solid;
   text-decoration-skip-ink: none;
-  text-decoration-thickness: auto;
-  text-underline-offset: auto;
-  text-underline-position: from-font;
 `;
 
 export const Header = styled.header`
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  gap: 24px;
   align-self: stretch;
 `;
 
@@ -53,7 +50,7 @@ export const HeaderTextContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 4px;
+  gap: 0.25rem;
   flex: 1 0 0;
 `;
 
@@ -61,16 +58,18 @@ export const AuthorshipFrom = styled.p`
   color: var(--Stroke, #e774dd);
   text-align: right;
   font-family: Galmuri11;
-  font-size: 24px;
+  font-size: 1.25rem;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
 `;
 
 export const CharacterNameInput = styled(TextareaAutosize)`
+  display: flex;
+  width: 100%;
   color: #2e2e2e;
   font-family: Galmuri11;
-  font-size: 36px;
+  font-size: 1.75rem;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -84,7 +83,7 @@ export const Status = styled.p`
   align-self: stretch;
   color: #2e2e2e;
   font-family: Galmuri11;
-  font-size: 16px;
+  font-size: 0.8rem;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -93,7 +92,7 @@ export const Status = styled.p`
 export const CharacterProfileContainer = styled.div`
   display: flex;
   width: 100%;
-  padding: 10px 8px;
+  padding: 0.625rem 0.5rem;
   justify-content: center;
   align-items: center;
   background: #fff;
@@ -101,10 +100,10 @@ export const CharacterProfileContainer = styled.div`
 
 export const CharacterProfileInnerContainer = styled.div`
   display: flex;
-  padding: 8px 16px;
+  padding: 0.5rem 1rem;
   justify-content: flex-end;
   align-items: center;
-  gap: 10px;
+  gap: 0.625rem;
   background: var(--VeryLightPrimary, #ffeefd);
 `;
 
@@ -112,7 +111,7 @@ export const CharacterProfileBox = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 0.5rem;
 `;
 
 export const CharacterProfile = styled.div`
@@ -120,13 +119,13 @@ export const CharacterProfile = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+  gap: 0.625rem;
 `;
 
 export const CharacterProfileImg = styled.div`
-  height: 10em;
-  width: 7.25em;
-  border: 18.418px solid #000;
+  height: 12em;
+  width: 9em;
+  border: 0.8em solid #000;
   background: #fff;
 `;
 
@@ -134,7 +133,7 @@ export const CharacterProfileName = styled.p`
   color: #2e2e2e;
   text-align: center;
   font-family: Galmuri11;
-  font-size: 24px;
+  font-size: 1.25rem;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -144,37 +143,36 @@ export const CharacterInformation = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: -1px;
-  border: 1px solid var(--Stroke, #e774dd);
+  gap: -0.05rem;
+  border: 0.05rem solid var(--Stroke, #e774dd);
 `;
 
 export const CharacterInformationInner = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: -1px;
+  gap: -0.05rem;
   height: 100%;
-  border: 1px solid var(--Stroke, #e774dd);
+  border: 0.05rem solid var(--Stroke, #e774dd);
 `;
 
 export const CharacterInformationRow = styled.div`
   display: flex;
-  width: 328px;
+  width: 18rem;
   height: 100%;
   align-items: flex-start;
-  gap: -1px;
+  gap: -0.05rem;
 `;
 
 export const CharacterInformationRowAttribute = styled.div`
   display: flex;
-  width: 100px;
+  width: 4.75rem;
   align-self: stretch;
-  padding: 4px;
+  padding: 0.2rem;
   justify-content: center;
   align-items: center;
-  align-contents: center;
   flex-shrink: 0;
-  border: 1px solid var(--Stroke, #e774dd);
+  border: 0.05rem solid var(--Stroke, #e774dd);
   background: var(--LightPrimary, #ffd3fb);
 `;
 
@@ -184,24 +182,20 @@ export const CharacterInformationRowAttributeText = styled.p`
   align-items: center;
   width: 100%;
   height: 100%;
-  flex-shrink: 0;
   color: var(--off, #fd51a7);
   text-align: center;
   font-family: Galmuri11;
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
+  font-size: 0.85rem;
 `;
 
 export const CharacterInformationRowValue = styled.div`
   display: flex;
-  padding: 4px;
+  padding: 0.2rem;
   height: 100%;
   justify-content: center;
   align-items: center;
   flex: 1 0 0;
-  border: 1px solid var(--Stroke, #e774dd);
+  border: 0.05rem solid var(--Stroke, #e774dd);
 `;
 
 export const CharacterInformationRowValueText = styled.p`
@@ -210,10 +204,7 @@ export const CharacterInformationRowValueText = styled.p`
   color: #2e2e2e;
   text-align: center;
   font-family: Galmuri11;
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
+  font-size: 0.85rem;
 `;
 
 export const CharacterInforInput = styled.input`
@@ -222,10 +213,7 @@ export const CharacterInforInput = styled.input`
   color: #2e2e2e;
   text-align: center;
   font-family: Galmuri11;
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
+  font-size: 0.85rem;
   border: none;
   background: transparent;
   outline: none;
@@ -246,17 +234,16 @@ export const ImgCropContainer = styled.div`
 
 export const ImgCropInner = styled.div`
   background: var(--light-primary-color);
-  padding: 20;
   display: flex;
   flex-direction: column;
   justify-items: center;
   justify-content: center;
   align-items: center;
   padding: 1em;
-  width: 25%;
-  height: 50%;
+  width: 24rem;
+  height: 28rem;
   box-sizing: border-box;
-  border: solid ${getPixelFromPercent('width', 0.25)}px #e774dd;
+  border: solid 0.25rem #e774dd;
   gap: 1.5em;
 `;
 
@@ -264,26 +251,13 @@ export const RangeSlider = styled.input<{ percent: number }>`
   -webkit-appearance: none;
   appearance: none;
   width: 100%;
-  height: 6px;
-  border-radius: 3px;
+  height: 0.375rem;
+  border-radius: 0.188rem;
   outline: none;
   cursor: none;
 
   &::-webkit-slider-runnable-track {
-    height: 6px;
-    background: ${({ percent }) => `
-      linear-gradient(
-        to right,
-        var(--Stroke, #e774dd) 0%,
-        var(--Stroke, #e774dd) ${percent}%,
-        var(--VeryLightPrimary, #ffeefd) ${percent}%,
-        var(--VeryLightPrimary, #ffeefd) 100%
-      )
-    `};
-  }
-
-  &::-moz-range-track {
-    height: 6px;
+    height: 0.375rem;
     background: ${({ percent }) => `
       linear-gradient(
         to right,
@@ -300,39 +274,28 @@ export const RangeSlider = styled.input<{ percent: number }>`
     width: 1em;
     height: 1em;
     background: var(--Stroke, #e774dd);
-    box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 0.2rem rgba(0, 0, 0, 0.2);
     margin-top: -0.25em;
-    cursor: none;
-  }
-
-  &::-moz-range-thumb {
-    width: 1em;
-    height: 1em;
-    background: var(--Stroke, #e774dd);
-    box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
     cursor: none;
   }
 `;
 
 export const BtnContainer = styled.div`
   display: flex;
-  gap: 0.5em;
+  gap: 0.5rem;
 `;
 
 export const CropText = styled.p`
   color: #2e2e2e;
   text-align: center;
   font-family: Galmuri11;
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
+  font-size: 1rem;
 `;
 
 export const Connnnn = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.25em;
+  gap: 0.25rem;
   width: 100%;
   justify-items: center;
   justify-content: center;
@@ -345,14 +308,10 @@ export const PhraseContainer = styled.input`
   color: #2e2e2e;
   text-align: center;
   font-family: Galmuri11;
-  font-size: 24px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
+  font-size: 1.25rem;
   border: none;
-  background: transparent;
-  outline: none;
   background: var(--VeryLightPrimary, #ffeefd);
+  outline: none;
 `;
 
 export const TextAreaContainer = styled.div`
@@ -362,6 +321,6 @@ export const TextAreaContainer = styled.div`
   align-items: center;
   display: flex;
   gap: 2em;
-  padding: 0 10%;
+  padding: 0 1rem;
   box-sizing: border-box;
 `;

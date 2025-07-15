@@ -231,8 +231,8 @@ const MemorialApply = ({}: dataStructureProps) => {
                             type="submit"
                             active={true}
                             widthPercent={15}
-                            heightPercent={5}
-                            fontSize="1rem"
+                            heightPercent={4.4}
+                            fontSize="0.9rem"
                           />
                         ) : (
                           inputValue.anime
@@ -299,13 +299,23 @@ const MemorialApply = ({}: dataStructureProps) => {
               <_.CropText>이미지 확대/축소</_.CropText>
             </_.Connnnn>
             <_.BtnContainer>
-              <Button
+              <MemorialBtn
+                name="확인"
                 onClick={handleCropConfirm}
-                props="확인"
+                type="submit"
+                active={true}
+                widthPercent={11.5}
+                heightPercent={4.4}
+                fontSize="0.9rem"
               />
-              <Button
+              <MemorialBtn
+                name="취소"
                 onClick={() => setIsCropping(false)}
-                props="취소"
+                type="submit"
+                active={true}
+                widthPercent={11.5}
+                heightPercent={4.4}
+                fontSize="0.9rem"
               />
             </_.BtnContainer>
           </_.ImgCropInner>
