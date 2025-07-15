@@ -86,8 +86,10 @@ const AnimationSelect: React.FC = () => {
               }}
             >
               <_.Image
+                key={animation.animeId}
                 src={animation.imageUrl}
                 alt={animation.name}
+                loading="lazy"
                 onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
                 onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
               />
