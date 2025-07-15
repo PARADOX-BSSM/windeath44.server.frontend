@@ -1,6 +1,7 @@
 import * as _ from './style';
 import { useCreateCharacter } from '@/api/anime/createCharacter';
 import { useUploadImage } from '@/api/anime/uploadImage';
+import { useApplyMemorial } from '@/api/memorial/applyMemorial';
 import { inputPortage, inputContent } from '@/atoms/inputManager';
 import { useAtomValue } from 'jotai';
 
@@ -13,6 +14,7 @@ const MergeBtn = ({ text }: PropsType) => {
   const contentValue = useAtomValue(inputContent);
   const createCharacterMutation = useCreateCharacter();
   const uploadImageMutation = useUploadImage();
+  const applyMemorialMutation = useApplyMemorial();
 
   const handleSubmit = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -32,6 +34,10 @@ const MergeBtn = ({ text }: PropsType) => {
           uploadImageMutation.mutate({
             image: inputValue.profileImage,
             characterId: characterId,
+          });
+          applyMemorialMutation.mutate({
+            characterId: characterId,
+            content: contentValue.content,
           });
         },
       },
