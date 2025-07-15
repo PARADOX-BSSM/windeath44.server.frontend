@@ -1,4 +1,4 @@
-import * as _ from '@/applications/applicationList/search/option/style.ts';
+import * as _ from './style';
 import { Dispatch } from 'react';
 import { SetStateAction } from 'jotai/vanilla/typeUtils';
 type OptionsProps = {

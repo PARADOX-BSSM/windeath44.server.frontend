@@ -1,19 +1,7 @@
 import * as _ from './style';
-import Up from '@/assets/search/point_up.svg';
-import Down from '@/assets/search/point_down.svg';
-import { Dispatch, useState } from 'react';
-import Option from '@/applications/applicationList/search/option';
-import { SetStateAction } from 'react';
+import { useState } from 'react';
 import Inputs from '@/applications/components/inputs';
-
-interface FilterBlockProps {
-  label: string;
-  option: string;
-  isOpen: boolean;
-  onClick: () => void;
-  list: string[];
-  onChange: Dispatch<SetStateAction<string>>;
-}
+import FilterBlock from '@/applications/components/filterBlock';
 
 const Search_task = () => {
   const [animation, setAnimation] = useState(false);
@@ -87,30 +75,5 @@ const Search_task = () => {
     </_.search>
   );
 };
-const FilterBlock = ({ label, option, isOpen, onClick, list, onChange }: FilterBlockProps) => {
-  return (
-    <_.filter_block>
-      <_.Label>{label}</_.Label>
-      <_.black>
-        <_.white>
-          <_.option>{option}</_.option>
-          <_.button onClick={onClick}>
-            <_.Button>
-              <img
-                src={isOpen ? Up : Down}
-                alt={isOpen ? 'close' : 'open'}
-              />
-            </_.Button>
-          </_.button>
-        </_.white>
-      </_.black>
-      {isOpen && (
-        <Option
-          list={list}
-          onChange={onChange}
-        />
-      )}
-    </_.filter_block>
-  );
-};
+
 export default Search_task;
