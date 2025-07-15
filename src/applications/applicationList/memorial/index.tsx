@@ -86,6 +86,10 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
           updatedAt: data.data.updatedAt,
         });
       },
+      onError: (data) => {
+        alert('정보를 가져오는 중 문제가 발생했습니다!!\n 다시 시도해주세요!');
+        console.log(data);
+      },
     });
     mutationGetCharacter.mutate(characterId, {
       onSuccess: (data) => {
@@ -101,6 +105,10 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
           state: data.data.state,
           deathOfDay: data.data.deathOfDay,
         });
+      },
+      onError: (data) => {
+        alert('정보를 가져오는 중 문제가 발생했습니다!!\n 다시 시도해주세요!');
+        console.log(data);
       },
     });
   }, []);
