@@ -63,7 +63,7 @@ export const TagSet = styled.div`
   flex-direction: column;
   gap: 0.25rem;
 `;
-export const Tag = styled.div`
+export const Tag = styled.div<{ isActive: boolean }>`
   width: 100%;
   padding: 0.25rem;
   box-sizing: border-box;
@@ -71,6 +71,7 @@ export const Tag = styled.div`
   font-size: 0.75rem;
   text-align: center;
   border: none;
-  background-color: var(--Black, #2e2e2e);
-  color: var(--White, #ffffff);
+  background-color: ${({ isActive }) =>
+    !isActive ? 'var(--Black, #2e2e2e)' : 'var(--secondary-color)'};
+  color: ${({ isActive }) => (!isActive ? 'var(--White, #ffffff)' : 'var(--Black, #2e2e2e)')};
 `;

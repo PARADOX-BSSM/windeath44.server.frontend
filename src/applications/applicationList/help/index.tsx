@@ -17,6 +17,7 @@ const Help = () => {
               <_.Tag
                 key={index}
                 onClick={() => handleClick(index)}
+                isActive={isClick === index}
               >
                 {item}
               </_.Tag>
