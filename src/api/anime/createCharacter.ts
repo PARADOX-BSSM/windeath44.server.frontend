@@ -24,6 +24,7 @@ const createCharacter = async (inputData: InputPortageType): Promise<boolean> =>
     age: inputData.age,
     deathOfDay: inputData.date,
   };
+  console.log(request);
   try {
     const response: AxiosResponse = await api.post(`${anime}/characters`, request, {
       headers: {
@@ -43,7 +44,7 @@ const createCharacter = async (inputData: InputPortageType): Promise<boolean> =>
   return true;
 };
 
-export const useApplyMemorial = () => {
+export const useCreateCharacter = () => {
   return useMutation({
     mutationFn: createCharacter,
     onSuccess: () => {
