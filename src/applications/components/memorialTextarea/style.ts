@@ -13,7 +13,6 @@ export const Container = styled.section`
 export const Title = styled.h2`
   width: 100%;
   color: var(--Black, #2e2e2e);
-  hiehgt:;
   font-family: Galmuri11;
   font-size: 32px;
   font-style: normal;
@@ -48,4 +47,12 @@ export const CommitArea = styled(TextareaAutosize)`
   width: 100%;
   outline: none;
   min-height: 50px;
+`;
+export const TitleContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
+export const Image = styled.img`
+  width: 1.5rem;
+  margin-left: 0.25rem;
 `;
