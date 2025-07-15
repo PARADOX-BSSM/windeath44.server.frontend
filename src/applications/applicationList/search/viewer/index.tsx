@@ -4,11 +4,9 @@ const Viewer = () => {
   return (
     <_.view>
       <_.viewer>
-        <_.styles_in>
-          <div>
-            <div></div>
-          </div>
-        </_.styles_in>
+        <_.Shadow>
+          <_.inputs></_.inputs>
+        </_.Shadow>
       </_.viewer>
     </_.view>
   );
