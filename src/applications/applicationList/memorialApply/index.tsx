@@ -34,7 +34,6 @@ const MemorialApply = ({}: dataStructureProps) => {
   });
 
   const deathReason = [
-    '모두',
     '자연사(自然死)',
     '병사(病死)',
     '자살(自殺)',
@@ -223,13 +222,6 @@ const MemorialApply = ({}: dataStructureProps) => {
                           list={deathReason}
                           onChange={handleDeathChange}
                         />
-                        {/* <_.CharacterInforInput
-                          type="text"
-                          placeholder="예) 흉기에 의한 사망"
-                          onChange={(e) => {
-                            setInputValue((prev) => ({ ...prev, deathReason: e.target.value }));
-                          }}
-                        ></_.CharacterInforInput> */}
                       </_.CharacterInformationRowValueText>
                     </_.CharacterInformationRowValue>
                   </_.CharacterInformationRow>
