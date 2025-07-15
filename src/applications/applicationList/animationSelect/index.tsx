@@ -1,5 +1,5 @@
 // src/applications/applicationList/animationSelect/index.tsx
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as _ from './style';
 import Inputs from '@/applications/components/inputs';
 import { useAtomValue, useAtom } from 'jotai';
@@ -9,14 +9,21 @@ import { useProcessManager } from '@/hooks/processManager';
 import { CURSOR_IMAGES, setCursorImage } from '@/lib/setCursorImg';
 import { useInfiniteAnime } from '@/api/anime/getAnime';
 
+interface Anime {
+  animeId: number;
+  name: string;
+  genres: string[];
+  imageUrl: string;
+}
+
 const AnimationSelect: React.FC = () => {
   const taskSearch = useAtomValue(taskSearchAtom);
   const [, setInputValue] = useAtom(inputPortage);
   const [, , removeTask] = useProcessManager();
 
-  const [name, setName] = useState('');
+  const [name, setName] = useState<string>('');
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } = useInfiniteAnime(
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, refetch } = useInfiniteAnime(
     10,
     name,
   );
@@ -33,11 +40,21 @@ const AnimationSelect: React.FC = () => {
     }
   };
 
-  const filtered = data
+  const filtered: Anime[] = data
     ? data.pages
         .flatMap((page) => page.data.values)
         .filter((anim) => anim.name.toLowerCase().includes(name.trim().toLowerCase()))
     : [];
+
+  const uniqueAnimations: Anime[] = Array.from(
+    new Map(filtered.map((anim) => [anim.animeId, anim])).values(),
+  );
+
+  useEffect(() => {
+    if (name.trim() !== '') {
+      refetch();
+    }
+  }, [name, refetch]);
 
   return (
     <_.Container>
@@ -55,7 +72,7 @@ const AnimationSelect: React.FC = () => {
         onWheel={handleWheel}
       >
         <_.Rows>
-          {filtered.map((animation) => (
+          {uniqueAnimations.map((animation) => (
             <_.Item
               key={animation.animeId}
               onClick={() => {

@@ -35,7 +35,7 @@ const fetchAnime = async ({
     params: {
       ...(cursorId != null ? { cursorId } : {}),
       size,
-      ...(name ? { name } : {}),
+      ...(name ? { animeName: name } : {}),
     },
     withCredentials: true,
   });
@@ -43,7 +43,7 @@ const fetchAnime = async ({
   return response.data;
 };
 
-export const useInfiniteAnime = (size: number, name?: string) => {
+export const useInfiniteAnime = (size: number, name: string | '') => {
   return useInfiniteQuery<
     AnimeResponse,
     Error,
@@ -51,9 +51,9 @@ export const useInfiniteAnime = (size: number, name?: string) => {
     [string, string | undefined],
     number | null
   >({
-    queryKey: ['anime', name],
+    queryKey: ['animeName', encodeURIComponent(name)],
     queryFn: async ({ pageParam = null }) => {
-      console.log('요청하는 cursorId:', pageParam);
+      // console.log('요청하는 cursorId:', pageParam);
       return fetchAnime({ cursorId: pageParam, size, name });
     },
     initialPageParam: null,
