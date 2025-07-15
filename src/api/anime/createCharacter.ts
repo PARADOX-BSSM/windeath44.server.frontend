@@ -7,7 +7,7 @@ import { InputPortageType } from '@/modules/inputPortageInterface';
 interface createCharacterInterface {
   animeId: string;
   name: string;
-  lifeTime: string;
+  lifeTime: number;
   deathReason: deathType;
   saying: string;
   age: number;

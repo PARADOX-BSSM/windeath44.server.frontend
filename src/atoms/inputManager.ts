@@ -5,7 +5,7 @@ export const inputPortage = atom<InputPortageType>({
   name: '',
   deathReason: '자연사(自然死)' as deathType,
   date: '',
-  lifeCycle: '',
+  lifeCycle: 0,
   anime: '',
   animeId: '',
   age: 0,
