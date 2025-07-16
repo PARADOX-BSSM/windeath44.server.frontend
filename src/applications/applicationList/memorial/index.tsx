@@ -23,6 +23,7 @@ interface dataStructureProps {
 const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
   const taskSearch = useAtomValue(taskSearchAtom);
+  const [memorialWrite, setMemorialWrite] = useState<string>('');
   const [characterData, setCharacterData] = useState<CharacterData>({
     characterId: 0,
     name: '',
@@ -148,6 +149,8 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
                   <_.InputComment>
                     <_.InputCommentText
                       type="text"
+                      value={memorialWrite}
+                      onChange={(e) => setMemorialWrite(e.target.value)}
                       placeholder="추모글을 입력하세요."
                     ></_.InputCommentText>
                   </_.InputComment>
