@@ -4,9 +4,11 @@ import myComputer from '@/assets/appIcons/my_computer.svg';
 import Choten from '@/assets/profile/choten.svg';
 import { taskTransformerAtom } from '@/atoms/taskTransformer.ts';
 import { useAtomValue } from 'jotai';
+import { useLogOut } from '@/api/auth/logout.ts';
 
 const MyComputer = () => {
   const taskTransform = useAtomValue(taskTransformerAtom);
+  const logOutMutation = useLogOut();
 
   const renderMemorialBtn = () => {
     const isLoggedIn = localStorage.getItem('isLogIned') === 'true';
@@ -19,6 +21,12 @@ const MyComputer = () => {
             localStorage.removeItem('access_token');
             localStorage.setItem('isLogIned', 'false');
             localStorage.setItem('hasBooted', 'false');
+            // logOutMutation.mutate(undefined, {
+            //   onSuccess: () => {},
+            //   onError: (error) => {
+            //     console.error('로그아웃 실패', error);
+            //   },
+            // });
           }
         }}
         type="submit"
