@@ -1,7 +1,7 @@
 import IndexMenu from '@/applications/components/indexMenu';
 import Comment from '@/applications/components/comment';
 import * as _ from './style';
-import { index_data, comment_data } from './data';
+import { index_data } from './data';
 import { useAtomValue } from 'jotai';
 import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer';
 import { useMemorialGet } from '@/api/memorial/memorialGet.ts';
@@ -9,7 +9,10 @@ import { useEffect, useState } from 'react';
 import { useGetCharacter } from '@/api/anime/getCharacter.ts';
 import type { CharacterData } from '@/api/anime/getCharacter';
 import type { memorialData } from '@/api/memorial/memorialGet';
-// import { useGetMemorialComments } from '@/api/memorial/getMemorialComments.ts';
+import {
+  MemorialCommentsData,
+  useGetMemorialComments,
+} from '@/api/memorial/getMemorialComments.ts';
 
 interface dataStructureProps {
   stack: any[];
@@ -46,6 +49,19 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
     updatedAt: '',
   });
   const mutationMemorialGet = useMemorialGet(setMemorialData);
+  const [memorialComment, setMemorialComment] = useState<MemorialCommentsData[]>([
+    {
+      commentId: 0,
+      memorialId: 0,
+      userId: '',
+      content: '',
+      likes: 0,
+      isLiked: false,
+      parentId: 0,
+      createdAt: '',
+    },
+  ]);
+  const mutaionGetMemorialComments = useGetMemorialComments(setMemorialComment);
   useEffect(() => {
     const id = 5;
     const characterId = 1;
@@ -143,12 +159,11 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
                       placeholder="추모글을 입력하세요."
                     ></_.InputCommentText>
                   </_.InputComment>
-                  {comment_data.map((comment, idx) => {
+                  {memorialComment.map((comment, idx) => {
                     return (
                       <Comment
                         key={idx}
-                        nickname={comment.nickname}
-                        userid={comment.userid}
+                        userid={comment.userId}
                         content={comment.content}
                         idx={idx}
                       />
