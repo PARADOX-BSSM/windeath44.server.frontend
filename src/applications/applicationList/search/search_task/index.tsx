@@ -15,34 +15,28 @@ interface FilterBlockProps {
   onChange: Dispatch<SetStateAction<string>>;
 }
 
-const Search_task = () => {
-  const [animation, setAnimation] = useState(false);
+interface SerachTaskProps {
+  fillDeath: string;
+  setFillDeath: (item: SetStateAction<string>) => void;
+  ani: string;
+  setAni: (item: SetStateAction<string>) => void;
+  name: string;
+  setName: (item: SetStateAction<string>) => void;
+}
+
+const Search_task = ({ fillDeath, setFillDeath, ani, setAni, name, setName }: SerachTaskProps) => {
   const [death, setDeath] = useState(false);
 
-  const [fillDeath, setFillDeath] = useState('모두');
-  const [fillAni, setFillAni] = useState('없음');
-
-  const [name, setName] = useState('');
   const deathReason = [
     '모두',
     '자연사(自然死)',
     '병사(病死)',
     '돌연사(突然死)',
-    '외인사(外因死)',
-    '심쿰사',
-  ];
-  const animationType = [
-    '없음',
-    '모두 (스포일러 주의!)',
-    '최애의 아이',
-    '데스노트',
-    '원피스',
-    '도쿄구울',
+    '자살(自殺)',
+    '불명사(不明死)',
+    '타살(他殺)',
   ];
 
-  const handleAnimation = () => {
-    setAnimation(!animation);
-  };
   const handleDeath = () => {
     setDeath(!death);
   };
@@ -59,16 +53,14 @@ const Search_task = () => {
             value={name}
             setValue={setName}
           />
-          <FilterBlock
+          <Inputs
+            width="100%"
+            fontSize="0.8rem"
+            flex={false}
             label="애니메이션"
-            option={fillAni}
-            isOpen={animation}
-            onClick={handleAnimation}
-            list={animationType}
-            onChange={(value) => {
-              setFillAni(value);
-              setAnimation(false);
-            }}
+            type="text"
+            value={ani}
+            setValue={setAni}
           />
 
           <FilterBlock
@@ -87,6 +79,7 @@ const Search_task = () => {
     </_.search>
   );
 };
+
 const FilterBlock = ({ label, option, isOpen, onClick, list, onChange }: FilterBlockProps) => {
   return (
     <_.filter_block>

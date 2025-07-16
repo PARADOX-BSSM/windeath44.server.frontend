@@ -4,6 +4,7 @@ import myComputer from '@/assets/appIcons/my_computer.svg';
 import Choten from '@/assets/profile/choten.svg';
 import { taskTransformerAtom } from '@/atoms/taskTransformer.ts';
 import { useAtomValue } from 'jotai';
+import MemorialWithIcon from '@/applications/components/memorialWithIcon/index.tsx';
 
 const MyComputer = () => {
   const taskTransform = useAtomValue(taskTransformerAtom);
@@ -41,18 +42,18 @@ const MyComputer = () => {
           <_.Title>최근 방문한 추모관</_.Title>
           <_.Shadow>
             <_.Inputs>
-              <_.Item>
-                <_.Icon src={myComputer} />
-                <_.Name>호시노 아이</_.Name>
-              </_.Item>
-              <_.Item>
-                <_.Icon src={myComputer} />
-                <_.Name>호시노 아이</_.Name>
-              </_.Item>
-              <_.Item>
-                <_.Icon src={myComputer} />
-                <_.Name>호시노 아이</_.Name>
-              </_.Item>
+              <MemorialWithIcon
+                icon={myComputer}
+                name="호시노 아이"
+              />
+              <MemorialWithIcon
+                icon={myComputer}
+                name="호시노 아이"
+              />
+              <MemorialWithIcon
+                icon={myComputer}
+                name="호시노 아이"
+              />
             </_.Inputs>
           </_.Shadow>
         </_.InnerItem>

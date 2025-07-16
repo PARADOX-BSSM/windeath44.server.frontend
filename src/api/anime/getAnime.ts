@@ -30,6 +30,7 @@ const fetchAnime = async ({
 }: GetAnimeParams): Promise<AnimeResponse> => {
   const response: AxiosResponse<AnimeResponse> = await axios.get(`${anime}`, {
     headers: {
+      'Content-Type': 'application/json',
       Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     },
     params: {
