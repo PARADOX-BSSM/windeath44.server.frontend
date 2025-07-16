@@ -36,7 +36,7 @@ const uploadImage = async ({ image, characterId }: uploadImageType): Promise<str
         headers: { 'Content-Type': 'multipart/form-data' },
       },
     );
-    console.log(response);
+    // console.log(response);
     return '성공했어요~!~!~!';
   } catch (error: any) {
     if (error.response?.data) {
@@ -52,7 +52,8 @@ export const useUploadImage = () => {
   return useMutation({
     mutationFn: uploadImage,
     onSuccess: () => {
-      alert('이미지가 성공적으로 등록되었습니다.');
+      console.log('이미지가 성공적으로 등록되었습니다.');
+      // alert('이미지가 성공적으로 등록되었습니다.');
     },
     onError: () => {},
   });

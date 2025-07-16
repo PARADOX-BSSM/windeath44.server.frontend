@@ -6,7 +6,6 @@ import { taskSearchAtom } from '@/atoms/taskTransformer.ts';
 import { alerterAtom } from '@/atoms/alerter.ts';
 import Choten from '@/assets/profile/choten.svg';
 import { useProcessManager } from '@/hooks/processManager.tsx';
-import MemorialPreview from '@/applications/applicationList/memorialPreview/index.tsx';
 
 interface dataStructureProps {
   stack: any[];
@@ -31,25 +30,7 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
   const taskSearch = useAtomValue(taskSearchAtom);
   const [, addTask, removeTask] = useProcessManager();
 
-  const memorialPreview = {
-    component: (
-      <Suspense fallback={null}>
-        <MemorialPreview />
-      </Suspense>
-    ),
-    type: 'App',
-    id: 2228,
-    name: '미리보기',
-    layer: undefined,
-    appSetup: {
-      Image: 'default',
-      minWidth: 580,
-      minHeight: 420,
-      setUpWidth: 850,
-      setUpHeight: 500,
-    },
-    visible: false,
-  };
+  const memorialPreview = taskSearch?.('미리보기')!;
 
   useEffect(() => {
     if (selectedIdx === 0) {

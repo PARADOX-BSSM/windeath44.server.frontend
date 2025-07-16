@@ -1,6 +1,6 @@
 import { atom } from 'jotai';
 
-export const isLogInedAtom = atom('false');
+export const isLogInedAtom = atom(localStorage.getItem('isLogIned') || 'false');
 export const focusAtom = atom('Discover');
 export const layerAtom = atom(1);
 export const tabDownInterruptAtom = atom('empty');

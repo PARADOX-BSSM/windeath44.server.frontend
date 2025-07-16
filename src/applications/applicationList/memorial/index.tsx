@@ -13,6 +13,7 @@ import {
   MemorialCommentsData,
   useGetMemorialComments,
 } from '@/api/memorial/getMemorialComments.ts';
+import { useCommentWrite } from '@/api/memorial/memorialCommentWrite.ts';
 
 interface dataStructureProps {
   stack: any[];
@@ -23,7 +24,7 @@ interface dataStructureProps {
 const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
   const taskSearch = useAtomValue(taskSearchAtom);
-  const [memorialWrite, setMemorialWrite] = useState<string>('');
+  const [content, setContent] = useState<string>('');
   const [characterData, setCharacterData] = useState<CharacterData>({
     characterId: 0,
     name: '',
@@ -52,10 +53,23 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
   const mutationMemorialGet = useMemorialGet(setMemorialData);
   const [memorialComment, setMemorialComment] = useState<MemorialCommentsData[]>([]);
   const mutaionGetMemorialComments = useGetMemorialComments(setMemorialComment);
+  const mutationCommentWrite = useCommentWrite();
+  const id = 5;
+  const memorialId = id;
+  const characterId = 1;
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      e.stopPropagation();
+      mutationCommentWrite.mutate(
+        { memorialId, content },
+        {
+          onSuccess: () => setContent(''), // 입력 초기화
+        },
+      );
+    }
+  };
   useEffect(() => {
-    const id = 5;
-    const memorialId = id;
-    const characterId = 1;
     mutationMemorialGet.mutate(id);
     mutationGetCharacter.mutate(characterId);
     mutaionGetMemorialComments.mutate({ memorialId });
@@ -149,8 +163,9 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
                   <_.InputComment>
                     <_.InputCommentText
                       type="text"
-                      value={memorialWrite}
-                      onChange={(e) => setMemorialWrite(e.target.value)}
+                      value={content}
+                      onChange={(e) => setContent(e.target.value)}
+                      onKeyDown={handleKeyDown}
                       placeholder="추모글을 입력하세요."
                     ></_.InputCommentText>
                   </_.InputComment>

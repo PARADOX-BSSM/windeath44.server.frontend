@@ -48,7 +48,8 @@ export const useCreateCharacter = () => {
   return useMutation({
     mutationFn: createCharacter,
     onSuccess: () => {
-      alert('캐릭터가 성공적으로 등록되었습니다.');
+      console.log('캐릭터가 성공적으로 등록되었습니다.');
+      // alert('캐릭터가 성공적으로 등록되었습니다.');
     },
     onError: () => {},
   });

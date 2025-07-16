@@ -220,6 +220,7 @@ const Application = (props: ApplicationProps) => {
                 props.removeTask(props.removeCompnent);
                 if (!isLogIned) {
                   setIsLogIned('guest');
+                  localStorage.setItem('isLogIned', isLogIned);
                 }
               }}
               isFocus={focus === props.name}

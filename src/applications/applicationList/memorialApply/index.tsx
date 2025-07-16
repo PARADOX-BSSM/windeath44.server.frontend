@@ -6,7 +6,6 @@ import { useState, useRef, useEffect } from 'react';
 import MemorialBtn from '@/applications/components/memorialBtn';
 import { inputPortage } from '@/atoms/inputManager';
 import AvatarEditor from 'react-avatar-editor';
-import Button from '@/applications/components/button';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
 import { useGetUserMutation } from '@/api/user/getUser';
 import FilterBlock from '@/applications/components/filterBlock';

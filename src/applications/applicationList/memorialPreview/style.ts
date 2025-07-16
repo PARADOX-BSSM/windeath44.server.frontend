@@ -163,6 +163,7 @@ export const PictureContainer = styled.div`
   justify-content: center;
   align-items: center;
   gap: 0.625rem;
+  position: relative;
 `;
 
 export const Picture = styled.div<{ imgUrl: string }>`
@@ -278,4 +279,11 @@ export const ArticleContent = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+`;
+
+export const Ribbon = styled.img`
+  position: absolute;
+  top: -0.5em;
+  width: 100%;
+  z-index: 1;
 `;
