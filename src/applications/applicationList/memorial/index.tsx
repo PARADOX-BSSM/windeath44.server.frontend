@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react';
 import { useGetCharacter } from '@/api/anime/getCharacter.ts';
 import type { CharacterData } from '@/api/anime/getCharacter';
 import type { memorialData } from '@/api/memorial/memorialGet';
+import { useGetMemorialComments } from '@/api/memorial/getMemorialComments.ts';
 
 interface dataStructureProps {
   stack: any[];
@@ -21,36 +22,12 @@ interface dataStructureProps {
 const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
   const taskSearch = useAtomValue(taskSearchAtom);
-  const mutationMemorialGet = useMemorialGet();
   const mutationGetCharacter = useGetCharacter();
-  const [memorialData, setMemorialData] = useState<memorialData>({
-    data: [],
-    memorialId: 0,
-    characterId: 0,
-    chiefs: [],
-    bowCount: 0,
-    memorialCommitId: 0,
-    content: '',
-    userId: '',
-    createdAt: '',
-    mergerId: '',
-    updatedAt: '',
-  });
-  const [characterData, setCharacterData] = useState<CharacterData>({
-    characterId: 0,
-    name: '',
-    lifeTime: null,
-    deathReason: null,
-    imageUrl: null,
-    bowCount: null,
-    age: null,
-    saying: null,
-    state: null,
-    deathOfDay: null,
-  });
-  const [comments, setComments] = useState<[{}]>([{}]);
+  const [memorialData, setMemorialData] = useState<memorialData>(null);
+  const mutationMemorialGet = useMemorialGet(setMemorialData);
+  const [characterData, setCharacterData] = useState<CharacterData>(null);
   useEffect(() => {
-    const id = 2;
+    const id = 1;
     const characterId = 1;
     mutationMemorialGet.mutate(id, {
       onSuccess: (data) => {
@@ -93,7 +70,14 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
       },
     });
   }, []);
-
+  //const mutation = useGetMemorialComments();
+  // useEffect(() => {
+  //   mutation.mutate({
+  //     memorialId: 1,
+  //     cursorId: 0,
+  //     size: 10,
+  //   });
+  // }, []);
   return (
     <_.Main>
       <_.Container>
