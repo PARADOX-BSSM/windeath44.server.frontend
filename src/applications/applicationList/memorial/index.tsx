@@ -2,7 +2,6 @@ import IndexMenu from '@/applications/components/indexMenu';
 import Comment from '@/applications/components/comment';
 import * as _ from './style';
 import { index_data, comment_data } from './data';
-// import characterUrl from '@/assets/character/hosino.svg';
 import { useAtomValue } from 'jotai';
 import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer';
 import { useMemorialGet } from '@/api/memorial/memorialGet.ts';
@@ -48,7 +47,7 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
   });
   const mutationMemorialGet = useMemorialGet(setMemorialData);
   useEffect(() => {
-    const id = 1;
+    const id = 5;
     const characterId = 1;
     mutationMemorialGet.mutate(id);
     mutationGetCharacter.mutate(characterId);
