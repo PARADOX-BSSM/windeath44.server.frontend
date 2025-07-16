@@ -7,6 +7,7 @@ import { useGetCharactersQuery } from '@/api/anime/getCharacters';
 import { useGetCharactersByAnimeQuery } from '@/api/anime/getCharactersByAnimeId';
 import { useGetAnimesQuery } from '@/api/anime/getAnimes';
 import { useGetCharactersByDeathReasonQuery } from '@/api/anime/getCharactersByDeathReason';
+import { useGetMemorialsCharacterFilteredQuery } from '@/api/memorial/getMemorialsCharacterFiltered';
 
 const Search = () => {
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -50,6 +51,18 @@ const Search = () => {
   } = useGetCharactersByDeathReasonQuery({
     deathReason: fillDeath,
     size: 10,
+  });
+
+  const [finalCharactersIds, setFinalCharactersIds] = useState<any[]>([5]);
+
+  const {
+    data: getMemorialsCharacterFilteredResponse,
+    isLoading: isLoadingCharacterFiltered,
+    isError: isErrorCharacterFiltered,
+  } = useGetMemorialsCharacterFilteredQuery({
+    orderBy: 'recently-updated,',
+    page: 1,
+    characters: finalCharactersIds,
   });
 
   const [characters, setCharacters] = useState<any[]>([]);
@@ -169,6 +182,12 @@ const Search = () => {
     );
 
     setFinalCharacters(final);
+
+    const getCharacterIds = (characters: typeof final): number[] => {
+      return characters.map((character: { characterId: number }) => character.characterId);
+    };
+    const ids = getCharacterIds(final);
+    setFinalCharactersIds(ids);
   }, [name, ani, fillDeath]);
 
   return (
