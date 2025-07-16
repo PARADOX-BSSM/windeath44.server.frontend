@@ -3,7 +3,7 @@ import api from '@/api/axiosInstance';
 import { anime } from '@/config';
 
 interface FetchCharactersParams {
-  animeId?: number;
+  animeId?: number[];
   cursorId?: number;
   size?: number;
 }
@@ -17,7 +17,7 @@ export const fetchCharacters = async ({ animeId, cursorId, size }: FetchCharacte
 };
 
 export const useGetCharactersByAnimeQuery = ({
-  animeId = 1,
+  animeId = [1],
   cursorId,
   size = 10,
 }: FetchCharactersParams) => {

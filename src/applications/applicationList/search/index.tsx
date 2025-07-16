@@ -5,24 +5,53 @@ import Search_task from '@/applications/applicationList/search/search_task';
 import Viewer from '@/applications/applicationList/search/viewer';
 import { useGetCharactersQuery } from '@/api/anime/getCharacters';
 import { useGetCharactersByAnimeQuery } from '@/api/anime/getCharactersByAnimeId';
-import { dummyFindCharacterResponse } from './data';
-import { dummyFindMemorialsResponse } from './memorials';
-import { dummyFindAnimesResponse } from './animes';
+import { useGetAnimesQuery } from '@/api/anime/getAnimes';
+import { useGetCharactersByDeathReasonQuery } from '@/api/anime/getCharactersByDeathReason';
 
 const Search = () => {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [isColumn, setIsColumn] = useState(false);
 
-  const [fillDeath, setFillDeath] = useState('모두');
+  const [fillDeath, setFillDeath] = useState('불명사(不明死)');
   const [ani, setAni] = useState('');
+  const [animeIds, setAnimeIds] = useState<number[]>([1]);
   const [name, setName] = useState('');
 
-  // const { data, isLoading, isError } = useGetCharactersQuery({});
-  // const { dataByAnimeId, isLoadingByAnimeId, isErrorByAnimeId } = useGetCharactersByAnimeQuery({
-  //   animeId,
-  // });
+  const {
+    data: getCharactersResponse,
+    isLoading: isLoading,
+    isError: isError,
+  } = useGetCharactersQuery({}); // 모든 캐릭터
 
-  const [memorials, setMemorials] = useState<any[]>([]);
+  const {
+    data: getAnimesResponse,
+    isLoading: isLoadingByAnimes,
+    isError: isErrorByAnimes,
+  } = useGetAnimesQuery({ size: 10, animeName: ani }); // 이름으로 애니메이션 검색
+
+  const {
+    data: getAllAnimesResponse,
+    isLoading: isLoadingByAllAnimes,
+    isError: isErrorByAllAnimes,
+  } = useGetAnimesQuery({ size: 10 }); // 모든 애니메이션
+
+  const {
+    data: getCharactersByAnimeIdResponse,
+    isLoading: isLoadingByAnimeId,
+    isError: isErrorByAnimeId,
+  } = useGetCharactersByAnimeQuery({
+    animeId: animeIds,
+  }); // 애니메이션 ID로 캐릭터 찾기
+
+  const {
+    data: getCharactersByDeathReasonResponse,
+    isLoading: isLoadingByDeathReason,
+    isError: isErrorByDeathReason,
+  } = useGetCharactersByDeathReasonQuery({
+    deathReason: fillDeath,
+    size: 10,
+  });
+
   const [characters, setCharacters] = useState<any[]>([]);
 
   const [searchedCharacters, setSearchedCharacters] = useState<any[]>([]);
@@ -50,69 +79,72 @@ const Search = () => {
   }, []);
 
   useEffect(() => {
-    if (dummyFindCharacterResponse?.data) {
-      setFinalCharacters(dummyFindCharacterResponse?.data);
+    if (getCharactersResponse?.data) {
+      setFinalCharacters(getCharactersResponse?.data);
     }
-    if (dummyFindMemorialsResponse?.data) {
-      setMemorials(dummyFindMemorialsResponse?.data);
-    }
+
+    const result = getAllAnimesResponse.data.values;
+
+    const getAnimeIds = (animes: typeof result): number[] => {
+      return animes.map((anime: { animeId: number }) => anime.animeId);
+    };
+    const animeIds = getAnimeIds(result);
+    setAnimeIds(animeIds);
   }, []);
 
   // 캐릭터 이름
   useEffect(() => {
     const searchCharacterByName = (keyword: string) => {
-      if (!keyword) return dummyFindCharacterResponse.data;
+      if (!keyword) return getCharactersResponse.data;
 
-      return dummyFindCharacterResponse.data.filter((character) =>
+      return getCharactersResponse.data.filter((character: { name: string | string[] }) =>
         character.name.includes(keyword),
       );
     };
 
     const result = searchCharacterByName(name);
     setCharacters(result);
-  }, [name]);
+  }, [getCharactersResponse]);
 
   // 애니메이션 이름
   useEffect(() => {
+    // 이름으로 애니메이션 찾기
     const searchAnimeByName = (keyword: string) => {
       if (keyword) {
-        return dummyFindAnimesResponse.data.values.filter((anime) => anime.name.includes(keyword));
+        return getAnimesResponse.data.values;
       } else {
-        return dummyFindAnimesResponse.data.values;
+        return getAllAnimesResponse.data.values;
       }
     };
 
     const result = searchAnimeByName(ani);
 
     const getAnimeIds = (animes: typeof result): number[] => {
-      return animes.map((anime) => anime.animeId);
+      return animes.map((anime: { animeId: number }) => anime.animeId);
     };
-
     const animeIds = getAnimeIds(result);
+    setAnimeIds(animeIds);
 
+    // 애니메이션 ID로 캐릭터 찾기
     const searchCharacterByAnimeIds = (ids: number[]) => {
       if (ids[0]) {
-        return dummyFindCharacterResponse.data.filter((character) =>
-          ids.includes(character.animeId),
-        );
+        return getCharactersByAnimeIdResponse.data;
       } else {
-        return dummyFindCharacterResponse.data;
+        return getCharactersResponse.data;
       }
     };
 
     const characters = searchCharacterByAnimeIds(animeIds);
     setSearchedCharacters(characters);
-  }, [ani]);
+  }, [getAnimesResponse]);
 
   // 사인
   useEffect(() => {
     const searchCharacterByDeathReason = (reason: string) => {
       if (reason === '모두') {
-        return dummyFindCharacterResponse.data;
+        return getCharactersResponse.data;
       } else {
-        return dummyFindCharacterResponse.data.filter(
-          (character) => character.deathReason === reason,
-        );
+        return getCharactersByDeathReasonResponse.data;
       }
     };
 
@@ -121,18 +153,20 @@ const Search = () => {
   }, [fillDeath]);
 
   useEffect(() => {
-    const animeIds = dummyFindAnimesResponse.data.values
-      .filter((anime) => (ani ? anime.name.includes(ani) : true))
-      .map((anime) => anime.animeId);
+    const animeIds = getAnimesResponse.data.values
+      .filter((anime: { name: string | string[] }) => (ani ? anime.name.includes(ani) : true))
+      .map((anime: { animeId: any }) => anime.animeId);
 
-    const final = dummyFindCharacterResponse.data.filter((character) => {
-      const isNameMatched = name ? character.name.includes(name) : true;
-      const isAnimeMatched = ani ? animeIds.includes(character.animeId) : true;
-      const isDeathReasonMatched =
-        fillDeath === '모두' ? true : character.deathReason === fillDeath;
+    const final = getCharactersResponse.data.filter(
+      (character: { name: string | string[]; animeId: any; deathReason: string }) => {
+        const isNameMatched = name ? character.name.includes(name) : true;
+        const isAnimeMatched = ani ? animeIds.includes(character.animeId) : true;
+        const isDeathReasonMatched =
+          fillDeath === '모두' ? true : character.deathReason === fillDeath;
 
-      return isNameMatched && isAnimeMatched && isDeathReasonMatched;
-    });
+        return isNameMatched && isAnimeMatched && isDeathReasonMatched;
+      },
+    );
 
     setFinalCharacters(final);
   }, [name, ani, fillDeath]);
