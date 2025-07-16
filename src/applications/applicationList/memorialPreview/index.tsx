@@ -77,7 +77,9 @@ const MemorialPreview = () => {
 
           <_.Section2>
             <_.ArticleContainer>
-              <_.ArticleContent>{parseCustomContent(contentIn.content)}</_.ArticleContent>
+              <_.ArticleContent>
+                {parseCustomContent(index_data, contentIn.content)}
+              </_.ArticleContent>
             </_.ArticleContainer>
           </_.Section2>
         </_.InnerContainer>

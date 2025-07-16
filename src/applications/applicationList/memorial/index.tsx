@@ -14,6 +14,7 @@ import {
   useGetMemorialComments,
 } from '@/api/memorial/getMemorialComments.ts';
 import { useCommentWrite } from '@/api/memorial/memorialCommentWrite.ts';
+import { parseCustomContent } from '@/lib/customTag/parseCustomContent.tsx';
 
 interface dataStructureProps {
   stack: any[];
@@ -64,7 +65,10 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
     mutationCommentWrite.mutate(
       { memorialId, content },
       {
-        onSuccess: () => setContent(''),
+        onSuccess: () => {
+          setContent('');
+          mutaionGetMemorialComments.mutate({ memorialId });
+        },
       },
     );
   };
@@ -73,9 +77,6 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
     mutaionGetMemorialComments.mutate({ memorialId });
     mutationGetCharacter.mutate(characterId);
   }, []);
-  useEffect(() => {
-    console.log(memorialComment);
-  }, [memorialComment]);
   return (
     <_.Main>
       <_.Container>
@@ -184,10 +185,10 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
                 </_.CommentMainInner>
               </_.CommentMain>
             </_.CommentContainer>
-
             <_.ArticleContainer>
-              {/*<_.ArticleTitle>1. 마지막 순간</_.ArticleTitle>*/}
-              <_.ArticleContent>{memorialData.content}</_.ArticleContent>
+              <_.ArticleContent>
+                {parseCustomContent(index_data, memorialData.content)}
+              </_.ArticleContent>
             </_.ArticleContainer>
           </_.Section2>
         </_.InnerContainer>
