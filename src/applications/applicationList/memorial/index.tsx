@@ -10,7 +10,6 @@ import { useEffect, useState } from 'react';
 import { useGetCharacter } from '@/api/anime/getCharacter.ts';
 import type { CharacterData } from '@/api/anime/getCharacter';
 import type { memorialData } from '@/api/memorial/memorialGet';
-import { useGetMemorialComments } from '@/api/memorial/getMemorialComments.ts';
 
 interface dataStructureProps {
   stack: any[];
@@ -25,6 +24,7 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
   const mutationMemorialGet = useMemorialGet();
   const mutationGetCharacter = useGetCharacter();
   const [memorialData, setMemorialData] = useState<memorialData>({
+    data: [],
     memorialId: 0,
     characterId: 0,
     chiefs: [],
@@ -48,8 +48,9 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
     state: null,
     deathOfDay: null,
   });
+  const [comments, setComments] = useState<[{}]>([{}]);
   useEffect(() => {
-    const id = 6;
+    const id = 2;
     const characterId = 1;
     mutationMemorialGet.mutate(id, {
       onSuccess: (data) => {
@@ -92,14 +93,7 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
       },
     });
   }, []);
-  const mutation = useGetMemorialComments();
-  useEffect(() => {
-    mutation.mutate({
-      memorialId: 1,
-      cursorId: 0,
-      size: 10,
-    });
-  }, []);
+
   return (
     <_.Main>
       <_.Container>
