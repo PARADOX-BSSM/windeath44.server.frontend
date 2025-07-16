@@ -21,6 +21,7 @@ const MyComputer = () => {
             localStorage.removeItem('access_token');
             localStorage.setItem('isLogIned', 'false');
             localStorage.setItem('hasBooted', 'false');
+            location.reload();
             // logOutMutation.mutate(undefined, {
             //   onSuccess: () => {},
             //   onError: (error) => {
