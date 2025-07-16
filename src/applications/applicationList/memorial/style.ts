@@ -230,6 +230,8 @@ export const Attribute = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+  height: 100%;
+  box-sizing: border-box;
 `;
 
 export const Value = styled.div`
