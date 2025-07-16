@@ -49,24 +49,16 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
     updatedAt: '',
   });
   const mutationMemorialGet = useMemorialGet(setMemorialData);
-  const [memorialComment, setMemorialComment] = useState<MemorialCommentsData[]>([
-    {
-      commentId: 0,
-      memorialId: 0,
-      userId: '',
-      content: '',
-      likes: 0,
-      isLiked: false,
-      parentId: 0,
-      createdAt: '',
-    },
-  ]);
+  const [memorialComment, setMemorialComment] = useState<MemorialCommentsData[]>([]);
   const mutaionGetMemorialComments = useGetMemorialComments(setMemorialComment);
   useEffect(() => {
     const id = 5;
+    const memorialId = id;
     const characterId = 1;
     mutationMemorialGet.mutate(id);
     mutationGetCharacter.mutate(characterId);
+    mutaionGetMemorialComments.mutate({ memorialId });
+    console.log(memorialComment);
   }, []);
   return (
     <_.Main>
@@ -164,7 +156,7 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
                       <Comment
                         key={idx}
                         userid={comment.userId}
-                        content={comment.content}
+                        content={comment.content ? comment.content : ''}
                         idx={idx}
                       />
                     );

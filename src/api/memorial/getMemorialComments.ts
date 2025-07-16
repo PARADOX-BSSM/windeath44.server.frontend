@@ -6,7 +6,7 @@ import React from 'react';
 
 type commentData = {
   memorialId: number;
-  cursorId: number;
+  cursorId?: number;
   size?: number;
 };
 export type MemorialCommentsData = {
@@ -38,11 +38,15 @@ const getMemorialComments = async ({
   return response.data;
 };
 export const useGetMemorialComments = (
-  setCharacterData: React.Dispatch<React.SetStateAction<CharacterData>>,
+  setMemorialComment: React.Dispatch<React.SetStateAction<MemorialCommentsData[]>>,
 ) => {
   return useMutation<MemorialCommentsResponse, Error, commentData>({
     mutationFn: getMemorialComments,
-    onSuccess: (data: MemorialCommentsResponse) => {},
+    onSuccess: (data: MemorialCommentsResponse) => {
+      console.log('onSuccess data', data);
+      console.log('onSuccess data.data', data.data);
+      setMemorialComment(data.data);
+    },
     onError: (err: Error) => {
       alert('정보를 가져오는 중 문제가 발생했습니다!!\n 다시 시도해주세요!');
       console.log(err);
