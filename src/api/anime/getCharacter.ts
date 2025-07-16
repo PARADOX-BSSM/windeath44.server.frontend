@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { anime } from '@/config';
-type CharacterData = {
+export type CharacterData = {
   data: string | number[];
   characterId: number;
   name: string;
