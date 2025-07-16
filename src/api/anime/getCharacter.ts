@@ -4,6 +4,7 @@ import { anime } from '@/config';
 import React from 'react';
 export type CharacterData = {
   characterId: number;
+  animeId: number;
   name: string;
   lifeTime: number;
   deathReason: string;

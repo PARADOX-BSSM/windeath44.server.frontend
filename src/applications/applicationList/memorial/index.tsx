@@ -15,6 +15,7 @@ import {
 } from '@/api/memorial/getMemorialComments.ts';
 import { useCommentWrite } from '@/api/memorial/memorialCommentWrite.ts';
 import { parseCustomContent } from '@/lib/customTag/parseCustomContent.tsx';
+import { useGetAnimation } from '@/api/anime/getAnimation.ts';
 
 interface dataStructureProps {
   stack: any[];
@@ -28,6 +29,7 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
   const [content, setContent] = useState<string>('');
   const [characterData, setCharacterData] = useState<CharacterData>({
     characterId: 0,
+    animeId: 0,
     name: '',
     lifeTime: 0,
     deathReason: '',
@@ -52,6 +54,8 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
     updatedAt: '',
   });
   const mutationMemorialGet = useMemorialGet(setMemorialData);
+  const [animation, setAnimation] = useState<string>('');
+  const mutationAnimation = useGetAnimation(setAnimation);
   const [memorialComment, setMemorialComment] = useState<MemorialCommentsData[]>([]);
   const mutaionGetMemorialComments = useGetMemorialComments(setMemorialComment);
   const mutationCommentWrite = useCommentWrite();
@@ -76,6 +80,8 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
     mutationMemorialGet.mutate(id);
     mutaionGetMemorialComments.mutate({ memorialId });
     mutationGetCharacter.mutate(characterId);
+    let animeId;
+    mutationAnimation.mutate((animeId = characterData.animeId));
   }, []);
   return (
     <_.Main>
@@ -140,7 +146,7 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
                     </_.Row>
                     <_.Row>
                       <_.Attribute>애니메이션</_.Attribute>
-                      <_.Value>최애의 아이</_.Value>
+                      <_.Value>{animation}</_.Value>
                       {/*api에 값이 없음*/}
                     </_.Row>
                   </_.Information>
