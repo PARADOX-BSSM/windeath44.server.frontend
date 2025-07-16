@@ -5,10 +5,23 @@ import Choten from '@/assets/profile/choten.svg';
 import { taskTransformerAtom } from '@/atoms/taskTransformer.ts';
 import { useAtomValue } from 'jotai';
 import { useLogOut } from '@/api/auth/logout.ts';
+import { useGetUserMutation } from '@/api/user/getUser.ts';
+import React from 'react';
 
 const MyComputer = () => {
   const taskTransform = useAtomValue(taskTransformerAtom);
   const logOutMutation = useLogOut();
+  const { mutate: getUser, data: userData, isPending, error } = useGetUserMutation();
+
+  React.useEffect(() => {
+    if (localStorage.getItem('isLogIned') === 'true') {
+      getUser();
+    }
+  }, []);
+
+  React.useEffect(() => {
+    console.log('userData:', userData);
+  }, [userData]);
 
   const renderMemorialBtn = () => {
     const isLoggedIn = localStorage.getItem('isLogIned') === 'true';
@@ -45,7 +58,11 @@ const MyComputer = () => {
         <_.ProfileContainer>
           <_.ProfileImg src={Choten} />
           <_.ProfileName>
-            {localStorage.getItem('isLogIned') === 'true' ? '유승찬' : '게스트'}
+            <_.ProfileName>
+              {localStorage.getItem('isLogIned') === 'true'
+                ? (userData?.data?.name ?? '로딩 중...')
+                : '게스트'}
+            </_.ProfileName>
           </_.ProfileName>
         </_.ProfileContainer>
         {renderMemorialBtn()}
