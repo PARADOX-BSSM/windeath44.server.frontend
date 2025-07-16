@@ -6,14 +6,17 @@ export const tempMain = styled.div`
   flex-direction: column;
   align-items: center;
 `;
-export const tempImageStyle = styled.div`
+export const tempImage = styled.div`
   width: 100%;
-  height: 180px;
+  height: 11.25rem;
   background-color: #ffffff;
   display: flex;
   justify-content: center;
+  align-items: center;
   img {
     width: 100%;
+    height: 6.75rem;
+    background-color: #ffffff;
   }
 `;
 export const tempBulkStyle = styled.div`

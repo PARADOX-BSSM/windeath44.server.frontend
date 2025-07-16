@@ -23,7 +23,7 @@ const Discover = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
     <>
       {/* <Seori /> */}
       {visibleApps.map((Application: TaskType) => {
-        console.log(Application.appSetup?.Image);
+        // console.log(Application.appSetup?.Image);
         return (
           <_.AppContainer
             key={Application.name}

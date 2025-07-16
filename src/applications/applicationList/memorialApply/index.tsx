@@ -6,9 +6,9 @@ import { useState, useRef, useEffect } from 'react';
 import MemorialBtn from '@/applications/components/memorialBtn';
 import { inputPortage } from '@/atoms/inputManager';
 import AvatarEditor from 'react-avatar-editor';
-import Button from '@/applications/components/button';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
 import { useGetUserMutation } from '@/api/user/getUser';
+import FilterBlock from '@/applications/components/filterBlock';
 
 interface dataStructureProps {
   stack: any[];
@@ -31,6 +31,26 @@ const MemorialApply = ({}: dataStructureProps) => {
     width: 0,
     height: 0,
   });
+
+  const deathReason = [
+    '자연사(自然死)',
+    '병사(病死)',
+    '자살(自殺)',
+    '불명사(不明死)',
+    '타살(他殺)',
+    '돌연사(突然死)',
+  ];
+  const [death, setDeath] = useState(false);
+  const [fillDeath, setFillDeath] = useState('모두');
+  const handleDeath = () => {
+    setDeath(!death);
+  };
+
+  const handleDeathChange = (value: deathType) => {
+    setFillDeath(value);
+    setDeath(false);
+    setInputValue((prev) => ({ ...prev, deathReason: value }));
+  };
 
   useEffect(() => {
     if (profileImgRef.current) {
@@ -138,9 +158,9 @@ const MemorialApply = ({}: dataStructureProps) => {
                       <_.CharacterInformationRowValueText>
                         <_.CharacterInforInput
                           type="text"
-                          placeholder="예) 향년 20세"
+                          placeholder="예) 1"
                           onChange={(e) => {
-                            setInputValue((prev) => ({ ...prev, age: e.target.value }));
+                            setInputValue((prev) => ({ ...prev, age: Number(e.target.value) }));
                           }}
                         ></_.CharacterInforInput>
                       </_.CharacterInformationRowValueText>
@@ -157,7 +177,7 @@ const MemorialApply = ({}: dataStructureProps) => {
                       <_.CharacterInformationRowValueText>
                         <_.CharacterInforInput
                           type="text"
-                          placeholder="예) 2023.04.12"
+                          placeholder="예) 2023-04-12"
                           onChange={(e) => {
                             setInputValue((prev) => ({ ...prev, date: e.target.value }));
                           }}
@@ -175,10 +195,13 @@ const MemorialApply = ({}: dataStructureProps) => {
                     <_.CharacterInformationRowValue>
                       <_.CharacterInformationRowValueText>
                         <_.CharacterInforInput
-                          type="text"
-                          placeholder="예) 1일"
+                          type="number"
+                          placeholder="예) 1"
                           onChange={(e) => {
-                            setInputValue((prev) => ({ ...prev, lifeCycle: e.target.value }));
+                            setInputValue((prev) => ({
+                              ...prev,
+                              lifeCycle: Number(e.target.value),
+                            }));
                           }}
                         ></_.CharacterInforInput>
                       </_.CharacterInformationRowValueText>
@@ -193,13 +216,14 @@ const MemorialApply = ({}: dataStructureProps) => {
                     </_.CharacterInformationRowAttribute>
                     <_.CharacterInformationRowValue>
                       <_.CharacterInformationRowValueText>
-                        <_.CharacterInforInput
-                          type="text"
-                          placeholder="예) 흉기에 의한 사망"
-                          onChange={(e) => {
-                            setInputValue((prev) => ({ ...prev, deathReason: e.target.value }));
-                          }}
-                        ></_.CharacterInforInput>
+                        <FilterBlock
+                          label=""
+                          option={fillDeath}
+                          isOpen={death}
+                          onClick={handleDeath}
+                          list={deathReason}
+                          onChange={handleDeathChange}
+                        />
                       </_.CharacterInformationRowValueText>
                     </_.CharacterInformationRowValue>
                   </_.CharacterInformationRow>

@@ -355,6 +355,25 @@ const useApps = (): TaskType[] => {
       },
       visible: true,
     },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <MemorialPreview />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2228,
+      name: '미리보기',
+      layer: undefined,
+      appSetup: {
+        Image: 'default',
+        minWidth: 580,
+        minHeight: 420,
+        setUpWidth: 850,
+        setUpHeight: 500,
+      },
+      visible: false,
+    },
   ];
 
   return baseApps;

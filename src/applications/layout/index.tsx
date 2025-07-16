@@ -220,6 +220,7 @@ const Application = (props: ApplicationProps) => {
                 props.removeTask(props.removeCompnent);
                 if (!isLogIned) {
                   setIsLogIned('guest');
+                  localStorage.setItem('isLogIned', isLogIned);
                 }
               }}
               isFocus={focus === props.name}
@@ -261,7 +262,6 @@ const Application = (props: ApplicationProps) => {
       <_.Shell
         className="shell"
         onClick={() => {
-          console.log(1234);
           setFocus('Discover');
         }}
       >

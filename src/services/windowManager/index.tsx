@@ -17,6 +17,8 @@ import { useTaskSearchFunction } from '@/hooks/taskSearch.tsx';
 import { useAlerter } from '@/hooks/alerter.tsx';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg.tsx';
 import { useDrag } from 'react-use-gesture';
+import { Simulate } from 'react-dom/test-utils';
+import resize = Simulate.resize;
 
 const Application = lazy(() => import('@/applications/layout/index.tsx'));
 
@@ -56,7 +58,6 @@ const WindowManager = () => {
     const selection = window.getSelection();
     return selection && selection.type === 'Range' && selection.toString().trim().length > 0;
   };
-
   // 포커스가 바뀔 때마다
   useEffect(() => {
     if (focus !== 'Observer') {
@@ -65,7 +66,7 @@ const WindowManager = () => {
   }, [focus]);
   useEffect(() => {
     //초기 기본 설정
-    localStorage.setItem('isLogIned', isLogIned);
+    // localStorage.setItem('isLogIned', isLogIned);
     if (isLogIned === 'true' || isLogIned === 'guest') {
       removeTask(logIn);
       const discover: TaskType = {
@@ -91,7 +92,8 @@ const WindowManager = () => {
     }
   }, [isLogIned]);
 
-  useEffect(() => {
+  let resizeObserver = new ResizeObserver((_entries) => {
+    console.log('resize');
     const container: HTMLElement = document.getElementById('cursorContainer') as HTMLElement;
     const cursor = document.getElementById('cursor');
     if (!container || !cursor) return;
@@ -106,6 +108,9 @@ const WindowManager = () => {
       cursor.style.top = `${y}px`;
       setCursorVec([x, y]);
     });
+  });
+  useEffect(() => {
+    resizeObserver.observe(document.getElementById('display') as HTMLElement);
   }, []);
 
   useEffect(() => {

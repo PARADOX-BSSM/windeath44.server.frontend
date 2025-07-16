@@ -6,15 +6,12 @@ export const tempImage = styled.div`
   background-color: #ffffff;
   display: flex;
   justify-content: center;
+  align-items: center;
   img {
     width: 100%;
     height: 6.75rem;
     background-color: #ffffff;
-    display: flex;
-    justify-content: center;
-    img {
-        width: 100%;
-    }
+  }
 `;
 
 export const tempBulk = styled.div`

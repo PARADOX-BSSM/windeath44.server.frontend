@@ -33,12 +33,12 @@ const PasswordChange = ({ changeToLogIn }: Props) => {
   };
   return (
     <_.tempMain>
-      <_.tempImageStyle>
+      <_.tempImage>
         <img
           src={Logo}
           alt="logo"
         />
-      </_.tempImageStyle>
+      </_.tempImage>
       <_.tempBulkStyle />
       <_.tempMainStyle>
         <_.tempInputsStyle>

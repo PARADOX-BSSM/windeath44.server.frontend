@@ -1,15 +1,16 @@
+import { InputContentType, InputPortageType } from '@/modules/inputPortageInterface';
 import { atom } from 'jotai';
 
-export const inputPortage = atom({
+export const inputPortage = atom<InputPortageType>({
   name: '',
-  deathReason: '',
+  deathReason: '자연사(自然死)' as deathType,
   date: '',
-  lifeCycle: '',
+  lifeCycle: 0,
   anime: '',
   animeId: '',
-  age: '',
+  age: 0,
   profileImage: '',
   phrase: '',
 });
 
-export const inputContent = atom({ characterId: '', content: '' });
+export const inputContent = atom<InputContentType>({ characterId: '', content: '' });
