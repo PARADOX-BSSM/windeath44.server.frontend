@@ -14,7 +14,12 @@ const MyComputer = () => {
       <MemorialBtn
         name={isLoggedIn ? '로그아웃' : '로그인'}
         onClick={() => {
-          taskTransform?.('', isLoggedIn ? '로그아웃' : '로그인');
+          taskTransform?.('', isLoggedIn ? '' : '로그인');
+          if (isLoggedIn) {
+            localStorage.removeItem('access_token');
+            localStorage.setItem('isLogIned', 'false');
+            localStorage.setItem('hasBooted', 'false');
+          }
         }}
         type="submit"
         active={true}
