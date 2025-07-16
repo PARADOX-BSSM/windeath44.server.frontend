@@ -57,24 +57,25 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
   const id = 5;
   const memorialId = id;
   const characterId = 1;
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      e.stopPropagation();
-      mutationCommentWrite.mutate(
-        { memorialId, content },
-        {
-          onSuccess: () => setContent(''), // 입력 초기화
-        },
-      );
-    }
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!content.trim()) return;
+
+    mutationCommentWrite.mutate(
+      { memorialId, content },
+      {
+        onSuccess: () => setContent(''),
+      },
+    );
   };
   useEffect(() => {
     mutationMemorialGet.mutate(id);
-    mutationGetCharacter.mutate(characterId);
     mutaionGetMemorialComments.mutate({ memorialId });
-    console.log(memorialComment);
+    mutationGetCharacter.mutate(characterId);
   }, []);
+  useEffect(() => {
+    console.log(memorialComment);
+  }, [memorialComment]);
   return (
     <_.Main>
       <_.Container>
@@ -161,13 +162,14 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
               <_.CommentMain>
                 <_.CommentMainInner>
                   <_.InputComment>
-                    <_.InputCommentText
-                      type="text"
-                      value={content}
-                      onChange={(e) => setContent(e.target.value)}
-                      onKeyDown={handleKeyDown}
-                      placeholder="추모글을 입력하세요."
-                    ></_.InputCommentText>
+                    <form onSubmit={handleSubmit}>
+                      <_.InputCommentText
+                        type="text"
+                        value={content}
+                        onChange={(e) => setContent(e.target.value)}
+                        placeholder="추모글을 입력하세요."
+                      ></_.InputCommentText>
+                    </form>
                   </_.InputComment>
                   {memorialComment.map((comment, idx) => {
                     return (
