@@ -18,11 +18,9 @@ const commentWrite = async ({ memorialId, content, parentCommentId }: commentDat
       },
       withCredentials: true,
     });
-    localStorage.setItem('data', JSON.stringify(response.data));
     return response.data;
   } catch (err) {
     console.error('댓글 작성 중 오류:', err);
-    localStorage.setItem('error', JSON.stringify(err));
     throw err;
   }
 };
