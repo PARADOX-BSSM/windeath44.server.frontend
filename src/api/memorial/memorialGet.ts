@@ -13,7 +13,7 @@ export type memorialData = {
   createdAt: string;
   mergerId: string;
   updatedAt: string;
-};
+} | null;
 export type memorialDataResponse = {
   message: string;
   data: memorialData;

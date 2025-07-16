@@ -23,31 +23,9 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
   const taskSearch = useAtomValue(taskSearchAtom);
   const mutationGetCharacter = useGetCharacter();
-  const [memorialData, setMemorialData] = useState<memorialData>({
-    memorialId: 0,
-    characterId: 0,
-    chiefs: [],
-    bowCount: 0,
-    memorialCommitId: 0,
-    content: '',
-    userId: '',
-    createdAt: '',
-    mergerId: '',
-    updatedAt: '',
-  });
+  const [memorialData, setMemorialData] = useState<memorialData>(null);
   const mutationMemorialGet = useMemorialGet(setMemorialData);
-  const [characterData, setCharacterData] = useState<CharacterData>({
-    characterId: 0,
-    name: '',
-    lifeTime: null,
-    deathReason: null,
-    imageUrl: null,
-    bowCount: null,
-    age: null,
-    saying: null,
-    state: null,
-    deathOfDay: null,
-  });
+  const [characterData, setCharacterData] = useState<CharacterData>(null);
   useEffect(() => {
     const id = 1;
     const characterId = 1;
