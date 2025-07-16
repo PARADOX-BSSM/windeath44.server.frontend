@@ -262,7 +262,6 @@ const Application = (props: ApplicationProps) => {
       <_.Shell
         className="shell"
         onClick={() => {
-          console.log(1234);
           setFocus('Discover');
         }}
       >

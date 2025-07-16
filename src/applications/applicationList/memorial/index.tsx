@@ -1,8 +1,7 @@
 import IndexMenu from '@/applications/components/indexMenu';
 import Comment from '@/applications/components/comment';
 import * as _ from './style';
-import { index_data, comment_data } from './data';
-// import characterUrl from '@/assets/character/hosino.svg';
+import { index_data } from './data';
 import { useAtomValue } from 'jotai';
 import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer';
 import { useMemorialGet } from '@/api/memorial/memorialGet.ts';
@@ -10,6 +9,13 @@ import { useEffect, useState } from 'react';
 import { useGetCharacter } from '@/api/anime/getCharacter.ts';
 import type { CharacterData } from '@/api/anime/getCharacter';
 import type { memorialData } from '@/api/memorial/memorialGet';
+import {
+  MemorialCommentsData,
+  useGetMemorialComments,
+} from '@/api/memorial/getMemorialComments.ts';
+import { useCommentWrite } from '@/api/memorial/memorialCommentWrite.ts';
+import { parseCustomContent } from '@/lib/customTag/parseCustomContent.tsx';
+import { useGetAnimation } from '@/api/anime/getAnimation.ts';
 
 interface dataStructureProps {
   stack: any[];
@@ -17,12 +23,24 @@ interface dataStructureProps {
   pop: any;
   top: any;
 }
-
 const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
   const taskSearch = useAtomValue(taskSearchAtom);
-  const mutationMemorialGet = useMemorialGet();
-  const mutationGetCharacter = useGetCharacter();
+  const [content, setContent] = useState<string>('');
+  const [characterData, setCharacterData] = useState<CharacterData>({
+    characterId: 0,
+    animeId: 0,
+    name: '',
+    lifeTime: 0,
+    deathReason: '',
+    imageUrl: '',
+    bowCount: 0,
+    age: 0,
+    saying: '',
+    state: '',
+    deathOfDay: '',
+  });
+  const mutationGetCharacter = useGetCharacter(setCharacterData);
   const [memorialData, setMemorialData] = useState<memorialData>({
     memorialId: 0,
     characterId: 0,
@@ -35,61 +53,35 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
     mergerId: '',
     updatedAt: '',
   });
-  const [characterData, setCharacterData] = useState<CharacterData>({
-    characterId: 0,
-    name: '',
-    lifeTime: null,
-    deathReason: null,
-    imageUrl: null,
-    bowCount: null,
-    age: null,
-    saying: null,
-    state: null,
-    deathOfDay: null,
-  });
+  const mutationMemorialGet = useMemorialGet(setMemorialData);
+  const [animation, setAnimation] = useState<string>('');
+  const mutationAnimation = useGetAnimation(setAnimation);
+  const [memorialComment, setMemorialComment] = useState<MemorialCommentsData[]>([]);
+  const mutaionGetMemorialComments = useGetMemorialComments(setMemorialComment);
+  const mutationCommentWrite = useCommentWrite();
+  const id = 5;
+  const memorialId = id;
+  const characterId = 1;
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!content.trim()) return;
+
+    mutationCommentWrite.mutate(
+      { memorialId, content },
+      {
+        onSuccess: () => {
+          setContent('');
+          mutaionGetMemorialComments.mutate({ memorialId });
+        },
+      },
+    );
+  };
   useEffect(() => {
-    const id = 1;
-    const characterId = 1;
-    mutationMemorialGet.mutate(id, {
-      onSuccess: (data) => {
-        setMemorialData({
-          memorialId: data.data.memorialId,
-          characterId: data.data.characterId,
-          chiefs: data.data.chiefs,
-          bowCount: data.data.bowCount,
-          memorialCommitId: data.data.memorialCommitId,
-          content: data.data.content,
-          userId: data.data.userId,
-          createdAt: data.data.createdAt,
-          mergerId: data.data.mergerId,
-          updatedAt: data.data.updatedAt,
-        });
-      },
-      onError: (data) => {
-        alert('정보를 가져오는 중 문제가 발생했습니다!!\n 다시 시도해주세요!');
-        console.log(data);
-      },
-    });
-    mutationGetCharacter.mutate(characterId, {
-      onSuccess: (data) => {
-        setCharacterData({
-          characterId: data.data.characterId,
-          name: data.data.name,
-          lifeTime: data.data.lifeTime,
-          deathReason: data.data.deathReason,
-          imageUrl: data.data.imageUrl,
-          bowCount: data.data.bowCount,
-          age: data.data.age,
-          saying: data.data.saying,
-          state: data.data.state,
-          deathOfDay: data.data.deathOfDay,
-        });
-      },
-      onError: (data) => {
-        alert('정보를 가져오는 중 문제가 발생했습니다!!\n 다시 시도해주세요!');
-        console.log(data);
-      },
-    });
+    mutationMemorialGet.mutate(id);
+    mutaionGetMemorialComments.mutate({ memorialId });
+    mutationGetCharacter.mutate(characterId);
+    let animeId;
+    mutationAnimation.mutate((animeId = characterData.animeId));
   }, []);
   return (
     <_.Main>
@@ -154,7 +146,7 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
                     </_.Row>
                     <_.Row>
                       <_.Attribute>애니메이션</_.Attribute>
-                      <_.Value>최애의 아이</_.Value>
+                      <_.Value>{animation}</_.Value>
                       {/*api에 값이 없음*/}
                     </_.Row>
                   </_.Information>
@@ -177,18 +169,21 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
               <_.CommentMain>
                 <_.CommentMainInner>
                   <_.InputComment>
-                    <_.InputCommentText
-                      type="text"
-                      placeholder="추모글을 입력하세요."
-                    ></_.InputCommentText>
+                    <form onSubmit={handleSubmit}>
+                      <_.InputCommentText
+                        type="text"
+                        value={content}
+                        onChange={(e) => setContent(e.target.value)}
+                        placeholder="추모글을 입력하세요."
+                      ></_.InputCommentText>
+                    </form>
                   </_.InputComment>
-                  {comment_data.map((comment, idx) => {
+                  {memorialComment.map((comment, idx) => {
                     return (
                       <Comment
                         key={idx}
-                        nickname={comment.nickname}
-                        userid={comment.userid}
-                        content={comment.content}
+                        userid={comment.userId}
+                        content={comment.content ? comment.content : ''}
                         idx={idx}
                       />
                     );
@@ -196,10 +191,10 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
                 </_.CommentMainInner>
               </_.CommentMain>
             </_.CommentContainer>
-
             <_.ArticleContainer>
-              {/*<_.ArticleTitle>1. 마지막 순간</_.ArticleTitle>*/}
-              <_.ArticleContent>{memorialData.content}</_.ArticleContent>
+              <_.ArticleContent>
+                {parseCustomContent(index_data, memorialData.content)}
+              </_.ArticleContent>
             </_.ArticleContainer>
           </_.Section2>
         </_.InnerContainer>

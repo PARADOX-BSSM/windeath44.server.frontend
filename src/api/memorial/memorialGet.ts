@@ -1,8 +1,8 @@
 import { useMutation } from '@tanstack/react-query';
+import React from 'react';
 import axios from 'axios';
 import { memorial } from '@/config';
-type memorialData = {
-  data: string | number[];
+export type memorialData = {
   memorialId: number;
   characterId: number;
   chiefs: string[];
@@ -13,16 +13,29 @@ type memorialData = {
   createdAt: string;
   mergerId: string;
   updatedAt: string;
+} | null;
+export type memorialDataResponse = {
+  message: string;
+  data: memorialData;
 };
-const memorialGet = async (id: number): Promise<memorialData> => {
+const memorialGet = async (id: number): Promise<memorialDataResponse> => {
   const response = await axios.get(`${memorial}/${id}`, {
     withCredentials: true,
   });
   return response.data;
 };
 
-export const useMemorialGet = () => {
-  return useMutation<memorialData, Error, number>({
+export const useMemorialGet = (
+  setMemorialData: React.Dispatch<React.SetStateAction<memorialData>>,
+) => {
+  return useMutation<memorialDataResponse, Error, number>({
     mutationFn: memorialGet,
+    onSuccess: (data: memorialDataResponse) => {
+      setMemorialData(data.data);
+    },
+    onError: (err: Error) => {
+      alert('정보를 가져오는 중 문제가 발생했습니다!!\n 다시 시도해주세요!');
+      console.log(err);
+    },
   });
 };
