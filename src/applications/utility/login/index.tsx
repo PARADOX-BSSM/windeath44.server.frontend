@@ -2,7 +2,7 @@ import * as _ from './style';
 import Logo from '@/assets/windeath44.svg';
 import Inputs from '@/applications/components/inputs';
 import { useAtom, useAtomValue } from 'jotai';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLogIn } from '@/api/auth/logIn';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
 import MemorialBtn from '@/applications/components/memorialBtn';
@@ -52,6 +52,10 @@ const LogIn = ({ changeToSignUp, changeToEmailCheck }: Props) => {
       },
     );
   };
+
+  useEffect(() => {
+    localStorage.setItem('isLogIned', isLogIned);
+  }, [isLogIned]);
 
   const buttonWidth = 11.5;
   const buttonHeight = 4.4;

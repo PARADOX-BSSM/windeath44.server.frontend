@@ -66,7 +66,7 @@ const WindowManager = () => {
   }, [focus]);
   useEffect(() => {
     //초기 기본 설정
-    localStorage.setItem('isLogIned', isLogIned);
+    // localStorage.setItem('isLogIned', isLogIned);
     if (isLogIned === 'true' || isLogIned === 'guest') {
       removeTask(logIn);
       const discover: TaskType = {
@@ -92,8 +92,8 @@ const WindowManager = () => {
     }
   }, [isLogIned]);
 
-  let resizeObserver = new ResizeObserver(_entries => {
-    console.log("resize");
+  let resizeObserver = new ResizeObserver((_entries) => {
+    console.log('resize');
     const container: HTMLElement = document.getElementById('cursorContainer') as HTMLElement;
     const cursor = document.getElementById('cursor');
     if (!container || !cursor) return;
