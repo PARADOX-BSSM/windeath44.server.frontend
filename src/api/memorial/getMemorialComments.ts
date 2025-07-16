@@ -27,14 +27,15 @@ const getMemorialComments = async ({
   return response.data;
 };
 export const useGetMemorialComments = ({ memorialId, cursorId, size }: commentData) => {
-  return useQuery<MemorialCommentsResponse, Error>({
-    queryKey: ['memorialComments', memorialId, cursorId, size],
-    queryFn: () => getMemorialComments({ memorialId, cursorId, size }),
-    onSuccess: (data: MemorialCommentsResponse) => {
-      console.log('코멘트', data.data);
-    },
-    onError: (err: Error) => {
-      console.log(err);
-    },
-  });
+  // return useQuery<MemorialCommentsResponse, Error>({
+  //   queryKey: ['memorialComments', memorialId, cursorId, size],
+  //   queryFn: () => getMemorialComments({ memorialId, cursorId, size }),
+  //   onSuccess: (data: MemorialCommentsResponse) => {
+  //     console.log('코멘트', data.data);
+  //   },
+  //   onError: (err: Error) => {
+  //     console.log(err);
+  //   },
+  // });
+  return undefined;
 };

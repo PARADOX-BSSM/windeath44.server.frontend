@@ -22,7 +22,6 @@ interface dataStructureProps {
 const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
   const taskSearch = useAtomValue(taskSearchAtom);
-  const mutationMemorialGet = useMemorialGet();
   const mutationGetCharacter = useGetCharacter();
   const [memorialData, setMemorialData] = useState<memorialData>({
     memorialId: 0,
@@ -36,6 +35,7 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
     mergerId: '',
     updatedAt: '',
   });
+  const mutationMemorialGet = useMemorialGet(setMemorialData);
   const [characterData, setCharacterData] = useState<CharacterData>({
     characterId: 0,
     name: '',
@@ -49,7 +49,7 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
     deathOfDay: null,
   });
   useEffect(() => {
-    const id = 6;
+    const id = 1;
     const characterId = 1;
     mutationMemorialGet.mutate(id, {
       onSuccess: (data) => {
@@ -92,14 +92,14 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
       },
     });
   }, []);
-  const mutation = useGetMemorialComments();
-  useEffect(() => {
-    mutation.mutate({
-      memorialId: 1,
-      cursorId: 0,
-      size: 10,
-    });
-  }, []);
+  //const mutation = useGetMemorialComments();
+  // useEffect(() => {
+  //   mutation.mutate({
+  //     memorialId: 1,
+  //     cursorId: 0,
+  //     size: 10,
+  //   });
+  // }, []);
   return (
     <_.Main>
       <_.Container>
