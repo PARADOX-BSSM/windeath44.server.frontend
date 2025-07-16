@@ -1,15 +1,18 @@
 import * as _ from '@/applications/applicationList/search/viewer/style.ts';
-import myComputer from '@/assets/appIcons/my_computer.svg';
 
 interface MemorialWithIconProps {
   icon?: string;
   name: string;
+  onDoubleClick: () => void;
 }
 
-const MemorialWithIcon = ({ icon, name }: MemorialWithIconProps) => {
+const MemorialWithIcon = ({ icon, name, onDoubleClick }: MemorialWithIconProps) => {
   return (
     <_.Item>
-      <_.Icon src={icon} />
+      <_.Icon
+        src={icon}
+        onDoubleClick={onDoubleClick}
+      />
       <_.Name>{name}</_.Name>
     </_.Item>
   );

@@ -9,10 +9,11 @@ interface FetchMemorialsParams {
 }
 
 export const fetchMemorials = async ({ orderBy, page, characters }: FetchMemorialsParams) => {
-  const response = await api.post(`${memorial}/character-filtered`, {
-    params: { orderBy, page, characters },
-    withCredentials: true,
-  });
+  const response = await api.post(
+    `${memorial}/character-filtered`,
+    { orderBy, page, characters }, // body
+    { withCredentials: true }, // config
+  );
   return response.data;
 };
 

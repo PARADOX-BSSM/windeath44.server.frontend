@@ -60,7 +60,7 @@ const Search = () => {
     isLoading: isLoadingCharacterFiltered,
     isError: isErrorCharacterFiltered,
   } = useGetMemorialsCharacterFilteredQuery({
-    orderBy: 'recently-updated,',
+    orderBy: 'recently-updated',
     page: 1,
     characters: finalCharactersIds,
   });
@@ -205,12 +205,15 @@ const Search = () => {
             name={name}
             setName={setName}
           />
-          <Viewer characters={finalCharacters} />
+          <Viewer
+            characters={finalCharacters}
+            memorials={getMemorialsCharacterFilteredResponse?.data}
+          />
         </_.search_task>
         <_.object>
           <div>
             <img src={Folder} />
-            <div>0개체</div>
+            <div>{finalCharacters.length}개체</div>
           </div>
         </_.object>
       </_.main_serve>
