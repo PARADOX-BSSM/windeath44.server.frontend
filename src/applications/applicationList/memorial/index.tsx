@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react';
 import { useGetCharacter } from '@/api/anime/getCharacter.ts';
 import type { CharacterData } from '@/api/anime/getCharacter';
 import type { memorialData } from '@/api/memorial/memorialGet';
+import { useGetMemorialComments } from '@/api/memorial/getMemorialComments.ts';
 
 interface dataStructureProps {
   stack: any[];
@@ -48,7 +49,7 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
     deathOfDay: null,
   });
   useEffect(() => {
-    const id = 1;
+    const id = 6;
     const characterId = 1;
     mutationMemorialGet.mutate(id, {
       onSuccess: (data) => {
@@ -89,6 +90,14 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
         alert('정보를 가져오는 중 문제가 발생했습니다!!\n 다시 시도해주세요!');
         console.log(data);
       },
+    });
+  }, []);
+  const mutation = useGetMemorialComments();
+  useEffect(() => {
+    mutation.mutate({
+      memorialId: 1,
+      cursorId: 0,
+      size: 10,
     });
   }, []);
   return (
