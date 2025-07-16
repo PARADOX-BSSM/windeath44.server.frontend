@@ -20,7 +20,7 @@ const useStack = (
   const push: any = (value: any) => {
     setStack((prev) => [...prev, value]);
     const latestWindow = windowRef.current;
-    console.log(setWindow, latestWindow);
+    // console.log(setWindow, latestWindow);
     if (setWindow && latestWindow) {
       setWindow({
         ...latestWindow,
