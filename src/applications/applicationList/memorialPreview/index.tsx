@@ -4,6 +4,7 @@ import { index_data } from './data';
 import { useAtom } from 'jotai';
 import { inputContent, inputPortage } from '@/atoms/inputManager';
 import { parseCustomContent } from '@/lib/customTag/parseCustomContent';
+import ribbon from '@/assets/memorial_ribbon.svg';
 
 const MemorialPreview = () => {
   const [inputValue] = useAtom(inputPortage);
@@ -40,6 +41,10 @@ const MemorialPreview = () => {
               <_.ProfileContainer>
                 <_.ProfileInnerContainer>
                   <_.PictureContainer>
+                    <_.Ribbon
+                      src={ribbon}
+                      alt="ribbon"
+                    />
                     <_.Picture imgUrl={inputValue.profileImage} />
                     <_.Name>{inputValue.name}</_.Name>
                   </_.PictureContainer>
