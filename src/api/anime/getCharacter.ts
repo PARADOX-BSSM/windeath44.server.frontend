@@ -1,6 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { anime } from '@/config';
+import React from 'react';
 export type CharacterData = {
   characterId: number;
   name: string;
@@ -13,7 +14,11 @@ export type CharacterData = {
   state: string;
   deathOfDay: string;
 } | null;
-const getCharacter = async (characterId: number): Promise<CharacterData> => {
+export type CharacterDataResponse = {
+  message: string;
+  data: CharacterData;
+};
+const getCharacter = async (characterId: number): Promise<CharacterDataResponse> => {
   const response = await axios.get(`${anime}/characters/${characterId}`, {
     withCredentials: true,
   });
@@ -21,8 +26,17 @@ const getCharacter = async (characterId: number): Promise<CharacterData> => {
   return response.data;
 };
 
-export const useGetCharacter = () => {
-  return useMutation<CharacterData, Error, number>({
+export const useGetCharacter = (
+  setCharacterData: React.Dispatch<React.SetStateAction<CharacterData>>,
+) => {
+  return useMutation<CharacterDataResponse, Error, number>({
     mutationFn: getCharacter,
+    onSuccess: (data: CharacterDataResponse) => {
+      setCharacterData(data.data);
+    },
+    onError: (err: Error) => {
+      alert('정보를 가져오는 중 문제가 발생했습니다!!\n 다시 시도해주세요!');
+      console.log(err);
+    },
   });
 };

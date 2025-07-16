@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react';
 import { useGetCharacter } from '@/api/anime/getCharacter.ts';
 import type { CharacterData } from '@/api/anime/getCharacter';
 import type { memorialData } from '@/api/memorial/memorialGet';
-import { useGetMemorialComments } from '@/api/memorial/getMemorialComments.ts';
+// import { useGetMemorialComments } from '@/api/memorial/getMemorialComments.ts';
 
 interface dataStructureProps {
   stack: any[];
@@ -18,66 +18,41 @@ interface dataStructureProps {
   pop: any;
   top: any;
 }
-
 const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
   const taskSearch = useAtomValue(taskSearchAtom);
-  const mutationGetCharacter = useGetCharacter();
-  const [memorialData, setMemorialData] = useState<memorialData>(null);
+  const [characterData, setCharacterData] = useState<CharacterData>({
+    characterId: 0,
+    name: '',
+    lifeTime: 0,
+    deathReason: '',
+    imageUrl: '',
+    bowCount: 0,
+    age: 0,
+    saying: '',
+    state: '',
+    deathOfDay: '',
+  });
+  const mutationGetCharacter = useGetCharacter(setCharacterData);
+  const [memorialData, setMemorialData] = useState<memorialData>({
+    memorialId: 0,
+    characterId: 0,
+    chiefs: [],
+    bowCount: 0,
+    memorialCommitId: 0,
+    content: '',
+    userId: '',
+    createdAt: '',
+    mergerId: '',
+    updatedAt: '',
+  });
   const mutationMemorialGet = useMemorialGet(setMemorialData);
-  const [characterData, setCharacterData] = useState<CharacterData>(null);
   useEffect(() => {
     const id = 1;
     const characterId = 1;
-    mutationMemorialGet.mutate(id, {
-      onSuccess: (data) => {
-        setMemorialData({
-          memorialId: data.data.memorialId,
-          characterId: data.data.characterId,
-          chiefs: data.data.chiefs,
-          bowCount: data.data.bowCount,
-          memorialCommitId: data.data.memorialCommitId,
-          content: data.data.content,
-          userId: data.data.userId,
-          createdAt: data.data.createdAt,
-          mergerId: data.data.mergerId,
-          updatedAt: data.data.updatedAt,
-        });
-      },
-      onError: (data) => {
-        alert('정보를 가져오는 중 문제가 발생했습니다!!\n 다시 시도해주세요!');
-        console.log(data);
-      },
-    });
-    mutationGetCharacter.mutate(characterId, {
-      onSuccess: (data) => {
-        setCharacterData({
-          characterId: data.data.characterId,
-          name: data.data.name,
-          lifeTime: data.data.lifeTime,
-          deathReason: data.data.deathReason,
-          imageUrl: data.data.imageUrl,
-          bowCount: data.data.bowCount,
-          age: data.data.age,
-          saying: data.data.saying,
-          state: data.data.state,
-          deathOfDay: data.data.deathOfDay,
-        });
-      },
-      onError: (data) => {
-        alert('정보를 가져오는 중 문제가 발생했습니다!!\n 다시 시도해주세요!');
-        console.log(data);
-      },
-    });
+    mutationMemorialGet.mutate(id);
+    mutationGetCharacter.mutate(characterId);
   }, []);
-  //const mutation = useGetMemorialComments();
-  // useEffect(() => {
-  //   mutation.mutate({
-  //     memorialId: 1,
-  //     cursorId: 0,
-  //     size: 10,
-  //   });
-  // }, []);
   return (
     <_.Main>
       <_.Container>
