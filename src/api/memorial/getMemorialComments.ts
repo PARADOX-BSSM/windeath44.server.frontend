@@ -1,11 +1,16 @@
 import axios from 'axios';
 import { memorial } from '@/config';
-import { useMutation } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
+import * as console from 'node:console';
 
 type commentData = {
   memorialId: number;
   cursorId: number;
   size?: number;
+};
+
+type MemorialCommentsResponse = {
+  data: [];
 };
 const getMemorialComments = async ({
   memorialId,
@@ -21,14 +26,15 @@ const getMemorialComments = async ({
   });
   return response.data;
 };
-export const useGetMemorialComments = () => {
-  return useMutation({
-    mutationFn: getMemorialComments,
-    onSuccess: (data) => {
+export const useGetMemorialComments = ({ memorialId, cursorId, size }: commentData) => {
+  return useQuery<MemorialCommentsResponse, Error>({
+    queryKey: ['memorialComments', memorialId, cursorId, size],
+    queryFn: () => getMemorialComments({ memorialId, cursorId, size }),
+    onSuccess: (data: MemorialCommentsResponse) => {
       console.log('코멘트', data.data);
     },
-    onError: (data) => {
-      console.log(data);
+    onError: (err: Error) => {
+      console.log(err);
     },
   });
 };
