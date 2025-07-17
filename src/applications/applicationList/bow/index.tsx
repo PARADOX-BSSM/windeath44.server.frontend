@@ -4,11 +4,13 @@ import Character from '@/assets/character/hosino.svg';
 import { useMemorialBow } from '@/api/memorial/memorialBow.ts';
 import { useEffect, useState } from 'react';
 import { useMemorialGet } from '@/api/memorial/countBowsByMi.ts';
+import { useAtom } from 'jotai';
+import { memorialIdAtom } from '@/atoms/memorialManager';
 const Bow = () => {
   const [totalBow, setTotalBow] = useState<number | null>(null);
   const mutationMemorialGet = useMemorialGet(setTotalBow);
   const mutationMemorialBows = useMemorialBow();
-  const memorialId = 5;
+  const [memorialId] = useAtom(memorialIdAtom);
   const addBow = () => {
     mutationMemorialBows.mutate(memorialId);
   };

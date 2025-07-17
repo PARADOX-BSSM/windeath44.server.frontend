@@ -62,8 +62,8 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
   const mutaionGetMemorialComments = useGetMemorialComments(setMemorialComment);
   const mutationCommentWrite = useCommentWrite();
   const id = 5;
-  const [memorialId] = useAtom(memorialIdAtom);
-  const [characterId] = useAtom(characterIdAtom);
+  const [memorialId, setMemorialId] = useAtom(memorialIdAtom);
+  const [characterId, setCharacterId] = useAtom(characterIdAtom);
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!content.trim()) return;
@@ -181,6 +181,7 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
 
           <_.GotoBow
             onClick={() => {
+              setMemorialId(memorialId);
               taskTransform?.('', 'Bow');
             }}
           >
