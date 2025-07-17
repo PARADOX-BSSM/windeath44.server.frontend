@@ -2,9 +2,9 @@ import { useMutation } from '@tanstack/react-query';
 import { memorial } from '@/config';
 import axios, { AxiosResponse } from 'axios';
 
-const memorialBow = async ({ userId }) => {
+const memorialBow = async (memorialId: number) => {
   try {
-    const response: AxiosResponse = await axios.post(`${memorial}/bow`, userId, {
+    const response: AxiosResponse = await axios.post(`${memorial}/bow`, memorialId, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('access_token')}`,
         'Content-Type': 'application/json',
