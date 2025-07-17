@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 
 export const main = styled.div`
+  display: flex;
   box-sizing: border-box;
   background-color: var(--light-primary-color);
   font-family: 'Galmuri11';
@@ -11,16 +12,17 @@ export const main = styled.div`
 `;
 
 export const main_serve = styled.div`
+  display: flex;
   box-sizing: border-box;
   width: 100%;
   height: 100%;
-  display: flex;
   flex-direction: column;
   justify-content: space-evenly;
   gap: 0.25rem;
 `;
 
 export const search_task = styled.div<{ isColumn: boolean }>`
+  box-sizing: border-box;
   width: 100%;
   height: 100%;
   display: flex;
