@@ -15,7 +15,7 @@ export const fetchCharacters = async ({ cursorId, size }: FetchCharactersParams)
   return response.data;
 };
 
-export const useGetCharactersQuery = ({ cursorId, size = 10 }: FetchCharactersParams) => {
+export const useGetCharactersQuery = ({ cursorId, size = 30 }: FetchCharactersParams) => {
   return useQuery({
     queryKey: ['characters', cursorId, size],
     queryFn: () => fetchCharacters({ cursorId, size }),

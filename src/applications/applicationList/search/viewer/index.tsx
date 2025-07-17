@@ -4,6 +4,7 @@ import myComputer from '@/assets/appIcons/my_computer.svg';
 import { characterIdAtom, memorialIdAtom } from '@/atoms/memorialManager';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
 import { useAtom, useAtomValue } from 'jotai';
+import { useEffect } from 'react';
 
 interface ViewerProps {
   characters: any[];
@@ -15,15 +16,19 @@ const Viewer = ({ characters, memorials }: ViewerProps) => {
   const [, setMemorialId] = useAtom(memorialIdAtom);
   const [, setCharacterId] = useAtom(characterIdAtom);
 
+  useEffect(() => {
+    console.log(characters);
+  }, []);
+
   return (
     <_.view>
       <_.viewer>
         <_.Shadow>
           <_.inputs>
-            {characters.map((character: any) => {
-              const relatedMemorials = memorials.filter(
-                (memorial) => memorial.characterId === character.characterId,
-              );
+            {characters?.map((character: any) => {
+              const relatedMemorials =
+                memorials?.filter((memorial) => memorial.characterId === character.characterId) ??
+                [];
 
               return (
                 <MemorialWithIcon

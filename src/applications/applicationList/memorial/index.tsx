@@ -2,7 +2,7 @@ import IndexMenu from '@/applications/components/indexMenu';
 import Comment from '@/applications/components/comment';
 import * as _ from './style';
 import { index_data } from './data';
-import { useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer';
 import { useMemorialGet } from '@/api/memorial/memorialGet.ts';
 import { useEffect, useState } from 'react';
@@ -16,6 +16,7 @@ import {
 import { useCommentWrite } from '@/api/memorial/memorialCommentWrite.ts';
 import { parseCustomContent } from '@/lib/customTag/parseCustomContent.tsx';
 import { useGetAnimation } from '@/api/anime/getAnimation.ts';
+import { characterIdAtom, memorialIdAtom } from '@/atoms/memorialManager';
 import ribbon from '@/assets/memorial_ribbon.svg';
 
 interface dataStructureProps {
@@ -61,8 +62,8 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
   const mutaionGetMemorialComments = useGetMemorialComments(setMemorialComment);
   const mutationCommentWrite = useCommentWrite();
   const id = 5;
-  const memorialId = id;
-  const characterId = 1;
+  const [memorialId] = useAtom(memorialIdAtom);
+  const [characterId] = useAtom(characterIdAtom);
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!content.trim()) return;

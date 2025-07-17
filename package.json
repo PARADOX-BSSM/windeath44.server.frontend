@@ -17,6 +17,7 @@
     "axios": "^1.10.0",
     "jotai": "^2.12.5",
     "matter-js": "^0.20.0",
+    "qs": "^6.14.0",
     "react": "^18.3.1",
     "react-avatar-editor": "^13.0.2",
     "react-dom": "^18.3.1",
@@ -28,6 +29,7 @@
   "devDependencies": {
     "@eslint/js": "^9.17.0",
     "@types/matter-js": "^0.19.8",
+    "@types/qs": "^6.14.0",
     "@types/react": "^18.3.18",
     "@types/react-avatar-editor": "^13.0.4",
     "@types/react-dom": "^18.3.5",

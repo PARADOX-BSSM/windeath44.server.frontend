@@ -2,8 +2,10 @@ import { getPixelFromPercent } from '@/lib/getPixelFromPercent';
 import styled from '@emotion/styled';
 // *검색결과창
 export const view = styled.div`
+  box-sizing: border-box;
   width: 100%;
   height: 100%;
+  align-self: stretch;
   display: flex;
   gap: 0.125rem;
   overflow-x: scroll;
@@ -14,10 +16,16 @@ export const view = styled.div`
 `;
 
 export const inputs = styled.div`
+  display: flex;
+  gap: 1rem;
   background-color: var(--light-primary-color);
   margin: 0.078rem 0 0 0.078rem;
   width: 100%;
   height: 100%;
+  max-width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex-wrap: wrap;
   font-family: 'Galmuri11';
   padding: 0.6rem;
   outline: none;
