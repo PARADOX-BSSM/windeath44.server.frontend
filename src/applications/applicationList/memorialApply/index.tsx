@@ -284,7 +284,6 @@ const MemorialApply = ({}: dataStructureProps) => {
           btnText="추모관 신청하기"
           from={userName}
           content="<목차>마지막 순간</목차>
-<사진 {80px}>https://buma.wiki/api/image/display/최애의사인/example.png</사진>
 <동영상>https://www.youtube.com/watch?v=oMk46C5Cjws</동영상>"
           isPerson={true}
         />

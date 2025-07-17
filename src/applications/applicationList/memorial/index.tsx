@@ -80,9 +80,14 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
     mutationMemorialGet.mutate(id);
     mutaionGetMemorialComments.mutate({ memorialId });
     mutationGetCharacter.mutate(characterId);
-    let animeId;
-    mutationAnimation.mutate((animeId = characterData.animeId));
   }, []);
+
+  useEffect(() => {
+    if (characterData.animeId) {
+      mutationAnimation.mutate(characterData.animeId);
+    }
+  }, [characterData.animeId]);
+
   return (
     <_.Main>
       <_.Container>
