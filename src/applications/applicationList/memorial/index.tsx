@@ -164,6 +164,10 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
                       <_.Value>{characterData.lifeTime}화</_.Value>
                     </_.Row>
                     <_.Row>
+                      <_.Attribute>사인(死因)</_.Attribute>
+                      <_.Value>{characterData?.deathReason}</_.Value>
+                    </_.Row>
+                    <_.Row>
                       <_.Attribute>애니메이션</_.Attribute>
                       <_.Value>{animation}</_.Value>
                       {/*api에 값이 없음*/}
