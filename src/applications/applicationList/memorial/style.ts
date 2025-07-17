@@ -172,8 +172,14 @@ export const PictureContainer = styled.div`
   justify-content: center;
   align-items: center;
   gap: 0.625rem;
+  position: relative;
 `;
-
+export const Ribbon = styled.img`
+  position: absolute;
+  top: -0.5em;
+  width: 100%;
+  z-index: 1;
+`;
 export const Picture = styled.div<{ imgUrl: string }>`
   display: flex;
   height: 12rem;

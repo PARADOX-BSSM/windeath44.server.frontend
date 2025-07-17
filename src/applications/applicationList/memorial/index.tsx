@@ -16,6 +16,7 @@ import {
 import { useCommentWrite } from '@/api/memorial/memorialCommentWrite.ts';
 import { parseCustomContent } from '@/lib/customTag/parseCustomContent.tsx';
 import { useGetAnimation } from '@/api/anime/getAnimation.ts';
+import ribbon from '@/assets/memorial_ribbon.svg';
 
 interface dataStructureProps {
   stack: any[];
@@ -132,7 +133,20 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
               </_.IndexWrapper>
               <_.ProfileContainer>
                 <_.ProfileInnerContainer>
+                  {/*<_.PictureContainer>*/}
+                  {/*  <_.Ribbon*/}
+                  {/*    src={ribbon}*/}
+                  {/*    alt="ribbon"*/}
+                  {/*  />*/}
+                  {/*  <_.Picture imgUrl={inputValue.profileImage} />*/}
+                  {/*  <_.Name>{inputValue.name}</_.Name>*/}
+                  {/*</_.PictureContainer>*/}
+
                   <_.PictureContainer>
+                    <_.Ribbon
+                      src={ribbon}
+                      alt="ribbon"
+                    />
                     <_.Picture imgUrl={characterData.imageUrl} />
                     <_.Name>{characterData.name}</_.Name>
                   </_.PictureContainer>

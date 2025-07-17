@@ -1,17 +1,26 @@
 import * as _ from '@/applications/applicationList/bow/style.ts';
 import Table from '@/assets/bow/table.svg';
 import Character from '@/assets/character/hosino.svg';
-import { useState } from 'react';
+import { useMemorialBow } from '@/api/memorial/memorialBow.ts';
+import { useEffect, useState } from 'react';
+import { useMemorialGet } from '@/api/memorial/countBowsByMi.ts';
 const Bow = () => {
-  const [bow, setBow] = useState<number>(0);
-  const countBow = () => {
-    setBow(bow + 1);
+  const [totalBow, setTotalBow] = useState<number | null>(null);
+  const mutationMemorialGet = useMemorialGet(setTotalBow);
+  const mutationMemorialBows = useMemorialBow();
+  const memorialId = 5;
+  const addBow = () => {
+    mutationMemorialBows.mutate(memorialId);
   };
+  useEffect(() => {
+    mutationMemorialGet.mutate(memorialId);
+  }, []);
+  console.log(totalBow);
   return (
     <_.main>
       <_.nbow>
         <div>절하고 간 사람</div>
-        <div>: {bow}명</div>
+        <div>: {totalBow}명</div>
       </_.nbow>
       <_.place>
         <_.imgs>
@@ -28,7 +37,7 @@ const Bow = () => {
           <div>
             <div>
               <div>
-                <button onClick={countBow}>절</button>
+                <button onClick={addBow}>절</button>
               </div>
             </div>
           </div>
