@@ -172,8 +172,14 @@ export const PictureContainer = styled.div`
   justify-content: center;
   align-items: center;
   gap: 0.625rem;
+  position: relative;
 `;
-
+export const Ribbon = styled.img`
+  position: absolute;
+  top: -0.5em;
+  width: 100%;
+  z-index: 1;
+`;
 export const Picture = styled.div<{ imgUrl: string }>`
   display: flex;
   height: 12rem;
@@ -230,6 +236,8 @@ export const Attribute = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+  height: 100%;
+  box-sizing: border-box;
 `;
 
 export const Value = styled.div`

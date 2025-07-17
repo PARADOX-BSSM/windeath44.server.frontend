@@ -17,6 +17,7 @@ import { useCommentWrite } from '@/api/memorial/memorialCommentWrite.ts';
 import { parseCustomContent } from '@/lib/customTag/parseCustomContent.tsx';
 import { useGetAnimation } from '@/api/anime/getAnimation.ts';
 import { characterIdAtom, memorialIdAtom } from '@/atoms/memorialManager';
+import ribbon from '@/assets/memorial_ribbon.svg';
 
 interface dataStructureProps {
   stack: any[];
@@ -81,9 +82,14 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
     mutationMemorialGet.mutate(id);
     mutaionGetMemorialComments.mutate({ memorialId });
     mutationGetCharacter.mutate(characterId);
-    let animeId;
-    mutationAnimation.mutate((animeId = characterData.animeId));
   }, []);
+
+  useEffect(() => {
+    if (characterData.animeId) {
+      mutationAnimation.mutate(characterData.animeId);
+    }
+  }, [characterData.animeId]);
+
   return (
     <_.Main>
       <_.Container>
@@ -128,7 +134,20 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
               </_.IndexWrapper>
               <_.ProfileContainer>
                 <_.ProfileInnerContainer>
+                  {/*<_.PictureContainer>*/}
+                  {/*  <_.Ribbon*/}
+                  {/*    src={ribbon}*/}
+                  {/*    alt="ribbon"*/}
+                  {/*  />*/}
+                  {/*  <_.Picture imgUrl={inputValue.profileImage} />*/}
+                  {/*  <_.Name>{inputValue.name}</_.Name>*/}
+                  {/*</_.PictureContainer>*/}
+
                   <_.PictureContainer>
+                    <_.Ribbon
+                      src={ribbon}
+                      alt="ribbon"
+                    />
                     <_.Picture imgUrl={characterData.imageUrl} />
                     <_.Name>{characterData.name}</_.Name>
                   </_.PictureContainer>
@@ -144,6 +163,10 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
                     <_.Row>
                       <_.Attribute>생존 기간</_.Attribute>
                       <_.Value>{characterData.lifeTime}화</_.Value>
+                    </_.Row>
+                    <_.Row>
+                      <_.Attribute>사인(死因)</_.Attribute>
+                      <_.Value>{characterData?.deathReason}</_.Value>
                     </_.Row>
                     <_.Row>
                       <_.Attribute>애니메이션</_.Attribute>

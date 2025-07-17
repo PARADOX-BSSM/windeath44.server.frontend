@@ -2,16 +2,9 @@ import { useMutation } from '@tanstack/react-query';
 import { memorial } from '@/config';
 import axios, { AxiosResponse } from 'axios';
 
-interface commentData {
-  memorialId: number;
-  content: string;
-  parentCommentId?: number; //답글의 상위 댓글id
-}
-
-const commentWrite = async ({ memorialId, content, parentCommentId }: commentData) => {
+const memorialBow = async (memorialId: number) => {
   try {
-    const data = { memorialId, content, parentCommentId };
-    const response: AxiosResponse = await axios.post(`${memorial}/comment/${memorialId}`, data, {
+    const response: AxiosResponse = await axios.post(`${memorial}/bow`, memorialId, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('access_token')}`,
         'Content-Type': 'application/json',
@@ -20,14 +13,14 @@ const commentWrite = async ({ memorialId, content, parentCommentId }: commentDat
     });
     return response.data;
   } catch (err) {
-    console.error('댓글 작성 중 오류:', err);
+    console.error('절하기 값 불러오는 중 오류:', err);
     throw err;
   }
 };
 
-export const useCommentWrite = () => {
+export const useMemorialBow = () => {
   return useMutation({
-    mutationFn: commentWrite,
+    mutationFn: memorialBow,
     onSuccess: (data: any) => {
       console.log(data);
     },
