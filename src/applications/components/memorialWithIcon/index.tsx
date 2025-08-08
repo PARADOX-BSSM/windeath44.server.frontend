@@ -1,4 +1,4 @@
-import * as _ from '@/applications/applicationList/search/viewer/style.ts';
+import * as _ from '@/applications/components/memorialWithIcon/style';
 
 interface MemorialWithIconProps {
   icon?: string;
