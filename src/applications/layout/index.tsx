@@ -106,8 +106,8 @@ const Application = (props: ApplicationProps) => {
       setBackupWindow(window);
       setWindow({
         ...window,
-        height: `calc(100vh - 2.75rem - 1.35rem)`,
-        width: `calc(${bounds.width}px - 1.35rem)`,
+        height: `calc(100vh - ${48 / 16}rem - 1.3rem)`,
+        width: `calc(${bounds.width}px - 1.3rem)`,
         top: bounds.top,
         left: bounds.left,
         zIndex: layer - 1,
