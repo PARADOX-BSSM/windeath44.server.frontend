@@ -54,7 +54,7 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
     createdAt: '',
     mergerId: '',
     updatedAt: '',
-  });
+  }); 
   const mutationMemorialGet = useMemorialGet(setMemorialData);
   const [animation, setAnimation] = useState<string>('');
   const mutationAnimation = useGetAnimation(setAnimation);
