@@ -57,9 +57,9 @@ const LogIn = ({ changeToSignUp, changeToEmailCheck }: Props) => {
     localStorage.setItem('isLogIned', isLogIned);
   }, [isLogIned]);
 
-  const buttonWidth = 11.5;
-  const buttonHeight = 4.4;
-  const buttonFontSize = '0.85rem';
+  const buttonWidth = "144px";
+  const buttonHeight = "42px";
+  const buttonFontSize = '20px';
   return (
     <_.tempMain>
       <_.tempImage>
@@ -84,8 +84,8 @@ const LogIn = ({ changeToSignUp, changeToEmailCheck }: Props) => {
             name="확인"
             onClick={checkLogIn}
             type="submit"
-            widthPercent={buttonWidth}
-            heightPercent={buttonHeight}
+            width={buttonWidth}
+            height={buttonHeight}
             fontSize={buttonFontSize}
             active={true}
           />
@@ -96,8 +96,8 @@ const LogIn = ({ changeToSignUp, changeToEmailCheck }: Props) => {
               taskTransform?.('LogIn', '');
             }}
             type="submit"
-            widthPercent={buttonWidth}
-            heightPercent={buttonHeight}
+            width={buttonWidth}
+            height={buttonHeight}
             fontSize={buttonFontSize}
             active={true}
           />
@@ -105,8 +105,8 @@ const LogIn = ({ changeToSignUp, changeToEmailCheck }: Props) => {
             name="비밀번호 찾기"
             onClick={() => changeToEmailCheck()}
             type="submit"
-            widthPercent={buttonWidth}
-            heightPercent={buttonHeight}
+            width={buttonWidth}
+            height={buttonHeight}
             fontSize={buttonFontSize}
             active={true}
           />
@@ -114,8 +114,8 @@ const LogIn = ({ changeToSignUp, changeToEmailCheck }: Props) => {
             name="회원가입"
             onClick={() => changeToSignUp()}
             type="submit"
-            widthPercent={buttonWidth}
-            heightPercent={buttonHeight}
+            width={buttonWidth}
+            height={buttonHeight}
             fontSize={buttonFontSize}
             active={true}
           />

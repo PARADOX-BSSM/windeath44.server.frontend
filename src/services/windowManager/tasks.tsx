@@ -63,8 +63,8 @@ export function getTaskCreators(
       Image: myComputer,
       minWidth: 51,
       minHeight: 33,
-      setUpWidth: 51,
-      setUpHeight: 33,
+      setUpWidth: 800 / 16,
+      setUpHeight: 508 / 16,
     },
     visible: false,
   };
