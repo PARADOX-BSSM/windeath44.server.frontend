@@ -1,9 +1,9 @@
-import Button from '@/applications/components/button';
-import * as _ from './style';
+
 import Logo from '@/assets/windeath44.svg';
 import Inputs from '@/applications/components/inputs';
 import React, { useState } from 'react';
 import { useResetPassword } from '@/api/user/resetUserPassword.ts';
+import MemorialBtn from '@/applications/components/memorialBtn';
 interface Props {
   changeToLogIn: () => void;
 }
@@ -31,6 +31,11 @@ const PasswordChange = ({ changeToLogIn }: Props) => {
       },
     );
   };
+
+  const buttonWidth = "144px";
+  const buttonHeight = "42px";
+  const buttonFontSize = '20px';
+
   return (
     <_.tempMain>
       <_.tempImage>
@@ -47,7 +52,8 @@ const PasswordChange = ({ changeToLogIn }: Props) => {
             value={email}
             setValue={setEmail}
             type={'text'}
-            width={'70%'}
+            width={'80%'}
+            fontSize='20px'
             flex={true}
           />
           <Inputs
@@ -55,7 +61,8 @@ const PasswordChange = ({ changeToLogIn }: Props) => {
             value={password}
             setValue={setPassword}
             type={'password'}
-            width={'70%'}
+            width={'80%'}
+            fontSize='20px'
             flex={true}
           />
           <Inputs
@@ -63,14 +70,20 @@ const PasswordChange = ({ changeToLogIn }: Props) => {
             value={checkingPw}
             setValue={setCheckingPw}
             type={'password'}
-            width={'70%'}
+            width={'75%'}
+            fontSize='20px'
             flex={true}
           />
         </_.tempInputsStyle>
         <_.tempButtonsStyle>
-          <Button
+          <MemorialBtn
+            name={mutateResetPassword.isPending ? '처리중...' : '확인'}
             onClick={handleSubmit}
-            props={mutateResetPassword.isPending ? '처리중...' : '확인'}
+            type="submit"
+            width={buttonWidth}
+            height={buttonHeight}
+            fontSize={buttonFontSize}
+            active={true}
           />
         </_.tempButtonsStyle>
       </_.tempMainStyle>

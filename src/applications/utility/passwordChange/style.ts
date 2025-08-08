@@ -8,14 +8,14 @@ export const tempMain = styled.div`
 `;
 export const tempImage = styled.div`
   width: 100%;
-  height: 11.25rem;
+  height: 180px;
   background-color: #ffffff;
   display: flex;
   justify-content: center;
   align-items: center;
   img {
     width: 100%;
-    height: 6.75rem;
+    height: 180px;
     background-color: #ffffff;
   }
 `;
@@ -35,13 +35,13 @@ export const tempInputsStyle = styled.div`
   flex-direction: column;
   align-items: flex-start;
   gap: 12px;
-  padding: 20px;
+  padding: 24px;
 `;
 export const tempButtonsStyle = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
-  padding: 20px;
+  padding: 16px;
   gap: 10px;
   position: absolute;
   bottom: 0;

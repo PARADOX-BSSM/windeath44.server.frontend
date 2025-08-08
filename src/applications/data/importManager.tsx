@@ -31,6 +31,7 @@ import trashBin from '@/assets/appIcons/empty_bin.svg';
 import AnimationSelect from '@/applications/applicationList/animationSelect/index.tsx';
 import MyComputer from '../applicationList/myComputer';
 import Help from '@/applications/applicationList/help';
+import PasswordChange from '../utility/passwordChange';
 
 //Application Import 형식 예시
 /*
@@ -54,13 +55,14 @@ const useApps = (): TaskType[] => {
   const [isLogIned, setIsLogIned] = useAtom(isLogInedAtom);
   const [taskList, addTask, removeTask] = useProcessManager();
 
-  const { logIn, signUp, emailChack, auth } = getTaskCreators(setIsLogIned, addTask, removeTask);
+  const { logIn, signUp, emailChack, auth, passwordChange } = getTaskCreators(setIsLogIned, addTask, removeTask);
 
   const baseApps: TaskType[] = [
     logIn,
     signUp,
     emailChack,
     auth,
+    passwordChange,
     {
       component: <Suspense fallback={null}><Terminal /></Suspense>,
       type: 'App',

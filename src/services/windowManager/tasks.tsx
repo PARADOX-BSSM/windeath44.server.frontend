@@ -132,7 +132,7 @@ export function getTaskCreators(
       setUpWidth: 800 / 16,
       setUpHeight: 508 / 16,
     },
-    visible: true,
+    visible: false,
   };
 
   passwordChange = {
@@ -147,12 +147,12 @@ export function getTaskCreators(
     layer: undefined,
     appSetup: {
       Image: 'default',
-      minWidth: 748,
-      minHeight: 464,
-      setUpWidth: 748,
-      setUpHeight: 464,
+      minWidth: 51,
+      minHeight: 33,
+      setUpWidth: 800 / 16,
+      setUpHeight: 508 / 16,
     },
-    visible: true,
+    visible: false,
   };
 
   return { logIn, signUp, emailChack, auth, passwordChange };
