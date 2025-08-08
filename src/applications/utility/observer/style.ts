@@ -3,22 +3,22 @@ import styled from '@emotion/styled';
 export const Container = styled.section<{ left: number }>`
   position: absolute;
   left: ${({ left }) => `${left}px`};
-  bottom: 2.5rem;
-  height: 20rem;
-  width: 14rem;
+  bottom: ${48 / 16}rem;
+  height: 450px;
+  width: 320px;
   z-index: 998;
   background-color: var(--light-primary-color);
   box-shadow:
-    -0.063rem -0.063rem 0px 0px var(--light-primary-color) inset,
-    0.063rem 0.063rem 0px 0px #fff inset,
-    -0.125rem -0.125rem 0px 0px var(--dark-primary-color) inset;
+    -1px -1px 0px 0px var(--light-primary-color) inset,
+    1px 1px 0px 0px #fff inset,
+    -2px -2px 0px 0px var(--dark-primary-color) inset;
 `;
 
 export const Logo = styled.section`
   position: absolute;
   left: 0;
   bottom: 0;
-  width: 2.6rem;
+  width: 60px;
   top: 0;
   background-color: var(--secondary-color);
 `;
@@ -30,7 +30,7 @@ export const SnapshotList = styled.ul`
   padding: 0;
   flex-direction: column;
   display: flex;
-  left: 2.7rem;
+  left: 60px;
   bottom: 0;
   top: 0;
   right: 0;
@@ -41,10 +41,10 @@ export const Snapshot = styled.li`
   padding-bottom: 0.3rem;
   width: 100%;
   display: flex;
-  height: 3rem;
-  padding: 0.15rem 0.7rem;
+  height: 64px;
+  padding: 8px 12px;
   align-items: center;
-  gap: 0.75rem;
+  gap: 16px;
 `;
 
 export const SnapshotText = styled.p`
@@ -52,7 +52,7 @@ export const SnapshotText = styled.p`
   leading-trim: both;
   text-edge: cap;
   font-family: Galmuri11;
-  font-size: 0.9rem;
+  font-size: 20px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -60,6 +60,6 @@ export const SnapshotText = styled.p`
 `;
 
 export const SnapshotImg = styled.img`
-  width: 2rem;
-  height: 2rem;
+  width: 48px;
+  height: 48px;
 `;
