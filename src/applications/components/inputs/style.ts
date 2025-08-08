@@ -3,7 +3,7 @@ import '@/assets/font.css';
 
 export const inputsDiv = styled.div<{ fontSize?: string; flex?: boolean }>`
   font-family: 'Galmuri11';
-  font-size: ${({ fontSize }) => fontSize || '1rem'};
+  font-size: ${({ fontSize }) => fontSize || '32px'};
   width: 100%;
   height: fit-content;
   display: flex;
@@ -18,25 +18,25 @@ export const label = styled.span`
 `;
 
 export const inputs = styled.input<{ width: string }>`
-  margin: 0.078rem 0 0 0.078rem;
   width: 100%;
   height: 100%;
+  padding: 0 4px;
+  font-size: 16px;
   font-family: 'Galmuri11';
-  padding: 0 0 0 0;
   outline: none;
   border-color: #dcafdd;
   border-style: solid;
-  border-width: 0.1125rem;
+  border-width: 1px;
   box-sizing: border-box;
   cursor: none;
 `;
 
 export const Shadow = styled.div<{ width: string }>`
   width: ${({ width }) => width || '30.688rem'};
-  height: 1.55rem;
+  height: 32px;
   background-color: #000;
-  border-width: 0 0.078rem 0.078rem 0;
+  border-width: 0 1px 1px 0;
   border-style: solid;
   border-color: #fff;
-  padding: 0.016rem 0.078rem 0.078rem 0.016rem;
+  padding: 1px 0 0 1px;
 `;

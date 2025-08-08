@@ -24,7 +24,7 @@ const LogIn = ({ changeToSignUp, changeToEmailCheck }: Props) => {
       setValue: setUserId,
       type: 'text',
       width: '80%',
-      fontSize: '0.9rem',
+      fontSize: '20px',
     },
     {
       label: '비밀번호:',
@@ -32,7 +32,7 @@ const LogIn = ({ changeToSignUp, changeToEmailCheck }: Props) => {
       setValue: setPassword,
       type: 'password',
       width: '80%',
-      fontSize: '0.9rem',
+      fontSize: '20px',
     },
   ];
   const checkLogIn = async (e: React.MouseEvent<HTMLButtonElement>) => {
