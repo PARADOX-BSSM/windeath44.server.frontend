@@ -40,9 +40,9 @@ const Auth = ({ changeToPassword, changeToEmailCheck }: Props) => {
     );
   };
 
-  const buttonWidth = 11.5;
-  const buttonHeight = 4.4;
-  const buttonFontSize = '0.85rem';
+  const buttonWidth = "144px";
+  const buttonHeight = "42px";
+  const buttonFontSize = '20px';
 
   return (
     <_.tempMain>
@@ -80,8 +80,8 @@ const Auth = ({ changeToPassword, changeToEmailCheck }: Props) => {
             onClick={handleSubmit}
             type="submit"
             active={true}
-            widthPercent={buttonWidth}
-            heightPercent={buttonHeight}
+            width={buttonWidth}
+            height={buttonHeight}
             fontSize={buttonFontSize}
           />
           <MemorialBtn
@@ -89,8 +89,8 @@ const Auth = ({ changeToPassword, changeToEmailCheck }: Props) => {
             onClick={changeToEmailCheck}
             type="submit"
             active={true}
-            widthPercent={buttonWidth}
-            heightPercent={buttonHeight}
+            width={buttonWidth}
+            height={buttonHeight}
             fontSize={buttonFontSize}
           />
         </_.tempButtonsStyle>

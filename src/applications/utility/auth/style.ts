@@ -10,24 +10,21 @@ export const tempMain = styled.div`
 
 export const tempImageStyle = styled.div`
   width: 100%;
-  height: 11.25rem;
+  height: 180px;
   background-color: #ffffff;
   display: flex;
   justify-content: center;
+  align-items: center;
   img {
     width: 100%;
-    height: 6.75rem;
+    height: 180px;
     background-color: #ffffff;
-    display: flex;
-    justify-content: center;
-    img {
-        width: 100%;
   }
 `;
 
 export const tempBulkStyle = styled.div`
   width: 100%;
-  height: 0.625rem;
+  height: 10px;
   background-color: #ffbbf5;
 `;
 
@@ -42,16 +39,16 @@ export const tempInputsStyle = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.5rem;
-  padding: 1rem;
+  gap: 12px;
+  padding: 24px;
 `;
 
 export const tempButtonsStyle = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
-  padding: 1rem;
-  gap: 0.35rem;
+  padding: 16px;
+  gap: 10px;
   position: absolute;
   bottom: 0;
   right: 0;
@@ -59,35 +56,37 @@ export const tempButtonsStyle = styled.div`
 
 export const inputs = styled.div`
   font-family: 'Galmuri11';
-  font-size: 0.9rem;
+  width: 100%;
+  font-size: 20px;
   line-height: 3.375rem;
   display: flex;
-  gap: 1.5rem;
+  gap: 64px;
+  padding: 10px 0;
   align-items: center;
 `;
 
 export const inputStyle = styled.div`
   display: flex;
-  gap: 0.5rem;
+  gap: 24px;
 `;
 
 export const outside = styled.div`
-  width: 2.75rem;
-  height: 3rem;
+  width: 64px;
+  height: 72px;
   background-color: #000;
-  border-width: 0 0.094rem 0.094rem 0;
+  border-width: 0 1px 1px 0;
   border-style: solid;
   border-color: #fff;
 `;
 
 export const inside = styled.input`
-  width: 2.375rem;
-  height: 2.625rem;
-  margin: 0.094rem 0 0 0.094rem;
+  width: 61px;
+  height: 69px;
+  margin: 1px 0 0 1px;
   text-align: center;
   font-family: 'Galmuri11';
-  font-size: 1.5rem;
-  border: #dcafdd solid 0.125rem;
+  font-size: 24px;
+  border: #dcafdd solid 1px;
   &:focus {
     outline: none;
     box-shadow: none;
@@ -96,7 +95,7 @@ export const inside = styled.input`
 
 export const note = styled.div`
   font-family: 'Galmuri11';
-  font-size: 0.75rem;
-  padding: 0 7rem;
+  font-size: 16px;
+  padding: 0 182px;
   color: #e774dd;
 `;

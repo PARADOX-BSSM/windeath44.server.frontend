@@ -106,8 +106,8 @@ export function getTaskCreators(
       Image: 'default',
       minWidth: 51,
       minHeight: 33,
-      setUpWidth: 51,
-      setUpHeight: 33,
+      setUpWidth: 800 / 16,
+      setUpHeight: 508 / 16,
     },
     visible: false,
   };
@@ -129,10 +129,10 @@ export function getTaskCreators(
       Image: 'default',
       minWidth: 51,
       minHeight: 33,
-      setUpWidth: 51,
-      setUpHeight: 33,
+      setUpWidth: 800 / 16,
+      setUpHeight: 508 / 16,
     },
-    visible: false,
+    visible: true,
   };
 
   passwordChange = {
@@ -152,7 +152,7 @@ export function getTaskCreators(
       setUpWidth: 748,
       setUpHeight: 464,
     },
-    visible: false,
+    visible: true,
   };
 
   return { logIn, signUp, emailChack, auth, passwordChange };
