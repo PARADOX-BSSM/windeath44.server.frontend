@@ -79,7 +79,7 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
     );
   };
   useEffect(() => {
-    mutationMemorialGet.mutate(id);
+    mutationMemorialGet.mutate(memorialId);
     mutaionGetMemorialComments.mutate({ memorialId });
     mutationGetCharacter.mutate(characterId);
   }, []);
