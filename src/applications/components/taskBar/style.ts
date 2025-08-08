@@ -5,7 +5,7 @@ export const TTaskBar = styled.footer`
     position: absolute;
     bottom: 0;
     width: inherit;
-    height: 2.5rem;
+    height: ${48 / 16}rem;
     z-index: 998;
     background-color: var(--light-primary-color);
     border : 0.063rem black solid;
@@ -14,7 +14,6 @@ export const TTaskBar = styled.footer`
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
-    gap: 0.625rem;
     box-sizing:border-box;
 `;
 
@@ -43,8 +42,8 @@ export const TaskItem = styled.div`
 `
 
 export const ImgContainer = styled.img`
-    width: 1.5rem;
-    height: 1.5rem;
+    width: 1.75rem;
+    height: 1.75rem;
     flex-shrink: 0;
 `
 
@@ -53,7 +52,7 @@ export const TaskName = styled.p`
     text-overflow: ellipsis;
     white-space: nowrap;
     font-family: Galmuri11;
-    font-size: 0.9rem;
+    font-size: 1rem;
     font-style: normal;
     font-weight: 400;
     line-height: 1rem;
@@ -64,16 +63,16 @@ export const taskButtonStyle = {
     height: "100%",
     backgroundColor: "var(--light-primary-color)",
     boxShadow: 
-        "-0.094rem -0.094rem 0px 0px var(--secondary-color) inset, " +
-       "0.094rem  0.094rem 0px 0px #FFF inset, " +
-      "-0.188rem -0.188rem 0px 0px #DCAFDD inset"
+        "-0.0625rem -0.0625rem 0px 0px var(--secondary-color) inset, " +
+       "0.0625rem  0.0625rem 0px 0px #FFF inset, " +
+      "-0.125rem -0.125rem 0px 0px #DCAFDD inset"
 };
 export const taskSelectButtonStyle = {
     height: "100%",
     boxShadow: 
-        "-0.094rem -0.094rem 0px 0px #FFF inset, 1.5px 1.5px 0px 0px var(--primary-black) inset, " +
-        "-0.188rem -0.188rem 0px 0px var(--secondary-color) inset, " +
-        "0.188rem 0.188rem 0px 0px var(--dark-primary-color) inset"
+        "-0.0625rem -0.0625rem 0px 0px #FFF inset, 1.5px 1.5px 0px 0px var(--primary-black) inset, " +
+        "-0.125rem -0.125rem 0px 0px var(--secondary-color) inset, " +
+        "0.125rem 0.125rem 0px 0px var(--dark-primary-color) inset"
 }
 
 export const Observer = styled.div<{ selected?: boolean }>`
@@ -83,11 +82,11 @@ export const Observer = styled.div<{ selected?: boolean }>`
     justify-content: center;
     align-items: center;
     box-shadow: ${({ selected }) =>
-        !selected ? "-0.094rem -0.094rem 0px 0px var(--secondary-color) inset, " +
-       "0.094rem  0.094rem 0px 0px #FFF inset, " +
-      "-0.188rem -0.188rem 0px 0px #DCAFDD inset" : "-0.094rem -0.094rem 0px 0px #FFF inset, 1.5px 1.5px 0px 0px var(--primary-black) inset, " +
-        "-0.188rem -0.188rem 0px 0px var(--secondary-color) inset, " +
-        "0.188rem 0.188rem 0px 0px var(--dark-primary-color) inset"}
+        !selected ? "-0.0625rem -0.0625rem 0px 0px var(--secondary-color) inset, " +
+       "0.0625rem  0.0625rem 0px 0px #FFF inset, " +
+      "-0.125rem -0.125rem 0px 0px #DCAFDD inset" : "-0.0625rem -0.0625rem 0px 0px #FFF inset, 1.5px 1.5px 0px 0px var(--primary-black) inset, " +
+        "-0.125rem -0.125rem 0px 0px var(--secondary-color) inset, " +
+        "0.125rem 0.125rem 0px 0px var(--dark-primary-color) inset"}
 `
 
 export const StartImg = styled.img`
