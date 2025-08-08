@@ -21,8 +21,7 @@ const Bow = () => {
   return (
     <_.main>
       <_.nbow>
-        <div>절하고 간 사람</div>
-        <div>: {totalBow}명</div>
+        <div>절하고 간 사람 : {totalBow?totalBow:"0"}명</div>
       </_.nbow>
       <_.place>
         <_.imgs>
