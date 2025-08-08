@@ -17,7 +17,6 @@ export const main_serve = styled.div`
   width: 100%;
   height: 100%;
   flex-direction: column;
-  justify-content: space-evenly;
   gap: 0.25rem;
 `;
 
@@ -26,12 +25,14 @@ export const search_task = styled.div<{ isColumn: boolean }>`
   width: 100%;
   height: 100%;
   display: flex;
+  min-height: 0;
   flex-direction: ${({ isColumn }) => (isColumn ? 'column' : 'row')};
   gap: ${({ isColumn }) => (isColumn ? '0' : '0.5rem')};
 `;
 
 export const object = styled.div`
   border-width: 0.094rem 0 0 0.094rem;
+  flex: 0 0 auto;
   border-style: solid;
   border-color: #808080;
   box-sizing: border-box;
