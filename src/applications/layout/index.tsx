@@ -23,7 +23,6 @@ import {
 
 import React from 'react';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
-import { getPixelFromPercent } from '@/lib/getPixelFromPercent';
 
 const Application = (props: ApplicationProps) => {
   // jotai 상태 사용
@@ -37,8 +36,8 @@ const Application = (props: ApplicationProps) => {
 
   const windowProps: React.CSSProperties = {
     position: 'absolute',
-    height: props.setUpHeight,
-    width: props.setUpWidth,
+    height: `${props.setUpHeight}rem`,
+    width: `${props.setUpWidth}rem`,
     top: (20 * globalThis.innerHeight) / 100,
     left: (30 * globalThis.innerWidth) / 100,
     backgroundColor: '#fff',
@@ -107,8 +106,8 @@ const Application = (props: ApplicationProps) => {
       setBackupWindow(window);
       setWindow({
         ...window,
-        height: `calc(100vh - 2.75rem - ${getPixelFromPercent('width', 1.5)}px)`,
-        width: `calc(${bounds.width}px - ${getPixelFromPercent('width', 1.5)}px)`,
+        height: `calc(100vh - 2.75rem - 1.35rem)`,
+        width: `calc(${bounds.width}px - 1.35rem)`,
         top: bounds.top,
         left: bounds.left,
         zIndex: layer - 1,

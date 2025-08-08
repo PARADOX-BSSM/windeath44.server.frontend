@@ -9,7 +9,8 @@ function Kernel() {
   });
 
   useEffect(() => {
-    const px = getPixelFromPercent('width', 1.75);
+    // const px = getPixelFromPercent('width', 1.75);
+    const px = 16;
     if (px > 0) {
       document.documentElement.style.fontSize = `${px}px`;
     }

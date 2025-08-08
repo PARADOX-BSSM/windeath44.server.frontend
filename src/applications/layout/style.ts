@@ -1,55 +1,60 @@
-import { getPixelFromPercent } from '@/lib/getPixelFromPercent';
 import styled from '@emotion/styled';
 
 export const Window = styled.article`
-  border: ${getPixelFromPercent('width', 0.25)}px solid #ff8ef6;
-  padding: ${getPixelFromPercent('width', 0.5)}px;
+  border: 0.225rem solid #ff8ef6;
+  padding: 0.45rem;
   display: flex;
   flex-direction: column;
 `;
+
 export const WindowHeader = styled.header`
   background-color: #ffd3fb;
-  padding: 0 ${getPixelFromPercent('width', 0.275)}px;
+  padding: 0 0.2475rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: ${getPixelFromPercent('height', 2.6)}px;
-  border: ${getPixelFromPercent('width', 0.25)}px solid #e774dd;
+  height: 1.755rem;
+  border: 0.225rem solid #e774dd;
 `;
+
 export const HeaderButton = styled.button`
-  height: ${getPixelFromPercent('height', 2.6)}px;
-  width: ${getPixelFromPercent('width', 2.6)}px;
+  height: 1.755rem;
+  width: 1.755rem;
   padding: 0;
   display: flex;
   justify-content: center;
   align-items: center;
 `;
+
 export const MinimizeButton = styled(HeaderButton)<{ isFocus: boolean }>`
   background-color: ${({ isFocus }) => (isFocus ? 'rgba(0, 0, 0, 0)' : 'rgba(0, 0, 0, 0.2)')};
   border: none;
   cursor: none;
 `;
+
 export const FullScreenButton = styled(HeaderButton)<{ isFocus: boolean }>`
   background-color: ${({ isFocus }) => (isFocus ? 'rgba(0, 0, 0, 0)' : 'rgba(0, 0, 0, 0.2)')};
   border: none;
   cursor: none;
 `;
+
 export const ExitButton = styled(HeaderButton)<{ isFocus: boolean }>`
   background-color: ${({ isFocus }) => (isFocus ? 'rgba(0, 0, 0, 0)' : 'rgba(0, 0, 0, 0.2)')};
   border: none;
   cursor: none;
 `;
+
 export const WindowContent = styled.section`
   position: absolute;
-  top: ${getPixelFromPercent('height', 4.3)}px;
+  top: 2.9025rem;
   left: 0;
   right: 0;
   bottom: 0;
-  margin: 0 ${getPixelFromPercent('width', 0.5)}px ${getPixelFromPercent('width', 0.5)}px
-    ${getPixelFromPercent('width', 0.5)}px;
+  margin: 0 0.45rem 0.45rem 0.45rem;
   box-sizing: border-box;
-  border: solid ${getPixelFromPercent('width', 0.25)}px #e774dd;
+  border: solid 0.225rem #e774dd;
 `;
+
 export const Shell = styled.article`
   height: 100%;
   width: 100%;
@@ -65,7 +70,7 @@ export const TitleContainer = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  gap: ${getPixelFromPercent('width', 0.5)}px;
+  gap: 0.45rem;
 `;
 
 export const Title = styled.p`
@@ -78,6 +83,6 @@ export const Title = styled.p`
 `;
 
 export const HeartImg = styled.img`
-  padding: 0px ${getPixelFromPercent('width', 0.3)}px;
+  padding: 0px 0.27rem;
   width: 1em;
 `;

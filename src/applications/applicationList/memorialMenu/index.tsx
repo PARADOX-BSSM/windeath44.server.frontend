@@ -22,6 +22,7 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
     <>
       최애의 사인은 작품 내에서 사망한 애니메이션 캐릭터를 추모하는 공간입니다.
       <br />
+      <br />
       오른쪽의 버튼을 눌러 계속 진행할 수 있습니다.
     </>,
   );
@@ -120,9 +121,9 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
                   selected={selectedIdx === idx}
                   onClick={() => setSelectedIdx(idx)}
                   type="menu"
-                  fontSize="0.85rem"
-                  widthPercent={13.5}
-                  heightPercent={4.4}
+                  fontSize="1.25rem"
+                  width="11.25rem"
+                  height="2.625rem"
                 />
               ))}
             </_.BtnInnerWrapper>
@@ -137,9 +138,9 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
             onClick={() => {
               moveTo(selectedIdx);
             }}
-            fontSize="0.85rem"
-            widthPercent={13.5}
-            heightPercent={4.4}
+            fontSize="1.25rem"
+            width="11.25rem"
+            height="2.625rem"
           />
         </_.Footer>
       </_.InnerContainer>

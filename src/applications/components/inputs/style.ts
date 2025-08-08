@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
 import '@/assets/font.css';
-import { getPixelFromPercent } from '@/lib/getPixelFromPercent';
 
 export const inputsDiv = styled.div<{ fontSize?: string; flex?: boolean }>`
   font-family: 'Galmuri11';
@@ -13,9 +12,11 @@ export const inputsDiv = styled.div<{ fontSize?: string; flex?: boolean }>`
   align-items: ${({ flex }) => (!flex ? 'flex-start' : 'center')};
   cursor: none;
 `;
+
 export const label = styled.span`
   font-family: 'Galmuri11';
 `;
+
 export const inputs = styled.input<{ width: string }>`
   margin: 0.078rem 0 0 0.078rem;
   width: 100%;
@@ -25,10 +26,11 @@ export const inputs = styled.input<{ width: string }>`
   outline: none;
   border-color: #dcafdd;
   border-style: solid;
-  border-width: ${getPixelFromPercent('width', 0.125)}px;
+  border-width: 0.1125rem;
   box-sizing: border-box;
   cursor: none;
 `;
+
 export const Shadow = styled.div<{ width: string }>`
   width: ${({ width }) => width || '30.688rem'};
   height: 1.55rem;
