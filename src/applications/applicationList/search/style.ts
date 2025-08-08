@@ -27,7 +27,7 @@ export const search_task = styled.div<{ isColumn: boolean }>`
   display: flex;
   min-height: 0;
   flex-direction: ${({ isColumn }) => (isColumn ? 'column' : 'row')};
-  gap: ${({ isColumn }) => (isColumn ? '0' : '0.5rem')};
+  gap: ${({ isColumn }) => (isColumn ? '0.3rem' : '0.5rem')};
 `;
 
 export const object = styled.div`
