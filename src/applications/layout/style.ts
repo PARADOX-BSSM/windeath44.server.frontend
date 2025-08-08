@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 
 export const Window = styled.article`
-  border: 0.225rem solid #ff8ef6;
+  border: ${3 / 16}rem solid #ff8ef6;
   padding: 0.45rem;
   display: flex;
   flex-direction: column;
@@ -9,17 +9,16 @@ export const Window = styled.article`
 
 export const WindowHeader = styled.header`
   background-color: #ffd3fb;
-  padding: 0 0.2475rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
   height: 1.755rem;
-  border: 0.225rem solid #e774dd;
+  border: ${3 / 16}rem solid #e774dd;
 `;
 
 export const HeaderButton = styled.button`
-  height: 1.755rem;
-  width: 1.755rem;
+  height: ${25 / 16}rem;
+  width: ${25 / 16}rem;
   padding: 0;
   display: flex;
   justify-content: center;
@@ -52,7 +51,7 @@ export const WindowContent = styled.section`
   bottom: 0;
   margin: 0 0.45rem 0.45rem 0.45rem;
   box-sizing: border-box;
-  border: solid 0.225rem #e774dd;
+  border: solid ${3 / 16}rem #e774dd;
 `;
 
 export const Shell = styled.article`
@@ -64,6 +63,8 @@ export const BtnContainer = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  gap: ${6 / 16}rem;
+  padding: ${6 / 16}rem;
 `;
 
 export const TitleContainer = styled.div`
@@ -76,7 +77,7 @@ export const TitleContainer = styled.div`
 export const Title = styled.p`
   color: #e774dd;
   font-family: DOSIyagiBoldface;
-  font-size: 1rem;
+  font-size: ${24 / 16}rem;
   font-style: normal;
   font-weight: 500;
   line-height: normal;
@@ -84,5 +85,5 @@ export const Title = styled.p`
 
 export const HeartImg = styled.img`
   padding: 0px 0.27rem;
-  width: 1em;
+  width: ${24 / 16}rem;
 `;

@@ -196,7 +196,7 @@ const Application = (props: ApplicationProps) => {
               <img
                 src={Min}
                 alt=""
-                width="70%"
+                width="100%"
                 onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
                 onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
               />
@@ -208,7 +208,7 @@ const Application = (props: ApplicationProps) => {
               <img
                 src={Full}
                 alt=""
-                width="70%"
+                width="100%"
                 onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
                 onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
               />
@@ -227,7 +227,7 @@ const Application = (props: ApplicationProps) => {
               <img
                 src={Exit}
                 alt=""
-                width="70%"
+                width="100%"
                 onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
                 onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
               />

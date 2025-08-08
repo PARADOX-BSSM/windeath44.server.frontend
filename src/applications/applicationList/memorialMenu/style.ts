@@ -98,7 +98,7 @@ export const Description = styled.p`
 `;
 
 export const BtnWrapper = styled.div`
-  padding: 0 0 0 2.304rem;
+  padding: 0 0 0 ${32 / 16}rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
