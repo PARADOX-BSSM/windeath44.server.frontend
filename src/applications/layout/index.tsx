@@ -36,8 +36,8 @@ const Application = (props: ApplicationProps) => {
 
   const windowProps: React.CSSProperties = {
     position: 'absolute',
-    height: `${props.setUpHeight}rem`,
-    width: `${props.setUpWidth}rem`,
+    height: props.setUpHeight,
+    width: props.setUpWidth,
     top: (20 * globalThis.innerHeight) / 100,
     left: (30 * globalThis.innerWidth) / 100,
     backgroundColor: '#fff',
