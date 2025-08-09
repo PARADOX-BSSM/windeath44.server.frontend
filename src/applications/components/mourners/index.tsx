@@ -19,11 +19,14 @@ const Mourners = () => {
           return (
             <_.UserItem key={index}>
               <div>
-                <div>#{index + 1}</div>
+                <_.UserIndex>#{index + 1}</_.UserIndex>
               </div>
               <_.UserInfo>
-                <div>{index != 0 ? user.name : user.name + '(상주)'}</div>
-                <div>{user.num}회</div>
+                <_.UserNameSet>
+                  <_.UserName>{user.name}</_.UserName>
+                  {index === 0 && <_.UserRoll>(상주)</_.UserRoll>}
+                </_.UserNameSet>
+                <_.UserNumber>{user.num}회</_.UserNumber>
               </_.UserInfo>
             </_.UserItem>
           );
