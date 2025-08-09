@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { useMemorialGet } from '@/api/memorial/countBowsByMi.ts';
 import { useAtom } from 'jotai';
 import { memorialIdAtom } from '@/atoms/memorialManager';
+import Mourners from '@/applications/components/mourners';
 const Bow = () => {
   const [totalBow, setTotalBow] = useState<number | null>(null);
   const mutationMemorialGet = useMemorialGet(setTotalBow);
@@ -21,7 +22,7 @@ const Bow = () => {
   return (
     <_.main>
       <_.nbow>
-        <div>절하고 간 사람 : {totalBow?totalBow:"0"}명</div>
+        <div>절하고 간 사람 : {totalBow ? totalBow : '0'}명</div>
       </_.nbow>
       <_.place>
         <_.imgs>
@@ -44,6 +45,7 @@ const Bow = () => {
           </div>
         </_.bbow>
       </_.place>
+      <Mourners />
     </_.main>
   );
 };
