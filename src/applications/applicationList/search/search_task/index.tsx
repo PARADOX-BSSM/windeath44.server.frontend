@@ -34,7 +34,7 @@ const Search_task = ({ fillDeath, setFillDeath, ani, setAni, name, setName }: Se
         <_.search_main>
           <Inputs
             width="100%"
-            fontSize="0.8rem"
+            fontSize="16px"
             flex={false}
             label="이름"
             type="text"
@@ -43,7 +43,7 @@ const Search_task = ({ fillDeath, setFillDeath, ani, setAni, name, setName }: Se
           />
           <Inputs
             width="100%"
-            fontSize="0.8rem"
+            fontSize="16px"
             flex={false}
             label="애니메이션"
             type="text"
