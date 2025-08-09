@@ -1,4 +1,3 @@
-import { getPixelFromPercent } from '@/lib/getPixelFromPercent';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
 import * as _ from './style';
 
@@ -8,8 +7,8 @@ interface PropsType {
   onClick?: (() => void) | ((e: React.MouseEvent<HTMLButtonElement>) => Promise<void> | void);
   type?: string;
   active?: boolean;
-  widthPercent?: number;
-  heightPercent?: number;
+  width?: string;
+  height?: string;
   fontSize?: string;
 }
 
@@ -19,12 +18,10 @@ const MemorialBtn = ({
   onClick,
   type = 'none',
   active,
-  widthPercent,
-  heightPercent,
+  width,
+  height,
   fontSize = '20px',
 }: PropsType) => {
-  const width = `${getPixelFromPercent('width', widthPercent!)}px`;
-  const height = `${getPixelFromPercent('height', heightPercent!)}px`;
 
   if (type === 'submit') {
     return !active ? (
@@ -73,6 +70,8 @@ const MemorialBtn = ({
       </_.SelectedBtn>
     );
   }
+
+  return null;
 };
 
 export default MemorialBtn;

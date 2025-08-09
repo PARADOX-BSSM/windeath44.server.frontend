@@ -25,9 +25,9 @@ const EmailChack = ({ changeToLogIn, changeToAuth }: Props) => {
     );
   };
 
-  const buttonWidth = 11.5;
-  const buttonHeight = 4.4;
-  const buttonFontSize = '0.85rem';
+  const buttonWidth = "144px";
+  const buttonHeight = "42px";
+  const buttonFontSize = '20px';
 
   return (
     <_.tempMain>
@@ -43,7 +43,7 @@ const EmailChack = ({ changeToLogIn, changeToAuth }: Props) => {
           <Inputs
             label={'이메일:'}
             width="80%"
-            fontSize="0.9rem"
+            fontSize="20px"
             value={email}
             setValue={setEmail}
             type={'text'}
@@ -56,8 +56,8 @@ const EmailChack = ({ changeToLogIn, changeToAuth }: Props) => {
             onClick={checkEmail}
             type="submit"
             active={true}
-            widthPercent={buttonWidth}
-            heightPercent={buttonHeight}
+            width={buttonWidth}
+            height={buttonHeight}
             fontSize={buttonFontSize}
           />
           <MemorialBtn
@@ -65,8 +65,8 @@ const EmailChack = ({ changeToLogIn, changeToAuth }: Props) => {
             onClick={changeToLogIn}
             type="submit"
             active={true}
-            widthPercent={buttonWidth}
-            heightPercent={buttonHeight}
+            width={buttonWidth}
+            height={buttonHeight}
             fontSize={buttonFontSize}
           />
         </_.tempButtonsStyle>

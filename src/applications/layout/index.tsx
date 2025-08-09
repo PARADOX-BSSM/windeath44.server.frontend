@@ -23,7 +23,6 @@ import {
 
 import React from 'react';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
-import { getPixelFromPercent } from '@/lib/getPixelFromPercent';
 
 const Application = (props: ApplicationProps) => {
   // jotai 상태 사용
@@ -107,8 +106,8 @@ const Application = (props: ApplicationProps) => {
       setBackupWindow(window);
       setWindow({
         ...window,
-        height: `calc(100vh - 2.75rem - ${getPixelFromPercent('width', 1.5)}px)`,
-        width: `calc(${bounds.width}px - ${getPixelFromPercent('width', 1.5)}px)`,
+        height: `calc(100vh - ${48 / 16}rem - 1.3rem)`,
+        width: `calc(${bounds.width}px - 1.3rem)`,
         top: bounds.top,
         left: bounds.left,
         zIndex: layer - 1,
@@ -197,7 +196,7 @@ const Application = (props: ApplicationProps) => {
               <img
                 src={Min}
                 alt=""
-                width="70%"
+                width="100%"
                 onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
                 onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
               />
@@ -209,7 +208,7 @@ const Application = (props: ApplicationProps) => {
               <img
                 src={Full}
                 alt=""
-                width="70%"
+                width="100%"
                 onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
                 onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
               />
@@ -228,7 +227,7 @@ const Application = (props: ApplicationProps) => {
               <img
                 src={Exit}
                 alt=""
-                width="70%"
+                width="100%"
                 onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
                 onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
               />

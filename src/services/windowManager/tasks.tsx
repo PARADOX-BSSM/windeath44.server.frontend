@@ -5,7 +5,6 @@ import EmailChack from '@/applications/utility/emailCheck';
 import Auth from '@/applications/utility/auth';
 import { TaskType } from '@/modules/typeModule.tsx';
 import myComputer from '@/assets/appIcons/my_computer.svg';
-import { getPixelFromPercent } from '@/lib/getPixelFromPercent';
 import PasswordChange from '@/applications/utility/passwordChange';
 
 type SetIsLogIned = React.Dispatch<React.SetStateAction<string>>;
@@ -62,10 +61,10 @@ export function getTaskCreators(
     layer: undefined,
     appSetup: {
       Image: myComputer,
-      minWidth: getPixelFromPercent('width', 60),
-      minHeight: getPixelFromPercent('height', 50),
-      setUpWidth: getPixelFromPercent('width', 60),
-      setUpHeight: getPixelFromPercent('height', 50),
+      minWidth: 51,
+      minHeight: 33,
+      setUpWidth: 800,
+      setUpHeight: 508,
     },
     visible: false,
   };
@@ -82,10 +81,10 @@ export function getTaskCreators(
     layer: undefined,
     appSetup: {
       Image: 'default',
-      minWidth: getPixelFromPercent('width', 60),
-      minHeight: getPixelFromPercent('height', 68),
-      setUpWidth: getPixelFromPercent('width', 60),
-      setUpHeight: getPixelFromPercent('height', 68),
+      minWidth: 51,
+      minHeight: 45,
+      setUpWidth: 800,
+      setUpHeight: 600,
     },
     visible: false,
   };
@@ -105,10 +104,10 @@ export function getTaskCreators(
     layer: undefined,
     appSetup: {
       Image: 'default',
-      minWidth: getPixelFromPercent('width', 60),
-      minHeight: getPixelFromPercent('height', 50),
-      setUpWidth: getPixelFromPercent('width', 60),
-      setUpHeight: getPixelFromPercent('height', 50),
+      minWidth: 51,
+      minHeight: 33,
+      setUpWidth: 800,
+      setUpHeight: 508,
     },
     visible: false,
   };
@@ -128,10 +127,10 @@ export function getTaskCreators(
     layer: undefined,
     appSetup: {
       Image: 'default',
-      minWidth: getPixelFromPercent('width', 60),
-      minHeight: getPixelFromPercent('height', 50),
-      setUpWidth: getPixelFromPercent('width', 60),
-      setUpHeight: getPixelFromPercent('height', 50),
+      minWidth: 51,
+      minHeight: 33,
+      setUpWidth: 800,
+      setUpHeight: 508,
     },
     visible: false,
   };
@@ -148,10 +147,10 @@ export function getTaskCreators(
     layer: undefined,
     appSetup: {
       Image: 'default',
-      minWidth: 748,
-      minHeight: 464,
-      setUpWidth: 748,
-      setUpHeight: 464,
+      minWidth: 51,
+      minHeight: 33,
+      setUpWidth: 800,
+      setUpHeight: 508,
     },
     visible: false,
   };

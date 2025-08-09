@@ -93,7 +93,7 @@ const WindowManager = () => {
   }, [isLogIned]);
 
   let resizeObserver = new ResizeObserver((_entries) => {
-    console.log('resize');
+    // console.log('resize');
     const container: HTMLElement = document.getElementById('cursorContainer') as HTMLElement;
     const cursor = document.getElementById('cursor');
     if (!container || !cursor) return;

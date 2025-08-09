@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
 import TextareaAutosize from 'react-textarea-autosize';
-import { getPixelFromPercent } from '@/lib/getPixelFromPercent';
 
 export const Container = styled.div`
   display: flex;

@@ -31,6 +31,7 @@ import trashBin from '@/assets/appIcons/empty_bin.svg';
 import AnimationSelect from '@/applications/applicationList/animationSelect/index.tsx';
 import MyComputer from '../applicationList/myComputer';
 import Help from '@/applications/applicationList/help';
+import PasswordChange from '../utility/passwordChange';
 
 //Application Import 형식 예시
 /*
@@ -49,23 +50,21 @@ import Help from '@/applications/applicationList/help';
         "visible": {바탕화면에 보일지 안보일지 여부}
 }
  */
+
 const useApps = (): TaskType[] => {
   const [isLogIned, setIsLogIned] = useAtom(isLogInedAtom);
   const [taskList, addTask, removeTask] = useProcessManager();
 
-  const { logIn, signUp, emailChack, auth } = getTaskCreators(setIsLogIned, addTask, removeTask);
+  const { logIn, signUp, emailChack, auth, passwordChange } = getTaskCreators(setIsLogIned, addTask, removeTask);
 
   const baseApps: TaskType[] = [
     logIn,
     signUp,
     emailChack,
     auth,
+    passwordChange,
     {
-      component: (
-        <Suspense fallback={null}>
-          <Terminal />
-        </Suspense>
-      ),
+      component: <Suspense fallback={null}><Terminal /></Suspense>,
       type: 'App',
       id: 2210,
       name: '휴지통',
@@ -80,102 +79,67 @@ const useApps = (): TaskType[] => {
       visible: true,
     },
     {
-      component: (
-        <Suspense fallback={null}>
-          <MemorialApproach />
-        </Suspense>
-      ),
+      component: <Suspense fallback={null}><MemorialApproach /></Suspense>,
       type: 'App',
       id: 2221,
       name: '추모관',
       layer: undefined,
       appSetup: {
         Image: memorialApproach,
-        minWidth: getPixelFromPercent('width', 45),
-        minHeight: getPixelFromPercent('height', 40),
-        setUpWidth: getPixelFromPercent('width', 65),
-        setUpHeight: getPixelFromPercent('height', 45),
+        minWidth: 45,
+        minHeight: 40,
+        setUpWidth: 950,
+        setUpHeight: 500,
       },
       visible: true,
     },
     {
-      component: (
-        <Suspense fallback={null}>
-          <Search />
-        </Suspense>
-      ),
+      component: <Suspense fallback={null}><Search /></Suspense>,
       type: 'App',
       id: 2222,
       name: 'Search',
       layer: undefined,
       appSetup: {
         Image: 'default',
-        minWidth: getPixelFromPercent('width', 55),
-        minHeight: getPixelFromPercent('height', 35),
-        setUpWidth: getPixelFromPercent('width', 65),
-        setUpHeight: getPixelFromPercent('height', 40),
+        minWidth: 55,
+        minHeight: 35,
+        setUpWidth: 65 * 16,
+        setUpHeight: 40 * 16,
       },
       visible: false,
     },
     {
-      component: (
-        <Suspense fallback={null}>
-          <MemorialMenu
-            stack={[]}
-            push={undefined}
-            pop={undefined}
-            top={undefined}
-          />
-        </Suspense>
-      ),
+      component: <Suspense fallback={null}><MemorialMenu stack={[]} push={undefined} pop={undefined} top={undefined} /></Suspense>,
       type: 'App',
       id: 2223,
       name: 'memorialMenu',
       layer: undefined,
       appSetup: {
         Image: 'default',
-        minWidth: getPixelFromPercent('width', 55),
-        minHeight: getPixelFromPercent('height', 35),
-        setUpWidth: getPixelFromPercent('width', 55),
-        setUpHeight: getPixelFromPercent('height', 35),
+        minWidth: 55,
+        minHeight: 35,
+        setUpWidth: 55 * 16,
+        setUpHeight: 35 * 16,
       },
       visible: false,
     },
     {
-      component: (
-        <Suspense fallback={null}>
-          <Memorial
-            stack={[]}
-            push={undefined}
-            pop={undefined}
-            top={undefined}
-          />
-        </Suspense>
-      ),
+      component: <Suspense fallback={null}><Memorial stack={[]} push={undefined} pop={undefined} top={undefined} /></Suspense>,
       type: 'App',
       id: 2224,
       name: 'memorial',
       layer: undefined,
       appSetup: {
         Image: 'default',
-        minWidth: getPixelFromPercent('width', 70),
-        minHeight: getPixelFromPercent('height', 55),
-        setUpWidth: getPixelFromPercent('width', 70),
-        setUpHeight: getPixelFromPercent('height', 55),
+        minWidth: 70,
+        minHeight: 55,
+        setUpWidth: 70 * 16,
+        setUpHeight: 55 * 16,
       },
       visible: false,
     },
     {
-      component: (
-        <Suspense fallback={null}>
-          <MemorailHistory
-            stack={[]}
-            push={undefined}
-            pop={undefined}
-            top={undefined}
-          />
-        </Suspense>
-      ),
+      component: <Suspense fallback={null}><MemorailHistory stack={[]} push={undefined} pop={undefined} top={undefined} /></Suspense>,
       type: 'App',
       id: 2225,
       name: 'memorailHistory',
@@ -190,16 +154,7 @@ const useApps = (): TaskType[] => {
       visible: false,
     },
     {
-      component: (
-        <Suspense fallback={null}>
-          <MemorialCommit
-            stack={[]}
-            push={undefined}
-            pop={undefined}
-            top={undefined}
-          />
-        </Suspense>
-      ),
+      component: <Suspense fallback={null}><MemorialCommit stack={[]} push={undefined} pop={undefined} top={undefined} /></Suspense>,
       type: 'App',
       id: 2226,
       name: 'MemorialCommit',
@@ -214,16 +169,7 @@ const useApps = (): TaskType[] => {
       visible: false,
     },
     {
-      component: (
-        <Suspense fallback={null}>
-          <MemorialApply
-            stack={[]}
-            push={undefined}
-            pop={undefined}
-            top={undefined}
-          />
-        </Suspense>
-      ),
+      component: <Suspense fallback={null}><MemorialApply stack={[]} push={undefined} pop={undefined} top={undefined} /></Suspense>,
       type: 'App',
       id: 2227,
       name: 'MemorialApply',
@@ -238,11 +184,7 @@ const useApps = (): TaskType[] => {
       visible: false,
     },
     {
-      component: (
-        <Suspense fallback={null}>
-          <MemorialMerge />
-        </Suspense>
-      ),
+      component: <Suspense fallback={null}><MemorialMerge /></Suspense>,
       type: 'App',
       id: 2229,
       name: 'MemorialMerge',
@@ -257,11 +199,7 @@ const useApps = (): TaskType[] => {
       visible: false,
     },
     {
-      component: (
-        <Suspense fallback={null}>
-          <Bow />
-        </Suspense>
-      ),
+      component: <Suspense fallback={null}><Bow /></Suspense>,
       type: 'App',
       id: 2230,
       name: 'Bow',
@@ -276,91 +214,67 @@ const useApps = (): TaskType[] => {
       visible: false,
     },
     {
-      component: (
-        <Suspense fallback={null}>
-          <Alert
-            icon=""
-            text={<></>}
-            onClick={() => undefined}
-          />
-        </Suspense>
-      ),
+      component: <Suspense fallback={null}><Alert icon="" text={<></>} onClick={() => undefined} /></Suspense>,
       type: 'App',
       id: 2231,
       name: '경고',
       layer: undefined,
       appSetup: {
         Image: 'default',
-        minWidth: getPixelFromPercent('width', 50),
-        minHeight: getPixelFromPercent('height', 25),
-        setUpWidth: getPixelFromPercent('width', 50),
-        setUpHeight: getPixelFromPercent('height', 25),
+        minWidth: 50,
+        minHeight: 25,
+        setUpWidth: 50 * 16,
+        setUpHeight: 25 * 16,
       },
       visible: false,
     },
     {
-      component: (
-        <Suspense fallback={null}>
-          <AnimationSelect />
-        </Suspense>
-      ),
+      component: <Suspense fallback={null}><AnimationSelect /></Suspense>,
       type: 'App',
       id: 2232,
       name: '애니메이션 선택',
       layer: undefined,
       appSetup: {
         Image: 'default',
-        minWidth: getPixelFromPercent('width', 60),
-        minHeight: getPixelFromPercent('height', 55),
-        setUpWidth: getPixelFromPercent('width', 60),
-        setUpHeight: getPixelFromPercent('height', 55),
+        minWidth: 60,
+        minHeight: 55,
+        setUpWidth: 60 * 16,
+        setUpHeight: 55 * 16,
       },
       visible: false,
     },
     {
-      component: (
-        <Suspense fallback={null}>
-          <Help />
-        </Suspense>
-      ),
+      component: <Suspense fallback={null}><Help /></Suspense>,
       type: 'App',
       id: 2233,
       name: '도움말',
       layer: undefined,
       appSetup: {
         Image: 'default',
-        minWidth: getPixelFromPercent('width', 60),
-        minHeight: getPixelFromPercent('height', 55),
-        setUpWidth: getPixelFromPercent('width', 60),
-        setUpHeight: getPixelFromPercent('height', 55),
+        minWidth: 60,
+        minHeight: 55,
+        setUpWidth: 60 * 16,
+        setUpHeight: 55 * 16,
       },
       visible: false,
     },
     {
-      component: (
-        <Suspense fallback={null}>
-          <MyComputer />
-        </Suspense>
-      ),
+      component: <Suspense fallback={null}><MyComputer /></Suspense>,
       type: 'App',
       id: 2233,
       name: '내 컴퓨터',
       layer: undefined,
       appSetup: {
         Image: myComputer,
-        minWidth: getPixelFromPercent('width', 60),
-        minHeight: getPixelFromPercent('height', 55),
-        setUpWidth: getPixelFromPercent('width', 60),
-        setUpHeight: getPixelFromPercent('height', 55),
+        minWidth: 60,
+        minHeight: 55,
+        setUpWidth: 800,
+        setUpHeight: 562,
       },
       visible: true,
     },
     {
-      component: (
-        <Suspense fallback={null}>
-          <MemorialPreview />
-        </Suspense>
-      ),
+      component: <Suspense fallback={null}><MemorialPreview /></Suspense>,
       type: 'App',
       id: 2228,
       name: '미리보기',

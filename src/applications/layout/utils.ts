@@ -5,9 +5,9 @@ export function getCorner(cursorVec: number[], window: React.CSSProperties) {
   const [x, y] = cursorVec;
   const { left, top, width, height } = window;
 
-  const nearRight = x >= toNumber(left) + toNumber(width) - 10;
-  const nearLeft = x <= toNumber(left) + 10;
-  const nearBottom = y >= toNumber(top) + toNumber(height) - 10;
+  const nearRight = x >= toNumber(left) + toNumber(width) - 7;
+  const nearLeft = x <= toNumber(left) + 7;
+  const nearBottom = y >= toNumber(top) + toNumber(height) - 7;
 
   return [nearRight, nearLeft, nearBottom] as [boolean, boolean, boolean];
 }

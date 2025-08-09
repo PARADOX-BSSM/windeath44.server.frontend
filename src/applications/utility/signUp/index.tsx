@@ -76,9 +76,9 @@ const SignUp = ({ changeToLogIn }: Props) => {
     return `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
   };
 
-  const buttonWidth = 11.5;
-  const buttonHeight = 4.4;
-  const buttonFontSize = '0.85rem';
+  const buttonWidth = "144px";
+  const buttonHeight = "42px";
+  const buttonFontSize = '20px';
 
   return (
     <_.tempMain>
@@ -96,8 +96,8 @@ const SignUp = ({ changeToLogIn }: Props) => {
             value={name}
             setValue={setName}
             type={'text'}
-            width={'70%'}
-            fontSize="0.9rem"
+            width={'80%'}
+            fontSize="20px"
             flex={true}
           />
           <Inputs
@@ -105,8 +105,8 @@ const SignUp = ({ changeToLogIn }: Props) => {
             value={userId}
             setValue={setUserId}
             type={'text'}
-            width={'70%'}
-            fontSize="0.9rem"
+            width={'80%'}
+            fontSize="20px"
             flex={true}
           />
           <_.set>
@@ -123,9 +123,8 @@ const SignUp = ({ changeToLogIn }: Props) => {
                 onClick={sendEmail}
                 type="submit"
                 active={true}
-                widthPercent={17}
-                heightPercent={buttonHeight}
-                fontSize={buttonFontSize}
+                height='34px'
+                fontSize={"16px"}
               />
             </_.btnSet>
           </_.set>
@@ -144,9 +143,8 @@ const SignUp = ({ changeToLogIn }: Props) => {
                 onClick={verifyCode}
                 type="submit"
                 active={true}
-                widthPercent={15}
-                heightPercent={buttonHeight}
-                fontSize={buttonFontSize}
+                height='34px'
+                fontSize={"16px"}
               />
             </_.btnSet>
           </_.set>
@@ -155,8 +153,8 @@ const SignUp = ({ changeToLogIn }: Props) => {
             value={pw}
             setValue={setPw}
             type={'password'}
-            width={'70%'}
-            fontSize="0.9rem"
+            width={'80%'}
+            fontSize="20px"
             flex={true}
           />
           <Inputs
@@ -164,8 +162,8 @@ const SignUp = ({ changeToLogIn }: Props) => {
             value={checkingPw}
             setValue={setCheckingPw}
             type={'password'}
-            width={'70%'}
-            fontSize="0.9rem"
+            width={'75%'}
+            fontSize="20px"
             flex={true}
           />
         </_.tempInputsStyle>

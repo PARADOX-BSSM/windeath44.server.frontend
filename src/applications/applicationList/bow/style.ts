@@ -7,6 +7,7 @@ export const main = styled.div`
   width: 100%;
   height: 100%;
   padding: 12px 24px;
+  overflow-y: scroll;
 `;
 export const nbow = styled.div``;
 export const place = styled.div`

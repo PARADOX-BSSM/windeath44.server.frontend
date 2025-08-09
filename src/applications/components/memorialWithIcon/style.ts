@@ -6,22 +6,22 @@ export const Item = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 0.25rem;
+  gap: 6px;
   display: inline-flex;
 `;
 
 export const Icon = styled.img`
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 48px;
+  height: 48px;
 `;
 
 export const Name = styled.div`
   align-self: stretch;
   text-align: center;
   color: var(--Black, #2e2e2e);
-  font-size: 0.7rem;
+  font-size: 16px;
   font-family: Galmuri11;
-  line-height: 0.8rem;
+  line-height: 18px;
   word-wrap: break-word;
-  max-width: 2.5rem;
+  max-width: 64px;
 `;
