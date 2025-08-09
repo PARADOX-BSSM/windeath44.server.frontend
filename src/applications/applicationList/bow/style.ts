@@ -7,20 +7,13 @@ export const main = styled.div`
   width: 100%;
   height: 100%;
   padding: 12px 24px;
-  position: relative;
+  overflow-y: scroll;
 `;
-export const nbow = styled.div`
-  padding: 24px;
-  position: absolute;
-  top: 0;
-  left: 0;
-`;
+export const nbow = styled.div``;
 export const place = styled.div`
-  position: absolute;
-  bottom: 0;
-  left: 0;
   width: 100%;
   height: 100%;
+  margin-top: -10%;
   display: flex;
   flex-direction: column;
   justify-content: center;
