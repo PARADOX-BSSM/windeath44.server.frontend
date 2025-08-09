@@ -254,9 +254,9 @@ const MemorialApply = ({}: dataStructureProps) => {
                             name="애니메이션 찾기"
                             type="submit"
                             active={true}
-                            widthPercent={15}
-                            heightPercent={4.4}
-                            fontSize="0.9rem"
+                            width="144px"
+                            height="40px"
+                            fontSize="16px"
                           />
                         ) : (
                           inputValue.anime
@@ -327,18 +327,18 @@ const MemorialApply = ({}: dataStructureProps) => {
                 onClick={handleCropConfirm}
                 type="submit"
                 active={true}
-                widthPercent={11.5}
-                heightPercent={4.4}
-                fontSize="0.9rem"
+                width="144px"
+                height="40px"
+                fontSize="18px"
               />
               <MemorialBtn
                 name="취소"
                 onClick={() => setIsCropping(false)}
                 type="submit"
                 active={true}
-                widthPercent={11.5}
-                heightPercent={4.4}
-                fontSize="0.9rem"
+                width="144px"
+                height="40px"
+                fontSize="18px"
               />
             </_.BtnContainer>
           </_.ImgCropInner>

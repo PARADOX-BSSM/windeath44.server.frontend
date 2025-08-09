@@ -22,7 +22,7 @@ export const InnerContainer = styled.div`
     align-self: stretch;
     overflow:hidden;
     background: #FFF;
-    border:0.5px solid black;
+    border: 1px solid black;
     overflow-y: auto;
     overflow-x: hidden;
 `

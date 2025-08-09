@@ -4,7 +4,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 export const Container = styled.div`
   display: flex;
   width: 100%;
-  padding: 1.75rem 1.5rem 2.25rem 1.5rem;
+  padding: 28px 24px 36px 24px;
   flex-direction: column;
   align-items: center;
   gap: 3.5rem;
@@ -21,7 +21,7 @@ export const Section1 = styled.section`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 1rem;
+  gap: 16px;
   box-sizing: border-box;
 `;
 
@@ -29,7 +29,7 @@ export const SubmitBtn = styled.p`
   color: var(--Stroke, #e774dd);
   text-align: right;
   font-family: Galmuri11;
-  font-size: 2rem;
+  font-size: 36px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -49,7 +49,7 @@ export const HeaderTextContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.25rem;
+  gap: 4px;
   flex: 1 0 0;
 `;
 
@@ -57,7 +57,7 @@ export const AuthorshipFrom = styled.p`
   color: var(--Stroke, #e774dd);
   text-align: right;
   font-family: Galmuri11;
-  font-size: 1.25rem;
+  font-size: 24px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -68,7 +68,7 @@ export const CharacterNameInput = styled(TextareaAutosize)`
   width: 100%;
   color: #2e2e2e;
   font-family: Galmuri11;
-  font-size: 1.75rem;
+  font-size: 36px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -82,7 +82,7 @@ export const Status = styled.p`
   align-self: stretch;
   color: #2e2e2e;
   font-family: Galmuri11;
-  font-size: 0.8rem;
+  font-size: 16px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -91,7 +91,7 @@ export const Status = styled.p`
 export const CharacterProfileContainer = styled.div`
   display: flex;
   width: 100%;
-  padding: 0.625rem 0.5rem;
+  padding: 10px 8px;
   justify-content: center;
   align-items: center;
   background: #fff;
@@ -99,10 +99,10 @@ export const CharacterProfileContainer = styled.div`
 
 export const CharacterProfileInnerContainer = styled.div`
   display: flex;
-  padding: 0.5rem 1rem;
+  padding: 8px 16px;
   justify-content: flex-end;
   align-items: center;
-  gap: 0.625rem;
+  gap: 10px;
   background: var(--VeryLightPrimary, #ffeefd);
 `;
 
@@ -110,7 +110,7 @@ export const CharacterProfileBox = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
+  gap: 8px;
 `;
 
 export const CharacterProfile = styled.div`
@@ -118,13 +118,13 @@ export const CharacterProfile = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 0.625rem;
+  gap: 10px;
 `;
 
 export const CharacterProfileImg = styled.div`
-  height: 12em;
-  width: 9em;
-  border: 0.8em solid #000;
+  width: 194px;
+  height: 237.229px;
+  border: 18.418px solid #000;
   background: #fff;
 `;
 
@@ -132,7 +132,7 @@ export const CharacterProfileName = styled.p`
   color: #2e2e2e;
   text-align: center;
   font-family: Galmuri11;
-  font-size: 1.25rem;
+  font-size: 24px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -142,36 +142,36 @@ export const CharacterInformation = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: -0.05rem;
-  border: 0.05rem solid var(--Stroke, #e774dd);
+  gap: -1px;
+  border: 1px solid var(--Stroke, #E774DD);
 `;
 
 export const CharacterInformationInner = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: -0.05rem;
+  gap: -1px;
   height: 100%;
-  border: 0.05rem solid var(--Stroke, #e774dd);
+  border: 1px solid var(--Stroke, #e774dd);
 `;
 
 export const CharacterInformationRow = styled.div`
   display: flex;
-  width: 18rem;
+  width: 328px;
   height: 100%;
   align-items: flex-start;
-  gap: -0.05rem;
+  gap: -1px;
 `;
 
 export const CharacterInformationRowAttribute = styled.div`
   display: flex;
-  width: 4.75rem;
+  width: 100px;
   align-self: stretch;
-  padding: 0.2rem;
+  padding: 4px;
   justify-content: center;
   align-items: center;
   flex-shrink: 0;
-  border: 0.05rem solid var(--Stroke, #e774dd);
+  border: 1px solid var(--Stroke, #e774dd);
   background: var(--LightPrimary, #ffd3fb);
 `;
 
@@ -184,17 +184,17 @@ export const CharacterInformationRowAttributeText = styled.p`
   color: var(--off, #fd51a7);
   text-align: center;
   font-family: Galmuri11;
-  font-size: 0.85rem;
+  font-size: 16px;
 `;
 
 export const CharacterInformationRowValue = styled.div`
   display: flex;
-  padding: 0.2rem;
+  padding: 4px;
   height: 100%;
   justify-content: center;
   align-items: center;
   flex: 1 0 0;
-  border: 0.05rem solid var(--Stroke, #e774dd);
+  border: 1px solid var(--Stroke, #e774dd);
 `;
 
 export const CharacterInformationRowValueText = styled.p`
@@ -203,7 +203,7 @@ export const CharacterInformationRowValueText = styled.p`
   color: #2e2e2e;
   text-align: center;
   font-family: Galmuri11;
-  font-size: 0.85rem;
+  font-size: 16px;
 `;
 
 export const CharacterInforInput = styled.input`
@@ -212,7 +212,7 @@ export const CharacterInforInput = styled.input`
   color: #2e2e2e;
   text-align: center;
   font-family: Galmuri11;
-  font-size: 0.85rem;
+  font-size: 16px;
   border: none;
   background: transparent;
   outline: none;
@@ -238,20 +238,20 @@ export const ImgCropInner = styled.div`
   justify-items: center;
   justify-content: center;
   align-items: center;
-  padding: 1em;
-  width: 24rem;
-  height: 28rem;
+  padding: 16px;
+  width: 384px;
+  height: 448px;
   box-sizing: border-box;
-  border: solid 0.25rem #e774dd;
-  gap: 1.5em;
+  border: solid 4px #e774dd;
+  gap: 24px;
 `;
 
 export const RangeSlider = styled.input<{ percent: number }>`
   -webkit-appearance: none;
   appearance: none;
   width: 100%;
-  height: 0.375rem;
-  border-radius: 0.188rem;
+  height: 6px;
+  border-radius: 1px;
   outline: none;
   cursor: none;
 
@@ -281,20 +281,20 @@ export const RangeSlider = styled.input<{ percent: number }>`
 
 export const BtnContainer = styled.div`
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
 `;
 
 export const CropText = styled.p`
   color: #2e2e2e;
   text-align: center;
   font-family: Galmuri11;
-  font-size: 1rem;
+  font-size: 16px;
 `;
 
 export const Connnnn = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 4px;
   width: 100%;
   justify-items: center;
   justify-content: center;
@@ -307,7 +307,7 @@ export const PhraseContainer = styled.input`
   color: #2e2e2e;
   text-align: center;
   font-family: Galmuri11;
-  font-size: 1.25rem;
+  font-size: 24px;
   border: none;
   background: var(--VeryLightPrimary, #ffeefd);
   outline: none;
@@ -319,7 +319,7 @@ export const TextAreaContainer = styled.div`
   flex-direction: column;
   align-items: center;
   display: flex;
-  gap: 2em;
-  padding: 0 1rem;
+  gap: 32px;
+  padding: 0 16px;
   box-sizing: border-box;
 `;

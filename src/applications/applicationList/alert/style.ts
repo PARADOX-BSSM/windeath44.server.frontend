@@ -7,7 +7,7 @@ export const main = styled.div`
   font-size: 1rem;
   width: 100%;
   height: 100%;
-  padding: 2rem 1.5rem;
+  padding: 24px 32px;
   position: relative;
 `;
 
@@ -18,7 +18,7 @@ export const container = styled.div`
   align-items: center;
   width: 100%;
   height: 100%;
-  gap: 1rem;
+  gap: 20px;
 `;
 
 export const place = styled.div`
@@ -27,7 +27,7 @@ export const place = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  gap: 1.5rem;
+  gap: 36px;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
@@ -36,13 +36,13 @@ export const place = styled.div`
 `;
 
 export const icon = styled.img`
-  width: 4rem;
-  height: 4rem;
+  width: 64px;
+  height: 64px;
 `;
 
 export const text = styled.p`
   color: #2e2e2e;
-  font-size: 0.9rem;
+  font-size: 24px;
   word-wrap: break-word;
 `;
 
