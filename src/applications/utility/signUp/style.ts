@@ -10,21 +10,21 @@ export const tempMain = styled.div`
 
 export const tempImage = styled.div`
   width: 100%;
-  height: 11.25rem;
+  height: 180px;
   background-color: #ffffff;
   display: flex;
   justify-content: center;
   align-items: center;
   img {
     width: 100%;
-    height: 6.75rem;
+    height: 180px;
     background-color: #ffffff;
   }
 `;
 
 export const tempBulkStyle = styled.div`
   width: 100%;
-  height: 0.625rem;
+  height: 10px;
   background-color: #ffbbf5;
 `;
 
@@ -39,23 +39,23 @@ export const tempInputsStyle = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.5rem;
-  padding: 1rem;
+  gap: 12px;
+  padding: 24px;
 `;
 
 export const tempButtonsStyle = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
-  padding: 1rem;
-  gap: 0.35rem;
+  padding: 16px;
+  gap: 10px;
   position: absolute;
   bottom: 0;
   right: 0;
 `;
 
 export const label = styled.span`
-  font-size: 0.9rem;
+  font-size: 20px;
 `;
 
 export const set = styled.div`
@@ -68,9 +68,9 @@ export const set = styled.div`
 `;
 
 export const btnSet = styled.div`
-  width: 70%;
+  width: 80.3%;
   display: flex;
-  gap: 1rem;
+  gap: 16px;
   align-items: center;
 `;
 

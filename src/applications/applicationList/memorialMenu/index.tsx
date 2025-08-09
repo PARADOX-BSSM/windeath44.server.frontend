@@ -22,6 +22,7 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
     <>
       최애의 사인은 작품 내에서 사망한 애니메이션 캐릭터를 추모하는 공간입니다.
       <br />
+      <br />
       오른쪽의 버튼을 눌러 계속 진행할 수 있습니다.
     </>,
   );
@@ -39,7 +40,7 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
           "추모관 검색"에서 다양한 캐릭터의 추모관을 찾아볼 수 있습니다.
           <br />
           <br />
-          <span style={{ fontSize: '0.9rem' }}>
+          <span style={{ fontSize: '1.375rem' }}>
             * 추모관에서 다른 사람들과 함께 캐릭터에 대한 기억을 나눠볼 수 있습니다.
           </span>
         </>,
@@ -51,7 +52,7 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
           "즐겨찾기"에서 이전에 즐겨찾기에 등록해놓은 추모관을 볼 수 있습니다.
           <br />
           <br />
-          <span style={{ fontSize: '0.9rem' }}>
+          <span style={{ fontSize: '1.375rem' }}>
             * 추모관을 즐겨찾기에 등록하여 편리하게 이동할 수 있습니다.
           </span>
         </>,
@@ -63,7 +64,7 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
           "추모관 신청"에서 최애의 사인에 존재하지 않는 추모관을 신청할 수 있습니다.
           <br />
           <br />
-          <span style={{ fontSize: '0.9rem' }}>
+          <span style={{ fontSize: '1.375rem' }}>
             * 추모관 신청은 주로 1~2일 내에 받아들여집니다.
           </span>
         </>,
@@ -120,9 +121,9 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
                   selected={selectedIdx === idx}
                   onClick={() => setSelectedIdx(idx)}
                   type="menu"
-                  fontSize="0.85rem"
-                  widthPercent={13.5}
-                  heightPercent={4.4}
+                  fontSize="1.25rem"
+                  width="11.25rem"
+                  height="2.625rem"
                 />
               ))}
             </_.BtnInnerWrapper>
@@ -137,9 +138,9 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
             onClick={() => {
               moveTo(selectedIdx);
             }}
-            fontSize="0.85rem"
-            widthPercent={13.5}
-            heightPercent={4.4}
+            fontSize="1.25rem"
+            width="11.25rem"
+            height="2.625rem"
           />
         </_.Footer>
       </_.InnerContainer>

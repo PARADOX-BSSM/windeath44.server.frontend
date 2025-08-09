@@ -1,5 +1,5 @@
-import { getPixelFromPercent } from '@/lib/getPixelFromPercent';
 import styled from '@emotion/styled';
+
 // *검색결과창
 export const view = styled.div`
   box-sizing: border-box;
@@ -31,9 +31,10 @@ export const inputs = styled.div`
   outline: none;
   border-color: #dcafdd;
   border-style: solid;
-  border-width: ${getPixelFromPercent('width', 0.125)}px;
+  border-width: 0.1125rem;
   box-sizing: border-box;
 `;
+
 export const Shadow = styled.div`
   display: flex;
   height: 100%;

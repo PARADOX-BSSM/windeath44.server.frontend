@@ -1,4 +1,3 @@
-import { getPixelFromPercent } from '@/lib/getPixelFromPercent';
 import styled from '@emotion/styled';
 
 export const styles = styled.div`
@@ -73,7 +72,7 @@ export const white = styled.div`
   outline: none;
   border-color: #dcafdd;
   border-style: solid;
-  border-width: ${getPixelFromPercent('width', 0.125)}px;
+  border-width: 0.1125rem;
   box-sizing: border-box;
 `;
 

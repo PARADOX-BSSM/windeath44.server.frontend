@@ -46,9 +46,8 @@ const MyComputer = () => {
         }}
         type="submit"
         active={true}
-        widthPercent={12}
-        heightPercent={4.4}
-        fontSize="0.85rem"
+        width="116px"
+        fontSize="18px"
       />
     );
   };
@@ -76,14 +75,17 @@ const MyComputer = () => {
               <MemorialWithIcon
                 icon={myComputer}
                 name="호시노 아이"
+                onDoubleClick={() => undefined}
               />
               <MemorialWithIcon
                 icon={myComputer}
                 name="호시노 아이"
+                onDoubleClick={() => undefined}
               />
               <MemorialWithIcon
                 icon={myComputer}
                 name="호시노 아이"
+                onDoubleClick={() => undefined}
               />
             </_.Inputs>
           </_.Shadow>

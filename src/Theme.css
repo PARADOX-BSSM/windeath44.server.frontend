@@ -61,7 +61,7 @@ body {
   margin: 0 auto;
   background-image: url('./assets/skeleton.png');
   background-size: cover;
-  gap: 0.5rem;
+  gap: 1rem;
 }
 
 .app-button > button {
