@@ -31,8 +31,8 @@ export const ProfileContainer = styled.div`
 `;
 
 export const ProfileImg = styled.img`
-  width: ${116 / 16}rem;
-  height: ${116 / 16}rem;
+  width: 116px;
+  height: 116px;
 `;
 
 export const ProfileName = styled.div`
