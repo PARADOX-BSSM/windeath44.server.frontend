@@ -27,7 +27,7 @@ export const ProfileContainer = styled.div`
   flex-direction: column;
   align-items: center;
   display: flex;
-  gap: ${9 / 16}rem;
+  gap: 9px;
 `;
 
 export const ProfileImg = styled.img`
