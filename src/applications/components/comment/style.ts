@@ -3,16 +3,16 @@ import styled from '@emotion/styled';
 
 export const CommentDiv = styled.div`
     display: flex;
-    padding: 12px 15px;
+    padding: 12px 16px;
     align-items: flex-start;
-    gap: 9px;
+    gap: 10px;
     align-self: stretch;
     background: #FFF;
 `
 
 export const ProfileImg = styled.div<{ imgUrl : string }>`
-    width: 45px;
-    height: 45px;
+    width: 48px;
+    height: 48px;
     background-image: url(${props => props.imgUrl});
     background-size: cover;
     background-position: center;
@@ -20,14 +20,14 @@ export const ProfileImg = styled.div<{ imgUrl : string }>`
 
 export const TextBox = styled.div`
     display: flex;
-    padding: 0px 7px;
+    padding: 0 8px;
     flex-direction: column;
     align-items: flex-start;
-    gap: 3px;
+    gap: 4px;
 `
 export const NickNameContainer = styled.div`
     display: flex;
-    padding: 5px 0px;
+    padding: 6px 0px;
     align-items: flex-end;
     gap: 8px;
 `

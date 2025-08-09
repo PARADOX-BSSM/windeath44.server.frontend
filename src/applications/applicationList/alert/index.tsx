@@ -24,9 +24,9 @@ const Alert = ({ icon, text, onClick }: AlertProps) => {
             type="submit"
             active={true}
             onClick={onClick}
-            widthPercent={12}
-            heightPercent={4.5}
-            fontSize="0.85rem"
+            width="144px"
+            height="42px"
+            fontSize="20px"
           ></MemorialBtn>
         </_.btnContainer>
       </_.container>

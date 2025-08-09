@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 
 export const Main = styled.main`
   display: flex;
-  padding: 0.5rem;
+  padding: 12px;
   width: 100%;
   justify-content: center;
   align-items: flex-start;
@@ -18,10 +18,10 @@ export const Container = styled.div`
   width: 100%;
   justify-content: center;
   align-items: flex-start;
-  gap: 0.625rem;
+  gap: 10px;
   flex: 1 0 0;
   align-self: stretch;
-  border: 0.031rem black solid;
+  border: 1px black solid;
 `;
 
 export const InnerContainer = styled.div`
@@ -31,10 +31,10 @@ export const InnerContainer = styled.div`
   max-height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 1.15rem;
+  padding: 24px;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  gap: 32px;
   flex: 1 0 0;
   background: #fff;
   box-sizing: border-box;
@@ -45,14 +45,14 @@ export const Section1 = styled.section`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 1rem;
+  gap: 16px;
 `;
 
 export const Header = styled.header`
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  gap: 1.2rem;
+  gap: 24px;
   align-self: stretch;
 `;
 
@@ -60,14 +60,14 @@ export const TextContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.25rem;
+  gap: 4px;
   flex: 1 0 0;
 `;
 
 export const Title = styled.h1`
   color: #2e2e2e;
   font-family: Galmuri11;
-  font-size: 1.75rem;
+  font-size: 36px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -77,7 +77,7 @@ export const Title = styled.h1`
 export const Subtitle = styled.p`
   color: #2e2e2e;
   font-family: Galmuri11;
-  font-size: 0.8rem;
+  font-size: 16px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -87,7 +87,7 @@ export const History = styled.p`
   color: var(--Stroke, #e774dd);
   text-align: right;
   font-family: Galmuri11;
-  font-size: 0.9rem;
+  font-size: 20px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -105,7 +105,7 @@ export const DocumentUpdate = styled(History)`
 export const ContentContainer = styled.div`
   display: flex;
   align-self: stretch;
-  padding: 0.625rem 1rem;
+  padding: 10px 8px;
   justify-content: center;
   align-items: center;
 `;
@@ -114,7 +114,7 @@ export const IndexWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 1.5rem;
+  gap: 24px;
   flex: 1 0 0;
   align-self: stretch;
 `;
@@ -124,7 +124,7 @@ export const Quote = styled.h2`
   align-self: stretch;
   color: #2e2e2e;
   font-family: Galmuri11;
-  font-size: 1.25rem;
+  font-size: 24px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -134,17 +134,17 @@ export const Quote = styled.h2`
 export const Index = styled.div`
   display: flex;
   height: fit-content;
-  padding: 0.75rem 1.25rem;
+  padding: 12px 24px;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.625rem;
-  border: 0.063rem solid var(--Stroke, #e774dd);
+  gap: 10px;
+  border: 1px solid var(--Stroke, #e774dd);
 `;
 
 export const IndexTitle = styled.p`
   color: #2e2e2e;
   font-family: Galmuri11;
-  font-size: 1.2rem;
+  font-size: 24px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -155,7 +155,7 @@ export const ProfileContainer = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  gap: 0.625rem;
+  gap: 10px;
 `;
 
 export const ProfileInnerContainer = styled.div`
@@ -163,7 +163,7 @@ export const ProfileInnerContainer = styled.div`
   height: 100%;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
+  gap: 8px;
 `;
 
 export const PictureContainer = styled.div`
@@ -171,27 +171,27 @@ export const PictureContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 0.625rem;
+  gap: 10px;
   position: relative;
 `;
 export const Ribbon = styled.img`
   position: absolute;
-  top: -0.5em;
-  width: 82%;
+  top: 0;
+  width: 100%;
   z-index: 1;
 `;
 export const Picture = styled.div<{ imgUrl: string }>`
   display: flex;
-  height: 12rem;
+  height: 200px;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border: 0.8rem solid #000;
+  border: 12px solid #000;
   background: #fff;
   background-image: url(${(props) => props.imgUrl});
   background-size: cover;
   background-position: center;
-  width: 9rem;
+  width: 144px;
   flex-shrink: 0;
 `;
 
@@ -199,7 +199,7 @@ export const Name = styled.p`
   color: #2e2e2e;
   text-align: center;
   font-family: Galmuri11;
-  font-size: 1.25rem;
+  font-size: 24px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -209,30 +209,30 @@ export const Information = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: -0.05em;
-  border: 0.05rem solid var(--Stroke, #e774dd);
+  gap: -1px;
+  border: 1px solid var(--Stroke, #e774dd);
 `;
 
 export const Row = styled.div`
   display: flex;
-  width: 18rem;
+  width: 328px;
   align-items: flex-start;
-  gap: -0.05rem;
+  gap: -1px;
 `;
 
 export const Attribute = styled.div`
   display: flex;
-  width: 4.75rem;
-  padding: 0.2rem;
+  width: 100px;
+  padding: 4px;
   justify-content: center;
   align-items: center;
   flex-shrink: 0;
-  border: 0.05rem solid var(--Stroke, #e774dd);
+  border: 1px solid var(--Stroke, #e774dd);
   background: var(--LightPrimary, #ffd3fb);
   color: var(--off, #fd51a7);
   text-align: center;
   font-family: Galmuri11;
-  font-size: 0.85rem;
+  font-size: 16px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -242,16 +242,16 @@ export const Attribute = styled.div`
 
 export const Value = styled.div`
   display: flex;
-  padding: 0.2rem;
+  padding: 4px;
   justify-content: center;
   align-items: center;
   flex: 1 0 0;
   align-self: stretch;
-  border: 0.05rem solid var(--Stroke, #e774dd);
+  border: 1px solid var(--Stroke, #e774dd);
   color: #2e2e2e;
   text-align: center;
   font-family: Galmuri11;
-  font-size: 0.85rem;
+  font-size: 16px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -259,21 +259,21 @@ export const Value = styled.div`
 
 export const GotoBow = styled.button`
   display: flex;
-  width: 11rem;
-  height: 4rem;
-  padding: 0.55rem 1.5rem;
+  width: 260px;
+  height: 60px;
+  padding: 12px 24px;
   justify-content: center;
   align-items: center;
   background: var(--LightPrimary, #ffd3fb);
   box-shadow:
-    -0.094rem -0.094rem 0px 0px var(--Black, #2e2e2e) inset,
-    0.094rem 0.094rem 0px 0px #fff inset,
-    -0.188rem -0.188rem 0px 0px var(--DarkPrimary, #dcafdd) inset,
-    0.188rem 0.188rem 0px 0px var(--Secondary, #ffbbf5) inset;
+    -1px -1px 0px 0px var(--Black, #2e2e2e) inset,
+    1px 1px 0px 0px #fff inset,
+    -2px -2px 0px 0px var(--DarkPrimary, #dcafdd) inset,
+    2px 2px 0px 0px var(--Secondary, #ffbbf5) inset;
   color: var(--Black, #2e2e2e);
   text-align: center;
   font-family: Galmuri11;
-  font-size: 1rem;
+  font-size: 24px;
   font-style: normal;
   font-weight: 400;
   border: none;
@@ -284,24 +284,24 @@ export const Section2 = styled.section`
   width: 100%;
   flex-direction: column;
   align-items: center;
-  gap: 1.5rem;
+  gap: 24px;
 `;
 
 export const CommentContainer = styled.div`
   display: flex;
   width: 100%;
-  padding: 0.625rem 0;
+  padding: 10px 0;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 1.25rem;
+  gap: 20px;
 `;
 
 export const CommentTitle = styled.p`
   align-self: stretch;
   color: #2e2e2e;
   font-family: Galmuri11;
-  font-size: 1.5rem;
+  font-size: 32px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -310,7 +310,7 @@ export const CommentTitle = styled.p`
 export const CommentMain = styled.div`
   display: flex;
   height: 100%;
-  padding: 0 1rem;
+  padding: 0 12px;
   flex-direction: column;
   align-items: flex-start;
   align-self: stretch;
@@ -319,26 +319,26 @@ export const CommentMain = styled.div`
 export const CommentMainInner = styled.div`
   display: flex;
   align-self: stretch;
-  padding: 0.063rem 0;
+  padding: 1px 0;
   flex-direction: column;
   align-items: center;
-  gap: 0.063rem;
+  gap: 1px;
   flex: 1 0 0;
   background: rgba(0, 0, 0, 0.2);
 `;
 
 export const InputComment = styled.div`
   display: flex;
-  padding: 0.75rem 0.938rem;
+  padding: 12px 16px;
   align-items: center;
-  gap: 0.563rem;
+  gap: 10px;
   align-self: stretch;
   background: #ffebfd;
 `;
 
 export const InputCommentText = styled.input`
   font-family: Galmuri11;
-  font-size: 0.75rem;
+  font-size: 12px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -359,13 +359,13 @@ export const ArticleContainer = styled.div`
   width: 100%;
   flex-direction: column;
   align-items: flex-start;
-  gap: 1.25rem;
+  gap: 20px;
 `;
 
 export const ArticleTitle = styled.h1`
   color: var(--Stroke, #e774dd);
   font-family: Galmuri11;
-  font-size: 1.5rem;
+  font-size: 32px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -373,13 +373,13 @@ export const ArticleTitle = styled.h1`
 
 export const ArticleContent = styled.div`
   display: flex;
-  padding: 0 1rem;
+  padding: 0 8px;
   flex-direction: column;
   align-items: flex-start;
-  gap: 1.25rem;
+  gap: 20px;
   color: #2e2e2e;
   font-family: Galmuri11;
-  font-size: 1rem;
+  font-size: 20px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;

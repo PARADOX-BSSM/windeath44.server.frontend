@@ -5,10 +5,10 @@ export const main = styled.div`
   box-sizing: border-box;
   background-color: var(--light-primary-color);
   font-family: 'Galmuri11';
-  font-size: 1rem;
+  font-size: 16px;
   width: 100%;
   height: 100%;
-  padding: 0.5rem 1rem;
+  padding: 15px 26px 6px 26px;
 `;
 
 export const main_serve = styled.div`
@@ -17,7 +17,7 @@ export const main_serve = styled.div`
   width: 100%;
   height: 100%;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 6px;
 `;
 
 export const search_task = styled.div<{ isColumn: boolean }>`
@@ -27,11 +27,11 @@ export const search_task = styled.div<{ isColumn: boolean }>`
   display: flex;
   min-height: 0;
   flex-direction: ${({ isColumn }) => (isColumn ? 'column' : 'row')};
-  gap: ${({ isColumn }) => (isColumn ? '0.3rem' : '0.5rem')};
+  gap: ${({ isColumn }) => (isColumn ? '10px' : '10px')};
 `;
 
 export const object = styled.div`
-  border-width: 0.094rem 0 0 0.094rem;
+  border-width: 1px 0 0 1px;
   flex: 0 0 auto;
   border-style: solid;
   border-color: #808080;
@@ -39,21 +39,22 @@ export const object = styled.div`
   & > div {
     width: 100%;
     height: fit-content;
-    border-width: 0 0.094rem 0.094rem 0;
+    border-width: 0 1px 1px 0;
     border-style: solid;
     border-color: #ffffff;
     box-sizing: border-box;
     background-color: var(--dark-primary-color);
     display: flex;
-    gap: 0.25rem;
-    padding-left: 0.25rem;
+    align-items: center;
+    gap: 6px;
+    padding-left: 4px;
     & > div {
       margin: auto 0;
-      font-size: 0.8rem;
+      font-size: 16px;
     }
     & > img {
-      width: 1.25rem;
-      height: 1.25rem;
+      width: 24px;
+      height: 24px;
     }
   }
 `;
