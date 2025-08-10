@@ -1,268 +1,144 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import * as _ from '@/applications/applicationList/search/style.ts';
 import Folder from '@/assets/search/folder.svg';
 import Search_task from '@/applications/applicationList/search/search_task';
 import Viewer from '@/applications/applicationList/search/viewer';
-import { useGetCharactersQuery } from '@/api/anime/getCharacters';
-import { useGetCharactersByAnimeQuery } from '@/api/anime/getCharactersByAnimeId';
+import { useGetIntegratedCharactersQuery } from '@/api/anime/getCharactersByIntegratedSearching';
 import { useGetAnimesQuery } from '@/api/anime/getAnimes';
-import { useGetCharactersByDeathReasonQuery } from '@/api/anime/getCharactersByDeathReason';
-import { useGetMemorialsCharacterFilteredQuery } from '@/api/memorial/getMemorialsCharacterFiltered';
-import { useGetMemorialsQuery } from '@/api/memorial/getMemorials';
+import { useQuery } from '@tanstack/react-query';
+import api from '@/api/axiosInstance';
+import { memorial } from '@/config';
+
+const EMPTY_ARR: any[] = [];
 
 const Search = () => {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [isColumn, setIsColumn] = useState(false);
 
+  // 검색 상태
   const [fillDeath, setFillDeath] = useState('모두');
-  const [ani, setAni] = useState('');
-  const [animeIds, setAnimeIds] = useState<number[]>([23176]);
-  const [name, setName] = useState('');
-  const [finalCharactersIds, setFinalCharactersIds] = useState<any[]>([2]);
-  const [finalCharacters, setFinalCharacters] = useState<any[]>([]);
-  const [finalMemorials, setFinalMemorials] = useState<any[]>([]);
-  const [page, setPage] = useState(1);
+  const [ani, setAni] = useState('');     // 애니 이름(검색어)
+  const [name, setName] = useState('');   // 캐릭터 이름(검색어)
 
+  // 페이지네이션 (cursor 기반)
+  const [cursorId, setCursorId] = useState<number | undefined>(undefined);
+
+  // ------ 파라미터 정규화 ------
+  const deathParam = useMemo(
+    () => (fillDeath === '모두' ? undefined : fillDeath),
+    [fillDeath]
+  );
+  const nameParam = useMemo(
+    () => (name.trim() ? name.trim() : undefined),
+    [name]
+  );
+  const aniParam = useMemo(
+    () => (ani.trim() ? ani.trim() : undefined),
+    [ani]
+  );
+
+  // ------ 애니 이름 -> 애니 ID 조회 ------
   const {
-    data: getMemorialsResponse,
-    isLoading: isMemorialLoading,
-    isError: isMemorialError,
-  } = useGetMemorialsQuery({
-    orderBy: 'recently-updated',
-    page: page,
+    data: animesResp,
+    isLoading: isAnimesLoading,
+    isError: isAnimesError,
+  } = useGetAnimesQuery({
+    size: 10,
+    animeName: aniParam, // 빈 문자열이면 undefined → 서버가 무시하도록 설계되어 있다면 OK
+    // cursorId: undefined,
   });
 
-  useEffect(() => {
-    if (getMemorialsResponse) {
-      setFinalMemorials(getMemorialsResponse?.data ?? []);
-      console.log(getMemorialsResponse?.data);
-    }
-  }, [getMemorialsResponse]);
+  // 애니 ID들을 통합 검색용 파라미터로 변환 (문자열 배열)
+  const animeIdParam = useMemo(() => {
+    const values = animesResp?.data?.values ?? EMPTY_ARR;
+    if (!values.length) return undefined;
+    return values
+      .map((v: any) => v?.animeId)
+      .filter((id: any): id is number => typeof id === 'number')
+      .map(String);
+  }, [animesResp]);
 
+  useEffect(() => {
+    console.log('params ->', { nameParam, animeIdParam, deathParam });
+  }, [nameParam, animeIdParam, deathParam]);
+
+  // ------ 1) 통합 캐릭터 검색 ------
   const {
-    data: getCharactersResponse,
-    isLoading: isLoading,
-    isError: isError,
-  } = useGetCharactersQuery({}); // 모든 캐릭터
+    data: integrated,
+    isLoading,
+    isError,
+  } = useGetIntegratedCharactersQuery({
+    name: nameParam,            // undefined면 전송 안 됨
+    animeId: animeIdParam,      // ani 없거나 결과 없으면 undefined
+    deathReason: deathParam,    // '모두'면 undefined
+    size: 30,
+    cursorId,
+  });
 
+  const characters = useMemo(
+    () => (integrated?.values ?? integrated?.data?.values ?? EMPTY_ARR),
+    [integrated]
+  );
+
+  const characterIds = useMemo<number[]>(
+    () =>
+      characters
+        .map((c: any) => c?.characterId)
+        .filter((id: any): id is number => typeof id === 'number'),
+    [characters]
+  );
+
+  // ------ 2) 캐릭터 ID로 추모관 목록 조회 ------
+  const {
+    data: memorialsResp,
+    isLoading: isMemorialLoading,
+    isError: isMemorialError,
+  } = useQuery({
+    queryKey: ['memorials', 'recently-updated', 1, characterIds],
+    enabled: characterIds.length > 0, // 캐릭터 없으면 호출 안 함
+    queryFn: async () => {
+      const resp = await api.post(
+        `${memorial}/character-filtered`,
+        { orderBy: 'recently-updated', page: 1, characters: characterIds },
+        { withCredentials: true }
+      );
+      return resp.data as {
+        message: string;
+        data: { memorialId: number; characterId: number }[];
+      };
+    },
+    staleTime: 30_000,
+    gcTime: 5 * 60_000,
+  });
+
+  const memorials = memorialsResp?.data ?? EMPTY_ARR;
+
+  // (옵션) 다음 페이지 커서 처리
+  const onLoadMore = () => {
+    // if (typeof integrated?.nextCursorId === 'number') setCursorId(integrated.nextCursorId);
+  };
+
+  // 레이아웃 관찰
   useEffect(() => {
-    if (getCharactersResponse) {
-      setFinalCharacters(getCharactersResponse?.data?.values ?? []);
-      console.log(getCharactersResponse?.data?.values);
-    }
-  }, [getCharactersResponse]);
-
-  useEffect(() => {
-    if (!getCharactersResponse?.data?.values) return;
-
-    const filtered = getCharactersResponse.data.values.filter(
-      (character: { name: string; deathReason: string }) => {
-        const nameMatched = name ? character.name.includes(name) : true;
-        const deathReasonMatched =
-          fillDeath === '모두' ? true : character.deathReason === fillDeath;
-        return nameMatched && deathReasonMatched;
-      },
-    );
-
-    setFinalCharacters(filtered);
-  }, [name, fillDeath, getCharactersResponse]);
-
-  // const {
-  //   data: getAnimesResponse,
-  //   isLoading: isLoadingByAnimes,
-  //   isError: isErrorByAnimes,
-  // } = useGetAnimesQuery({ size: 10, animeName: ani }); // 이름으로 애니메이션 검색
-
-  // useEffect(() => {
-  //   console.log(getAnimesResponse);
-  // }, [getAnimesResponse]);
-
-  // const {
-  //   data: getAllAnimesResponse,
-  //   isLoading: isLoadingByAllAnimes,
-  //   isError: isErrorByAllAnimes,
-  // } = useGetAnimesQuery({ size: 10 }); // 모든 애니메이션
-
-  // useEffect(() => {
-  //   console.log(getAllAnimesResponse);
-  // }, [getAllAnimesResponse]);
-
-  // const {
-  //   data: getCharactersByAnimeIdResponse,
-  //   isLoading: isLoadingByAnimeId,
-  //   isError: isErrorByAnimeId,
-  // } = useGetCharactersByAnimeQuery({
-  //   animeId: animeIds,
-  // }); // 애니메이션 ID로 캐릭터 찾기
-
-  // useEffect(() => {
-  //   console.log(getCharactersByAnimeIdResponse);
-  // }, [getCharactersByAnimeIdResponse]);
-
-  // const {
-  //   data: getCharactersByDeathReasonResponse,
-  //   isLoading: isLoadingByDeathReason,
-  //   isError: isErrorByDeathReason,
-  // } = useGetCharactersByDeathReasonQuery({
-  //   deathReason: realDeath,
-  //   size: 10,
-  // });
-
-  // useEffect(() => {
-  //   console.log(getCharactersByDeathReasonResponse);
-  // }, [getCharactersByDeathReasonResponse]);
-
-  // const {
-  //   data: getMemorialsCharacterFilteredResponse,
-  //   isLoading: isLoadingCharacterFiltered,
-  //   isError: isErrorCharacterFiltered,
-  // } = useGetMemorialsCharacterFilteredQuery({
-  //   orderBy: 'recently-updated',
-  //   page: 1,
-  //   characters: finalCharactersIds,
-  // });
-
-  // useEffect(() => {
-  //   console.log(getMemorialsCharacterFilteredResponse);
-  // }, [getMemorialsCharacterFilteredResponse]);
-
-  const [characters, setCharacters] = useState<any[]>([]);
-
-  const [searchedCharacters, setSearchedCharacters] = useState<any[]>([]);
-  const [deathReasonCharacters, setDeathReasonCharacters] = useState<any[]>([]);
-
-  useEffect(() => {
-    const element = wrapperRef.current;
-    if (!element) return;
-
-    const resizeObserver = new ResizeObserver((entries) => {
-      for (let entry of entries) {
-        const height = entry.contentRect.height;
-        // console.log("측정된 높이:", height);
-        setIsColumn(height >= 412);
+    const el = wrapperRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const next = entry.contentRect.height >= 412;
+        setIsColumn((prev) => (prev === next ? prev : next));
       }
     });
-
-    resizeObserver.observe(element);
-
-    return () => {
-      resizeObserver.disconnect();
-    };
+    ro.observe(el);
+    return () => ro.disconnect();
   }, []);
 
-  // useEffect(() => {
-  //   if (!getCharactersResponse?.data || !getAllAnimesResponse?.data?.values) return;
-
-  //   setFinalCharacters(getCharactersResponse.data);
-
-  //   const animeIds = getAllAnimesResponse.data.values.map(
-  //     (anime: { animeId: number }) => anime.animeId,
-  //   );
-  //   setAnimeIds(animeIds);
-  // }, [getCharactersResponse, getAllAnimesResponse]);
-
-  // // 캐릭터 이름
-  // useEffect(() => {
-  //   if (!getCharactersResponse?.data) return;
-
-  //   const filtered = getCharactersResponse.data.filter((character: { name: string }) =>
-  //     character.name.includes(name),
-  //   );
-
-  //   setCharacters(filtered);
-  // }, [name, getCharactersResponse]);
-
-  // 애니메이션 이름
-  // useEffect(() => {
-  //   // 이름으로 애니메이션 찾기
-  //   const searchAnimeByName = (keyword: string) => {
-  //     if (keyword) {
-  //       return getAnimesResponse?.data?.values;
-  //     } else {
-  //       return getAllAnimesResponse?.data?.values;
-  //     }
-  //   };
-
-  // const result = searchAnimeByName(ani);
-
-  // const getAnimeIds = (animes: typeof result): number[] => {
-  //   return animes?.map((anime: { animeId: number }) => anime.animeId);
-  // };
-  // const animeIds = getAnimeIds(result);
-  // setAnimeIds(animeIds);
-
-  // // 애니메이션 ID로 캐릭터 찾기
-  // const searchCharacterByAnimeIds = (ids: number[]) => {
-  //   if (ids?.[0]) {
-  //     return getCharactersByAnimeIdResponse?.data;
-  //   } else {
-  //     return getCharactersResponse?.data;
-  //   }
-  // };
-
-  //   const characters = searchCharacterByAnimeIds(animeIds);
-  //   setSearchedCharacters(characters);
-  // }, [
-  //   ani,
-  //   getAnimesResponse,
-  //   getAllAnimesResponse,
-  //   getCharactersByAnimeIdResponse,
-  //   getCharactersResponse,
-  // ]);
-
-  // // 사인
-  // useEffect(() => {
-  //   const searchCharacterByDeathReason = (reason: string) => {
-  //     if (reason === '모두') {
-  //       return getCharactersResponse?.data;
-  //     } else {
-  //       setRealDeath(reason);
-  //       return getCharactersByDeathReasonResponse?.data;
-  //     }
-  //   };
-
-  //   const result = searchCharacterByDeathReason(fillDeath);
-  //   setDeathReasonCharacters(result);
-  // }, [fillDeath]);
-
-  // useEffect(() => {
-  //   if (!getCharactersResponse?.data) return;
-
-  //   const animeIds = getAnimesResponse?.data?.values
-  //     ?.filter((anime: { name: string | string[] }) => (ani ? anime.name.includes(ani) : true))
-  //     ?.map((anime: { animeId: any }) => anime.animeId);
-
-  //   const final = getCharactersResponse?.data?.filter(
-  //     (character: { name: string | string[]; animeId: any; deathReason: string }) => {
-  //       const isNameMatched = name ? character.name.includes(name) : true;
-  //       const isAnimeMatched = ani ? animeIds?.includes(character.animeId) : true;
-  //       const isDeathReasonMatched =
-  //         fillDeath === '모두' ? true : character.deathReason === fillDeath;
-
-  //       return isNameMatched && isAnimeMatched && isDeathReasonMatched;
-  //     },
-  //   );
-
-  //   setFinalCharacters(final || []);
-
-  //   const getCharacterIds = (characters: typeof final): number[] => {
-  //     return characters?.map((character: { characterId: number }) => character.characterId) ?? [];
-  //   };
-  //   const ids = getCharacterIds(final);
-  //   setFinalCharactersIds(ids);
-  // }, [name, ani, fillDeath, getCharactersResponse, getAnimesResponse]);
-
-  // useEffect(() => {
-  //   console.log(finalCharacters);
-  // }, [finalCharacters]);
+  const isBusy = isLoading || isMemorialLoading || isAnimesLoading;
+  const hasError = isError || isMemorialError || isAnimesError;
 
   return (
     <_.main>
       <_.main_serve>
-        <_.search_task
-          ref={wrapperRef}
-          isColumn={isColumn}
-        >
+        <_.search_task ref={wrapperRef} isColumn={isColumn}>
           <Search_task
             fillDeath={fillDeath}
             setFillDeath={setFillDeath}
@@ -271,20 +147,20 @@ const Search = () => {
             name={name}
             setName={setName}
           />
-          {finalCharacters.length > 0 && finalMemorials.length > 0 ? (
-            <Viewer
-              characters={finalCharacters}
-              memorials={finalMemorials}
-              // memorials={getMemorialsCharacterFilteredResponse?.data}
-            />
+
+          {characters.length > 0 || isBusy ? (
+            <Viewer characters={characters} memorials={memorials} />
+          ) : hasError ? (
+            <div>검색 중 오류가 발생했습니다.</div>
           ) : (
-            <div>Loading Viewer...</div>
+            <div>추모관 불러오는중...</div>
           )}
         </_.search_task>
+
         <_.object>
           <div>
             <img src={Folder} />
-            <div>{finalCharacters?.length ? finalCharacters?.length : 0}개체</div>
+            <div>{characters.length}개체</div>
           </div>
         </_.object>
       </_.main_serve>
