@@ -414,8 +414,8 @@ const useApps = (): TaskType[] => {
       layer: undefined,
       appSetup: {
         Image: setting,
-        minWidth: 60,
-        minHeight: 55,
+        minWidth: 340,
+        minHeight: 500,
         setUpWidth: 800,
         setUpHeight: 562,
       },
