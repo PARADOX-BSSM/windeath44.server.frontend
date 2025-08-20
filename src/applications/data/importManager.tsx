@@ -50,6 +50,10 @@ const Help = lazy(() => import('@/applications/applicationList/help/index.tsx'))
 
 const Alert = lazy(() => import('@/applications/applicationList/alert/index.tsx'));
 
+const TeachingChatBot = lazy(
+  () => import('@/applications/applicationList/teachingChatBot/index.tsx'),
+);
+
 //Application Import 형식 예시
 /*
 {
@@ -401,7 +405,7 @@ const useApps = (): TaskType[] => {
     {
       component: (
         <Suspense fallback={null}>
-          <MyComputer />
+          <TeachingChatBot />
         </Suspense>
       ),
       type: 'App',
