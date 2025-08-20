@@ -1,24 +1,19 @@
 import { Suspense, lazy } from 'react';
 import { TaskType } from '@/modules/typeModule.tsx';
-import Search from '@/applications/applicationList/search';
-import MemorialMenu from '@/applications/applicationList/memorialMenu/index.tsx';
-import Memorial from '@/applications/applicationList/memorial/index.tsx';
-import Bow from '@/applications/applicationList/bow';
 import { useAtom } from 'jotai';
 import { isLogInedAtom } from '@/atoms/windowManager.ts';
 import { useProcessManager } from '@/hooks/processManager.tsx';
 import { getTaskCreators } from '@/services/windowManager/tasks.tsx';
-import MemorialApply from '@/applications/applicationList/memorialApply/index.tsx';
-import Alert from '@/applications/applicationList/alert/index.tsx';
-import MemorialApproach from '@/applications/applicationList/settings/index.tsx';
 
 // 어플리케이션 아이콘 이미지 에셋
 import myComputer from '@/assets/appIcons/my_computer.svg';
 import setting from '@/assets/appIcons/setting.svg';
-import memorialApproach from '@/assets/appIcons/search.svg';
+import search from '@/assets/appIcons/search.svg';
 import trashBin from '@/assets/appIcons/empty_bin.svg';
 
+// lazy를 이용한 어플리케이션 컴포넌트 로드
 const Terminal = lazy(() => import('@/applications/applicationList/terminal/index.tsx'));
+
 const MemorailHistory = lazy(
   () => import('@/applications/applicationList/memorialHistory/index.tsx'),
 );
@@ -28,11 +23,32 @@ const MemorialCommit = lazy(
 const MemorialPreview = lazy(
   () => import('@/applications/applicationList/memorialPreview/index.tsx'),
 );
+
+const AnimationSelect = lazy(
+  () => import('@/applications/applicationList/animationSelect/index.tsx'),
+);
+
+const MemorialApproach = lazy(
+  () => import('@/applications/applicationList/memorialApproach/index.tsx'),
+);
+
+const Bow = lazy(() => import('@/applications/applicationList/bow/index.tsx'));
+
+const MemorialMenu = lazy(() => import('@/applications/applicationList/memorialMenu/index.tsx'));
+
+const Memorial = lazy(() => import('@/applications/applicationList/memorial/index.tsx'));
+
+const Search = lazy(() => import('@/applications/applicationList/search/index.tsx'));
+
+const MemorialApply = lazy(() => import('@/applications/applicationList/memorialApply/index.tsx'));
+
+const MyComputer = lazy(() => import('@/applications/applicationList/myComputer/index.tsx'));
+
 const MemorialMerge = lazy(() => import('@/applications/applicationList/memorialMerge/index.tsx'));
 
-import AnimationSelect from '@/applications/applicationList/animationSelect/index.tsx';
-import MyComputer from '../applicationList/myComputer';
-import Help from '@/applications/applicationList/help';
+const Help = lazy(() => import('@/applications/applicationList/help/index.tsx'));
+
+const Alert = lazy(() => import('@/applications/applicationList/alert/index.tsx'));
 
 //Application Import 형식 예시
 /*
@@ -98,7 +114,7 @@ const useApps = (): TaskType[] => {
       name: '추모관',
       layer: undefined,
       appSetup: {
-        Image: memorialApproach,
+        Image: search,
         minWidth: 45,
         minHeight: 40,
         setUpWidth: 950,
