@@ -10,9 +10,13 @@ import { useProcessManager } from '@/hooks/processManager.tsx';
 import { getTaskCreators } from '@/services/windowManager/tasks.tsx';
 import MemorialApply from '@/applications/applicationList/memorialApply/index.tsx';
 import Alert from '@/applications/applicationList/alert/index.tsx';
-import { getPixelFromPercent } from '@/lib/getPixelFromPercent.tsx';
 import MemorialApproach from '@/applications/applicationList/settings/index.tsx';
+
+// 어플리케이션 아이콘 이미지 에셋
 import myComputer from '@/assets/appIcons/my_computer.svg';
+import setting from '@/assets/appIcons/setting.svg';
+import memorialApproach from '@/assets/appIcons/search.svg';
+import trashBin from '@/assets/appIcons/empty_bin.svg';
 
 const Terminal = lazy(() => import('@/applications/applicationList/terminal/index.tsx'));
 const MemorailHistory = lazy(
@@ -26,12 +30,9 @@ const MemorialPreview = lazy(
 );
 const MemorialMerge = lazy(() => import('@/applications/applicationList/memorialMerge/index.tsx'));
 
-import memorialApproach from '@/assets/appIcons/search.svg';
-import trashBin from '@/assets/appIcons/empty_bin.svg';
 import AnimationSelect from '@/applications/applicationList/animationSelect/index.tsx';
 import MyComputer from '../applicationList/myComputer';
 import Help from '@/applications/applicationList/help';
-import PasswordChange from '../utility/passwordChange';
 
 //Application Import 형식 예시
 /*
@@ -55,7 +56,11 @@ const useApps = (): TaskType[] => {
   const [isLogIned, setIsLogIned] = useAtom(isLogInedAtom);
   const [taskList, addTask, removeTask] = useProcessManager();
 
-  const { logIn, signUp, emailChack, auth, passwordChange } = getTaskCreators(setIsLogIned, addTask, removeTask);
+  const { logIn, signUp, emailChack, auth, passwordChange } = getTaskCreators(
+    setIsLogIned,
+    addTask,
+    removeTask,
+  );
 
   const baseApps: TaskType[] = [
     logIn,
@@ -64,7 +69,11 @@ const useApps = (): TaskType[] => {
     auth,
     passwordChange,
     {
-      component: <Suspense fallback={null}><Terminal /></Suspense>,
+      component: (
+        <Suspense fallback={null}>
+          <Terminal />
+        </Suspense>
+      ),
       type: 'App',
       id: 2210,
       name: '휴지통',
@@ -79,7 +88,11 @@ const useApps = (): TaskType[] => {
       visible: true,
     },
     {
-      component: <Suspense fallback={null}><MemorialApproach /></Suspense>,
+      component: (
+        <Suspense fallback={null}>
+          <MemorialApproach />
+        </Suspense>
+      ),
       type: 'App',
       id: 2221,
       name: '추모관',
@@ -94,7 +107,11 @@ const useApps = (): TaskType[] => {
       visible: true,
     },
     {
-      component: <Suspense fallback={null}><Search /></Suspense>,
+      component: (
+        <Suspense fallback={null}>
+          <Search />
+        </Suspense>
+      ),
       type: 'App',
       id: 2222,
       name: 'Search',
@@ -109,7 +126,16 @@ const useApps = (): TaskType[] => {
       visible: false,
     },
     {
-      component: <Suspense fallback={null}><MemorialMenu stack={[]} push={undefined} pop={undefined} top={undefined} /></Suspense>,
+      component: (
+        <Suspense fallback={null}>
+          <MemorialMenu
+            stack={[]}
+            push={undefined}
+            pop={undefined}
+            top={undefined}
+          />
+        </Suspense>
+      ),
       type: 'App',
       id: 2223,
       name: 'memorialMenu',
@@ -124,7 +150,16 @@ const useApps = (): TaskType[] => {
       visible: false,
     },
     {
-      component: <Suspense fallback={null}><Memorial stack={[]} push={undefined} pop={undefined} top={undefined} /></Suspense>,
+      component: (
+        <Suspense fallback={null}>
+          <Memorial
+            stack={[]}
+            push={undefined}
+            pop={undefined}
+            top={undefined}
+          />
+        </Suspense>
+      ),
       type: 'App',
       id: 2224,
       name: 'memorial',
@@ -139,7 +174,16 @@ const useApps = (): TaskType[] => {
       visible: false,
     },
     {
-      component: <Suspense fallback={null}><MemorailHistory stack={[]} push={undefined} pop={undefined} top={undefined} /></Suspense>,
+      component: (
+        <Suspense fallback={null}>
+          <MemorailHistory
+            stack={[]}
+            push={undefined}
+            pop={undefined}
+            top={undefined}
+          />
+        </Suspense>
+      ),
       type: 'App',
       id: 2225,
       name: 'memorailHistory',
@@ -154,7 +198,16 @@ const useApps = (): TaskType[] => {
       visible: false,
     },
     {
-      component: <Suspense fallback={null}><MemorialCommit stack={[]} push={undefined} pop={undefined} top={undefined} /></Suspense>,
+      component: (
+        <Suspense fallback={null}>
+          <MemorialCommit
+            stack={[]}
+            push={undefined}
+            pop={undefined}
+            top={undefined}
+          />
+        </Suspense>
+      ),
       type: 'App',
       id: 2226,
       name: 'MemorialCommit',
@@ -169,7 +222,16 @@ const useApps = (): TaskType[] => {
       visible: false,
     },
     {
-      component: <Suspense fallback={null}><MemorialApply stack={[]} push={undefined} pop={undefined} top={undefined} /></Suspense>,
+      component: (
+        <Suspense fallback={null}>
+          <MemorialApply
+            stack={[]}
+            push={undefined}
+            pop={undefined}
+            top={undefined}
+          />
+        </Suspense>
+      ),
       type: 'App',
       id: 2227,
       name: 'MemorialApply',
@@ -184,7 +246,11 @@ const useApps = (): TaskType[] => {
       visible: false,
     },
     {
-      component: <Suspense fallback={null}><MemorialMerge /></Suspense>,
+      component: (
+        <Suspense fallback={null}>
+          <MemorialMerge />
+        </Suspense>
+      ),
       type: 'App',
       id: 2229,
       name: 'MemorialMerge',
@@ -199,7 +265,11 @@ const useApps = (): TaskType[] => {
       visible: false,
     },
     {
-      component: <Suspense fallback={null}><Bow /></Suspense>,
+      component: (
+        <Suspense fallback={null}>
+          <Bow />
+        </Suspense>
+      ),
       type: 'App',
       id: 2230,
       name: 'Bow',
@@ -214,7 +284,15 @@ const useApps = (): TaskType[] => {
       visible: false,
     },
     {
-      component: <Suspense fallback={null}><Alert icon="" text={<></>} onClick={() => undefined} /></Suspense>,
+      component: (
+        <Suspense fallback={null}>
+          <Alert
+            icon=""
+            text={<></>}
+            onClick={() => undefined}
+          />
+        </Suspense>
+      ),
       type: 'App',
       id: 2231,
       name: '경고',
@@ -229,7 +307,11 @@ const useApps = (): TaskType[] => {
       visible: false,
     },
     {
-      component: <Suspense fallback={null}><AnimationSelect /></Suspense>,
+      component: (
+        <Suspense fallback={null}>
+          <AnimationSelect />
+        </Suspense>
+      ),
       type: 'App',
       id: 2232,
       name: '애니메이션 선택',
@@ -244,7 +326,11 @@ const useApps = (): TaskType[] => {
       visible: false,
     },
     {
-      component: <Suspense fallback={null}><Help /></Suspense>,
+      component: (
+        <Suspense fallback={null}>
+          <Help />
+        </Suspense>
+      ),
       type: 'App',
       id: 2233,
       name: '도움말',
@@ -259,9 +345,13 @@ const useApps = (): TaskType[] => {
       visible: false,
     },
     {
-      component: <Suspense fallback={null}><MyComputer /></Suspense>,
+      component: (
+        <Suspense fallback={null}>
+          <MyComputer />
+        </Suspense>
+      ),
       type: 'App',
-      id: 2233,
+      id: 2234,
       name: '내 컴퓨터',
       layer: undefined,
       appSetup: {
@@ -274,7 +364,11 @@ const useApps = (): TaskType[] => {
       visible: true,
     },
     {
-      component: <Suspense fallback={null}><MemorialPreview /></Suspense>,
+      component: (
+        <Suspense fallback={null}>
+          <MemorialPreview />
+        </Suspense>
+      ),
       type: 'App',
       id: 2228,
       name: '미리보기',
@@ -287,6 +381,25 @@ const useApps = (): TaskType[] => {
         setUpHeight: 577,
       },
       visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <MyComputer />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2235,
+      name: '챗봇 학습',
+      layer: undefined,
+      appSetup: {
+        Image: setting,
+        minWidth: 60,
+        minHeight: 55,
+        setUpWidth: 800,
+        setUpHeight: 562,
+      },
+      visible: true,
     },
   ];
 
