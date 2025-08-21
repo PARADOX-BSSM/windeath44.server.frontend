@@ -87,9 +87,9 @@ export const BottomContainerSubmit = styled.button`
   font-size: 1em;
   background-color: var(--light-primary-color);
   box-shadow:
-    -2px -2px 0 0 var(--primary-black) inset,
-    2px 2px 0 0 #fff inset,
-    -4px -4px 0 0 var(--dark-primary-color) inset,
-    4px 4px 0 0 var(--secondary-color) inset;
+    -1px -1px 0 0 var(--primary-black) inset,
+    1px 1px 0 0 #fff inset,
+    -2px -2px 0 0 var(--dark-primary-color) inset,
+    2px 2px 0 0 var(--secondary-color) inset;
   border: none;
 `;
