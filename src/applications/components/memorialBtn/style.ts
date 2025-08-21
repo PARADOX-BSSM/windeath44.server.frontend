@@ -9,10 +9,10 @@ export const Btn = styled.button<{ width?: string; height?: string; fontSize?: s
   align-items: center;
   background: var(--light-primary-color);
   box-shadow:
-    -0.094rem -0.094rem 0px 0px var(--primary-black) inset,
-    0.094rem 0.094rem 0px 0px #fff inset,
-    -0.188rem -0.188rem 0px 0px var(--dark-primary-color) inset,
-    0.188rem 0.188rem 0px 0px var(--secondary-color) inset;
+    -1px -1px 0px 0px var(--primary-black) inset,
+    1px 1px 0px 0px #fff inset,
+    -2px -2px 0px 0px var(--dark-primary-color) inset,
+    2px 2px 0px 0px var(--secondary-color) inset;
   color: var(--primary-black);
   border: none;
   text-align: center;
@@ -20,7 +20,7 @@ export const Btn = styled.button<{ width?: string; height?: string; fontSize?: s
   font-size: ${({ fontSize }) => fontSize || '1.25rem'}; /* 20px */
   font-style: normal;
   font-weight: 400;
-  line-height: 0.938rem; /* 15px */
+  line-height: 15px;
   cursor: none;
 `;
 
@@ -33,17 +33,17 @@ export const SelectedBtn = styled.button<{ width?: string; height?: string; font
   align-items: center;
   background: var(--LightPrimary, #ffd3fb);
   box-shadow:
-    -0.094rem -0.094rem 0px 0px #fff inset,
-    0.094rem 0.094rem 0px 0px var(--primary-black) inset,
-    -0.188rem -0.188rem 0px 0px var(--secondary-color) inset,
-    0.188rem 0.188rem 0px 0px var(--dark-primary-color) inset;
+    -1px -1px 0px 0px #fff inset,
+    1px 1px 0px 0px var(--primary-black) inset,
+    -2px -2px 0px 0px var(--secondary-color) inset,
+    2px 2px 0px 0px var(--dark-primary-color) inset;
   color: var(--primary-black);
   text-align: center;
   font-family: Galmuri11;
   font-size: ${({ fontSize }) => fontSize || '1.25rem'};
   font-style: normal;
   font-weight: 400;
-  line-height: 0.938rem;
+  line-height: 15px;
   border: none;
   cursor: none;
 `;
@@ -57,10 +57,10 @@ export const SubmitDefault = styled.button<{ width?: string; height?: string; fo
   align-items: center;
   background: var(--LightPrimary, #ffd3fb);
   box-shadow:
-    -0.094rem -0.094rem 0px 0px var(--primary-black) inset,
-    0.094rem 0.094rem 0px 0px #fff inset,
-    -0.188rem -0.188rem 0px 0px var(--dark-primary-color) inset,
-    0.188rem 0.188rem 0px 0px var(--secondary-color) inset;
+    -1px -1px 0px 0px var(--primary-black) inset,
+    1px 1px 0px 0px #fff inset,
+    -2px -2px 0px 0px var(--dark-primary-color) inset,
+    2px 2px 0px 0px var(--secondary-color) inset;
   color: var(--dark-primary-color);
   text-align: center;
   font-family: Galmuri11;
@@ -80,10 +80,10 @@ export const SubmitActive = styled.button<{ width?: string; height?: string; fon
   align-items: center;
   background: var(--LightPrimary, #ffd3fb);
   box-shadow:
-    -0.094rem -0.094rem 0px 0px var(--primary-black) inset,
-    0.094rem 0.094rem 0px 0px #fff inset,
-    -0.188rem -0.188rem 0px 0px var(--dark-primary-color) inset,
-    0.188rem 0.188rem 0px 0px var(--secondary-color) inset;
+    -1px -1px 0px 0px var(--primary-black) inset,
+    1px 1px 0px 0px #fff inset,
+    -2px -2px 0px 0px var(--dark-primary-color) inset,
+    2px 2px 0px 0px var(--secondary-color) inset;
   color: var(--Black, #2e2e2e);
   text-align: center;
   font-family: Galmuri11;
