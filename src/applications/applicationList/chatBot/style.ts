@@ -88,7 +88,7 @@ export const ContributorsTitle = styled.p`
   font-size: 18px;
   color: var(--primary-black);
   margin: 0;
-  text-align: center;
+  text-align: left;
 `;
 
 export const ContributorsList = styled.div`
@@ -107,9 +107,9 @@ export const ContributorAvatar = styled.img`
 export const ContributorsCount = styled.p`
   font-family: 'Galmuri11', sans-serif;
   font-size: 14px;
-  color: var(--chatbot-border);
+  color: var(--stroke);
   margin: 0;
-  text-align: center;
+  text-align: left;
 `;
 
 export const MemorialButton = styled.button`
