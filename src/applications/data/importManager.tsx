@@ -54,6 +54,8 @@ const TeachingChatBot = lazy(
   () => import('@/applications/applicationList/teachingChatBot/index.tsx'),
 );
 
+const ChatBot = lazy(() => import('@/applications/applicationList/chatBot/index.tsx'));
+
 //Application Import 형식 예시
 /*
 {
@@ -411,6 +413,25 @@ const useApps = (): TaskType[] => {
       type: 'App',
       id: 2235,
       name: '챗봇 학습',
+      layer: undefined,
+      appSetup: {
+        Image: setting,
+        minWidth: 340,
+        minHeight: 500,
+        setUpWidth: 800,
+        setUpHeight: 562,
+      },
+      visible: true,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <ChatBot />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2236,
+      name: '분신사바 메인',
       layer: undefined,
       appSetup: {
         Image: setting,
