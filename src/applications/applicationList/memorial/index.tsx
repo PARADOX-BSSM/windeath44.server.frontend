@@ -54,14 +54,13 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
     createdAt: '',
     mergerId: '',
     updatedAt: '',
-  }); 
+  });
   const mutationMemorialGet = useMemorialGet(setMemorialData);
   const [animation, setAnimation] = useState<string>('');
   const mutationAnimation = useGetAnimation(setAnimation);
   const [memorialComment, setMemorialComment] = useState<MemorialCommentsData[]>([]);
   const mutaionGetMemorialComments = useGetMemorialComments(setMemorialComment);
   const mutationCommentWrite = useCommentWrite();
-  const id = 5;
   const [memorialId, setMemorialId] = useAtom(memorialIdAtom);
   const [characterId, setCharacterId] = useAtom(characterIdAtom);
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
