@@ -59,7 +59,6 @@ const ChatBot = () => {
   };
 
   const handleMemorialClick = () => {
-    // TODO: Navigate to memorial
     console.log('Navigate to memorial');
   };
 

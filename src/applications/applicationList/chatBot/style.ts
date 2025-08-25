@@ -156,11 +156,10 @@ export const ChatMessagesContainer = styled.div`
   background: var(--chatbot-background-overlay);
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
   gap: 1px;
   padding: 1px 0;
-  overflow: hidden;
 `;
-
 
 export const InputSection = styled.div`
   display: flex;
