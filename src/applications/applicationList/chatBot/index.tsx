@@ -1,11 +1,8 @@
 import { useState } from 'react';
 import * as _ from './style';
-
-// Asset constants from Figma
-const imgImage21 = "http://localhost:3845/assets/41effb3fd9d172025eb6b54e31a7e79d3b42dbcc.png";
-const imgImage = "http://localhost:3845/assets/24d87e7f310ae5ab05ba1a8b97594af17a4e780b.png";
-const imgImage1 = "http://localhost:3845/assets/ab53ebf517eeb8eeb3c7502c890fbcc0f2b7d55c.png";
-
+import Choten from '@/assets/profile/choten.svg';
+import Ame from '@/assets/profile/ame.svg';
+import Hosino from '@/assets/character/hosino.svg';
 
 const ChatBot = () => {
   const [message, setMessage] = useState('');
@@ -13,7 +10,7 @@ const ChatBot = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!message.trim()) return;
-    
+
     // TODO: Implement message sending logic
     console.log('Sending message:', message);
     setMessage('');
@@ -31,34 +28,50 @@ const ChatBot = () => {
           <_.ProfileSection>
             <_.ProfileTop>
               <_.CharacterImageContainer>
-                <_.CharacterImage src={imgImage21} alt="호시노 아이" />
+                <_.CharacterImage
+                  src={Hosino}
+                  alt="호시노 아이"
+                />
               </_.CharacterImageContainer>
               <_.CharacterName>호시노 아이</_.CharacterName>
             </_.ProfileTop>
-            
+
             <_.ContributorsSection>
               <_.ContributorsTitle>챗봇 기여자</_.ContributorsTitle>
               <_.ContributorsList>
-                <_.ContributorAvatar src={imgImage} alt="기여자" />
-                <_.ContributorAvatar src={imgImage1} alt="기여자" />
-                <_.ContributorAvatar src={imgImage1} alt="기여자" />
-                <_.ContributorAvatar src={imgImage} alt="기여자" />
-                <_.ContributorAvatar src={imgImage} alt="기여자" />
+                <_.ContributorAvatar
+                  src={Ame}
+                  alt="기여자"
+                />
+                <_.ContributorAvatar
+                  src={Choten}
+                  alt="기여자"
+                />
+                <_.ContributorAvatar
+                  src={Choten}
+                  alt="기여자"
+                />
+                <_.ContributorAvatar
+                  src={Ame}
+                  alt="기여자"
+                />
+                <_.ContributorAvatar
+                  src={Ame}
+                  alt="기여자"
+                />
               </_.ContributorsList>
               <_.ContributorsCount>+ 18932명의 기여자</_.ContributorsCount>
             </_.ContributorsSection>
           </_.ProfileSection>
-          
-          <_.MemorialButton onClick={handleMemorialClick}>
-            추모관 바로가기
-          </_.MemorialButton>
+
+          <_.MemorialButton onClick={handleMemorialClick}>추모관 바로가기</_.MemorialButton>
         </_.LeftPanel>
 
         <_.RightPanel>
           <_.ChatArea>
             <_.ChatMessagesContainer>
               <_.ChatMessage>
-                <_.MessageAvatar src={imgImage} />
+                <_.MessageAvatar src={Ame} />
                 <_.MessageContent>
                   <_.MessageHeader>
                     <_.MessageAuthor>로에나</_.MessageAuthor>
@@ -69,7 +82,7 @@ const ChatBot = () => {
               </_.ChatMessage>
 
               <_.ChatMessage>
-                <_.MessageAvatar src={imgImage21} />
+                <_.MessageAvatar src={Hosino} />
                 <_.MessageContent>
                   <_.MessageHeader>
                     <_.MessageAuthor>호시노 아이</_.MessageAuthor>
@@ -79,7 +92,7 @@ const ChatBot = () => {
               </_.ChatMessage>
 
               <_.ChatMessage>
-                <_.MessageAvatar src={imgImage} />
+                <_.MessageAvatar src={Ame} />
                 <_.MessageContent>
                   <_.MessageHeader>
                     <_.MessageAuthor>로에나</_.MessageAuthor>
@@ -100,7 +113,10 @@ const ChatBot = () => {
                 placeholder="메시지 입력"
               />
             </_.InputForm>
-            <_.SendButton type="submit" form="chatForm">
+            <_.SendButton
+              type="submit"
+              form="chatForm"
+            >
               전송
             </_.SendButton>
           </_.InputSection>
