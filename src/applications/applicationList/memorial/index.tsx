@@ -54,7 +54,7 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
     createdAt: '',
     mergerId: '',
     updatedAt: '',
-  }); 
+  });
   const mutationMemorialGet = useMemorialGet(setMemorialData);
   const [animation, setAnimation] = useState<string>('');
   const mutationAnimation = useGetAnimation(setAnimation);
@@ -90,6 +90,13 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
     }
   }, [characterData.animeId]);
 
+  const stackProps = {
+    stack: stack,
+    push: push,
+    pop: pop,
+    top: top,
+  };
+
   return (
     <_.Main>
       <_.Container>
@@ -102,7 +109,7 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
               </_.TextContainer>
               <_.History
                 onClick={() => {
-                  push(taskSearch?.('memorailHistory', stack, push, pop, top));
+                  push(taskSearch?.('memorailHistory', stackProps));
                 }}
               >
                 기록
@@ -110,7 +117,7 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
               <_.DocumentUpdate
                 onClick={() => {
                   taskTransform?.('', 'MemorialPreview');
-                  push(taskSearch?.('MemorialCommit', stack, push, pop, top));
+                  push(taskSearch?.('MemorialCommit', stackProps));
                 }}
               >
                 문서 수정
