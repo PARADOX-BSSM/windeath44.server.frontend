@@ -205,6 +205,7 @@ const ChatBot = () => {
                   text={msg.text}
                 />
               ))}
+              {isLoading ? <div>답변을 기다리는 중입니다.</div> : ''}
               <div ref={messagesEndRef} />
             </_.ChatMessagesContainer>
           </_.ChatArea>
@@ -221,7 +222,10 @@ const ChatBot = () => {
             </_.InputForm>
             <_.SendButton
               type="button"
-              onClick={addMessage}
+              onClick={() => {
+                const fakeEvent = { preventDefault: () => {} } as React.FormEvent<HTMLFormElement>;
+                handleSubmit(fakeEvent);
+              }}
             >
               전송
             </_.SendButton>
