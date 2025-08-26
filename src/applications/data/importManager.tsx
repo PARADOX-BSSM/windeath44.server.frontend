@@ -53,6 +53,11 @@ const Alert = lazy(() => import('@/applications/applicationList/alert/index.tsx'
 const TeachingChatBot = lazy(
   () => import('@/applications/applicationList/teachingChatBot/index.tsx'),
 );
+const ChatbotSelect = lazy(() => import('@/applications/applicationList/chatbotSelect/index.tsx'));
+
+const ChatBot = lazy(() => import('@/applications/applicationList/chatBot/index.tsx'));
+
+const AdminApp = lazy(() => import('@/applications/applicationList/adminApp/index.tsx'));
 
 //Application Import 형식 예시
 /*
@@ -411,6 +416,63 @@ const useApps = (): TaskType[] => {
       type: 'App',
       id: 2235,
       name: '챗봇 학습',
+      layer: undefined,
+      appSetup: {
+        Image: setting,
+        minWidth: 340,
+        minHeight: 500,
+        setUpWidth: 800,
+        setUpHeight: 562,
+      },
+      visible: true,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <ChatbotSelect />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2235,
+      name: '챗봇',
+      layer: undefined,
+      appSetup: {
+        Image: setting,
+        minWidth: 340,
+        minHeight: 500,
+        setUpWidth: 800,
+        setUpHeight: 562,
+      },
+      visible: true,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <ChatBot />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2236,
+      name: '분신사바 메인',
+      layer: undefined,
+      appSetup: {
+        Image: setting,
+        minWidth: 340,
+        minHeight: 500,
+        setUpWidth: 800,
+        setUpHeight: 562,
+      },
+      visible: true,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <AdminApp />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 0,
+      name: '어드민',
       layer: undefined,
       appSetup: {
         Image: setting,

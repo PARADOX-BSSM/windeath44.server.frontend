@@ -81,6 +81,7 @@ const WindowManager = () => {
         layer: -3,
         name: 'Discover',
         appSetup: undefined,
+        visible: false,
       };
       setTimeout(() => {
         addTask(discover);
