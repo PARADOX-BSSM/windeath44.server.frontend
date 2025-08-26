@@ -112,26 +112,32 @@ const ChatBot = () => {
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    if (isLoading) {
+      return;
+    }
     e.preventDefault();
     if (!message.trim() || isLoading) {
       return;
     }
 
     setIsLoading(true);
-    
+
     // API 호출
-    doChatMutation.mutate({
-      chatbotId: 19,
-      content: message.trim(),
-      userId: 'pdh0128',
-    }, {
-      onSuccess: () => {
-        setIsLoading(false);
+    doChatMutation.mutate(
+      {
+        chatbotId: 19,
+        content: message.trim(),
+        userId: 'pdh0128',
       },
-      onError: () => {
-        setIsLoading(false);
+      {
+        onSuccess: () => {
+          setIsLoading(false);
+        },
+        onError: () => {
+          setIsLoading(false);
+        },
       },
-    });
+    );
 
     addMessage();
   };
@@ -209,7 +215,7 @@ const ChatBot = () => {
                 type="text"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                placeholder="메시지 입력"
+                placeholder={isLoading ? '답변을 기다리는 중입니다..' : '메시지 입력'}
                 readOnly={isLoading}
               />
             </_.InputForm>
