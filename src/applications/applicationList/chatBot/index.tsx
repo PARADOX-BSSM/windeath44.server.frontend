@@ -5,6 +5,7 @@ import ChatMessage from '@/applications/components/chatMessage';
 import Choten from '@/assets/profile/choten.svg';
 import Ame from '@/assets/profile/ame.svg';
 import Hosino from '@/assets/character/hosino.svg';
+import { useDoChat } from '@/api/chatbot/chat';
 
 interface Message {
   id: string;
@@ -22,6 +23,8 @@ interface Contributor {
 
 const ChatBot = () => {
   const [message, setMessage] = useState('');
+  const doChatMutation = useDoChat();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -110,6 +113,26 @@ const ChatBot = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!message.trim() || isLoading) {
+      return;
+    }
+
+    setIsLoading(true);
+    
+    // API 호출
+    doChatMutation.mutate({
+      chatbotId: 19,
+      content: message.trim(),
+      userId: 'pdh0128',
+    }, {
+      onSuccess: () => {
+        setIsLoading(false);
+      },
+      onError: () => {
+        setIsLoading(false);
+      },
+    });
+
     addMessage();
   };
 
@@ -187,6 +210,7 @@ const ChatBot = () => {
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="메시지 입력"
+                readOnly={isLoading}
               />
             </_.InputForm>
             <_.SendButton
