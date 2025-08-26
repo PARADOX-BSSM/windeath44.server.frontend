@@ -26,6 +26,7 @@ export const TopContainer = styled.div`
     1px 1px 0 0 var(--primary-black) inset,
     -2px -2px 0 0 #dcafdd inset,
     2px 2px 0 0 #dcafdd inset;
+  overflow-y: scroll;
 `;
 
 export const BottomContainer = styled.div`

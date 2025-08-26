@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react';
 import Booting from '@/services/booting/index.tsx';
 import WindowManager from './windowManager/index.tsx';
-import { getPixelFromPercent } from '@/lib/getPixelFromPercent.tsx';
+
+const SESSION_KEY = 'hasBootedSession';
 
 function Kernel() {
   const [isBooting, setIsBooting] = useState(() => {
-    return localStorage.getItem('hasBooted') !== 'true';
+    return sessionStorage.getItem(SESSION_KEY) !== 'true';
   });
 
   useEffect(() => {
-    // const px = getPixelFromPercent('width', 1.75);
     const px = 16;
     if (px > 0) {
       document.documentElement.style.fontSize = `${px}px`;
@@ -18,10 +18,11 @@ function Kernel() {
 
   useEffect(() => {
     if (isBooting) {
-      setTimeout(() => {
-        localStorage.setItem('hasBooted', 'true');
+      const id = window.setTimeout(() => {
+        sessionStorage.setItem(SESSION_KEY, 'true'); // 세션 동안만 유지
         setIsBooting(false);
       }, 2700);
+      return () => clearTimeout(id);
     }
   }, [isBooting]);
 
