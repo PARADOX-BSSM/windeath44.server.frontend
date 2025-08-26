@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
 import * as _ from './style';
 import ChatMessage from '@/applications/components/chatMessage';
 import Choten from '@/assets/profile/choten.svg';
@@ -56,6 +57,28 @@ const ChatBot = () => {
     { id: '9', avatar: Choten, alt: '기여자' },
     { id: '10', avatar: Ame, alt: '기여자' },
     { id: '11', avatar: Choten, alt: '기여자' },
+    { id: '12', avatar: Ame, alt: '기여자' },
+    { id: '13', avatar: Choten, alt: '기여자' },
+    { id: '14', avatar: Choten, alt: '기여자' },
+    { id: '15', avatar: Ame, alt: '기여자' },
+    { id: '16', avatar: Choten, alt: '기여자' },
+    { id: '17', avatar: Ame, alt: '기여자' },
+    { id: '18', avatar: Choten, alt: '기여자' },
+    { id: '19', avatar: Ame, alt: '기여자' },
+    { id: '20', avatar: Choten, alt: '기여자' },
+    { id: '21', avatar: Ame, alt: '기여자' },
+    { id: '22', avatar: Choten, alt: '기여자' },
+    { id: '23', avatar: Ame, alt: '기여자' },
+    { id: '24', avatar: Choten, alt: '기여자' },
+    { id: '25', avatar: Choten, alt: '기여자' },
+    { id: '26', avatar: Ame, alt: '기여자' },
+    { id: '27', avatar: Choten, alt: '기여자' },
+    { id: '28', avatar: Ame, alt: '기여자' },
+    { id: '29', avatar: Choten, alt: '기여자' },
+    { id: '30', avatar: Ame, alt: '기여자' },
+    { id: '31', avatar: Choten, alt: '기여자' },
+    { id: '32', avatar: Ame, alt: '기여자' },
+    { id: '32', avatar: Choten, alt: '기여자' },
   ]);
 
   const [showAllContributors, setShowAllContributors] = useState(false);
@@ -126,7 +149,11 @@ const ChatBot = () => {
                   />
                 ))}
               </_.ContributorsList>
-              <_.ContributorsCount onClick={handleContributorsCountClick}>
+              <_.ContributorsCount
+                onClick={handleContributorsCountClick}
+                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                onMouseOut={() => setCursorImage(CURSOR_IMAGES.default)}
+              >
                 {showAllContributors
                   ? `${contributors.length}명의 기여자`
                   : `+ ${contributors.length - 5}명의 기여자`}

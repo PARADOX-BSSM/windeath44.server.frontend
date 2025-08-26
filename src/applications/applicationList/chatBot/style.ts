@@ -96,6 +96,25 @@ export const ContributorsList = styled.div`
   grid-template-columns: repeat(5, 1fr);
   gap: 4px;
   max-width: 100%;
+  max-height: 120px;
+  overflow-y: auto;
+  
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: var(--light-primary-color);
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: var(--stroke);
+    border-radius: 2px;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-black);
+  }
 `;
 
 export const ContributorAvatar = styled.img`
@@ -111,7 +130,7 @@ export const ContributorsCount = styled.p`
   color: var(--stroke);
   margin: 0;
   text-align: left;
-  cursor: pointer;
+  cursor: none;
   user-select: none;
 
   &:hover {
