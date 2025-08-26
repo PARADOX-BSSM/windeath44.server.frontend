@@ -1,4 +1,4 @@
-
+import * as _ from './style';
 import Logo from '@/assets/windeath44.svg';
 import Inputs from '@/applications/components/inputs';
 import React, { useState } from 'react';
@@ -32,8 +32,8 @@ const PasswordChange = ({ changeToLogIn }: Props) => {
     );
   };
 
-  const buttonWidth = "144px";
-  const buttonHeight = "42px";
+  const buttonWidth = '144px';
+  const buttonHeight = '42px';
   const buttonFontSize = '20px';
 
   return (
@@ -53,7 +53,7 @@ const PasswordChange = ({ changeToLogIn }: Props) => {
             setValue={setEmail}
             type={'text'}
             width={'80%'}
-            fontSize='20px'
+            fontSize="20px"
             flex={true}
           />
           <Inputs
@@ -62,7 +62,7 @@ const PasswordChange = ({ changeToLogIn }: Props) => {
             setValue={setPassword}
             type={'password'}
             width={'80%'}
-            fontSize='20px'
+            fontSize="20px"
             flex={true}
           />
           <Inputs
@@ -71,7 +71,7 @@ const PasswordChange = ({ changeToLogIn }: Props) => {
             setValue={setCheckingPw}
             type={'password'}
             width={'75%'}
-            fontSize='20px'
+            fontSize="20px"
             flex={true}
           />
         </_.tempInputsStyle>
