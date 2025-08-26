@@ -59,7 +59,6 @@ export const TopContainerItem = styled.div`
   align-items: center;
   background-color: #fff;
   box-shadow: 0 -1px 0 0 #cccccc inset;
-  //border: 0 0 1px 0 var(--primary-black) solid;
 `;
 export const TopContainerItemInfo = styled.div`
   display: flex;
