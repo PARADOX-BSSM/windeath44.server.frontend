@@ -92,9 +92,10 @@ export const ContributorsTitle = styled.p`
 `;
 
 export const ContributorsList = styled.div`
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
   gap: 4px;
+  max-width: 100%;
 `;
 
 export const ContributorAvatar = styled.img`
@@ -110,6 +111,12 @@ export const ContributorsCount = styled.p`
   color: var(--stroke);
   margin: 0;
   text-align: left;
+  cursor: pointer;
+  user-select: none;
+
+  &:hover {
+    color: var(--primary-black);
+  }
 `;
 
 export const MemorialButton = styled.button`

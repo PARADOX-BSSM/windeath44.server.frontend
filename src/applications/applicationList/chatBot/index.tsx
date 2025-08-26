@@ -13,6 +13,12 @@ interface Message {
   text: string;
 }
 
+interface Contributor {
+  id: string;
+  avatar: string;
+  alt: string;
+}
+
 const ChatBot = () => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<Message[]>([
@@ -37,6 +43,22 @@ const ChatBot = () => {
       text: 'ㅜㅜㅜㅜㅜ',
     },
   ]);
+
+  const [contributors] = useState<Contributor[]>([
+    { id: '1', avatar: Ame, alt: '기여자' },
+    { id: '2', avatar: Choten, alt: '기여자' },
+    { id: '3', avatar: Choten, alt: '기여자' },
+    { id: '4', avatar: Ame, alt: '기여자' },
+    { id: '5', avatar: Choten, alt: '기여자' },
+    { id: '6', avatar: Ame, alt: '기여자' },
+    { id: '7', avatar: Choten, alt: '기여자' },
+    { id: '8', avatar: Ame, alt: '기여자' },
+    { id: '9', avatar: Choten, alt: '기여자' },
+    { id: '10', avatar: Ame, alt: '기여자' },
+    { id: '11', avatar: Choten, alt: '기여자' },
+  ]);
+
+  const [showAllContributors, setShowAllContributors] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -72,6 +94,12 @@ const ChatBot = () => {
     console.log('Navigate to memorial');
   };
 
+  const handleContributorsCountClick = () => {
+    setShowAllContributors(!showAllContributors);
+  };
+
+  const displayedContributors = showAllContributors ? contributors : contributors.slice(0, 5);
+
   return (
     <_.Container>
       <_.MainContent>
@@ -90,28 +118,19 @@ const ChatBot = () => {
             <_.ContributorsSection>
               <_.ContributorsTitle>챗봇 기여자</_.ContributorsTitle>
               <_.ContributorsList>
-                <_.ContributorAvatar
-                  src={Ame}
-                  alt="기여자"
-                />
-                <_.ContributorAvatar
-                  src={Choten}
-                  alt="기여자"
-                />
-                <_.ContributorAvatar
-                  src={Choten}
-                  alt="기여자"
-                />
-                <_.ContributorAvatar
-                  src={Ame}
-                  alt="기여자"
-                />
-                <_.ContributorAvatar
-                  src={Ame}
-                  alt="기여자"
-                />
+                {displayedContributors.map((contributor) => (
+                  <_.ContributorAvatar
+                    key={contributor.id}
+                    src={contributor.avatar}
+                    alt={contributor.alt}
+                  />
+                ))}
               </_.ContributorsList>
-              <_.ContributorsCount>+ 18932명의 기여자</_.ContributorsCount>
+              <_.ContributorsCount onClick={handleContributorsCountClick}>
+                {showAllContributors
+                  ? `${contributors.length}명의 기여자`
+                  : `+ ${contributors.length - 5}명의 기여자`}
+              </_.ContributorsCount>
             </_.ContributorsSection>
           </_.ProfileSection>
 
