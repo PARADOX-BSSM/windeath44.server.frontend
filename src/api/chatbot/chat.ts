@@ -39,10 +39,7 @@ const doChat = async ({ chatbotId, content, userId }: DoChatInterface) => {
 export const useDoChat = () => {
   return useMutation({
     mutationFn: doChat,
-    onSuccess: () => {
-      //   console.log(JSON.stringify(response.data));
-      alert('채팅이 성공적으로 등록되었습니다.');
-    },
+    onSuccess: () => {},
     onError: () => {},
   });
 };
