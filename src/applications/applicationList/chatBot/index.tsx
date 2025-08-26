@@ -214,7 +214,7 @@ const ChatBot = () => {
                   text={msg.text}
                 />
               ))}
-              {isLoading ? <div>답변을 기다리는 중입니다.</div> : ''}
+              {isLoading ? <_.LoadingMessage>답변을 기다리는 중입니다.</_.LoadingMessage> : ''}
               <div ref={messagesEndRef} />
             </_.ChatMessagesContainer>
           </_.ChatArea>

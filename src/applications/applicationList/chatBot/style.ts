@@ -240,3 +240,20 @@ export const SendButton = styled.button`
     -2px -2px 0px 0px inset #dcafdd,
     2px 2px 0px 0px inset #ffbbf5;
 `;
+
+export const LoadingMessage = styled.div`
+  background: var(--chatbot-white);
+  padding: 12px 16px;
+  margin: 2px 0;
+  border-left: 3px solid var(--stroke);
+  font-family: 'Galmuri11', sans-serif;
+  font-size: 16px;
+  color: var(--stroke);
+  font-style: italic;
+  text-align: center;
+  box-shadow:
+    -1px -1px 0px 0px inset var(--chatbot-white),
+    1px 1px 0px 0px inset var(--primary-black),
+    -2px -2px 0px 0px inset var(--dark-primary-color),
+    2px 2px 0px 0px inset var(--dark-primary-color);
+`;
