@@ -10,8 +10,8 @@ interface DoChatInterface {
 }
 
 const doChat = async ({ chatbotId, content, userId }: DoChatInterface) => {
-  console.log('doChat 호출됨:', { chatbotId, content, userId });
-  console.log('chatbot URL:', chatbot);
+  // console.log('doChat 호출됨:', { chatbotId, content, userId });
+  // console.log('chatbot URL:', chatbot);
   try {
     const response: AxiosResponse = await api.post(
       `${chatbot}/chat/${chatbotId}`,
