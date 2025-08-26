@@ -22,6 +22,7 @@ interface Contributor {
 }
 
 const ChatBot = () => {
+  const character = '호시노 아이';
   const [message, setMessage] = useState('');
   const doChatMutation = useDoChat();
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -130,7 +131,15 @@ const ChatBot = () => {
         userId: 'pdh0128',
       },
       {
-        onSuccess: () => {
+        onSuccess: (response) => {
+          const tempData: Message = {
+            id: Date.now().toString(),
+            avatar: Hosino,
+            author: character,
+            text: response.data.answer,
+          };
+          // console.log(response);
+          setMessages((prev) => [...prev, tempData]);
           setIsLoading(false);
         },
         onError: () => {
@@ -161,10 +170,10 @@ const ChatBot = () => {
               <_.CharacterImageContainer>
                 <_.CharacterImage
                   src={Hosino}
-                  alt="호시노 아이"
+                  alt={character}
                 />
               </_.CharacterImageContainer>
-              <_.CharacterName>호시노 아이</_.CharacterName>
+              <_.CharacterName>{character}</_.CharacterName>
             </_.ProfileTop>
 
             <_.ContributorsSection>
