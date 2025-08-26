@@ -33,7 +33,7 @@ export const ProfileSection = styled.div`
   justify-content: space-between;
   gap: 8px;
   flex: 1;
-  overflow: hidden;
+  overflow-y: auto;
   box-shadow:
     -1px -1px 0px 0px inset var(--chatbot-white),
     1px 1px 0px 0px inset var(--primary-black),
@@ -98,20 +98,20 @@ export const ContributorsList = styled.div`
   max-width: 100%;
   max-height: 120px;
   overflow-y: auto;
-  
+
   &::-webkit-scrollbar {
     width: 4px;
   }
-  
+
   &::-webkit-scrollbar-track {
     background: var(--light-primary-color);
   }
-  
+
   &::-webkit-scrollbar-thumb {
     background: var(--stroke);
     border-radius: 2px;
   }
-  
+
   &::-webkit-scrollbar-thumb:hover {
     background: var(--primary-black);
   }
