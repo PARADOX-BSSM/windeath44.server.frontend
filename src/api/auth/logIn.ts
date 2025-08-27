@@ -20,6 +20,7 @@ const logIn = async ({ id, password }: authParams): Promise<string> => {
     const accessToken: string | undefined = response.headers['authorization'];
 
     console.log('token', accessToken);
+    console.log('full response', response);
 
     if (!accessToken) {
       throw new Error('accessToken 없음');
