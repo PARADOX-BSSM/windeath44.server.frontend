@@ -12,9 +12,15 @@ export const useTaskSearchFunction = () => {
   let foundTask = Apps[0];
 
   const taskSearch = (i_want_to_find_it: string, props?: any) => {
+    if (!i_want_to_find_it) return null;
+
     foundTask = Apps.filter((app) => {
       return app.name === i_want_to_find_it;
     })[0];
+
+    if (!foundTask) return null;
+
+    // console.log(1, i_want_to_find_it, foundTask);
 
     const original = foundTask.component;
     const internal = original.props.children as React.ReactElement;

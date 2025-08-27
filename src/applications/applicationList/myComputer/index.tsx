@@ -30,6 +30,7 @@ const MyComputer = () => {
       <MemorialBtn
         name={isLoggedIn ? '로그아웃' : '로그인'}
         onClick={() => {
+          console.log(isLoggedIn);
           taskTransform?.('', isLoggedIn ? '' : '로그인');
           if (isLoggedIn) {
             localStorage.removeItem('access_token');

@@ -27,13 +27,15 @@ const Viewer = ({ characters, memorials }: ViewerProps) => {
                 memorials?.filter((memorial) => memorial.characterId === character.characterId) ??
                 [];
 
+              // console.log(memorials, character);
+
               return (
                 <MemorialWithIcon
                   key={character.characterId}
                   icon={myComputer}
                   name={character.name}
                   onDoubleClick={() => {
-                    let memorialId;
+                    let memorialId = 5;
                     if (relatedMemorials.length > 0) {
                       memorialId = relatedMemorials[0].memorialId;
                     }

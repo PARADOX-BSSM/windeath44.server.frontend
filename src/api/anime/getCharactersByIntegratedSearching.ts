@@ -1,4 +1,3 @@
-// src/api/anime/getCharactersIntegrated.ts
 import { useQuery } from '@tanstack/react-query';
 import api from '@/api/axiosInstance';
 import { anime } from '@/config';
@@ -6,10 +5,10 @@ import qs from 'qs';
 
 export interface FetchIntegratedCharactersParams {
   name?: string;
-  animeId?: (string | number)[]; // array[string] 스펙
+  animeId?: (string | number)[];
   deathReason?: string;
-  cursorId?: number;             // 페이지네이션
-  size?: number;                 // 페이지네이션
+  cursorId?: number;
+  size?: number;
 }
 
 const sanitize = (p: FetchIntegratedCharactersParams) => {
@@ -17,7 +16,10 @@ const sanitize = (p: FetchIntegratedCharactersParams) => {
   if (p.name && p.name.trim() !== '') out.name = p.name.trim();
   if (p.deathReason && p.deathReason.trim() !== '') out.deathReason = p.deathReason.trim();
   if (Array.isArray(p.animeId)) {
-    const arr = p.animeId.map(String).map(s => s.trim()).filter(Boolean);
+    const arr = p.animeId
+      .map(String)
+      .map((s) => s.trim())
+      .filter(Boolean);
     if (arr.length) out.animeId = arr;
   }
   if (typeof p.cursorId === 'number') out.cursorId = p.cursorId;
@@ -30,10 +32,9 @@ export const fetchIntegratedCharacters = async (params: FetchIntegratedCharacter
   const res = await api.get(`${anime}/characters/search/integrated`, {
     params: clean,
     withCredentials: true,
-    paramsSerializer: (pp) =>
-      qs.stringify(pp, { arrayFormat: 'repeat', skipNulls: true }),
+    paramsSerializer: (pp) => qs.stringify(pp, { arrayFormat: 'repeat', skipNulls: true }),
   });
-  return res.data; // 응답 스키마 확정되면 타입 지정
+  return res.data; // { values, nextCursorId } 가정
 };
 
 export const useGetIntegratedCharactersQuery = (params: FetchIntegratedCharactersParams) => {
@@ -41,15 +42,9 @@ export const useGetIntegratedCharactersQuery = (params: FetchIntegratedCharacter
   return useQuery({
     queryKey: ['integratedCharacters', clean],
     queryFn: () => fetchIntegratedCharacters(clean),
-    enabled:
-      Object.prototype.hasOwnProperty.call(clean, 'name') ||
-      Object.prototype.hasOwnProperty.call(clean, 'deathReason') ||
-      Object.prototype.hasOwnProperty.call(clean, 'animeId') ||
-      Object.prototype.hasOwnProperty.call(clean, 'cursorId') ||
-      Object.prototype.hasOwnProperty.call(clean, 'size'),
-    // 페이지 전환시 깜빡임 방지 원하면 아래 옵션 켜기
-    // keepPreviousData: true,
+    enabled: true, // ✅ 항상 실행 (비어 있으면 전체 결과)
     staleTime: 30_000,
     gcTime: 5 * 60_000,
+    // keepPreviousData: true, // 페이징 중 깜빡임 줄이고 싶으면
   });
 };

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import * as _ from '@/applications/applicationList/search/style.ts';
 import Folder from '@/assets/search/folder.svg';
 import Search_task from '@/applications/applicationList/search/search_task';
@@ -9,83 +9,99 @@ import { useQuery } from '@tanstack/react-query';
 import api from '@/api/axiosInstance';
 import { memorial } from '@/config';
 
-const EMPTY_ARR: any[] = [];
+type Character = { characterId: number; [k: string]: any };
+type AnimeItem = { animeId: number; [k: string]: any };
+
+const EMPTY_ARR = Object.freeze([]) as readonly any[];
 
 const Search = () => {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [isColumn, setIsColumn] = useState(false);
 
   // 검색 상태
-  const [fillDeath, setFillDeath] = useState('모두');
-  const [ani, setAni] = useState('');     // 애니 이름(검색어)
-  const [name, setName] = useState('');   // 캐릭터 이름(검색어)
+  const [fillDeath, setFillDeath] = useState<'모두' | string>('모두');
+  const [ani, setAni] = useState(''); // 애니 이름(검색어)
+  const [name, setName] = useState(''); // 캐릭터 이름(검색어)
 
   // 페이지네이션 (cursor 기반)
   const [cursorId, setCursorId] = useState<number | undefined>(undefined);
 
   // ------ 파라미터 정규화 ------
-  const deathParam = useMemo(
-    () => (fillDeath === '모두' ? undefined : fillDeath),
-    [fillDeath]
-  );
-  const nameParam = useMemo(
-    () => (name.trim() ? name.trim() : undefined),
-    [name]
-  );
-  const aniParam = useMemo(
-    () => (ani.trim() ? ani.trim() : undefined),
-    [ani]
-  );
+  const deathParam = useMemo(() => (fillDeath === '모두' ? undefined : fillDeath), [fillDeath]);
+  const nameParam = useMemo(() => (name.trim() ? name.trim() : undefined), [name]);
+  const aniParam = useMemo(() => (ani.trim() ? ani.trim() : undefined), [ani]);
 
-  // ------ 애니 이름 -> 애니 ID 조회 ------
+  // 새 검색 조건이 생기면 커서 리셋
+  useEffect(() => {
+    setCursorId(undefined);
+  }, [nameParam, deathParam, aniParam]);
+
+  // ------ 애니 이름 -> 애니 ID 조회 (검색어 있을 때만) ------
   const {
     data: animesResp,
     isLoading: isAnimesLoading,
     isError: isAnimesError,
   } = useGetAnimesQuery({
-    size: 10,
-    animeName: aniParam, // 빈 문자열이면 undefined → 서버가 무시하도록 설계되어 있다면 OK
-    // cursorId: undefined,
+    size: 50,
+    animeName: aniParam,
   });
 
-  // 애니 ID들을 통합 검색용 파라미터로 변환 (문자열 배열)
-  const animeIdParam = useMemo(() => {
-    const values = animesResp?.data?.values ?? EMPTY_ARR;
-    if (!values.length) return undefined;
-    return values
-      .map((v: any) => v?.animeId)
-      .filter((id: any): id is number => typeof id === 'number')
-      .map(String);
+  // 서버 스키마가 { data: { values: AnimeItem[] } } 라고 가정
+  const animeIdParam = useMemo<string[] | undefined>(() => {
+    const values = (animesResp?.data?.values as AnimeItem[] | undefined) ?? [];
+    if (!values.length) return undefined; // 검색어 비었거나 결과 없으면 필터 미적용 = 전체
+    const ids = values.map((v) => v?.animeId).filter((id): id is number => typeof id === 'number');
+    return ids.length ? ids.map(String) : undefined; // API가 array[string] 기대 시 문자열화
   }, [animesResp]);
 
-  useEffect(() => {
-    console.log('params ->', { nameParam, animeIdParam, deathParam });
-  }, [nameParam, animeIdParam, deathParam]);
-
-  // ------ 1) 통합 캐릭터 검색 ------
+  // ------ 1) 통합 캐릭터 검색 (항상 실행: 비어 있으면 전체 결과) ------
   const {
     data: integrated,
     isLoading,
     isError,
   } = useGetIntegratedCharactersQuery({
-    name: nameParam,            // undefined면 전송 안 됨
-    animeId: animeIdParam,      // ani 없거나 결과 없으면 undefined
-    deathReason: deathParam,    // '모두'면 undefined
+    name: nameParam, // 비어있으면 sanitize에서 제거 → 전체
+    animeId: animeIdParam, // undefined면 제거 → 전체
+    deathReason: deathParam, // undefined면 제거 → 전체
     size: 30,
     cursorId,
   });
 
-  const characters = useMemo(
-    () => (integrated?.values ?? integrated?.data?.values ?? EMPTY_ARR),
-    [integrated]
-  );
+  // ✅ 교체된 정규화 블록
+  const normalized = useMemo(() => {
+    const p = integrated as any;
+
+    let values =
+      p?.values ?? p?.data?.values ?? (Array.isArray(p?.data) ? p.data : undefined) ?? [];
+
+    if (!Array.isArray(values) && values?.values && Array.isArray(values.values)) {
+      values = values.values;
+    }
+
+    const next =
+      (typeof p?.nextCursorId === 'number' && p.nextCursorId) ??
+      (typeof p?.data?.nextCursorId === 'number' && p.data.nextCursorId) ??
+      undefined;
+
+    return { values, nextCursorId: next };
+  }, [integrated]);
+
+  const characters = normalized.values as Character[];
 
   const characterIds = useMemo<number[]>(
     () =>
-      characters
-        .map((c: any) => c?.characterId)
-        .filter((id: any): id is number => typeof id === 'number'),
-    [characters]
+      characters.map((c) => c?.characterId).filter((id): id is number => typeof id === 'number'),
+    [characters],
+  );
+
+  useEffect(() => {
+    console.log(characters);
+  }, [characters]);
+
+  // queryKey 안정화: 정렬된 복사본 사용
+  const characterKey = useMemo(
+    () => (characterIds.length ? [...characterIds].sort((a, b) => a - b) : []),
+    [characterIds],
   );
 
   // ------ 2) 캐릭터 ID로 추모관 목록 조회 ------
@@ -94,13 +110,13 @@ const Search = () => {
     isLoading: isMemorialLoading,
     isError: isMemorialError,
   } = useQuery({
-    queryKey: ['memorials', 'recently-updated', 1, characterIds],
-    enabled: characterIds.length > 0, // 캐릭터 없으면 호출 안 함
+    queryKey: ['memorials', 'recently-updated', 1, characterKey],
+    enabled: characterKey.length > 0,
     queryFn: async () => {
       const resp = await api.post(
         `${memorial}/character-filtered`,
-        { orderBy: 'recently-updated', page: 1, characters: characterIds },
-        { withCredentials: true }
+        { orderBy: 'recently-updated', page: 1, characters: characterKey },
+        { withCredentials: true },
       );
       return resp.data as {
         message: string;
@@ -111,11 +127,14 @@ const Search = () => {
     gcTime: 5 * 60_000,
   });
 
-  const memorials = memorialsResp?.data ?? EMPTY_ARR;
+  const memorials = memorialsResp?.data ?? [];
 
-  // (옵션) 다음 페이지 커서 처리
+  useEffect(() => {
+    console.log(memorials);
+  }, [memorials]);
+
   const onLoadMore = () => {
-    // if (typeof integrated?.nextCursorId === 'number') setCursorId(integrated.nextCursorId);
+    if (typeof normalized.nextCursorId === 'number') setCursorId(normalized.nextCursorId);
   };
 
   // 레이아웃 관찰
@@ -138,7 +157,10 @@ const Search = () => {
   return (
     <_.main>
       <_.main_serve>
-        <_.search_task ref={wrapperRef} isColumn={isColumn}>
+        <_.search_task
+          ref={wrapperRef}
+          isColumn={isColumn}
+        >
           <Search_task
             fillDeath={fillDeath}
             setFillDeath={setFillDeath}
@@ -148,18 +170,26 @@ const Search = () => {
             setName={setName}
           />
 
-          {characters.length > 0 || isBusy ? (
-            <Viewer characters={characters} memorials={memorials} />
+          {isBusy ? (
+            <div>불러오는 중...</div>
           ) : hasError ? (
             <div>검색 중 오류가 발생했습니다.</div>
+          ) : characters.length > 0 ? (
+            <Viewer
+              characters={characters}
+              memorials={memorials}
+            />
           ) : (
-            <div>추모관 불러오는중...</div>
+            <div>결과가 없습니다.</div>
           )}
         </_.search_task>
 
         <_.object>
           <div>
-            <img src={Folder} />
+            <img
+              src={Folder}
+              alt="folder"
+            />
             <div>{characters.length}개체</div>
           </div>
         </_.object>
