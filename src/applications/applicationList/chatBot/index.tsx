@@ -5,6 +5,7 @@ import ChatMessage from '@/applications/components/chatMessage';
 import Choten from '@/assets/profile/choten.svg';
 import Ame from '@/assets/profile/ame.svg';
 import Hosino from '@/assets/character/hosino.svg';
+import { useDoChat } from '@/api/chatbot/chat';
 
 interface Message {
   id: string;
@@ -21,7 +22,10 @@ interface Contributor {
 }
 
 const ChatBot = () => {
+  const character = '호시노 아이';
   const [message, setMessage] = useState('');
+  const doChatMutation = useDoChat();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -109,7 +113,41 @@ const ChatBot = () => {
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    if (isLoading) {
+      return;
+    }
     e.preventDefault();
+    if (!message.trim() || isLoading) {
+      return;
+    }
+
+    setIsLoading(true);
+
+    // API 호출
+    doChatMutation.mutate(
+      {
+        chatbotId: 19,
+        content: message.trim(),
+        userId: 'pdh0128',
+      },
+      {
+        onSuccess: (response) => {
+          const tempData: Message = {
+            id: Date.now().toString(),
+            avatar: Hosino,
+            author: character,
+            text: response.data.answer,
+          };
+          // console.log(response);
+          setMessages((prev) => [...prev, tempData]);
+          setIsLoading(false);
+        },
+        onError: () => {
+          setIsLoading(false);
+        },
+      },
+    );
+
     addMessage();
   };
 
@@ -132,10 +170,10 @@ const ChatBot = () => {
               <_.CharacterImageContainer>
                 <_.CharacterImage
                   src={Hosino}
-                  alt="호시노 아이"
+                  alt={character}
                 />
               </_.CharacterImageContainer>
-              <_.CharacterName>호시노 아이</_.CharacterName>
+              <_.CharacterName>{character}</_.CharacterName>
             </_.ProfileTop>
 
             <_.ContributorsSection>
@@ -176,6 +214,7 @@ const ChatBot = () => {
                   text={msg.text}
                 />
               ))}
+              {isLoading ? <_.LoadingMessage>답변을 기다리는 중입니다.</_.LoadingMessage> : ''}
               <div ref={messagesEndRef} />
             </_.ChatMessagesContainer>
           </_.ChatArea>
@@ -186,12 +225,16 @@ const ChatBot = () => {
                 type="text"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                placeholder="메시지 입력"
+                placeholder={isLoading ? '답변을 기다리는 중입니다..' : '메시지 입력'}
+                readOnly={isLoading}
               />
             </_.InputForm>
             <_.SendButton
               type="button"
-              onClick={addMessage}
+              onClick={() => {
+                const fakeEvent = { preventDefault: () => {} } as React.FormEvent<HTMLFormElement>;
+                handleSubmit(fakeEvent);
+              }}
             >
               전송
             </_.SendButton>
