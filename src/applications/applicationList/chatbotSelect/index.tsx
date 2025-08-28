@@ -2,15 +2,23 @@ import * as _ from './style.ts';
 import Inputs from '@/applications/components/inputs';
 import { useState } from 'react';
 import { data } from './data.ts';
+import { taskTransformerAtom } from '@/atoms/taskTransformer.ts';
+import { useAtomValue } from 'jotai';
 
 const ChatbotSelect = () => {
   const [inputs, setInputs] = useState<string>('');
+  const taskTransform = useAtomValue(taskTransformerAtom);
 
   return (
     <_.Container>
       <_.TopContainer>
         {data?.map((item) => (
-          <_.TopContainerItem>
+          <_.TopContainerItem
+            onClick={() => {
+              // console.log('클릭됨');
+              taskTransform?.('', 'MemorialPreview');
+            }}
+          >
             <_.TopContainerItemInfo>
               <_.TopContainerItemImage
                 src={item.img}
