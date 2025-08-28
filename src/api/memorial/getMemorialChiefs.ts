@@ -20,7 +20,7 @@ const getMemorialChiefs = async ({ memorialId }: memorialVar): Promise<memorialC
 export const useMemorialChiefs = ({ memorialId }: memorialVar) => {
   return useMutation({
     mutationFn: () => getMemorialChiefs(memorialId),
-    onSuccess: (data: any) => {
+    onSuccess: (data: memorialChiefs) => {
       console.log(data);
     },
     onError: (error: any) => {

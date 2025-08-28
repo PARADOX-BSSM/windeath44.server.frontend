@@ -5,8 +5,8 @@ import { useAtom } from 'jotai';
 import { memorialIdAtom } from '@/atoms/memorialManager.ts';
 
 const Mourners = () => {
-  const mutationMemorialChiefs = useMemorialChiefs();
   const [memorialId] = useAtom(memorialIdAtom);
+  const mutationMemorialChiefs = useMemorialChiefs({ memorialId });
   const mockList = [
     {
       name: '소메링링',
@@ -18,8 +18,8 @@ const Mourners = () => {
     },
   ];
   useEffect(() => {
-    mutationMemorialChiefs.mutate(memorialId);
-  }, []);
+    mutationMemorialChiefs.mutate();
+  }, [memorialId]);
   return (
     <_.Container>
       <_.Title>조문객 명단</_.Title>

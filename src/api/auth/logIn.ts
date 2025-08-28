@@ -17,13 +17,13 @@ const logIn = async ({ id, password }: authParams): Promise<string> => {
 
     console.log(response.headers);
 
-    const accessToken: string | undefined = response.headers['accesstoken'];
+    const authorization: string | undefined = response.headers['authorization'];
 
-    if (!accessToken) {
+    if (!authorization) {
       throw new Error('accessToken 없음');
     }
-    localStorage.setItem('access_token', accessToken);
-    return accessToken;
+    localStorage.setItem('access_token', authorization);
+    return authorization;
   } catch (error) {
     const axiosError = error as AxiosError;
     if (axiosError.response?.headers) {
