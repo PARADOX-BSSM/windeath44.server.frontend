@@ -1,6 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { memorial } from '@/config';
 import axios, { AxiosResponse } from 'axios';
+import api from '../axiosInstance';
 
 interface commentData {
   memorialId: number;
@@ -11,13 +12,7 @@ interface commentData {
 const commentWrite = async ({ memorialId, content, parentCommentId }: commentData) => {
   try {
     const data = { memorialId, content, parentCommentId };
-    const response: AxiosResponse = await axios.post(`${memorial}/comment/${memorialId}`, data, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-        'Content-Type': 'application/json',
-      },
-      withCredentials: true,
-    });
+    const response: AxiosResponse = await api.post(`${memorial}/comment/${memorialId}`, data, {});
     return response.data;
   } catch (err) {
     console.error('댓글 작성 중 오류:', err);

@@ -11,22 +11,28 @@ export const useTaskSearchFunction = () => {
 
   let foundTask = Apps[0];
 
-  const taskSearch = (i_want_to_find_it: string, stack?: any, push?: any, pop?: any, top?: any) => {
+  const taskSearch = (i_want_to_find_it: string, props?: any) => {
+    if (!i_want_to_find_it) return null;
+
     foundTask = Apps.filter((app) => {
-        return app.name === i_want_to_find_it;
+      return app.name === i_want_to_find_it;
     })[0];
 
-    if (stack && push && pop && top) {
-      const original = foundTask.component;
-      const internal = original.props.children as React.ReactElement;
-      const type = internal.type;
+    if (!foundTask) return null;
 
-      foundTask.component = (
-        <Suspense fallback={null}>
-          {React.createElement(type, { stack, push, pop, top })}
-        </Suspense>
-      );
-    }
+    // console.log(1, i_want_to_find_it, foundTask);
+
+    const original = foundTask.component;
+    const internal = original.props.children as React.ReactElement;
+    const type = internal.type;
+
+    foundTask.component = (
+      <Suspense fallback={null}>
+        {React.createElement(type, {
+          ...(props ?? {}),
+        })}
+      </Suspense>
+    );
 
     return foundTask;
   };

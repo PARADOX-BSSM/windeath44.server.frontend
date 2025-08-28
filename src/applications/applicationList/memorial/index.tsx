@@ -16,7 +16,6 @@ import {
 import { useCommentWrite } from '@/api/memorial/memorialCommentWrite.ts';
 import { parseCustomContent } from '@/lib/customTag/parseCustomContent.tsx';
 import { useGetAnimation } from '@/api/anime/getAnimation.ts';
-import { characterIdAtom, memorialIdAtom } from '@/atoms/memorialManager';
 import ribbon from '@/assets/memorial_ribbon.svg';
 
 interface dataStructureProps {
@@ -24,8 +23,10 @@ interface dataStructureProps {
   push: any;
   pop: any;
   top: any;
+  memorialId: number;
+  characterId: number;
 }
-const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
+const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStructureProps) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
   const taskSearch = useAtomValue(taskSearchAtom);
   const [content, setContent] = useState<string>('');
@@ -54,16 +55,14 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
     createdAt: '',
     mergerId: '',
     updatedAt: '',
-  }); 
+  });
   const mutationMemorialGet = useMemorialGet(setMemorialData);
   const [animation, setAnimation] = useState<string>('');
   const mutationAnimation = useGetAnimation(setAnimation);
   const [memorialComment, setMemorialComment] = useState<MemorialCommentsData[]>([]);
   const mutaionGetMemorialComments = useGetMemorialComments(setMemorialComment);
   const mutationCommentWrite = useCommentWrite();
-  const id = 5;
-  const [memorialId, setMemorialId] = useAtom(memorialIdAtom);
-  const [characterId, setCharacterId] = useAtom(characterIdAtom);
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!content.trim()) return;
@@ -79,16 +78,31 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
     );
   };
   useEffect(() => {
+    console.log(memorialId, characterId);
     mutationMemorialGet.mutate(memorialId);
     mutaionGetMemorialComments.mutate({ memorialId });
     mutationGetCharacter.mutate(characterId);
   }, []);
+
+  if (!characterData) {
+    return <p>무언가 잘못되었습니다.</p>;
+  }
+  if (!memorialData) {
+    return <p>무언가 잘못되었습니다.</p>;
+  }
 
   useEffect(() => {
     if (characterData.animeId) {
       mutationAnimation.mutate(characterData.animeId);
     }
   }, [characterData.animeId]);
+
+  const stackProps = {
+    stack: stack,
+    push: push,
+    pop: pop,
+    top: top,
+  };
 
   return (
     <_.Main>
@@ -102,15 +116,15 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
               </_.TextContainer>
               <_.History
                 onClick={() => {
-                  push(taskSearch?.('memorailHistory', stack, push, pop, top));
+                  push(taskSearch?.('memorailHistory', stackProps));
                 }}
               >
                 기록
               </_.History>
               <_.DocumentUpdate
                 onClick={() => {
-                  taskTransform?.('', 'MemorialPreview');
-                  push(taskSearch?.('MemorialCommit', stack, push, pop, top));
+                  taskTransform?.('', '미리보기');
+                  push(taskSearch?.('MemorialCommit', stackProps));
                 }}
               >
                 문서 수정
@@ -181,8 +195,7 @@ const Memorial = ({ stack, push, pop, top }: dataStructureProps) => {
 
           <_.GotoBow
             onClick={() => {
-              setMemorialId(memorialId);
-              taskTransform?.('', 'Bow');
+              taskTransform?.('', 'Bow', { memorialId: memorialId });
             }}
           >
             절 하러가기

@@ -19,12 +19,19 @@ const MemorialApproach = ({
   const [stack, push, pop, top] = useStack(window, setWindow, setUpHeight, setUpWidth);
   const taskSearch = useAtomValue(taskSearchAtom);
 
+  const stackProps = {
+    stack: stack,
+    push: push,
+    pop: pop,
+    top: top,
+  };
+
   useEffect(() => {
     // console.log("stack: ", stack);
     // console.log("top: ", top());
   }, [stack]);
   useEffect(() => {
-    push(taskSearch?.('memorialMenu', stack, push, pop, top));
+    push(taskSearch?.('memorialMenu', stackProps));
   }, []);
   return <>{top()?.component}</>;
 };

@@ -31,6 +31,13 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
   const taskSearch = useAtomValue(taskSearchAtom);
   const [, addTask, removeTask] = useProcessManager();
 
+  const stackProps = {
+    stack: stack,
+    push: push,
+    pop: pop,
+    top: top,
+  };
+
   const memorialPreview = taskSearch?.('미리보기')!;
 
   useEffect(() => {
@@ -74,11 +81,20 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
 
   const moveTo = (idx: number | null) => {
     if (idx === 0) {
-      console.log(taskSearch?.('Search', stack, push, pop, top));
-      push(taskSearch?.('Search', stack, push, pop, top));
+      console.log(taskSearch?.('Search', stackProps));
+      push(taskSearch?.('Search', stackProps));
     }
     if (idx === 1) {
-      push(taskSearch?.('memorial', stack, push, pop, top));
+      push(
+        taskSearch?.('memorial', {
+          stack: stack,
+          push: push,
+          pop: pop,
+          top: top,
+          memorialId: 5,
+          characterId: 5,
+        }),
+      );
     }
     if (idx === 2) {
       if (setAlert) {
@@ -92,7 +108,7 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
             거절될 수 있습니다.
           </>,
           () => {
-            push(taskSearch?.('MemorialApply', stack, push, pop, top));
+            push(taskSearch?.('MemorialApply', stackProps));
             removeTask(taskSearch?.('경고')!);
             addTask(memorialPreview);
           },

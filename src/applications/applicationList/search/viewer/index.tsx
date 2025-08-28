@@ -1,7 +1,6 @@
 import * as _ from '@/applications/applicationList/search/viewer/style.ts';
 import MemorialWithIcon from '@/applications/components/memorialWithIcon';
 import myComputer from '@/assets/appIcons/my_computer.svg';
-import { characterIdAtom, memorialIdAtom } from '@/atoms/memorialManager';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
 import { useAtom, useAtomValue } from 'jotai';
 import { useEffect } from 'react';
@@ -13,8 +12,6 @@ interface ViewerProps {
 
 const Viewer = ({ characters, memorials }: ViewerProps) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
-  const [, setMemorialId] = useAtom(memorialIdAtom);
-  const [, setCharacterId] = useAtom(characterIdAtom);
 
   useEffect(() => {
     console.log(characters);
@@ -30,17 +27,23 @@ const Viewer = ({ characters, memorials }: ViewerProps) => {
                 memorials?.filter((memorial) => memorial.characterId === character.characterId) ??
                 [];
 
+              // console.log(memorials, character);
+
               return (
                 <MemorialWithIcon
                   key={character.characterId}
                   icon={myComputer}
                   name={character.name}
                   onDoubleClick={() => {
-                    taskTransform?.('', 'memorial');
+                    let memorialId = 5;
                     if (relatedMemorials.length > 0) {
-                      setMemorialId(relatedMemorials[0].memorialId);
+                      memorialId = relatedMemorials[0].memorialId;
                     }
-                    setCharacterId(character.characterId);
+                    const characterId = character.characterId;
+                    taskTransform?.('', 'memorial', {
+                      memorialId: memorialId,
+                      characterId: characterId,
+                    });
                   }}
                 />
               );
