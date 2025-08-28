@@ -63,7 +63,7 @@ const Search = () => {
     name: nameParam, // 비어있으면 sanitize에서 제거 → 전체
     animeId: animeIdParam, // undefined면 제거 → 전체
     deathReason: deathParam, // undefined면 제거 → 전체
-    size: 30,
+    size: 100,
     cursorId,
   });
 

@@ -123,7 +123,7 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
               </_.History>
               <_.DocumentUpdate
                 onClick={() => {
-                  taskTransform?.('', 'MemorialPreview');
+                  taskTransform?.('', '미리보기');
                   push(taskSearch?.('MemorialCommit', stackProps));
                 }}
               >
