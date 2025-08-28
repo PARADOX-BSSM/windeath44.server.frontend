@@ -93,3 +93,20 @@ export const TopContainerItemDesc = styled.div`
   font-family: Galmuri11;
   font-size: 0.8rem;
 `;
+
+export const TopContainerSubmit = styled.button<{ disabled?: boolean }>`
+  width: 16%;
+  height: fit-content;
+  padding: 0.35rem 0;
+  color: ${({ disabled }) => disabled ? '#999' : 'var(--primary-black)'};
+  font-family: Galmuri11;
+  font-size: 1em;
+  background-color: ${({ disabled }) => disabled ? '#f0f0f0' : 'var(--light-primary-color)'};
+  box-shadow:
+    -1px -1px 0 0 ${({ disabled }) => disabled ? '#ccc' : 'var(--primary-black)'} inset,
+    1px 1px 0 0 #fff inset,
+    -2px -2px 0 0 ${({ disabled }) => disabled ? '#ddd' : 'var(--dark-primary-color)'} inset,
+    2px 2px 0 0 ${({ disabled }) => disabled ? '#eee' : 'var(--secondary-color)'} inset;
+  border: none;
+  cursor: ${({ disabled }) => disabled ? 'not-allowed' : 'pointer'};
+`;

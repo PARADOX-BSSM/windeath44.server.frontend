@@ -1,45 +1,57 @@
 import * as _ from './style.ts';
 import Inputs from '@/applications/components/inputs';
-import { useState } from 'react';
-import { data } from './data.ts';
+import { useState, useMemo } from 'react';
 import { taskTransformerAtom } from '@/atoms/taskTransformer.ts';
 import { useAtomValue } from 'jotai';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg.tsx';
+import { useGetChatBotsQuery } from '@/api/chatbot/getChatBots.ts';
 
 const ChatbotSelect = () => {
   const [inputs, setInputs] = useState<string>('');
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const taskTransform = useAtomValue(taskTransformerAtom);
+  const chatBotsQuery = useGetChatBotsQuery({ size: 10 });
+
+  const flattenedChatBots = useMemo(() => {
+    if (!chatBotsQuery.data?.data?.values) return [];
+    return chatBotsQuery.data.data.values.flat();
+  }, [chatBotsQuery.data]);
 
   return (
     <_.Container>
       <_.TopContainer>
-        {data?.map((item) => (
-          <_.TopContainerItem
-            key={item.id}
-            $isSelected={selectedItem === item.id}
-            onClick={() => {
-              setSelectedItem(item.id);
-            }}
-            onMouseEnter={() => {
-              setCursorImage(CURSOR_IMAGES.hand);
-            }}
-            onMouseLeave={() => {
-              setCursorImage(CURSOR_IMAGES.default);
-            }}
-          >
-            <_.TopContainerItemInfo>
-              <_.TopContainerItemImage
-                src={item.img}
-                alt={`${item.name}의 사진`}
-              />
-              <_.TopContainerItemText>
-                <_.TopContainerItemTitle>{item.name}</_.TopContainerItemTitle>
-                <_.TopContainerItemDesc>{item.descript}</_.TopContainerItemDesc>
-              </_.TopContainerItemText>
-            </_.TopContainerItemInfo>
-          </_.TopContainerItem>
-        ))}
+        {chatBotsQuery.isLoading ? (
+          <div>Loading...</div>
+        ) : chatBotsQuery.error ? (
+          <div>Error loading chatbots</div>
+        ) : (
+          flattenedChatBots?.map((item) => (
+            <_.TopContainerItem
+              key={item.chatbot_id}
+              $isSelected={selectedItem === item.chatbot_id.toString()}
+              onClick={() => {
+                setSelectedItem(item.chatbot_id.toString());
+              }}
+              onMouseEnter={() => {
+                setCursorImage(CURSOR_IMAGES.hand);
+              }}
+              onMouseLeave={() => {
+                setCursorImage(CURSOR_IMAGES.default);
+              }}
+            >
+              <_.TopContainerItemInfo>
+                <_.TopContainerItemImage
+                  src="src/assets/character/hosino.svg"
+                  alt={`${item.name}의 사진`}
+                />
+                <_.TopContainerItemText>
+                  <_.TopContainerItemTitle>{item.name}</_.TopContainerItemTitle>
+                  <_.TopContainerItemDesc>{item.contributor.join(', ')}</_.TopContainerItemDesc>
+                </_.TopContainerItemText>
+              </_.TopContainerItemInfo>
+            </_.TopContainerItem>
+          ))
+        )}
       </_.TopContainer>
       <_.BottomContainer>
         <Inputs
