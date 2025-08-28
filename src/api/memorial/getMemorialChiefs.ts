@@ -45,7 +45,7 @@ type userList = {
 //최종 반환 데이터
 type BowData = {
   name: string;
-  num: number;
+  bowCount: number;
 };
 
 const getMemorialChiefs = async ({ memorialId }: memorialChiefVar): Promise<memorialChiefs> => {
@@ -75,9 +75,10 @@ const getUserByList = async ({ userList }: userList): Promise<usersData> => {
 
 export const useMemorialChiefBows = (
   setBowData: React.Dispatch<React.SetStateAction<BowData[] | undefined>>,
+  memorialId: number,
 ) => {
   return useMutation<BowData[], Error, number>({
-    mutationFn: async (memorialId: number): Promise<BowData[]> => {
+    mutationFn: async (): Promise<BowData[]> => {
       // chiefs 조회
       const chiefsRes = await getMemorialChiefs({ memorialId });
       const chiefIds = chiefsRes.data; // string[] (userId)
