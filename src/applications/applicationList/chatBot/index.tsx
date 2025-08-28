@@ -126,7 +126,7 @@ const ChatBot = () => {
     // API 호출
     doChatMutation.mutate(
       {
-        chatbotId: 19,
+        chatbotId: 1,
         content: message.trim(),
         userId: 'pdh0128',
       },
@@ -199,7 +199,13 @@ const ChatBot = () => {
             </_.ContributorsSection>
           </_.ProfileSection>
 
-          <_.MemorialButton onClick={handleMemorialClick}>추모관 바로가기</_.MemorialButton>
+          <_.MemorialButton
+            onClick={handleMemorialClick}
+            onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+            onMouseOut={() => setCursorImage(CURSOR_IMAGES.default)}
+          >
+            추모관 바로가기
+          </_.MemorialButton>
         </_.LeftPanel>
 
         <_.RightPanel>
@@ -227,6 +233,8 @@ const ChatBot = () => {
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder={isLoading ? '답변을 기다리는 중입니다..' : '메시지 입력'}
                 readOnly={isLoading}
+                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.drag)}
+                onMouseOut={() => setCursorImage(CURSOR_IMAGES.default)}
               />
             </_.InputForm>
             <_.SendButton
@@ -235,6 +243,8 @@ const ChatBot = () => {
                 const fakeEvent = { preventDefault: () => {} } as React.FormEvent<HTMLFormElement>;
                 handleSubmit(fakeEvent);
               }}
+              onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+              onMouseOut={() => setCursorImage(CURSOR_IMAGES.default)}
             >
               전송
             </_.SendButton>
