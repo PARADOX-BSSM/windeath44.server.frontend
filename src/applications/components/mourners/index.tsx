@@ -1,12 +1,17 @@
 import * as _ from './style';
 import { useMemorialChiefs } from '@/api/memorial/getMemorialChiefs.ts';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
 import { memorialIdAtom } from '@/atoms/memorialManager.ts';
-
+type bowData = {
+  name: string;
+  bowCount: number;
+};
 const Mourners = () => {
   const [memorialId] = useAtom(memorialIdAtom);
+  console.log('아이디', memorialId);
   const mutationMemorialChiefs = useMemorialChiefs({ memorialId });
+  const [bowData, setbowData] = useState<bowData[]>();
   const mockList = [
     {
       name: '소메링링',
@@ -17,7 +22,9 @@ const Mourners = () => {
       num: 536,
     },
   ];
+
   useEffect(() => {
+    if (!memorialId) return;
     mutationMemorialChiefs.mutate();
   }, [memorialId]);
   return (
