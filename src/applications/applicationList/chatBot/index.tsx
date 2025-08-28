@@ -27,26 +27,13 @@ const ChatBot = () => {
   const doChatMutation = useDoChat();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      avatar: Ame,
-      author: '로에나',
-      handle: '@roena0516',
-      text: '1화만에 죽은 소감이 어때?',
-    },
-    {
-      id: '2',
-      avatar: Hosino,
-      author: '호시노 아이',
-      text: '뒤질래?',
-    },
-    {
-      id: '3',
-      avatar: Ame,
-      author: '로에나',
-      handle: '@roena0516',
-      text: 'ㅜㅜㅜㅜㅜ',
-    },
+    // {
+    //   id: '1',
+    //   avatar: Ame,
+    //   author: '로에나',
+    //   handle: '@roena0516',
+    //   text: '1화만에 죽은 소감이 어때?',
+    // },
   ]);
 
   const [contributors] = useState<Contributor[]>([
