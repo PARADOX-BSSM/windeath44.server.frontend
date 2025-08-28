@@ -14,9 +14,10 @@ const ChatbotSelect = () => {
       <_.TopContainer>
         {data?.map((item) => (
           <_.TopContainerItem
+            key={item.id}
             onClick={() => {
               // console.log('클릭됨');
-              taskTransform?.('', 'MemorialPreview');
+              taskTransform?.('분신사바', '분신사바 메인');
             }}
           >
             <_.TopContainerItemInfo>
@@ -29,7 +30,14 @@ const ChatbotSelect = () => {
                 <_.TopContainerItemDesc>{item.descript}</_.TopContainerItemDesc>
               </_.TopContainerItemText>
             </_.TopContainerItemInfo>
-            <_.TopContainerSubmit>학습</_.TopContainerSubmit>
+            <_.TopContainerSubmit
+              onClick={(e) => {
+                e.stopPropagation();
+                taskTransform?.('분신사바', '챗봇 학습');
+              }}
+            >
+              학습
+            </_.TopContainerSubmit>
           </_.TopContainerItem>
         ))}
       </_.TopContainer>

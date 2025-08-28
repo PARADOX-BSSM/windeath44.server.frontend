@@ -3,7 +3,7 @@ export const data = [
     img: 'src/assets/character/hosino.svg',
     name: '호시노 아이',
     descript: 'B코마치의 부동의 센터! 호시노 아이라고 합니다!',
-    id: '1',
+    id: '2',
   },
   {
     img: 'src/assets/character/hosino.svg',
