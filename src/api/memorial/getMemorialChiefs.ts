@@ -2,6 +2,7 @@ import axios from 'axios';
 import { memorial } from '@/config';
 import { user } from '@/config';
 import { useMutation } from '@tanstack/react-query';
+import qs from 'qs';
 
 // memorial chief
 type memorialChiefs = {
@@ -40,7 +41,7 @@ type usersData = {
   data: usersResponse[];
 };
 type userList = {
-  userList: number[];
+  userList: string[];
 };
 //최종 반환 데이터
 type BowData = {
@@ -59,7 +60,7 @@ const getMemorialByUserId = async ({
   memorialId,
   userId,
 }: memorialUserIdVar): Promise<memorialUserIdResponse> => {
-  const response = await axios.get(`${memorial}bow/${userId}/${memorialId}`, {
+  const response = await axios.get(`${memorial}/bow/${userId}/${memorialId}`, {
     withCredentials: true,
   });
   return response.data;
@@ -69,6 +70,9 @@ const getUserByList = async ({ userList }: userList): Promise<usersData> => {
   const response = await axios.get(`${user}`, {
     withCredentials: true,
     params: { userIds: userList },
+    paramsSerializer: (params) => {
+      return qs.stringify(params, { arrayFormat: 'repeat' });
+    },
   });
   return response.data;
 };
@@ -93,7 +97,8 @@ export const useMemorialChiefBows = (
       console.log('bowResults:', bowResults);
 
       // 이름 가져오기
-      const userList = chiefIds.map((id) => Number(id));
+      const userList = chiefIds.map((id) => id);
+      console.log('userList 데이터!!!:', userList);
       const usersRes: usersData = await getUserByList({ userList });
       console.log('users:', usersRes.data);
 
