@@ -46,7 +46,7 @@ const ChatbotSelect = () => {
                 />
                 <_.TopContainerItemText>
                   <_.TopContainerItemTitle>{item.name}</_.TopContainerItemTitle>
-                  <_.TopContainerItemDesc>{item.contributor.join(', ')}</_.TopContainerItemDesc>
+                  <_.TopContainerItemDesc>{item.description}</_.TopContainerItemDesc>
                 </_.TopContainerItemText>
               </_.TopContainerItemInfo>
             </_.TopContainerItem>

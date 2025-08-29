@@ -3,6 +3,7 @@ import api from '@/api/axiosInstance';
 import { chatbot } from '@/config';
 
 interface ChatBot {
+  description: ReactNode;
   chatbot_id: number;
   name: string;
   contributor: string[];
