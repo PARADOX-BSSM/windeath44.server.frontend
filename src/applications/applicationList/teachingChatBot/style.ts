@@ -93,3 +93,10 @@ export const BottomContainerSubmit = styled.button`
     2px 2px 0 0 var(--secondary-color) inset;
   border: none;
 `;
+
+export const InputForm = styled.form`
+  width: 100%;
+  flex: 1;
+  gap: 16px;
+  display: flex;
+`;

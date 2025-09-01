@@ -6,11 +6,14 @@ import api from '@/api/axiosInstance';
 interface addWordSetInterface {
   characterId: number;
   userId: string;
+  question: string;
+  answer: string;
 }
 
-const addWordSet = async ({ characterId, userId }: addWordSetInterface) => {
+const addWordSet = async ({ characterId, userId, question, answer }: addWordSetInterface) => {
   try {
-    const response: AxiosResponse = await api.post(`${chatbot}/wordset/${characterId}`, {
+    const body = { question, answer };
+    const response: AxiosResponse = await api.post(`${chatbot}/wordset/${characterId}`, body, {
       headers: {
         'Content-Type': 'application/json',
         'user-id': userId,
@@ -26,8 +29,8 @@ const addWordSet = async ({ characterId, userId }: addWordSetInterface) => {
 export const useAddWordSet = () => {
   return useMutation({
     mutationFn: addWordSet,
-    onSuccess: () => {
-      console.log('성공');
+    onSuccess: (e) => {
+      console.log(e);
     },
     onError: () => {},
   });

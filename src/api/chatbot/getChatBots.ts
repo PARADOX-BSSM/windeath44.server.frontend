@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import api from '@/api/axiosInstance';
 import { chatbot } from '@/config';
+import { ReactNode } from 'react';
 
 interface ChatBot {
   description: ReactNode;
