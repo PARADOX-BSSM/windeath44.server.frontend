@@ -6,6 +6,7 @@ import Choten from '@/assets/profile/choten.svg';
 import Ame from '@/assets/profile/ame.svg';
 import Hosino from '@/assets/character/hosino.svg';
 import { useDoChat } from '@/api/chatbot/chat';
+import { useGetChatBotQuery } from '@/api/chatbot/getChatBot';
 
 interface Message {
   id: string;
@@ -36,53 +37,33 @@ const ChatBot = () => {
     // },
   ]);
 
-  const [contributors] = useState<Contributor[]>([
-    { id: '1', avatar: Ame, alt: '기여자' },
-    { id: '2', avatar: Choten, alt: '기여자' },
-    { id: '3', avatar: Choten, alt: '기여자' },
-    { id: '4', avatar: Ame, alt: '기여자' },
-    { id: '5', avatar: Choten, alt: '기여자' },
-    { id: '6', avatar: Ame, alt: '기여자' },
-    { id: '7', avatar: Choten, alt: '기여자' },
-    { id: '8', avatar: Ame, alt: '기여자' },
-    { id: '9', avatar: Choten, alt: '기여자' },
-    { id: '10', avatar: Ame, alt: '기여자' },
-    { id: '11', avatar: Choten, alt: '기여자' },
-    { id: '12', avatar: Ame, alt: '기여자' },
-    { id: '13', avatar: Choten, alt: '기여자' },
-    { id: '14', avatar: Choten, alt: '기여자' },
-    { id: '15', avatar: Ame, alt: '기여자' },
-    { id: '16', avatar: Choten, alt: '기여자' },
-    { id: '17', avatar: Ame, alt: '기여자' },
-    { id: '18', avatar: Choten, alt: '기여자' },
-    { id: '19', avatar: Ame, alt: '기여자' },
-    { id: '20', avatar: Choten, alt: '기여자' },
-    { id: '21', avatar: Ame, alt: '기여자' },
-    { id: '22', avatar: Choten, alt: '기여자' },
-    { id: '23', avatar: Ame, alt: '기여자' },
-    { id: '24', avatar: Choten, alt: '기여자' },
-    { id: '25', avatar: Choten, alt: '기여자' },
-    { id: '26', avatar: Ame, alt: '기여자' },
-    { id: '27', avatar: Choten, alt: '기여자' },
-    { id: '28', avatar: Ame, alt: '기여자' },
-    { id: '29', avatar: Choten, alt: '기여자' },
-    { id: '30', avatar: Ame, alt: '기여자' },
-    { id: '31', avatar: Choten, alt: '기여자' },
-    { id: '32', avatar: Ame, alt: '기여자' },
-    { id: '32', avatar: Choten, alt: '기여자' },
-  ]);
-
+  const [contributors, setContributors] = useState<Contributor[]>([]);
   const [showAllContributors, setShowAllContributors] = useState(false);
-
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const getChatBot = useGetChatBotQuery({ chatbot_id: 1 });
+
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  useEffect(() => {
+    const contributeData = getChatBot.data?.data.contributor;
+    console.log(contributeData);
+
+    if (contributeData && Array.isArray(contributeData)) {
+      const contributorList: Contributor[] = contributeData.map((name: string, index: number) => ({
+        id: (index + 1).toString(),
+        avatar: index % 2 === 0 ? Choten : Ame,
+        alt: name,
+      }));
+
+      setContributors(contributorList);
+    }
+  }, [getChatBot.data]);
 
   const addMessage = () => {
     if (!message.trim()) return;
