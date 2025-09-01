@@ -52,7 +52,7 @@ const ChatBot = () => {
 
   useEffect(() => {
     const contributeData = getChatBot.data?.data.contributor;
-    console.log(contributeData);
+    // console.log(contributeData);
 
     if (contributeData && Array.isArray(contributeData)) {
       const contributorList: Contributor[] = contributeData.map((name: string, index: number) => ({
@@ -120,7 +120,7 @@ const ChatBot = () => {
   };
 
   const handleMemorialClick = () => {
-    console.log('Navigate to memorial');
+    // console.log('Navigate to memorial');
   };
 
   const handleContributorsCountClick = () => {
