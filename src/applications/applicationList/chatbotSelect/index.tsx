@@ -71,6 +71,12 @@ const ChatbotSelect = () => {
               taskTransform?.('분신사바', '챗봇 학습');
             }
           }}
+          onMouseEnter={() => {
+            setCursorImage(CURSOR_IMAGES.hand);
+          }}
+          onMouseLeave={() => {
+            setCursorImage(CURSOR_IMAGES.default);
+          }}
         >
           학습
         </_.BottomContainerSubmit>
@@ -80,6 +86,12 @@ const ChatbotSelect = () => {
             if (selectedItem !== null) {
               taskTransform?.('분신사바', '분신사바 메인');
             }
+          }}
+          onMouseEnter={() => {
+            setCursorImage(CURSOR_IMAGES.hand);
+          }}
+          onMouseLeave={() => {
+            setCursorImage(CURSOR_IMAGES.default);
           }}
         >
           입장
