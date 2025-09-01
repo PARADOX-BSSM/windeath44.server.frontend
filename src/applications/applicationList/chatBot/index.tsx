@@ -155,15 +155,17 @@ const ChatBot = () => {
                   />
                 ))}
               </_.ContributorsList>
-              <_.ContributorsCount
-                onClick={handleContributorsCountClick}
-                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
-                onMouseOut={() => setCursorImage(CURSOR_IMAGES.default)}
-              >
-                {showAllContributors
-                  ? `${contributors.length}명의 기여자`
-                  : `+ ${contributors.length - 5}명의 기여자`}
-              </_.ContributorsCount>
+              {contributors.length > 5 && (
+                <_.ContributorsCount
+                  onClick={handleContributorsCountClick}
+                  onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                  onMouseOut={() => setCursorImage(CURSOR_IMAGES.default)}
+                >
+                  {showAllContributors
+                    ? `${contributors.length}명의 기여자`
+                    : `+ ${contributors.length - 5}명의 기여자`}
+                </_.ContributorsCount>
+              )}
             </_.ContributorsSection>
           </_.ProfileSection>
 
