@@ -11,9 +11,12 @@ const TeachingChatBot = () => {
   const [character] = useState<string>('호시노 아이');
 
   const addWordSetMutation = useAddWordSet();
+  const randomQuestion = (): number => {
+    return Math.floor(Math.random() * dummyQuestion.length);
+  };
 
   useEffect(() => {
-    const random = Math.floor(Math.random() * dummyQuestion.length);
+    const random = randomQuestion();
     setQuestion(dummyQuestion[random]);
   }, []);
 
@@ -29,6 +32,8 @@ const TeachingChatBot = () => {
       {
         onSuccess: (response) => {
           setInputValue('');
+          const random = randomQuestion();
+          setQuestion(dummyQuestion[random]);
           console.log(response);
         },
       },
