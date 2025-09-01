@@ -21,7 +21,7 @@ interface FetchChatBotParams {
 
 export const fetchChatBot = async ({
   chatbot_id,
-}: FetchChatBotParams): Promise<ChatBotsResponse> => {
+}: FetchChatBotParams): Promise<ChatBotResponse> => {
   const response = await api.get(`${chatbot}/${chatbot_id}`);
   return response.data;
 };
