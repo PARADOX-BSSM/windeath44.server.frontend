@@ -14,8 +14,8 @@ interface AnimeResponse {
   data: AnimeData;
 }
 
-const GetAnimation = async (animeId: number): Promise => {
-  const response = await api.get(`${anime}/${animeId}`, {});
+const GetAnimation = async (animeId: number): Promise<AnimeResponse> => {
+  const response = await api.get(`${anime}/${animeId}`);
   return response.data;
 };
 
