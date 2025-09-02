@@ -146,7 +146,7 @@ export const MemorialButton = styled.button`
   font-family: 'Galmuri11', sans-serif;
   font-size: 20px;
   color: var(--primary-black);
-  cursor: pointer;
+  cursor: none;
   box-shadow:
     -1px -1px 0px 0px inset var(--primary-black),
     1px 1px 0px 0px inset var(--chatbot-white),
@@ -213,6 +213,8 @@ export const MessageInput = styled.input`
     -2px -2px 0px 0px inset var(--dark-primary-color),
     2px 2px 0px 0px inset var(--dark-primary-color);
 
+  cursor: none;
+
   &::placeholder {
     color: var(--chatbot-placeholder);
     font-family: 'Galmuri11', sans-serif;
@@ -233,7 +235,7 @@ export const SendButton = styled.button`
   font-family: 'Galmuri11', sans-serif;
   font-size: 20px;
   color: var(--primary-black);
-  cursor: pointer;
+  cursor: none;
   box-shadow:
     -1px -1px 0px 0px inset #2e2e2e,
     1px 1px 0px 0px inset #ffffff,

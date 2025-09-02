@@ -26,7 +26,7 @@ export const TopContainer = styled.div`
     1px 1px 0 0 var(--primary-black) inset,
     -2px -2px 0 0 #dcafdd inset,
     2px 2px 0 0 #dcafdd inset;
-  overflow-y: scroll;
+  overflow-y: auto;
 `;
 
 export const BottomContainer = styled.div`
@@ -36,21 +36,22 @@ export const BottomContainer = styled.div`
   gap: 1em;
 `;
 
-export const BottomContainerSubmit = styled.button`
+export const BottomContainerSubmit = styled.button<{ disabled?: boolean }>`
   width: 20%;
   height: 100%;
-  color: var(--primary-black);
+  color: ${({ disabled }) => (disabled ? 'var(--dark-primary-color)' : 'var(--primary-black)')};
   font-family: Galmuri11;
   font-size: 1em;
+  border: none;
   background-color: var(--light-primary-color);
   box-shadow:
     -1px -1px 0 0 var(--primary-black) inset,
     1px 1px 0 0 #fff inset,
     -2px -2px 0 0 var(--dark-primary-color) inset,
     2px 2px 0 0 var(--secondary-color) inset;
-  border: none;
+  cursor: none;
 `;
-export const TopContainerItem = styled.div`
+export const TopContainerItem = styled.div<{ $isSelected?: boolean }>`
   box-sizing: border-box;
   width: 100%;
   height: 5.5rem;
@@ -58,8 +59,13 @@ export const TopContainerItem = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #fff;
+  background-color: ${({ $isSelected }) => ($isSelected ? '#fbd8fdff' : '#fff')};
   box-shadow: 0 -1px 0 0 #cccccc inset;
+  cursor: none;
+
+  &:hover {
+    background-color: ${({ $isSelected }) => ($isSelected ? '#fbcafdff' : '#f5f5f5')};
+  }
 `;
 export const TopContainerItemInfo = styled.div`
   display: flex;
@@ -87,18 +93,20 @@ export const TopContainerItemDesc = styled.div`
   font-family: Galmuri11;
   font-size: 0.8rem;
 `;
-export const TopContainerSubmit = styled.button`
+
+export const TopContainerSubmit = styled.button<{ disabled?: boolean }>`
   width: 16%;
   height: fit-content;
   padding: 0.35rem 0;
-  color: var(--primary-black);
+  color: ${({ disabled }) => disabled ? '#999' : 'var(--primary-black)'};
   font-family: Galmuri11;
   font-size: 1em;
-  background-color: var(--light-primary-color);
+  background-color: ${({ disabled }) => disabled ? '#f0f0f0' : 'var(--light-primary-color)'};
   box-shadow:
-    -1px -1px 0 0 var(--primary-black) inset,
+    -1px -1px 0 0 ${({ disabled }) => disabled ? '#ccc' : 'var(--primary-black)'} inset,
     1px 1px 0 0 #fff inset,
-    -2px -2px 0 0 var(--dark-primary-color) inset,
-    2px 2px 0 0 var(--secondary-color) inset;
+    -2px -2px 0 0 ${({ disabled }) => disabled ? '#ddd' : 'var(--dark-primary-color)'} inset,
+    2px 2px 0 0 ${({ disabled }) => disabled ? '#eee' : 'var(--secondary-color)'} inset;
   border: none;
+  cursor: ${({ disabled }) => disabled ? 'not-allowed' : 'pointer'};
 `;

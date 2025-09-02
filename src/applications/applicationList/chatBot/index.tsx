@@ -6,6 +6,7 @@ import Choten from '@/assets/profile/choten.svg';
 import Ame from '@/assets/profile/ame.svg';
 import Hosino from '@/assets/character/hosino.svg';
 import { useDoChat } from '@/api/chatbot/chat';
+import { useGetChatBotQuery } from '@/api/chatbot/getChatBot';
 
 interface Message {
   id: string;
@@ -27,75 +28,42 @@ const ChatBot = () => {
   const doChatMutation = useDoChat();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      avatar: Ame,
-      author: '로에나',
-      handle: '@roena0516',
-      text: '1화만에 죽은 소감이 어때?',
-    },
-    {
-      id: '2',
-      avatar: Hosino,
-      author: '호시노 아이',
-      text: '뒤질래?',
-    },
-    {
-      id: '3',
-      avatar: Ame,
-      author: '로에나',
-      handle: '@roena0516',
-      text: 'ㅜㅜㅜㅜㅜ',
-    },
+    // {
+    //   id: '1',
+    //   avatar: Ame,
+    //   author: '로에나',
+    //   handle: '@roena0516',
+    //   text: '1화만에 죽은 소감이 어때?',
+    // },
   ]);
 
-  const [contributors] = useState<Contributor[]>([
-    { id: '1', avatar: Ame, alt: '기여자' },
-    { id: '2', avatar: Choten, alt: '기여자' },
-    { id: '3', avatar: Choten, alt: '기여자' },
-    { id: '4', avatar: Ame, alt: '기여자' },
-    { id: '5', avatar: Choten, alt: '기여자' },
-    { id: '6', avatar: Ame, alt: '기여자' },
-    { id: '7', avatar: Choten, alt: '기여자' },
-    { id: '8', avatar: Ame, alt: '기여자' },
-    { id: '9', avatar: Choten, alt: '기여자' },
-    { id: '10', avatar: Ame, alt: '기여자' },
-    { id: '11', avatar: Choten, alt: '기여자' },
-    { id: '12', avatar: Ame, alt: '기여자' },
-    { id: '13', avatar: Choten, alt: '기여자' },
-    { id: '14', avatar: Choten, alt: '기여자' },
-    { id: '15', avatar: Ame, alt: '기여자' },
-    { id: '16', avatar: Choten, alt: '기여자' },
-    { id: '17', avatar: Ame, alt: '기여자' },
-    { id: '18', avatar: Choten, alt: '기여자' },
-    { id: '19', avatar: Ame, alt: '기여자' },
-    { id: '20', avatar: Choten, alt: '기여자' },
-    { id: '21', avatar: Ame, alt: '기여자' },
-    { id: '22', avatar: Choten, alt: '기여자' },
-    { id: '23', avatar: Ame, alt: '기여자' },
-    { id: '24', avatar: Choten, alt: '기여자' },
-    { id: '25', avatar: Choten, alt: '기여자' },
-    { id: '26', avatar: Ame, alt: '기여자' },
-    { id: '27', avatar: Choten, alt: '기여자' },
-    { id: '28', avatar: Ame, alt: '기여자' },
-    { id: '29', avatar: Choten, alt: '기여자' },
-    { id: '30', avatar: Ame, alt: '기여자' },
-    { id: '31', avatar: Choten, alt: '기여자' },
-    { id: '32', avatar: Ame, alt: '기여자' },
-    { id: '32', avatar: Choten, alt: '기여자' },
-  ]);
-
+  const [contributors, setContributors] = useState<Contributor[]>([]);
   const [showAllContributors, setShowAllContributors] = useState(false);
-
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const getChatBot = useGetChatBotQuery({ chatbot_id: 1 });
+
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  useEffect(() => {
+    const contributeData = getChatBot.data?.data.contributor;
+    // console.log(contributeData);
+
+    if (contributeData && Array.isArray(contributeData)) {
+      const contributorList: Contributor[] = contributeData.map((name: string, index: number) => ({
+        id: (index + 1).toString(),
+        avatar: index % 2 === 0 ? Choten : Ame,
+        alt: name,
+      }));
+
+      setContributors(contributorList);
+    }
+  }, [getChatBot.data]);
 
   const addMessage = () => {
     if (!message.trim()) return;
@@ -126,7 +94,7 @@ const ChatBot = () => {
     // API 호출
     doChatMutation.mutate(
       {
-        chatbotId: 19,
+        chatbotId: 1,
         content: message.trim(),
         userId: 'pdh0128',
       },
@@ -152,7 +120,7 @@ const ChatBot = () => {
   };
 
   const handleMemorialClick = () => {
-    console.log('Navigate to memorial');
+    // console.log('Navigate to memorial');
   };
 
   const handleContributorsCountClick = () => {
@@ -187,19 +155,27 @@ const ChatBot = () => {
                   />
                 ))}
               </_.ContributorsList>
-              <_.ContributorsCount
-                onClick={handleContributorsCountClick}
-                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
-                onMouseOut={() => setCursorImage(CURSOR_IMAGES.default)}
-              >
-                {showAllContributors
-                  ? `${contributors.length}명의 기여자`
-                  : `+ ${contributors.length - 5}명의 기여자`}
-              </_.ContributorsCount>
+              {contributors.length > 5 && (
+                <_.ContributorsCount
+                  onClick={handleContributorsCountClick}
+                  onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                  onMouseOut={() => setCursorImage(CURSOR_IMAGES.default)}
+                >
+                  {showAllContributors
+                    ? `${contributors.length}명의 기여자`
+                    : `+ ${contributors.length - 5}명의 기여자`}
+                </_.ContributorsCount>
+              )}
             </_.ContributorsSection>
           </_.ProfileSection>
 
-          <_.MemorialButton onClick={handleMemorialClick}>추모관 바로가기</_.MemorialButton>
+          <_.MemorialButton
+            onClick={handleMemorialClick}
+            onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+            onMouseOut={() => setCursorImage(CURSOR_IMAGES.default)}
+          >
+            추모관 바로가기
+          </_.MemorialButton>
         </_.LeftPanel>
 
         <_.RightPanel>
@@ -227,6 +203,8 @@ const ChatBot = () => {
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder={isLoading ? '답변을 기다리는 중입니다..' : '메시지 입력'}
                 readOnly={isLoading}
+                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.drag)}
+                onMouseOut={() => setCursorImage(CURSOR_IMAGES.default)}
               />
             </_.InputForm>
             <_.SendButton
@@ -235,6 +213,8 @@ const ChatBot = () => {
                 const fakeEvent = { preventDefault: () => {} } as React.FormEvent<HTMLFormElement>;
                 handleSubmit(fakeEvent);
               }}
+              onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+              onMouseOut={() => setCursorImage(CURSOR_IMAGES.default)}
             >
               전송
             </_.SendButton>
