@@ -13,7 +13,6 @@ export const fetchCharacters = async ({ animeId, cursorId, size }: FetchCharacte
   const response = await api.get(`${anime}/characters/search/anime`, {
     params: { animeId, cursorId, size },
     paramsSerializer: (params) => qs.stringify(params, { arrayFormat: 'repeat' }),
-    withCredentials: true,
   });
   return response.data;
 };

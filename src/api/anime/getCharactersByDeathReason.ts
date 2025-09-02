@@ -11,7 +11,6 @@ interface FetchCharactersParams {
 export const fetchCharacters = async ({ deathReason, cursorId, size }: FetchCharactersParams) => {
   const response = await api.get(`${anime}/characters/search/death-reason`, {
     params: { deathReason, cursorId, size },
-    withCredentials: true,
   });
   return response.data;
 };

@@ -2,6 +2,7 @@ import axios from 'axios';
 import { AxiosResponse } from 'axios';
 import { anime } from '@/config/index';
 import { InfiniteData, useInfiniteQuery } from '@tanstack/react-query';
+import api from '@/api/axiosInstance.ts';
 
 interface GetAnimeParams {
   cursorId?: number | null;
@@ -28,7 +29,7 @@ const fetchAnime = async ({
   size = 10,
   name = '',
 }: GetAnimeParams): Promise<AnimeResponse> => {
-  const response: AxiosResponse<AnimeResponse> = await axios.get(`${anime}`, {
+  const response: AxiosResponse<AnimeResponse> = await api.get(`${anime}`, {
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${localStorage.getItem('access_token')}`,

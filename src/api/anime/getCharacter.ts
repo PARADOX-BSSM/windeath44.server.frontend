@@ -2,6 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { anime } from '@/config';
 import React from 'react';
+import api from '@/api/axiosInstance.ts';
 export type CharacterData = {
   characterId: number;
   animeId: number;
@@ -20,9 +21,7 @@ export type CharacterDataResponse = {
   data: CharacterData;
 };
 const getCharacter = async (characterId: number): Promise<CharacterDataResponse> => {
-  const response = await axios.get(`${anime}/characters/${characterId}`, {
-    withCredentials: true,
-  });
+  const response = await api.get(`${anime}/characters/${characterId}`, {});
   console.log(response.data);
   return response.data;
 };

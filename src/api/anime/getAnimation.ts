@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import React from 'react';
-import axios from 'axios';
 import { anime } from '@/config';
+import api from '@/api/axiosInstance.ts';
 
 interface AnimeData {
   animeId: number;
@@ -15,9 +15,7 @@ interface AnimeResponse {
 }
 
 const GetAnimation = async (animeId: number): Promise => {
-  const response = await axios.get(`${anime}/${animeId}`, {
-    withCredentials: true,
-  });
+  const response = await api.get(`${anime}/${animeId}`, {});
   return response.data;
 };
 
