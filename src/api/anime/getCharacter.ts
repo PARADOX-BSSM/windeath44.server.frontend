@@ -1,5 +1,4 @@
 import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
 import { anime } from '@/config';
 import React from 'react';
 import api from '@/api/axiosInstance.ts';

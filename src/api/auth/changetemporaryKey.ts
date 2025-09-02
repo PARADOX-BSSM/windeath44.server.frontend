@@ -1,6 +1,6 @@
 import { auth } from '@/config';
 import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
+import api from '@/api/axiosInstance.ts';
 interface authParams {
   email: string;
 }
@@ -10,8 +10,7 @@ const changeTemporaryKey = async ({ email }: authParams) => {
     email,
   };
   try {
-    await axios.post(`${auth}/password`, data, {
-      withCredentials: true,
+    await api.post(`${auth}/password`, data, {
       headers: { 'Content-Type': 'application/json' },
     });
     return true;

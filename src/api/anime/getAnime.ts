@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { AxiosResponse } from 'axios';
 import { anime } from '@/config/index';
 import { InfiniteData, useInfiniteQuery } from '@tanstack/react-query';
