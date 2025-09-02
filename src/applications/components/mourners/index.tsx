@@ -10,7 +10,7 @@ const Mourners = ({ memorialId }) => {
   console.log('아이디', memorialId);
   const [bowData, setbowData] = useState<bowData[]>();
   const mutationMemorialChiefs = useMemorialChiefBows(setbowData, memorialId);
-  console.log('bowData', bowData);
+  // console.log('bowData', bowData);
 
   useEffect(() => {
     if (!memorialId) return;
