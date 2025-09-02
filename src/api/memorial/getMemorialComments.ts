@@ -2,6 +2,7 @@ import axios from 'axios';
 import { memorial } from '@/config';
 import { useMutation } from '@tanstack/react-query';
 import React from 'react';
+import api from '@/api/axiosInstance.ts';
 
 type commentData = {
   memorialId: number;
@@ -31,12 +32,11 @@ const getMemorialComments = async ({
   cursorId,
   size = 10,
 }: commentData): Promise<MemorialCommentsResponse> => {
-  const response = await axios.get(`${memorial}/comment/${memorialId}`, {
+  const response = await api.get(`${memorial}/comment/${memorialId}`, {
     params: {
       ...(cursorId != null ? { cursorId } : {}),
       size,
     },
-    withCredentials: true,
   });
   return response.data;
 };

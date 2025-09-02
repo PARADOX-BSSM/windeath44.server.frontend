@@ -1,14 +1,14 @@
 import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
 import { memorial } from '@/config';
 import React from 'react';
+import api from '@/api/axiosInstance.ts';
 
 type BowData = {
   message: string;
   data: number;
 };
 const memorialGet = async (memorialId: number): Promise<void> => {
-  const response = await axios.get(`${memorial}/bow/${memorialId}`, {
+  const response = await api.get(`${memorial}/bow/${memorialId}`, {
     withCredentials: true,
   });
   return response.data;

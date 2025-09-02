@@ -20,7 +20,7 @@ export type memorialUserIdResponse = {
 };
 export type memorialUserIdVar = {
   memorialId: number;
-  userId: string;
+  userId: number;
 };
 //Get Users By List
 type usersResponse = {
