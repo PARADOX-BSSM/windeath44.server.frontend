@@ -10,6 +10,7 @@ import myComputer from '@/assets/appIcons/my_computer.svg';
 import setting from '@/assets/appIcons/setting.svg';
 import search from '@/assets/appIcons/search.svg';
 import trashBin from '@/assets/appIcons/empty_bin.svg';
+import chatbot from '@/assets/appIcons/ChatBot.svg';
 
 // lazy를 이용한 어플리케이션 컴포넌트 로드
 const Terminal = lazy(() => import('@/applications/applicationList/terminal/index.tsx'));
@@ -424,7 +425,7 @@ const useApps = (): TaskType[] => {
         setUpWidth: 800,
         setUpHeight: 562,
       },
-      visible: true,
+      visible: false,
     },
     {
       component: (
@@ -433,11 +434,11 @@ const useApps = (): TaskType[] => {
         </Suspense>
       ),
       type: 'App',
-      id: 2235,
-      name: '챗봇',
+      id: 2236,
+      name: '분신사바',
       layer: undefined,
       appSetup: {
-        Image: setting,
+        Image: chatbot,
         minWidth: 340,
         minHeight: 500,
         setUpWidth: 800,
@@ -452,7 +453,7 @@ const useApps = (): TaskType[] => {
         </Suspense>
       ),
       type: 'App',
-      id: 2236,
+      id: 2237,
       name: '분신사바 메인',
       layer: undefined,
       appSetup: {
@@ -462,7 +463,7 @@ const useApps = (): TaskType[] => {
         setUpWidth: 800,
         setUpHeight: 600,
       },
-      visible: true,
+      visible: false,
     },
     {
       component: (
@@ -481,7 +482,7 @@ const useApps = (): TaskType[] => {
         setUpWidth: 800,
         setUpHeight: 562,
       },
-      visible: true,
+      visible: false,
     },
   ];
 

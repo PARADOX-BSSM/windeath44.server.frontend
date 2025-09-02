@@ -61,6 +61,7 @@ export const TopInnerSecond = styled.div`
     -2px -2px 0 0 var(--dark-primary-color) inset,
     2px 2px 0 0 var(--dark-primary-color) inset;
   display: flex;
+  position: relative;
 `;
 
 export const TopInnerSecondP = styled.p`
@@ -85,6 +86,7 @@ export const BottomContainerSubmit = styled.button`
   color: var(--primary-black);
   font-family: Galmuri11;
   font-size: 1em;
+  cursor: none;
   background-color: var(--light-primary-color);
   box-shadow:
     -1px -1px 0 0 var(--primary-black) inset,
@@ -92,4 +94,43 @@ export const BottomContainerSubmit = styled.button`
     -2px -2px 0 0 var(--dark-primary-color) inset,
     2px 2px 0 0 var(--secondary-color) inset;
   border: none;
+`;
+
+export const InputForm = styled.form`
+  width: 100%;
+  flex: 1;
+  gap: 16px;
+  display: flex;
+`;
+
+export const RefreshButton = styled.button`
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 2rem;
+  height: 2rem;
+  background-color: var(--light-primary-color);
+  border: 1px solid var(--primary-black);
+  box-shadow:
+    -1px -1px 0 0 var(--primary-black) inset,
+    1px 1px 0 0 #fff inset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: none;
+  font-size: 1.2rem;
+  font-family: Galmuri11;
+
+  &:hover {
+    background-color: var(--very-light-primary-color);
+    box-shadow:
+      1px 1px 0 0 var(--primary-black) inset,
+      -1px -1px 0 0 #fff inset;
+  }
+
+  &:active {
+    box-shadow:
+      1px 1px 0 0 var(--dark-primary-color) inset,
+      -1px -1px 0 0 var(--dark-primary-color) inset;
+  }
 `;
