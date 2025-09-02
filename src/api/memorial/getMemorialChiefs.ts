@@ -81,7 +81,7 @@ export const useMemorialChiefBows = (
   setBowData: React.Dispatch<React.SetStateAction<BowData[] | undefined>>,
   memorialId: number,
 ) => {
-  return useMutation<BowData[], Error, number>({
+  return useMutation<BowData[], Error, void>({
     mutationFn: async (): Promise<BowData[]> => {
       // chiefs 조회
       const chiefsRes = await getMemorialChiefs({ memorialId });

@@ -6,7 +6,10 @@ type bowData = {
   name: string;
   bowCount: number;
 };
-const Mourners = ({ memorialId }) => {
+interface bowProps {
+  memorialId: number;
+}
+const Mourners = ({ memorialId }: bowProps) => {
   console.log('아이디', memorialId);
   const [bowData, setbowData] = useState<bowData[]>();
   const mutationMemorialChiefs = useMemorialChiefBows(setbowData, memorialId);
@@ -14,13 +17,13 @@ const Mourners = ({ memorialId }) => {
 
   useEffect(() => {
     if (!memorialId) return;
-    mutationMemorialChiefs.mutate(setbowData, memorialId);
-  }, [bowData]);
+    mutationMemorialChiefs.mutate();
+  }, [memorialId]);
   return (
     <_.Container>
       <_.Title>조문객 명단</_.Title>
       <_.UserList>
-        {bowData.map((user, index) => {
+        {bowData?.slice(0, 10).map((user, index) => {
           return (
             <_.UserItem key={index}>
               <div>
