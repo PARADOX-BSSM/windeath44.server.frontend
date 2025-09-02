@@ -1,6 +1,6 @@
-import axios, { AxiosResponse } from 'axios';
 import { user } from '@/config';
 import { useMutation } from '@tanstack/react-query';
+import api from '@/api/axiosInstance.ts';
 interface SignUpParams {
   name: string;
   userId: string;
@@ -23,8 +23,7 @@ export const signUp = async ({
     password: pw,
   };
   try {
-    const response: AxiosResponse = await axios.post(`${user}/register`, data, {
-      withCredentials: true,
+    const response = await api.post(`${user}/register`, data, {
       headers: { 'Content-Type': 'application/json' },
     });
     console.log(JSON.stringify(response.data));
