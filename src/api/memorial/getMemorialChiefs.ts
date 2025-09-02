@@ -1,8 +1,8 @@
-import axios from 'axios';
 import { memorial } from '@/config';
 import { user } from '@/config';
 import { useMutation } from '@tanstack/react-query';
 import qs from 'qs';
+import api from '@/api/axiosInstance.ts';
 
 // memorial chief
 type memorialChiefs = {
@@ -50,7 +50,7 @@ type BowData = {
 };
 
 const getMemorialChiefs = async ({ memorialId }: memorialChiefVar): Promise<memorialChiefs> => {
-  const response = await axios.get(`${memorial}/chiefs/${memorialId}`, {
+  const response = await api.get(`${memorial}/chiefs/${memorialId}`, {
     withCredentials: true,
   });
   return response.data;
@@ -60,14 +60,14 @@ const getMemorialByUserId = async ({
   memorialId,
   userId,
 }: memorialUserIdVar): Promise<memorialUserIdResponse> => {
-  const response = await axios.get(`${memorial}/bow/${userId}/${memorialId}`, {
+  const response = await api.get(`${memorial}/bow/${userId}/${memorialId}`, {
     withCredentials: true,
   });
   return response.data;
 };
 
 const getUserByList = async ({ userList }: userList): Promise<usersData> => {
-  const response = await axios.get(`${user}`, {
+  const response = await api.get(`${user}`, {
     withCredentials: true,
     params: { userIds: userList },
     paramsSerializer: (params) => {
