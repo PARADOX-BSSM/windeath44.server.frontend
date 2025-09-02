@@ -14,9 +14,7 @@ import {
 } from '@/modules/interface.ts';
 
 const getMemorialChiefs = async ({ memorialId }: memorialChiefVar): Promise<memorialChiefs> => {
-  const response = await api.get(`${memorial}/chiefs/${memorialId}`, {
-    withCredentials: true,
-  });
+  const response = await api.get(`${memorial}/chiefs/${memorialId}`, {});
   return response.data;
 };
 
@@ -24,15 +22,12 @@ const getMemorialByUserId = async ({
   memorialId,
   userId,
 }: memorialUserIdVar): Promise<memorialUserIdResponse> => {
-  const response = await api.get(`${memorial}/bow/${userId}/${memorialId}`, {
-    withCredentials: true,
-  });
+  const response = await api.get(`${memorial}/bow/${userId}/${memorialId}`, {});
   return response.data;
 };
 
 const getUserByList = async ({ userList }: userList): Promise<usersData> => {
   const response = await api.get(`${user}`, {
-    withCredentials: true,
     params: { userIds: userList },
     paramsSerializer: (params) => {
       return qs.stringify(params, { arrayFormat: 'repeat' });
