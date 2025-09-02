@@ -47,7 +47,7 @@ const Bow = ({ memorialId }: bowProps) => {
           </div>
         </_.bbow>
       </_.place>
-      <Mourners />
+      <Mourners memorialId={memorialId} />
     </_.main>
   );
 };
