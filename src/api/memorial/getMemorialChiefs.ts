@@ -3,51 +3,15 @@ import { user } from '@/config';
 import { useMutation } from '@tanstack/react-query';
 import qs from 'qs';
 import api from '@/api/axiosInstance.ts';
-
-// memorial chief
-type memorialChiefs = {
-  message: string;
-  data: string[];
-};
-type memorialChiefVar = {
-  memorialId: number;
-};
-// memorial bow by user id and memorial id
-type memorialUserIdData = {
-  bowId: number;
-  memorialId: number;
-  userId: string;
-  bowCount: number;
-  lastBowedAt: string;
-};
-type memorialUserIdResponse = {
-  message: string;
-  data: memorialUserIdData;
-};
-type memorialUserIdVar = {
-  memorialId: number;
-  userId: number;
-};
-//Get Users By List
-type usersResponse = {
-  userId: string;
-  name: string;
-  remainToken: number;
-  profile: string;
-  role: string;
-};
-type usersData = {
-  message: string;
-  data: usersResponse[];
-};
-type userList = {
-  userList: string[];
-};
-//최종 반환 데이터
-type BowData = {
-  name: string;
-  bowCount: number;
-};
+import {
+  BowData,
+  memorialChiefs,
+  memorialChiefVar,
+  memorialUserIdResponse,
+  memorialUserIdVar,
+  userList,
+  usersData,
+} from '@/modules/interface.ts';
 
 const getMemorialChiefs = async ({ memorialId }: memorialChiefVar): Promise<memorialChiefs> => {
   const response = await api.get(`${memorial}/chiefs/${memorialId}`, {
