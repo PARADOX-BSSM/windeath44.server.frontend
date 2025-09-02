@@ -1,6 +1,6 @@
-import axios from 'axios';
 import { user } from '@/config';
 import { useMutation } from '@tanstack/react-query';
+import api from '@/api/axiosInstance.ts';
 interface ResetPasswordParams {
   email: string;
   password: string;
@@ -11,8 +11,7 @@ const resetPassword = async ({ email, password }: ResetPasswordParams): Promise<
     password,
   };
   try {
-    await axios.patch(`${user}/retrieve/password`, data, {
-      withCredentials: true,
+    await api.patch(`${user}/retrieve/password`, data, {
       headers: { 'Content-Type': 'application/json' },
     });
     return true;

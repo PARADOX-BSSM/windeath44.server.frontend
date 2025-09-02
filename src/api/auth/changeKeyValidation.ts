@@ -1,6 +1,6 @@
-import axios from 'axios';
 import { auth } from '@/config';
 import { useMutation } from '@tanstack/react-query';
+import api from '@/api/axiosInstance.ts';
 interface ChangeKeyValidation {
   authorizationCode: string;
 }
@@ -9,8 +9,7 @@ const changeKeyValidation = async ({ authorizationCode }: ChangeKeyValidation) =
     authorizationCode,
   };
   try {
-    await axios.patch(`${auth}/password/valid`, data, {
-      withCredentials: true,
+    await api.patch(`${auth}/password/valid`, data, {
       headers: { 'Content-Type': 'application/json' },
     });
     return true;

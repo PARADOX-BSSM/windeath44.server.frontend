@@ -78,7 +78,6 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
     );
   };
   useEffect(() => {
-    console.log(memorialId, characterId);
     mutationMemorialGet.mutate(memorialId);
     mutaionGetMemorialComments.mutate({ memorialId });
     mutationGetCharacter.mutate(characterId);

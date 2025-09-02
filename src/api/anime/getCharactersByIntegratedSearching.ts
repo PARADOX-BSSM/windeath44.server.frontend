@@ -31,7 +31,6 @@ export const fetchIntegratedCharacters = async (params: FetchIntegratedCharacter
   const clean = sanitize(params);
   const res = await api.get(`${anime}/characters/search/integrated`, {
     params: clean,
-    withCredentials: true,
     paramsSerializer: (pp) => qs.stringify(pp, { arrayFormat: 'repeat', skipNulls: true }),
   });
   return res.data; // { values, nextCursorId } 가정

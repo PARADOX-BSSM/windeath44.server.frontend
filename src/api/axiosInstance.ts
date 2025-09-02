@@ -6,7 +6,7 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('access_token');
+  const token = localStorage.getItem('authorization');
   // console.log('interceptor:', { url: config.url, token });
 
   if (token && !config.url?.includes('/login')) {

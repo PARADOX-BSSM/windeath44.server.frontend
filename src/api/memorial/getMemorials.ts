@@ -10,7 +10,6 @@ interface FetchMemorialsParams {
 export const fetchMemorials = async ({ orderBy, page }: FetchMemorialsParams) => {
   const response = await api.get(`${memorial}`, {
     params: { orderBy, page },
-    withCredentials: true,
   });
   return response.data;
 };

@@ -10,7 +10,6 @@ interface FetchCharactersParams {
 export const fetchCharacters = async ({ cursorId, size }: FetchCharactersParams) => {
   const response = await api.get(`${anime}/characters`, {
     params: { cursorId, size },
-    withCredentials: true,
   });
   return response.data;
 };

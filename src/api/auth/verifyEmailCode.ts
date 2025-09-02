@@ -1,7 +1,7 @@
-import axios from 'axios';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { auth } from '@/config';
+import api from '@/api/axiosInstance.ts';
 interface authParams {
   email: string;
   check: string;
@@ -12,8 +12,7 @@ export const verifyEmailCode = async ({ email, check }: authParams): Promise<boo
     email,
   };
   try {
-    await axios.patch(`${auth}/email/valid`, data, {
-      withCredentials: true,
+    await api.patch(`${auth}/email/valid`, data, {
       headers: { 'Content-Type': 'application/json' },
     });
     return true;

@@ -11,7 +11,6 @@ interface FetchAnimesParams {
 export const fetchAnimes = async ({ cursorId, size = 10, animeName }: FetchAnimesParams) => {
   const response = await api.get(`${anime}`, {
     params: { cursorId, size, animeName },
-    withCredentials: true,
   });
   return response.data; // { data: { values: AnimeItem[] } } 가정
 };

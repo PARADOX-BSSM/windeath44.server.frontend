@@ -37,11 +37,11 @@ export const fetchMemorials = async ({ orderBy, page, characters }: FetchMemoria
     (a, b) => a - b,
   );
 
-  const response = await api.post<MemorialsResponse>(
-    `${memorial}/character-filtered`,
-    { orderBy, page, characters: uniqSorted },
-    { withCredentials: true },
-  );
+  const response = await api.post<MemorialsResponse>(`${memorial}/character-filtered`, {
+    orderBy,
+    page,
+    characters: uniqSorted,
+  });
   return response.data; // { message, data }
 };
 
