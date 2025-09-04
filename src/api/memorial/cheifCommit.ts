@@ -47,5 +47,13 @@ const postMemorialReject = async (memorialPullRequestId, userId): Promise<> => {
   });
   return response.data;
 };
-// chief get pr
-// chief get prs
+// chief get prs by memorial id
+const getPullRequestsByMemorialId = async (memorialId): Promise<> => {
+  const response = await api.patch(`:${memorial}/pull-requests/${memorialId}`);
+  return response.data;
+};
+// chief get pr by request id
+const getPullRequestByRequestId = async (requestId): Promise<> => {
+  const response = await api.patch(`:${memorial}/pull-request/${requestId}`);
+  return response.data;
+};
