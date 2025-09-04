@@ -23,5 +23,12 @@ const postMemorialPullRequest = async (memorialPullRequestId, userId): Promise<>
   });
   return response.data;
 };
-//get commit
 //get commits
+const getMemorialCommits = async (memorialId): Promise<void> => {
+  const response = await api.get(`:${memorial}commits/${memorialId}`);
+  return response.data;
+};
+//get commit by commitId
+const getMemorialCommits = async (commitId): Promise<void> => {
+  const response = await api.get(`:${memorial}commits/id/${commitId}`);
+  return response.data;
