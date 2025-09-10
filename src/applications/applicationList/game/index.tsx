@@ -4,6 +4,8 @@ import folder from '@/assets/search/folder.svg';
 import rythmGame from '@/assets/appIcons/piano.svg';
 import game from '@/assets/appIcons/game.svg';
 
+import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
+
 const gameItems = [
   { icon: rythmGame, name: '리듬게임' },
   { icon: game, name: '설까기' },
@@ -15,7 +17,11 @@ const Game: React.FC = () => {
       <_.MainWindow>
         <_.ItemContainer>
           {gameItems.map((item, index) => (
-            <_.GameItem key={index}>
+            <_.GameItem
+              key={index}
+              onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+              onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+            >
               <_.GameIcon src={item.icon} />
               <_.GameName>{item.name}</_.GameName>
             </_.GameItem>

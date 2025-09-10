@@ -42,7 +42,7 @@ export const GameItem = styled.div`
   justify-content: center;
   width: 5.39rem;
   gap: 0.563rem;
-  cursor: pointer;
+  cursor: none;
 
   &:hover {
     opacity: 0.8;
