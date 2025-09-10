@@ -9,6 +9,7 @@ export interface FetchIntegratedCharactersParams {
   deathReason?: string;
   cursorId?: number;
   size?: number;
+  memorialState?: 'NOT_MEMORIALIZING' | 'MEMORIALIZING';
 }
 
 const sanitize = (p: FetchIntegratedCharactersParams) => {
@@ -24,6 +25,10 @@ const sanitize = (p: FetchIntegratedCharactersParams) => {
   }
   if (typeof p.cursorId === 'number') out.cursorId = p.cursorId;
   if (typeof p.size === 'number') out.size = p.size;
+
+  if (p.memorialState) {
+    out.memorialState = p.memorialState;  
+  }
   return out;
 };
 
