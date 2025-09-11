@@ -104,8 +104,8 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
     top: top,
   };
   const handleCommit = () => {
-    const [, useInputValue] = useAtom(inputPortage);
-    useInputValue({
+    const InputValues = {
+      stackProps: stackProps,
       name: characterData.name,
       deathReason: characterData.deathReason,
       date: characterData.deathOfDay,
@@ -114,10 +114,9 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
       animeId: characterData.animeId,
       age: characterData.age,
       profileImage: characterData.imageUrl,
-      phrase: '',
-    });
+    };
     taskTransform?.('', '미리보기');
-    push(taskSearch?.('MemorialCommit', stackProps));
+    push(taskSearch?.('MemorialCommit', InputValues));
   };
   return (
     <_.Main>

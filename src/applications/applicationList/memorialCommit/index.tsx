@@ -3,24 +3,50 @@ import MemorialTextarea from '@/applications/components/memorialTextarea';
 import { useEffect, useState } from 'react';
 import { useGetUserMutation } from '@/api/user/getUser.ts';
 import { useAtom } from 'jotai';
-import { inputContent } from '@/atoms/inputManager.ts';
+import { inputContent, inputPortage } from '@/atoms/inputManager.ts';
+import { usePostCommit } from '@/api/memorial/userCommit.ts';
 // import { useAtomValue } from 'jotai';
 // import { taskSearchAtom } from '@/atoms/taskTransformer';
 
-interface dataStructureProps {
+interface stackProps {
   stack: any[];
   push: any;
   pop: any;
   top: any;
 }
 
-const MemorialCommit = ({ stack, push, pop, top }: dataStructureProps) => {
+interface inputProps {
+  stackProps: stackProps;
+  name: string;
+  deathReason: string;
+  date: string;
+  lifeCycle: number;
+  anime: string;
+  animeId: number;
+  age: number;
+  profileImage: string;
+}
+
+const MemorialCommit = ({
+  stackProps,
+  name,
+  deathReason,
+  date,
+  lifeCycle,
+  anime,
+  animeId,
+  age,
+  profileImage,
+}: inputProps) => {
   // const taskSearch = useAtomValue(taskSearchAtom);
+  // memorial id 들고 오기
   const [userName, setUserName] = useState('winshine0326');
   const { mutate: getUser, data, isPending, error } = useGetUserMutation();
-  const contentIn = useAtom(inputContent);
+  const [inputValue] = useAtom(inputPortage);
+  // const [inputValue, useInputValue] = useAtom(inputPortage);
+  const mutateUsePostCommit = usePostCommit();
 
-  console.log(contentIn);
+  console.log(inputValue);
 
   useEffect(() => {
     getUser(undefined, {
@@ -39,7 +65,7 @@ const MemorialCommit = ({ stack, push, pop, top }: dataStructureProps) => {
       <_.Section1>
         <_.Header>
           <_.HeaderTextContainer>
-            <_.CharacterName>호시노 아이</_.CharacterName>
+            <_.CharacterName>{name}</_.CharacterName>
             <_.Status>문서 수정 중</_.Status>
           </_.HeaderTextContainer>
           <_.AuthorshipFrom>@{userName}의 수정 요청</_.AuthorshipFrom>
@@ -49,7 +75,7 @@ const MemorialCommit = ({ stack, push, pop, top }: dataStructureProps) => {
             <_.CharacterProfileBox>
               <_.CharacterProfile>
                 <_.CharacterProfileImg />
-                <_.CharacterProfileName>호시노 아이</_.CharacterProfileName>
+                <_.CharacterProfileName>{name}</_.CharacterProfileName>
               </_.CharacterProfile>
 
               <_.CharacterInformation>
@@ -62,7 +88,7 @@ const MemorialCommit = ({ stack, push, pop, top }: dataStructureProps) => {
                     </_.CharacterInformationRowAttribute>
                     <_.CharacterInformationRowValue>
                       <_.CharacterInformationRowValueText>
-                        향년 20세
+                        향년 {age}세
                       </_.CharacterInformationRowValueText>
                     </_.CharacterInformationRowValue>
                   </_.CharacterInformationRow>
@@ -75,7 +101,7 @@ const MemorialCommit = ({ stack, push, pop, top }: dataStructureProps) => {
                     </_.CharacterInformationRowAttribute>
                     <_.CharacterInformationRowValue>
                       <_.CharacterInformationRowValueText>
-                        2023.04.12
+                        {date}
                       </_.CharacterInformationRowValueText>
                     </_.CharacterInformationRowValue>
                   </_.CharacterInformationRow>
@@ -87,7 +113,9 @@ const MemorialCommit = ({ stack, push, pop, top }: dataStructureProps) => {
                       </_.CharacterInformationRowAttributeText>
                     </_.CharacterInformationRowAttribute>
                     <_.CharacterInformationRowValue>
-                      <_.CharacterInformationRowValueText>1일</_.CharacterInformationRowValueText>
+                      <_.CharacterInformationRowValueText>
+                        {lifeCycle}화
+                      </_.CharacterInformationRowValueText>
                     </_.CharacterInformationRowValue>
                   </_.CharacterInformationRow>
 
@@ -99,7 +127,7 @@ const MemorialCommit = ({ stack, push, pop, top }: dataStructureProps) => {
                     </_.CharacterInformationRowAttribute>
                     <_.CharacterInformationRowValue>
                       <_.CharacterInformationRowValueText>
-                        최애의 아이
+                        {anime}
                       </_.CharacterInformationRowValueText>
                     </_.CharacterInformationRowValue>
                   </_.CharacterInformationRow>
