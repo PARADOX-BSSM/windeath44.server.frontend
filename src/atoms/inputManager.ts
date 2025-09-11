@@ -7,7 +7,7 @@ export const inputPortage = atom<InputPortageType>({
   date: '',
   lifeCycle: 0,
   anime: '',
-  animeId: '',
+  animeId: 0, // 이거 왜 string임?
   age: 0,
   profileImage: '',
   phrase: '',
