@@ -3,9 +3,9 @@ import { memorial } from '@/config';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 // user의 memorial commit 사항을 db에 저장하는 api
-const postMemorialCommit = async (data, userId): Promise<> => {
+const postMemorialCommit = async (data1, userId): Promise => {
   try {
-    const data = data;
+    const data = data1;
     const response = await api.get(`:${memorial}/commit`, {
       headers: {
         'user-id': userId,
@@ -30,8 +30,8 @@ export const usePostCommit = () => {
 };
 
 //user의 memorial pull request 사항을 저장하는 api
-const postMemorialPullRequest = async (memorialPullRequestId, userId): Promise<> => {
-  const memorialPullRequestId = memorialPullRequestId;
+const postMemorialPullRequest = async (data1, userId): Promise => {
+  const data = data1;
   const response = await api.get(`:${memorial}/pull-request`, {
     headers: {
       'user-id': userId,
