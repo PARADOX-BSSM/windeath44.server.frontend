@@ -519,10 +519,10 @@ const useApps = (): TaskType[] => {
       layer: undefined,
       appSetup: {
         Image: game,
-        minWidth: 340,
-        minHeight: 500,
+        minWidth: 500,
+        minHeight: 700,
         setUpWidth: 800,
-        setUpHeight: 562,
+        setUpHeight: 750,
       },
       visible: false,
     },

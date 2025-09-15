@@ -105,21 +105,3 @@ export const ResetButton = styled.button`
     background-color: #b45309;
   }
 `;
-
-export const Instructions = styled.div`
-  font-size: 14px;
-  color: #4b5563;
-  max-width: 400px;
-  margin-top: 16px;
-  line-height: 1.5;
-
-  strong {
-    color: #374151;
-    display: block;
-    margin-bottom: 8px;
-  }
-
-  p {
-    margin: 4px 0;
-  }
-`;

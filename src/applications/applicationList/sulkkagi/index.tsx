@@ -512,9 +512,7 @@ const Sulkkagi = () => {
           </div>
 
           {gameState !== 'playing' && (
-            <_.WinMessage>
-              🎉 {gameState === 'player1wins' ? '하얀돌' : '까만돌'} 승리!
-            </_.WinMessage>
+            <_.WinMessage>{gameState === 'player1wins' ? '하얀돌' : '까만돌'} 승리!</_.WinMessage>
           )}
         </_.TurnInfo>
 
@@ -543,14 +541,6 @@ const Sulkkagi = () => {
 
       <_.Controls>
         <_.ResetButton onClick={resetGame}>게임 다시 시작</_.ResetButton>
-
-        <_.Instructions>
-          <strong>게임 방법:</strong>
-          <p>• 자신의 돌을 클릭하고 드래그하여 방향과 힘을 조절하세요</p>
-          <p>• 상대방의 모든 돌을 보드 밖으로 떨어뜨리면 승리합니다</p>
-          <p>• 하얀돌과 까만돌이 번갈아 가며 플레이합니다</p>
-          <p>• Matter.js 물리 엔진으로 현실적인 움직임을 구현했습니다</p>
-        </_.Instructions>
       </_.Controls>
     </_.Container>
   );
