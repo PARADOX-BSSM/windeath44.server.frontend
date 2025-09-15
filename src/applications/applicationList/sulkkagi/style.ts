@@ -10,7 +10,8 @@ export const Container = styled.div`
   align-items: center;
   padding: 24px;
   background: linear-gradient(to bottom, #fef3c7, #fde68a);
-  min-height: 100vh;
+  height: 100%;
+  box-sizing: border-box;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
 `;
 

@@ -48,18 +48,22 @@ const Sulkkagi = () => {
       Bodies.rectangle(BOARD_SIZE / 2, -10, BOARD_SIZE, 20, {
         isStatic: true,
         label: 'wall',
+        isSensor: true,
       }),
       Bodies.rectangle(BOARD_SIZE / 2, BOARD_SIZE + 10, BOARD_SIZE, 20, {
         isStatic: true,
         label: 'wall',
+        isSensor: true,
       }),
       Bodies.rectangle(-10, BOARD_SIZE / 2, 20, BOARD_SIZE, {
         isStatic: true,
         label: 'wall',
+        isSensor: true,
       }),
       Bodies.rectangle(BOARD_SIZE + 10, BOARD_SIZE / 2, 20, BOARD_SIZE, {
         isStatic: true,
         label: 'wall',
+        isSensor: true,
       }),
     ];
 
