@@ -10,6 +10,7 @@ const BOARD_PADDING = 40;
 
 const Sulkkagi = () => {
   const canvasRef = useRef(null);
+  const arrowCanvasRef = useRef<HTMLCanvasElement>(null); // 화살표 전용 Canvas
   const engineRef = useRef(null);
   const animationRef = useRef(null);
   const stonesRef = useRef<any[]>([]);
@@ -18,6 +19,7 @@ const Sulkkagi = () => {
   const [selectedStoneId, setSelectedStoneId] = useState<number | null>(null);
   const [aimStart, setAimStart] = useState<{ x: number; y: number } | null>(null);
   const [aimCurrent, setAimCurrent] = useState<{ x: number; y: number } | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
   const [gameState, setGameState] = useState('playing');
   const [isAnimating, setIsAnimating] = useState(false);
   const [stoneCount, setStoneCount] = useState({ player1: 3, player2: 3 });
@@ -159,6 +161,154 @@ const Sulkkagi = () => {
     animationRef.current = requestAnimationFrame(animate);
   };
 
+  // 예상 궤적 계산 함수
+  const calculateTrajectory = (
+    startX: number,
+    startY: number,
+    velocityX: number,
+    velocityY: number,
+  ) => {
+    const points = [];
+    let x = startX;
+    let y = startY;
+    let vx = velocityX;
+    let vy = velocityY;
+
+    // 물리 시뮬레이션 매개변수 (Matter.js와 동일하게)
+    const frictionAir = 0.02;
+    const timeStep = 16; // 60fps 기준
+    const maxSteps = 100; // 최대 시뮬레이션 스텝
+
+    for (let i = 0; i < maxSteps; i++) {
+      // 마찰 적용
+      vx *= 1 - frictionAir;
+      vy *= 1 - frictionAir;
+
+      // 위치 업데이트
+      x += vx * timeStep;
+      y += vy * timeStep;
+
+      // 속도가 충분히 작아지면 중단
+      const speed = Math.sqrt(vx * vx + vy * vy);
+      if (speed < 0.001) break;
+
+      // 보드 밖으로 나가면 중단
+      if (x < 0 || x > BOARD_SIZE || y < 0 || y > BOARD_SIZE) break;
+
+      points.push({ x, y });
+    }
+
+    return points;
+  };
+
+  // 화살표 Canvas 그리기 함수
+  const drawArrow = () => {
+    const arrowCanvas = arrowCanvasRef.current;
+    if (!arrowCanvas) return;
+
+    const ctx = arrowCanvas.getContext('2d');
+    if (!ctx) return;
+
+    // 화살표 Canvas 초기화
+    ctx.clearRect(0, 0, arrowCanvas.width, arrowCanvas.height);
+
+    // 드래그 중일 때만 화살표 그리기
+    if (isDragging && selectedStoneId && aimStart && aimCurrent) {
+      // 실시간 돌 위치 찾기
+      const currentSelectedStone = stonesRef.current.find((stone) => stone.id === selectedStoneId);
+
+      if (currentSelectedStone && currentSelectedStone.position) {
+        const stoneX = currentSelectedStone.position.x;
+        const stoneY = currentSelectedStone.position.y;
+
+        const dx = aimCurrent.x - aimStart.x;
+        const dy = aimCurrent.y - aimStart.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance > 5) {
+          // 힘의 강도 계산
+          const maxDistance = 150;
+          const powerRatio = Math.min(distance / maxDistance, 1.0);
+
+          // 색상 그라데이션
+          let arrowColor;
+          if (powerRatio < 0.5) {
+            const ratio = powerRatio * 2;
+            arrowColor = `rgb(${Math.floor(255 * ratio)}, 255, 0)`;
+          } else {
+            const ratio = (powerRatio - 0.5) * 2;
+            arrowColor = `rgb(255, ${Math.floor(255 * (1 - ratio))}, 0)`;
+          }
+
+          // 화살표 크기 조절
+          const arrowLength = Math.max(distance * 0.8, 30);
+          const lineWidth = 2 + powerRatio * 6;
+          const arrowHeadSize = 8 + powerRatio * 12;
+
+          // 화살표 끝점 계산
+          const arrowEndX = stoneX - (dx / distance) * arrowLength;
+          const arrowEndY = stoneY - (dy / distance) * arrowLength;
+          const angle = Math.atan2(-dy, -dx);
+
+          // 화살표 몸체
+          ctx.strokeStyle = arrowColor;
+          ctx.lineWidth = lineWidth;
+          ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.moveTo(stoneX, stoneY);
+          ctx.lineTo(arrowEndX, arrowEndY);
+          ctx.stroke();
+
+          // 화살표 머리
+          ctx.fillStyle = arrowColor;
+          ctx.beginPath();
+          ctx.moveTo(arrowEndX, arrowEndY);
+          ctx.lineTo(
+            arrowEndX - arrowHeadSize * Math.cos(angle - Math.PI / 6),
+            arrowEndY - arrowHeadSize * Math.sin(angle - Math.PI / 6),
+          );
+          ctx.lineTo(
+            arrowEndX - arrowHeadSize * Math.cos(angle + Math.PI / 6),
+            arrowEndY - arrowHeadSize * Math.sin(angle + Math.PI / 6),
+          );
+          ctx.closePath();
+          ctx.fill();
+
+          // 힘 게이지
+          const gaugeRadius = 25;
+          const gaugeX = stoneX + 40;
+          const gaugeY = stoneY - 40;
+
+          // 게이지 배경
+          ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
+          ctx.lineWidth = 4;
+          ctx.beginPath();
+          ctx.arc(gaugeX, gaugeY, gaugeRadius, 0, Math.PI * 2);
+          ctx.stroke();
+
+          // 게이지 진행
+          ctx.strokeStyle = arrowColor;
+          ctx.lineWidth = 6;
+          ctx.beginPath();
+          ctx.arc(
+            gaugeX,
+            gaugeY,
+            gaugeRadius,
+            -Math.PI / 2,
+            -Math.PI / 2 + Math.PI * 2 * powerRatio,
+          );
+          ctx.stroke();
+
+          // 퍼센트 텍스트
+          ctx.fillStyle = '#333';
+          ctx.font = 'bold 12px Arial';
+          ctx.textAlign = 'center';
+          ctx.fillText(`${Math.floor(powerRatio * 100)}%`, gaugeX, gaugeY + 4);
+        }
+      }
+    }
+  };
+
   const draw = () => {
     const canvas = canvasRef.current;
     if (!canvas || !engineRef.current) return;
@@ -256,46 +406,8 @@ const Sulkkagi = () => {
       }
     });
 
-    // 조준선 그리기 (기존 코드 유지)
-    const selectedStone = selectedStoneId ? stonesRef.current.find(stone => stone.id === selectedStoneId) : null;
-    if (aimStart && aimCurrent && selectedStone && selectedStone.position) {
-      const dx = aimCurrent.x - aimStart.x;
-      const dy = aimCurrent.y - aimStart.y;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-
-      if (distance > 10) {
-        // 조준선 색깔도 돌 색깔에 맞춰 변경
-        const aimColor = selectedStone.player === 1 ? '#FF6B35' : '#FFD700';
-
-        ctx.strokeStyle = aimColor;
-        ctx.lineWidth = 4;
-        ctx.setLineDash([10, 5]); // 점선 효과
-        ctx.beginPath();
-        ctx.moveTo(selectedStone.position.x, selectedStone.position.y);
-        ctx.lineTo(selectedStone.position.x - dx * 0.5, selectedStone.position.y - dy * 0.5);
-        ctx.stroke();
-        ctx.setLineDash([]); // 점선 해제
-
-        // 조준선 끝에 화살표 표시
-        const arrowX = selectedStone.position.x - dx * 0.5;
-        const arrowY = selectedStone.position.y - dy * 0.5;
-        const angle = Math.atan2(-dy, -dx);
-
-        ctx.fillStyle = aimColor;
-        ctx.beginPath();
-        ctx.moveTo(arrowX, arrowY);
-        ctx.lineTo(
-          arrowX - 10 * Math.cos(angle - Math.PI / 6),
-          arrowY - 10 * Math.sin(angle - Math.PI / 6),
-        );
-        ctx.lineTo(
-          arrowX - 10 * Math.cos(angle + Math.PI / 6),
-          arrowY - 10 * Math.sin(angle + Math.PI / 6),
-        );
-        ctx.closePath();
-        ctx.fill();
-      }
-    }
+    // 별도 Canvas에서 화살표 그리기
+    drawArrow();
   };
 
   const checkGameState = () => {
@@ -365,7 +477,7 @@ const Sulkkagi = () => {
 
     // 이전 선택 해제
     if (selectedStoneId) {
-      const previousStone = stonesRef.current.find(stone => stone.id === selectedStoneId);
+      const previousStone = stonesRef.current.find((stone) => stone.id === selectedStoneId);
       if (previousStone) {
         previousStone.render.strokeStyle = 'transparent';
         previousStone.render.lineWidth = 0;
@@ -378,28 +490,54 @@ const Sulkkagi = () => {
       setSelectedStoneId(clickedStone.id);
       setAimStart(pos);
       setAimCurrent(pos);
+      setIsDragging(true); // 드래그 시작
 
       // 선택된 돌의 스타일 변경
       clickedStone.render.strokeStyle = clickedStone.player === 1 ? '#FF6B35' : '#FFD700';
       clickedStone.render.lineWidth = 4;
       clickedStone.isSelected = true;
+
+      // 드래그 시작 효과
+      const canvas = canvasRef.current;
+      if (canvas) {
+        canvas.style.cursor = 'grabbing';
+      }
     } else {
       // 빈 공간 클릭 시 선택 해제
       setSelectedStoneId(null);
+      setIsDragging(false);
     }
   };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!selectedStoneId || isAnimating) return;
-
     const pos = getMousePos(e);
-    setAimCurrent(pos);
+
+    if (selectedStoneId && !isAnimating && isDragging) {
+      // 드래그 중일 때
+      setAimCurrent(pos);
+      // 즉시 화살표 업데이트
+      requestAnimationFrame(drawArrow);
+    } else if (!isAnimating && gameState === 'playing') {
+      // 호버 상태에서 커서 변경
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+
+      const hoveredStone = stonesRef.current.find((stone) => {
+        if (!stone.position) return false;
+        const dx = pos.x - stone.position.x;
+        const dy = pos.y - stone.position.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        return distance <= STONE_RADIUS && stone.player === currentPlayer;
+      });
+
+      canvas.style.cursor = hoveredStone ? 'grab' : 'default';
+    }
   };
 
   const handleMouseUp = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (!selectedStoneId || !aimStart || !aimCurrent || isAnimating || !Matter) return;
 
-    const selectedStone = stonesRef.current.find(stone => stone.id === selectedStoneId);
+    const selectedStone = stonesRef.current.find((stone) => stone.id === selectedStoneId);
 
     const dx = aimCurrent.x - aimStart.x;
     const dy = aimCurrent.y - aimStart.y;
@@ -421,7 +559,7 @@ const Sulkkagi = () => {
 
     // 선택 해제 시 렌더링 복구
     if (selectedStoneId) {
-      const previousStone = stonesRef.current.find(stone => stone.id === selectedStoneId);
+      const previousStone = stonesRef.current.find((stone) => stone.id === selectedStoneId);
       if (previousStone) {
         previousStone.render.strokeStyle = 'transparent';
         previousStone.render.lineWidth = 0;
@@ -429,9 +567,16 @@ const Sulkkagi = () => {
       }
     }
 
+    // 커서 복구
+    const canvas = canvasRef.current;
+    if (canvas) {
+      canvas.style.cursor = 'default';
+    }
+
     setSelectedStoneId(null);
     setAimStart(null);
     setAimCurrent(null);
+    setIsDragging(false);
   };
 
   const resetGame = () => {
@@ -558,16 +703,36 @@ const Sulkkagi = () => {
           onMouseLeave={() => {
             // 선택 해제 시 렌더링 복구
             if (selectedStoneId) {
-              const previousStone = stonesRef.current.find(stone => stone.id === selectedStoneId);
+              const previousStone = stonesRef.current.find((stone) => stone.id === selectedStoneId);
               if (previousStone) {
                 previousStone.render.strokeStyle = 'transparent';
                 previousStone.render.lineWidth = 0;
                 previousStone.isSelected = false;
               }
             }
+            // 커서 복구
+            const canvas = canvasRef.current;
+            if (canvas) {
+              canvas.style.cursor = 'default';
+            }
             setSelectedStoneId(null);
             setAimStart(null);
             setAimCurrent(null);
+            setIsDragging(false);
+          }}
+        />
+
+        {/* 화살표 전용 Canvas (게임 Canvas 위에 오버레이) */}
+        <canvas
+          ref={arrowCanvasRef}
+          width={BOARD_SIZE}
+          height={BOARD_SIZE}
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            pointerEvents: 'none', // 마우스 이벤트는 아래 Canvas로 전달
+            zIndex: 9999,
           }}
         />
 
