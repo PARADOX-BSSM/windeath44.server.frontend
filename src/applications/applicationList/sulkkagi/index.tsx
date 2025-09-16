@@ -12,12 +12,12 @@ const Sulkkagi = () => {
   const canvasRef = useRef(null);
   const engineRef = useRef(null);
   const animationRef = useRef(null);
-  const stonesRef = useRef([]);
+  const stonesRef = useRef<any[]>([]);
 
   const [currentPlayer, setCurrentPlayer] = useState(1);
-  const [selectedStone, setSelectedStone] = useState(null);
-  const [aimStart, setAimStart] = useState(null);
-  const [aimCurrent, setAimCurrent] = useState(null);
+  const [selectedStoneId, setSelectedStoneId] = useState<number | null>(null);
+  const [aimStart, setAimStart] = useState<{ x: number; y: number } | null>(null);
+  const [aimCurrent, setAimCurrent] = useState<{ x: number; y: number } | null>(null);
   const [gameState, setGameState] = useState('playing');
   const [isAnimating, setIsAnimating] = useState(false);
   const [stoneCount, setStoneCount] = useState({ player1: 3, player2: 3 });
@@ -72,58 +72,70 @@ const Sulkkagi = () => {
       // 하얀돌
       Bodies.circle(100, 100, STONE_RADIUS, {
         label: 'stone',
-        render: { fillStyle: 'white' },
+        render: { fillStyle: 'white', strokeStyle: 'transparent', lineWidth: 0 },
         frictionAir: 0.02,
         friction: 0.8,
         restitution: 0.6,
         player: 1,
         id: 1,
+        originalColor: 'white',
+        isSelected: false,
       }),
       Bodies.circle(150, 120, STONE_RADIUS, {
         label: 'stone',
-        render: { fillStyle: 'white' },
+        render: { fillStyle: 'white', strokeStyle: 'transparent', lineWidth: 0 },
         frictionAir: 0.02,
         friction: 0.8,
         restitution: 0.6,
         player: 1,
         id: 2,
+        originalColor: 'white',
+        isSelected: false,
       }),
       Bodies.circle(200, 110, STONE_RADIUS, {
         label: 'stone',
-        render: { fillStyle: 'white' },
+        render: { fillStyle: 'white', strokeStyle: 'transparent', lineWidth: 0 },
         frictionAir: 0.02,
         friction: 0.8,
         restitution: 0.6,
         player: 1,
         id: 3,
+        originalColor: 'white',
+        isSelected: false,
       }),
       // 까만돌
       Bodies.circle(100, 300, STONE_RADIUS, {
         label: 'stone',
-        render: { fillStyle: 'black' },
+        render: { fillStyle: 'black', strokeStyle: 'transparent', lineWidth: 0 },
         frictionAir: 0.02,
         friction: 0.8,
         restitution: 0.6,
         player: 2,
         id: 4,
+        originalColor: 'black',
+        isSelected: false,
       }),
       Bodies.circle(150, 280, STONE_RADIUS, {
         label: 'stone',
-        render: { fillStyle: 'black' },
+        render: { fillStyle: 'black', strokeStyle: 'transparent', lineWidth: 0 },
         frictionAir: 0.02,
         friction: 0.8,
         restitution: 0.6,
         player: 2,
         id: 5,
+        originalColor: 'black',
+        isSelected: false,
       }),
       Bodies.circle(200, 290, STONE_RADIUS, {
         label: 'stone',
-        render: { fillStyle: 'black' },
+        render: { fillStyle: 'black', strokeStyle: 'transparent', lineWidth: 0 },
         frictionAir: 0.02,
         friction: 0.8,
         restitution: 0.6,
         player: 2,
         id: 6,
+        originalColor: 'black',
+        isSelected: false,
       }),
     ];
 
@@ -216,102 +228,72 @@ const Sulkkagi = () => {
       ctx.arc(x + 2, y + 2, STONE_RADIUS, 0, Math.PI * 2);
       ctx.fill();
 
-      // 돌
-      ctx.fillStyle = stone.player === 1 ? 'white' : 'black';
-      ctx.strokeStyle = stone.player === 1 ? '#333' : '#666';
-      ctx.lineWidth = 2;
+      // 선택된 돌인지 확인
+      const isSelected = selectedStoneId === stone.id;
+
+      // 돌 그리기 (기본 색상 사용)
+      ctx.fillStyle = stone.originalColor;
+      ctx.strokeStyle = stone.render.strokeStyle;
+      ctx.lineWidth = stone.render.lineWidth;
       ctx.beginPath();
       ctx.arc(x, y, STONE_RADIUS, 0, Math.PI * 2);
       ctx.fill();
-      ctx.stroke();
+      if (stone.render.lineWidth > 0) {
+        ctx.stroke();
+      }
 
-      // 선택된 돌 표시
-      if (selectedStone && selectedStone.id === stone.id) {
-        ctx.strokeStyle = '#ff4444';
-        ctx.lineWidth = 3;
+      // 선택된 돌에 추가 효과 (펄스 효과)
+      if (isSelected) {
+        const time = Date.now() * 0.005;
+        const pulse = Math.sin(time) * 0.5 + 0.5; // 0~1 사이값
+        const extraRadius = pulse * 3;
+
+        ctx.strokeStyle = 'rgba(255, 215, 0, 0.6)'; // 반투명 금색
+        ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.arc(x, y, STONE_RADIUS + 3, 0, Math.PI * 2);
+        ctx.arc(x, y, STONE_RADIUS + 8 + extraRadius, 0, Math.PI * 2);
         ctx.stroke();
       }
     });
 
-    // 조준선과 화살표 그리기
-    if (aimStart && aimCurrent && selectedStone) {
+    // 조준선 그리기 (기존 코드 유지)
+    const selectedStone = selectedStoneId ? stonesRef.current.find(stone => stone.id === selectedStoneId) : null;
+    if (aimStart && aimCurrent && selectedStone && selectedStone.position) {
       const dx = aimCurrent.x - aimStart.x;
       const dy = aimCurrent.y - aimStart.y;
       const distance = Math.sqrt(dx * dx + dy * dy);
 
       if (distance > 10) {
-        const stone = stonesRef.current.find((s) => s.id === selectedStone.id);
-        if (stone && stone.position) {
-          // 파워 계산 (0~1)
-          const maxDistance = 120;
-          const normalizedPower = Math.min(distance / maxDistance, 1);
+        // 조준선 색깔도 돌 색깔에 맞춰 변경
+        const aimColor = selectedStone.player === 1 ? '#FF6B35' : '#FFD700';
 
-          // 화살표 방향 (돌에서 반대 방향으로)
-          const arrowStartX = stone.position.x;
-          const arrowStartY = stone.position.y;
-          const arrowEndX = stone.position.x - (dx / distance) * (40 + normalizedPower * 60);
-          const arrowEndY = stone.position.y - (dy / distance) * (40 + normalizedPower * 60);
+        ctx.strokeStyle = aimColor;
+        ctx.lineWidth = 4;
+        ctx.setLineDash([10, 5]); // 점선 효과
+        ctx.beginPath();
+        ctx.moveTo(selectedStone.position.x, selectedStone.position.y);
+        ctx.lineTo(selectedStone.position.x - dx * 0.5, selectedStone.position.y - dy * 0.5);
+        ctx.stroke();
+        ctx.setLineDash([]); // 점선 해제
 
-          // 파워에 따른 색상
-          const red = Math.floor(255 * Math.min(normalizedPower * 2, 1));
-          const green = Math.floor(255 * Math.max(1 - normalizedPower * 2, 0));
-          const arrowColor = `rgb(${red}, ${green}, 0)`;
+        // 조준선 끝에 화살표 표시
+        const arrowX = selectedStone.position.x - dx * 0.5;
+        const arrowY = selectedStone.position.y - dy * 0.5;
+        const angle = Math.atan2(-dy, -dx);
 
-          // 화살표 선 그리기
-          ctx.strokeStyle = arrowColor;
-          ctx.lineWidth = 3 + normalizedPower * 3;
-          ctx.lineCap = 'round';
-
-          ctx.beginPath();
-          ctx.moveTo(arrowStartX, arrowStartY);
-          ctx.lineTo(arrowEndX, arrowEndY);
-          ctx.stroke();
-
-          // 화살표 머리 그리기
-          const angle = Math.atan2(arrowEndY - arrowStartY, arrowEndX - arrowStartX);
-          const headSize = 12 + normalizedPower * 8;
-
-          ctx.fillStyle = arrowColor;
-          ctx.beginPath();
-          ctx.moveTo(arrowEndX, arrowEndY);
-          ctx.lineTo(
-            arrowEndX - Math.cos(angle - 0.5) * headSize,
-            arrowEndY - Math.sin(angle - 0.5) * headSize,
-          );
-          ctx.lineTo(
-            arrowEndX - Math.cos(angle + 0.5) * headSize,
-            arrowEndY - Math.sin(angle + 0.5) * headSize,
-          );
-          ctx.closePath();
-          ctx.fill();
-
-          // 돌 주변에 파워 표시
-          ctx.strokeStyle = arrowColor;
-          ctx.lineWidth = 2;
-          ctx.setLineDash([4, 4]);
-          ctx.beginPath();
-          ctx.arc(
-            stone.position.x,
-            stone.position.y,
-            STONE_RADIUS + 8 + normalizedPower * 12,
-            0,
-            Math.PI * 2,
-          );
-          ctx.stroke();
-          ctx.setLineDash([]);
-
-          // 파워 텍스트
-          ctx.fillStyle = '#333';
-          ctx.font = 'bold 14px Arial';
-          ctx.textAlign = 'center';
-          ctx.fillText(
-            `${Math.floor(normalizedPower * 100)}%`,
-            stone.position.x,
-            stone.position.y - STONE_RADIUS - 30,
-          );
-        }
+        ctx.fillStyle = aimColor;
+        ctx.beginPath();
+        ctx.moveTo(arrowX, arrowY);
+        ctx.lineTo(
+          arrowX - 10 * Math.cos(angle - Math.PI / 6),
+          arrowY - 10 * Math.sin(angle - Math.PI / 6),
+        );
+        ctx.lineTo(
+          arrowX - 10 * Math.cos(angle + Math.PI / 6),
+          arrowY - 10 * Math.sin(angle + Math.PI / 6),
+        );
+        ctx.closePath();
+        ctx.fill();
       }
     }
   };
@@ -357,7 +339,7 @@ const Sulkkagi = () => {
     }
   };
 
-  const getMousePos = (e) => {
+  const getMousePos = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
     const rect = canvas.getBoundingClientRect();
     return {
@@ -366,8 +348,10 @@ const Sulkkagi = () => {
     };
   };
 
-  const handleMouseDown = (e) => {
-    if (isAnimating || gameState !== 'playing' || !engineRef.current) return;
+  const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (isAnimating || gameState !== 'playing' || !engineRef.current) {
+      return;
+    }
 
     const pos = getMousePos(e);
 
@@ -379,34 +363,54 @@ const Sulkkagi = () => {
       return distance <= STONE_RADIUS && stone.player === currentPlayer;
     });
 
+    // 이전 선택 해제
+    if (selectedStoneId) {
+      const previousStone = stonesRef.current.find(stone => stone.id === selectedStoneId);
+      if (previousStone) {
+        previousStone.render.strokeStyle = 'transparent';
+        previousStone.render.lineWidth = 0;
+        previousStone.isSelected = false;
+      }
+    }
+
     if (clickedStone) {
-      setSelectedStone(clickedStone);
+      // 새로운 돌 선택
+      setSelectedStoneId(clickedStone.id);
       setAimStart(pos);
       setAimCurrent(pos);
+
+      // 선택된 돌의 스타일 변경
+      clickedStone.render.strokeStyle = clickedStone.player === 1 ? '#FF6B35' : '#FFD700';
+      clickedStone.render.lineWidth = 4;
+      clickedStone.isSelected = true;
+    } else {
+      // 빈 공간 클릭 시 선택 해제
+      setSelectedStoneId(null);
     }
   };
 
-  const handleMouseMove = (e) => {
-    if (!selectedStone || isAnimating) return;
+  const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (!selectedStoneId || isAnimating) return;
 
     const pos = getMousePos(e);
     setAimCurrent(pos);
   };
 
-  const handleMouseUp = (e) => {
-    if (!selectedStone || !aimStart || !aimCurrent || isAnimating || !Matter) return;
+  const handleMouseUp = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (!selectedStoneId || !aimStart || !aimCurrent || isAnimating || !Matter) return;
+
+    const selectedStone = stonesRef.current.find(stone => stone.id === selectedStoneId);
 
     const dx = aimCurrent.x - aimStart.x;
     const dy = aimCurrent.y - aimStart.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
 
     if (distance > 5) {
-      const power = Math.min(distance / 50, 0.3); // Matter.js에 맞는 힘 조정
-      const stone = stonesRef.current.find((s) => s.id === selectedStone.id);
+      const power = Math.min(distance / 50, 0.3);
 
-      if (stone) {
+      if (selectedStone) {
         // Matter.js의 Body.applyForce 사용
-        Matter.Body.applyForce(stone, stone.position, {
+        Matter.Body.applyForce(selectedStone, selectedStone.position, {
           x: -dx * power * 0.001,
           y: -dy * power * 0.001,
         });
@@ -415,7 +419,17 @@ const Sulkkagi = () => {
       }
     }
 
-    setSelectedStone(null);
+    // 선택 해제 시 렌더링 복구
+    if (selectedStoneId) {
+      const previousStone = stonesRef.current.find(stone => stone.id === selectedStoneId);
+      if (previousStone) {
+        previousStone.render.strokeStyle = 'transparent';
+        previousStone.render.lineWidth = 0;
+        previousStone.isSelected = false;
+      }
+    }
+
+    setSelectedStoneId(null);
     setAimStart(null);
     setAimCurrent(null);
   };
@@ -432,57 +446,69 @@ const Sulkkagi = () => {
     const newStones = [
       Bodies.circle(100, 100, STONE_RADIUS, {
         label: 'stone',
-        render: { fillStyle: 'white' },
+        render: { fillStyle: 'white', strokeStyle: 'transparent', lineWidth: 0 },
         frictionAir: 0.02,
         friction: 0.8,
         restitution: 0.6,
         player: 1,
         id: 1,
+        originalColor: 'white',
+        isSelected: false,
       }),
       Bodies.circle(150, 120, STONE_RADIUS, {
         label: 'stone',
-        render: { fillStyle: 'white' },
+        render: { fillStyle: 'white', strokeStyle: 'transparent', lineWidth: 0 },
         frictionAir: 0.02,
         friction: 0.8,
         restitution: 0.6,
         player: 1,
         id: 2,
+        originalColor: 'white',
+        isSelected: false,
       }),
       Bodies.circle(200, 110, STONE_RADIUS, {
         label: 'stone',
-        render: { fillStyle: 'white' },
+        render: { fillStyle: 'white', strokeStyle: 'transparent', lineWidth: 0 },
         frictionAir: 0.02,
         friction: 0.8,
         restitution: 0.6,
         player: 1,
         id: 3,
+        originalColor: 'white',
+        isSelected: false,
       }),
       Bodies.circle(100, 300, STONE_RADIUS, {
         label: 'stone',
-        render: { fillStyle: 'black' },
+        render: { fillStyle: 'black', strokeStyle: 'transparent', lineWidth: 0 },
         frictionAir: 0.02,
         friction: 0.8,
         restitution: 0.6,
         player: 2,
         id: 4,
+        originalColor: 'black',
+        isSelected: false,
       }),
       Bodies.circle(150, 280, STONE_RADIUS, {
         label: 'stone',
-        render: { fillStyle: 'black' },
+        render: { fillStyle: 'black', strokeStyle: 'transparent', lineWidth: 0 },
         frictionAir: 0.02,
         friction: 0.8,
         restitution: 0.6,
         player: 2,
         id: 5,
+        originalColor: 'black',
+        isSelected: false,
       }),
       Bodies.circle(200, 290, STONE_RADIUS, {
         label: 'stone',
-        render: { fillStyle: 'black' },
+        render: { fillStyle: 'black', strokeStyle: 'transparent', lineWidth: 0 },
         frictionAir: 0.02,
         friction: 0.8,
         restitution: 0.6,
         player: 2,
         id: 6,
+        originalColor: 'black',
+        isSelected: false,
       }),
     ];
 
@@ -491,7 +517,7 @@ const Sulkkagi = () => {
 
     setCurrentPlayer(1);
     setGameState('playing');
-    setSelectedStone(null);
+    setSelectedStoneId(null);
     setAimStart(null);
     setAimCurrent(null);
     setIsAnimating(false);
@@ -530,7 +556,16 @@ const Sulkkagi = () => {
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseLeave={() => {
-            setSelectedStone(null);
+            // 선택 해제 시 렌더링 복구
+            if (selectedStoneId) {
+              const previousStone = stonesRef.current.find(stone => stone.id === selectedStoneId);
+              if (previousStone) {
+                previousStone.render.strokeStyle = 'transparent';
+                previousStone.render.lineWidth = 0;
+                previousStone.isSelected = false;
+              }
+            }
+            setSelectedStoneId(null);
             setAimStart(null);
             setAimCurrent(null);
           }}
