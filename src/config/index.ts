@@ -1,4 +1,4 @@
-const protocol = 'http://';
+const protocol = 'https://';
 const server = import.meta.env.VITE_SERVER;
 export const auth = `${protocol}${server}/auth`; //회원가압
 export const user = `${protocol}${server}/users`; //사용자 정보

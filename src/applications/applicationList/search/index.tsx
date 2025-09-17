@@ -114,11 +114,11 @@ const Search = () => {
     queryKey: ['memorials', 'recently-updated', 1, characterKey],
     enabled: characterKey.length > 0,
     queryFn: async () => {
-      const resp = await api.post(
-        `${memorial}/character-filtered`,
-        { orderBy: 'recently-updated', page: 1, characters: characterKey },
-        { withCredentials: true },
-      );
+      const resp = await api.post(`${memorial}/character-filtered`, {
+        orderBy: 'recently-updated',
+        page: 1,
+        characters: characterKey,
+      });
       return resp.data as {
         message: string;
         data: { memorialId: number; characterId: number }[];
@@ -154,6 +154,9 @@ const Search = () => {
 
   const isBusy = isLoading || isMemorialLoading || isAnimesLoading;
   const hasError = isError || isMemorialError || isAnimesError;
+
+  // console.log('캐링터', characters);
+  // console.log('메모리얼즈', memorials);
 
   return (
     <_.main>
