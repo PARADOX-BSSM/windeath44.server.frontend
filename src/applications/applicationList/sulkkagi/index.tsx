@@ -26,6 +26,8 @@ const Sulkkagi = () => {
     { id: number; player: number; message: string; isNew: boolean }[]
   >([]);
   const notificationIdRef = useRef(0);
+  const player1CountRef = useRef(0); // 하얀돌 추모관 등록 카운터
+  const player2CountRef = useRef(0); // 까만돌 추모관 등록 카운터
 
   // ✅ 애니메이션 루프에서 항상 최신 값을 보게 할 ref들
   const isDraggingRef = useRef(false);
@@ -419,7 +421,18 @@ const Sulkkagi = () => {
 
   const addNotification = (player: number) => {
     const playerName = player === 1 ? '하얀돌' : '까만돌';
-    const message = `${playerName}(이)가 추모관에 등록됐습니다.`;
+
+    // 팀별 카운터 증가
+    let playerCount: number;
+    if (player === 1) {
+      player1CountRef.current++;
+      playerCount = player1CountRef.current;
+    } else {
+      player2CountRef.current++;
+      playerCount = player2CountRef.current;
+    }
+
+    const message = `${playerName}(${playerCount})이 추모관에 등록 당했습니다.`;
 
     const newNotification = {
       id: notificationIdRef.current++,
@@ -748,6 +761,8 @@ const Sulkkagi = () => {
     setStoneCount({ player1: 3, player2: 3 });
     setNotifications([]);
     notificationIdRef.current = 0;
+    player1CountRef.current = 0; // 하얀돌 카운터 초기화
+    player2CountRef.current = 0; // 까만돌 카운터 초기화
 
     selectedStoneIdRef.current = null;
     aimStartRef.current = null;
