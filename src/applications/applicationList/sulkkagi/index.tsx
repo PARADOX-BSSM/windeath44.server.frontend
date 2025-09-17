@@ -98,6 +98,20 @@ const Sulkkagi = () => {
     // 월드에 추가
     World.add(engine.world, [...walls, ...stones]);
 
+    // 충돌 이벤트 리스너 추가
+    Matter.Events.on(engine, 'collisionStart', (event) => {
+      event.pairs.forEach((pair) => {
+        const { bodyA, bodyB } = pair;
+
+        // 돌과 벽의 충돌 확인
+        if (bodyA.label === 'stone' && bodyB.label === 'wall') {
+          handleStoneOut(bodyA);
+        } else if (bodyB.label === 'stone' && bodyA.label === 'wall') {
+          handleStoneOut(bodyB);
+        }
+      });
+    });
+
     // 러너 시작
     const runner = Runner.create();
     Runner.run(runner, engine);
@@ -302,23 +316,13 @@ const Sulkkagi = () => {
 
     // 돌 그리기
     stonesRef.current.forEach((stone: any) => {
-      if (!stone.position) return;
+      if (!stone.position || stone.isOut) return; // 아웃된 돌은 그리지 않음
 
       const x = stone.position.x;
       const y = stone.position.y;
 
       // 돌의 실제 반지름 (큰 돌 vs 일반 돌)
       const stoneRadius = stone.isBig ? BIG_STONE_RADIUS : STONE_RADIUS;
-
-      // 보드 밖의 돌은 그리지 않음
-      if (
-        x < -stoneRadius ||
-        x > BOARD_SIZE + stoneRadius ||
-        y < -stoneRadius ||
-        y > BOARD_SIZE + stoneRadius
-      ) {
-        return;
-      }
 
       // 그림자
       ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
@@ -356,6 +360,16 @@ const Sulkkagi = () => {
 
     // 별도 Canvas에 화살표/게이지 그리기 (ref 값 기반)
     drawArrow();
+  };
+
+  // 벽에 충돌한 돌 처리 함수
+  const handleStoneOut = (stone: any) => {
+    if (!stone.isOut) {
+      stone.isOut = true;
+      addNotification(stone.player);
+      // 돌을 보드 밖으로 완전히 이동 (안 보이게)
+      Matter.Body.setPosition(stone, { x: -1000, y: -1000 });
+    }
   };
 
   const addNotification = (player: number) => {
@@ -400,14 +414,8 @@ const Sulkkagi = () => {
     stonesRef.current.forEach((stone: any) => {
       if (!stone.position) return;
 
-      // 보드 안에 있는 돌만 카운트
-      const isInsideBoard =
-        stone.position.x >= -STONE_RADIUS &&
-        stone.position.x <= BOARD_SIZE + STONE_RADIUS &&
-        stone.position.y >= -STONE_RADIUS &&
-        stone.position.y <= BOARD_SIZE + STONE_RADIUS;
-
-      if (isInsideBoard) {
+      // 아웃되지 않은 돌만 카운트
+      if (!stone.isOut) {
         if (stone.player === 1) player1Count++;
         if (stone.player === 2) player2Count++;
 
@@ -416,12 +424,6 @@ const Sulkkagi = () => {
           stone.velocity.x * stone.velocity.x + stone.velocity.y * stone.velocity.y,
         );
         if (speed > 0.1) movingStones++;
-      } else {
-        // 보드 밖으로 나간 돌은 isOut 플래그로 표시하고 한 번만 알림 발생
-        if (!stone.isOut) {
-          stone.isOut = true;
-          addNotification(stone.player);
-        }
       }
     });
 
