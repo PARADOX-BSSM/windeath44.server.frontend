@@ -2,7 +2,7 @@ import IndexMenu from '@/applications/components/indexMenu';
 import Comment from '@/applications/components/comment';
 import * as _ from './style';
 import { index_data } from './data';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtomValue } from 'jotai';
 import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer';
 import { useMemorialGet } from '@/api/memorial/memorialGet.ts';
 import { useEffect, useState } from 'react';
@@ -17,7 +17,6 @@ import { useCommentWrite } from '@/api/memorial/memorialCommentWrite.ts';
 import { parseCustomContent } from '@/lib/customTag/parseCustomContent.tsx';
 import { useGetAnimation } from '@/api/anime/getAnimation.ts';
 import ribbon from '@/assets/memorial_ribbon.svg';
-import { inputPortage } from '@/atoms/inputManager.ts';
 
 interface dataStructureProps {
   stack: any[];
@@ -61,7 +60,7 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
   const [animation, setAnimation] = useState<string>('');
   const mutationAnimation = useGetAnimation(setAnimation);
   const [memorialComment, setMemorialComment] = useState<MemorialCommentsData[]>([]);
-  const mutaionGetMemorialComments = useGetMemorialComments(setMemorialComment);
+  const mutationGetMemorialComments = useGetMemorialComments(setMemorialComment);
   const mutationCommentWrite = useCommentWrite();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -73,14 +72,14 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
       {
         onSuccess: () => {
           setContent('');
-          mutaionGetMemorialComments.mutate({ memorialId });
+          mutationGetMemorialComments.mutate({ memorialId });
         },
       },
     );
   };
   useEffect(() => {
     mutationMemorialGet.mutate(memorialId);
-    mutaionGetMemorialComments.mutate({ memorialId });
+    mutationGetMemorialComments.mutate({ memorialId });
     mutationGetCharacter.mutate(characterId);
   }, []);
 
