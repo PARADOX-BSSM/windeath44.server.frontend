@@ -696,7 +696,7 @@ const Sulkkagi = () => {
 
   return (
     <_.Container>
-      <_.Title>알까기 게임</_.Title>
+      <_.Title>설까기</_.Title>
 
       <_.GameInfo>
         <_.TurnInfo>
