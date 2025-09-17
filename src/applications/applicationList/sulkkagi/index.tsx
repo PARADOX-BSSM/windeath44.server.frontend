@@ -570,8 +570,8 @@ const Sulkkagi = () => {
       const limitedDistance = Math.min(distance, maxDistance);
       const powerRatio = limitedDistance / maxDistance;
 
-      // 힘 계산 - 큰 돌이면 더 강한 힘 적용
-      const basePower = selectedStone.isBig ? 0.025 : 0.015; // 큰 돌은 더 강한 힘
+      // 기준 힘
+      const basePower = selectedStone.isBig ? 0.035 : 0.014;
       const power = powerRatio * basePower;
 
       // 방향은 원래 벡터를 정규화해서 사용
