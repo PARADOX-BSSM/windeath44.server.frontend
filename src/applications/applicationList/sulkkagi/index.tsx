@@ -29,7 +29,6 @@ const Sulkkagi = () => {
   const player1CountRef = useRef(0); // 하얀돌 추모관 등록 카운터
   const player2CountRef = useRef(0); // 까만돌 추모관 등록 카운터
 
-  // ✅ 애니메이션 루프에서 항상 최신 값을 보게 할 ref들
   const isDraggingRef = useRef(false);
   const selectedStoneIdRef = useRef<number | null>(null);
   const aimStartRef = useRef<{ x: number; y: number } | null>(null);
@@ -491,9 +490,17 @@ const Sulkkagi = () => {
     if (player1Count === 0) {
       setGameState('player2wins');
       setIsAnimating(false);
+      // 3초 후 자동으로 게임 재시작
+      setTimeout(() => {
+        resetGame();
+      }, 3000);
     } else if (player2Count === 0) {
       setGameState('player1wins');
       setIsAnimating(false);
+      // 3초 후 자동으로 게임 재시작
+      setTimeout(() => {
+        resetGame();
+      }, 3000);
     } else {
       setIsAnimating(movingStones > 0);
     }
