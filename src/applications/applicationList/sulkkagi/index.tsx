@@ -178,6 +178,11 @@ const Sulkkagi = () => {
           const arrowEndY = stoneY - normalizedDy * arrowLength;
           const angle = Math.atan2(-dy, -dx);
 
+          // 화살표 시작점 (돌의 가장자리에서 시작)
+          const stoneRadius = stone.isBig ? BIG_STONE_RADIUS : STONE_RADIUS;
+          const arrowStartX = stoneX - normalizedDx * stoneRadius;
+          const arrowStartY = stoneY - normalizedDy * stoneRadius;
+
           // 화살표 몸체 (헤드 크기만큼 짧게 그어서 헤드와 겹치지 않도록)
           const bodyEndX = arrowEndX + normalizedDx * (arrowHeadSize * 0.7);
           const bodyEndY = arrowEndY + normalizedDy * (arrowHeadSize * 0.7);
@@ -186,7 +191,7 @@ const Sulkkagi = () => {
           ctx.lineWidth = lineWidth;
           ctx.lineCap = 'round';
           ctx.beginPath();
-          ctx.moveTo(stoneX, stoneY);
+          ctx.moveTo(arrowStartX + 3, arrowStartY);
           ctx.lineTo(bodyEndX, bodyEndY);
           ctx.stroke();
 
