@@ -672,9 +672,9 @@ const Sulkkagi = () => {
             </_.CurrentPlayer>
           </div>
 
-          {gameState !== 'playing' && (
+          {/* {gameState !== 'playing' && (
             <_.WinMessage>{gameState === 'player1wins' ? '하얀돌' : '까만돌'} 승리!</_.WinMessage>
-          )}
+          )} */}
         </_.TurnInfo>
 
         <_.StoneCountContainer>

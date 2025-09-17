@@ -34,6 +34,9 @@ export const GameInfo = styled.div`
   padding: 16px;
   margin-bottom: 16px;
   min-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 `;
 
 export const TurnInfo = styled.div`
