@@ -220,14 +220,22 @@ const Sulkkagi = () => {
           const maxDistance = 150;
           const powerRatio = Math.min(distance / maxDistance, 1.0);
 
-          // 색상 그라데이션
+          // 최애의 사인 핑크/보라 그라데이션
           let arrowColor: string;
           if (powerRatio < 0.5) {
             const ratio = powerRatio * 2;
-            arrowColor = `rgb(${Math.floor(255 * ratio)}, 255, 0)`;
+            // 핑크에서 보라로 (255, 187, 245) → (231, 116, 221)
+            const r = Math.floor(255 - (255 - 231) * ratio);
+            const g = Math.floor(187 - (187 - 116) * ratio);
+            const b = Math.floor(245 - (245 - 221) * ratio);
+            arrowColor = `rgb(${r}, ${g}, ${b})`;
           } else {
             const ratio = (powerRatio - 0.5) * 2;
-            arrowColor = `rgb(255, ${Math.floor(255 * (1 - ratio))}, 0)`;
+            // 보라에서 진한 보라로 (231, 116, 221) → (180, 60, 170)
+            const r = Math.floor(231 - (231 - 180) * ratio);
+            const g = Math.floor(116 - (116 - 60) * ratio);
+            const b = Math.floor(221 - (221 - 170) * ratio);
+            arrowColor = `rgb(${r}, ${g}, ${b})`;
           }
 
           // 화살표 크기 조절
@@ -269,16 +277,18 @@ const Sulkkagi = () => {
           const gaugeX = stoneX + 40;
           const gaugeY = stoneY - 40;
 
-          // 게이지 배경
-          ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
-          ctx.lineWidth = 4;
+          // 게이지 배경 (도트 스타일)
+          ctx.strokeStyle = 'rgba(46, 46, 46, 0.6)'; // 더 진한 배경
+          ctx.lineWidth = 5;
+          ctx.lineCap = 'butt'; // 도트 스타일을 위해 둥근 끝 제거
           ctx.beginPath();
           ctx.arc(gaugeX, gaugeY, gaugeRadius, 0, Math.PI * 2);
           ctx.stroke();
 
           // 게이지 진행
           ctx.strokeStyle = arrowColor;
-          ctx.lineWidth = 6;
+          ctx.lineWidth = 7;
+          ctx.lineCap = 'butt'; // 도트 스타일을 위해 둥근 끝 제거
           ctx.beginPath();
           ctx.arc(
             gaugeX,
@@ -289,9 +299,16 @@ const Sulkkagi = () => {
           );
           ctx.stroke();
 
-          // 퍼센트 텍스트
-          ctx.fillStyle = '#333';
-          ctx.font = 'bold 12px Arial';
+          // 게이지 외곽선 (픽셀 아트 느낌)
+          ctx.strokeStyle = 'var(--primary-black, #2e2e2e)';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(gaugeX, gaugeY, gaugeRadius + 4, 0, Math.PI * 2);
+          ctx.stroke();
+
+          // 퍼센트 텍스트 (Galmuri11 폰트)
+          ctx.fillStyle = 'var(--primary-black, #2e2e2e)';
+          ctx.font = 'bold 12px Galmuri11, monospace'; // 픽셀 폰트 사용
           ctx.textAlign = 'center';
           ctx.fillText(`${Math.floor(powerRatio * 100)}%`, gaugeX, gaugeY + 4);
         }
