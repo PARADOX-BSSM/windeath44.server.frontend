@@ -65,11 +65,34 @@ export const WinMessage = styled.div`
   color: var(--stroke, #e774dd);
 `;
 
-export const StoneCount = styled.div`
-  font-size: 14px;
-  font-family: Galmuri11;
-  color: var(--primary-black, #2e2e2e);
+export const StoneCountContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
   margin-bottom: 8px;
+`;
+
+export const PlayerStoneCount = styled.div<CurrentPlayerProps>`
+  font-size: 16px;
+  font-family: Galmuri11;
+  font-weight: 400;
+  color: ${(props) => (props.player === 1 ? 'var(--primary-black, #2e2e2e)' : 'white')};
+  background-color: ${(props) => (props.player === 1 ? 'var(--secondary-color, #ffbbf5)' : 'var(--primary-black, #2e2e2e)')};
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: 1px solid var(--stroke, #e774dd);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+export const StoneIcon = styled.div<CurrentPlayerProps>`
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: ${(props) => (props.player === 1 ? 'white' : 'black')};
+  border: 1px solid ${(props) => (props.player === 1 ? '#ccc' : 'white')};
 `;
 
 export const CanvasContainer = styled.div`

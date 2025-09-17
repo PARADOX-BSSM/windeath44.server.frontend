@@ -712,9 +712,16 @@ const Sulkkagi = () => {
           )}
         </_.TurnInfo>
 
-        <_.StoneCount>
-          남은 돌: 하얀돌 {stoneCount.player1}개, 까만돌 {stoneCount.player2}개
-        </_.StoneCount>
+        <_.StoneCountContainer>
+          <_.PlayerStoneCount player={1}>
+            <_.StoneIcon player={1} />
+            하얀돌 {stoneCount.player1}개
+          </_.PlayerStoneCount>
+          <_.PlayerStoneCount player={2}>
+            <_.StoneIcon player={2} />
+            까만돌 {stoneCount.player2}개
+          </_.PlayerStoneCount>
+        </_.StoneCountContainer>
       </_.GameInfo>
 
       <_.CanvasContainer>
