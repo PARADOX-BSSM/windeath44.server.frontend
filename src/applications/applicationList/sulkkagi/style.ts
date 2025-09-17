@@ -50,12 +50,15 @@ export const TurnInfo = styled.div`
 export const CurrentPlayer = styled.span<CurrentPlayerProps>`
   margin-left: 8px;
   padding: 4px 12px;
-  border-radius: 4px;
   font-size: 16px;
   font-family: Galmuri11;
-  background-color: ${(props) => (props.player === 1 ? 'var(--secondary-color, #ffbbf5)' : 'var(--primary-black, #2e2e2e)')};
+  background-color: ${(props) =>
+    props.player === 1 ? 'var(--secondary-color, #ffbbf5)' : 'var(--primary-black, #2e2e2e)'};
   color: ${(props) => (props.player === 1 ? 'var(--primary-black, #2e2e2e)' : 'white')};
-  border: 1px solid var(--stroke, #e774dd);
+  border: 2px solid var(--stroke, #e774dd);
+  box-shadow:
+    -1px -1px 0px 0px var(--primary-black) inset,
+    1px 1px 0px 0px #fff inset;
 `;
 
 export const WinMessage = styled.div`
@@ -78,10 +81,13 @@ export const PlayerStoneCount = styled.div<CurrentPlayerProps>`
   font-family: Galmuri11;
   font-weight: 400;
   color: ${(props) => (props.player === 1 ? 'var(--primary-black, #2e2e2e)' : 'white')};
-  background-color: ${(props) => (props.player === 1 ? 'var(--secondary-color, #ffbbf5)' : 'var(--primary-black, #2e2e2e)')};
+  background-color: ${(props) =>
+    props.player === 1 ? 'var(--secondary-color, #ffbbf5)' : 'var(--primary-black, #2e2e2e)'};
   padding: 8px 16px;
-  border-radius: 4px;
-  border: 1px solid var(--stroke, #e774dd);
+  border: 2px solid var(--stroke, #e774dd);
+  box-shadow:
+    -1px -1px 0px 0px var(--primary-black) inset,
+    1px 1px 0px 0px #fff inset;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -90,9 +96,11 @@ export const PlayerStoneCount = styled.div<CurrentPlayerProps>`
 export const StoneIcon = styled.div<CurrentPlayerProps>`
   width: 16px;
   height: 16px;
-  border-radius: 50%;
   background-color: ${(props) => (props.player === 1 ? 'white' : 'black')};
-  border: 1px solid ${(props) => (props.player === 1 ? '#ccc' : 'white')};
+  border: 2px solid ${(props) => (props.player === 1 ? 'var(--primary-black, #2e2e2e)' : 'white')};
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
 `;
 
 export const CanvasContainer = styled.div`
@@ -119,7 +127,10 @@ export const AnimatingIndicator = styled.div`
   padding: 4px 8px;
   font-family: Galmuri11;
   font-size: 12px;
-  border: 1px solid var(--primary-black, #2e2e2e);
+  border: 2px solid var(--primary-black, #2e2e2e);
+  box-shadow:
+    -1px -1px 0px 0px var(--primary-black) inset,
+    1px 1px 0px 0px #fff inset;
 `;
 
 export const Controls = styled.div`
@@ -148,4 +159,91 @@ export const ResetButton = styled.button`
   &:hover {
     background: var(--secondary-color, #ffbbf5);
   }
+`;
+
+export const GameArea = styled.div`
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+`;
+
+export const NotificationArea = styled.div`
+  width: 280px;
+  height: 408px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+  padding: 16px;
+  box-sizing: border-box;
+  background: var(--very-light-primary-color, #ffeefd);
+  border: 3px solid var(--stroke, #e774dd);
+  box-shadow:
+    -2px -2px 0px 0px var(--primary-black) inset,
+    2px 2px 0px 0px #fff inset,
+    -3px -3px 0px 0px var(--dark-primary-color) inset,
+    3px 3px 0px 0px var(--secondary-color) inset;
+`;
+
+export const NotificationTitle = styled.div`
+  font-size: 14px;
+  font-weight: 400;
+  font-family: Galmuri11;
+  color: var(--primary-black, #2e2e2e);
+  margin-bottom: 8px;
+  text-align: center;
+  border-bottom: 1px solid var(--stroke, #e774dd);
+  padding-bottom: 8px;
+`;
+
+export const NotificationItem = styled.div<{ player: number; isNew?: boolean }>`
+  padding: 12px;
+  font-family: Galmuri11;
+  font-size: 13px;
+  font-weight: 400;
+  background: ${(props) =>
+    props.player === 1 ? 'var(--secondary-color, #ffbbf5)' : 'var(--primary-black, #2e2e2e)'};
+  color: ${(props) => (props.player === 1 ? 'var(--primary-black, #2e2e2e)' : 'white')};
+  border: 2px solid var(--stroke, #e774dd);
+  box-shadow:
+    -1px -1px 0px 0px var(--primary-black) inset,
+    1px 1px 0px 0px #fff inset;
+  animation: ${(props) => (props.isNew ? 'slideIn 0.3s ease-out, pulse 2s ease-in-out' : 'none')};
+  transform: ${(props) => (props.isNew ? 'scale(1.02)' : 'scale(1)')};
+  transition: transform 0.3s ease-out;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateX(-20px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0) scale(1.02);
+    }
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      box-shadow: 0 0 0 0 rgba(231, 116, 221, 0);
+    }
+    50% {
+      box-shadow: 0 0 0 4px rgba(231, 116, 221, 0.3);
+    }
+  }
+`;
+
+export const NotificationIcon = styled.div<{ player: number }>`
+  width: 12px;
+  height: 12px;
+  background-color: ${(props) => (props.player === 1 ? 'white' : 'black')};
+  border: 2px solid ${(props) => (props.player === 1 ? 'var(--primary-black, #2e2e2e)' : 'white')};
+  flex-shrink: 0;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
 `;

@@ -22,6 +22,10 @@ const Sulkkagi = () => {
   const [gameState, setGameState] = useState<'playing' | 'player1wins' | 'player2wins'>('playing');
   const [isAnimating, setIsAnimating] = useState(false);
   const [stoneCount, setStoneCount] = useState({ player1: 3, player2: 3 });
+  const [notifications, setNotifications] = useState<
+    { id: number; player: number; message: string; isNew: boolean }[]
+  >([]);
+  const notificationIdRef = useRef(0);
 
   // ✅ 애니메이션 루프에서 항상 최신 값을 보게 할 ref들
   const isDraggingRef = useRef(false);
@@ -100,6 +104,7 @@ const Sulkkagi = () => {
         id: 1,
         originalColor: 'white',
         isSelected: false,
+        isOut: false,
       }),
       Bodies.circle(150, 120, STONE_RADIUS, {
         label: 'stone',
@@ -111,6 +116,7 @@ const Sulkkagi = () => {
         id: 2 as any,
         originalColor: 'white' as any,
         isSelected: false as any,
+        isOut: false as any,
       }),
       Bodies.circle(200, 110, STONE_RADIUS, {
         label: 'stone',
@@ -122,6 +128,7 @@ const Sulkkagi = () => {
         id: 3 as any,
         originalColor: 'white' as any,
         isSelected: false as any,
+        isOut: false as any,
       }),
       // 까만돌
       Bodies.circle(100, 300, STONE_RADIUS, {
@@ -134,6 +141,7 @@ const Sulkkagi = () => {
         id: 4 as any,
         originalColor: 'black' as any,
         isSelected: false as any,
+        isOut: false as any,
       }),
       Bodies.circle(150, 280, STONE_RADIUS, {
         label: 'stone',
@@ -145,6 +153,7 @@ const Sulkkagi = () => {
         id: 5 as any,
         originalColor: 'black' as any,
         isSelected: false as any,
+        isOut: false as any,
       }),
       Bodies.circle(200, 290, STONE_RADIUS, {
         label: 'stone',
@@ -156,6 +165,7 @@ const Sulkkagi = () => {
         id: 6 as any,
         originalColor: 'black' as any,
         isSelected: false as any,
+        isOut: false as any,
       }),
     ];
 
@@ -390,6 +400,27 @@ const Sulkkagi = () => {
     drawArrow();
   };
 
+  const addNotification = (player: number) => {
+    const playerName = player === 1 ? '하얀돌' : '까만돌';
+    const message = `${playerName}(이)가 추모관에 등록됐습니다.`;
+
+    const newNotification = {
+      id: notificationIdRef.current++,
+      player,
+      message,
+      isNew: true,
+    };
+
+    setNotifications((prev) => [newNotification, ...prev]);
+
+    // 3초 후 isNew를 false로 변경하여 애니메이션 제거
+    setTimeout(() => {
+      setNotifications((prev) =>
+        prev.map((notif) => (notif.id === newNotification.id ? { ...notif, isNew: false } : notif)),
+      );
+    }, 3000);
+  };
+
   const checkGameState = () => {
     if (!stonesRef.current) return;
 
@@ -401,12 +432,13 @@ const Sulkkagi = () => {
       if (!stone.position) return;
 
       // 보드 안에 있는 돌만 카운트
-      if (
+      const isInsideBoard =
         stone.position.x >= -STONE_RADIUS &&
         stone.position.x <= BOARD_SIZE + STONE_RADIUS &&
         stone.position.y >= -STONE_RADIUS &&
-        stone.position.y <= BOARD_SIZE + STONE_RADIUS
-      ) {
+        stone.position.y <= BOARD_SIZE + STONE_RADIUS;
+
+      if (isInsideBoard) {
         if (stone.player === 1) player1Count++;
         if (stone.player === 2) player2Count++;
 
@@ -415,6 +447,12 @@ const Sulkkagi = () => {
           stone.velocity.x * stone.velocity.x + stone.velocity.y * stone.velocity.y,
         );
         if (speed > 0.1) movingStones++;
+      } else {
+        // 보드 밖으로 나간 돌은 isOut 플래그로 표시하고 한 번만 알림 발생
+        if (!stone.isOut) {
+          stone.isOut = true;
+          addNotification(stone.player);
+        }
       }
     });
 
@@ -616,6 +654,7 @@ const Sulkkagi = () => {
         id: 1 as any,
         originalColor: 'white' as any,
         isSelected: false as any,
+        isOut: false as any,
       }),
       Bodies.circle(150, 120, STONE_RADIUS, {
         label: 'stone',
@@ -627,6 +666,7 @@ const Sulkkagi = () => {
         id: 2 as any,
         originalColor: 'white' as any,
         isSelected: false as any,
+        isOut: false as any,
       }),
       Bodies.circle(200, 110, STONE_RADIUS, {
         label: 'stone',
@@ -638,6 +678,7 @@ const Sulkkagi = () => {
         id: 3 as any,
         originalColor: 'white' as any,
         isSelected: false as any,
+        isOut: false as any,
       }),
       Bodies.circle(100, 300, STONE_RADIUS, {
         label: 'stone',
@@ -649,6 +690,7 @@ const Sulkkagi = () => {
         id: 4 as any,
         originalColor: 'black' as any,
         isSelected: false as any,
+        isOut: false as any,
       }),
       Bodies.circle(150, 280, STONE_RADIUS, {
         label: 'stone',
@@ -660,6 +702,7 @@ const Sulkkagi = () => {
         id: 5 as any,
         originalColor: 'black' as any,
         isSelected: false as any,
+        isOut: false as any,
       }),
       Bodies.circle(200, 290, STONE_RADIUS, {
         label: 'stone',
@@ -671,6 +714,7 @@ const Sulkkagi = () => {
         id: 6 as any,
         originalColor: 'black' as any,
         isSelected: false as any,
+        isOut: false as any,
       }),
     ];
 
@@ -685,6 +729,8 @@ const Sulkkagi = () => {
     setAimCurrent(null);
     setIsAnimating(false);
     setStoneCount({ player1: 3, player2: 3 });
+    setNotifications([]);
+    notificationIdRef.current = 0;
 
     selectedStoneIdRef.current = null;
     aimStartRef.current = null;
@@ -724,66 +770,97 @@ const Sulkkagi = () => {
         </_.StoneCountContainer>
       </_.GameInfo>
 
-      <_.CanvasContainer>
-        <_.GameCanvas
-          ref={canvasRef}
-          width={BOARD_SIZE}
-          height={BOARD_SIZE}
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={() => {
-            // 선택 해제 시 렌더링 복구
-            if (selectedStoneIdRef.current) {
-              const prev = stonesRef.current.find(
-                (stone: any) => stone.id === selectedStoneIdRef.current,
-              );
-              if (prev) {
-                prev.render.strokeStyle = 'transparent';
-                prev.render.lineWidth = 0;
-                prev.isSelected = false;
+      <_.GameArea>
+        <_.CanvasContainer>
+          <_.GameCanvas
+            ref={canvasRef}
+            width={BOARD_SIZE}
+            height={BOARD_SIZE}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={() => {
+              // 선택 해제 시 렌더링 복구
+              if (selectedStoneIdRef.current) {
+                const prev = stonesRef.current.find(
+                  (stone: any) => stone.id === selectedStoneIdRef.current,
+                );
+                if (prev) {
+                  prev.render.strokeStyle = 'transparent';
+                  prev.render.lineWidth = 0;
+                  prev.isSelected = false;
+                }
               }
-            }
-            // 커서 복구
-            const canvas = canvasRef.current;
-            if (canvas) {
-              canvas.style.cursor = 'default';
-            }
+              // 커서 복구
+              const canvas = canvasRef.current;
+              if (canvas) {
+                canvas.style.cursor = 'default';
+              }
 
-            // state + ref 모두 초기화
-            setSelectedStoneId(null);
-            selectedStoneIdRef.current = null;
+              // state + ref 모두 초기화
+              setSelectedStoneId(null);
+              selectedStoneIdRef.current = null;
 
-            setAimStart(null);
-            aimStartRef.current = null;
+              setAimStart(null);
+              aimStartRef.current = null;
 
-            setAimCurrent(null);
-            aimCurrentRef.current = null;
+              setAimCurrent(null);
+              aimCurrentRef.current = null;
 
-            setIsDragging(false);
-            isDraggingRef.current = false;
+              setIsDragging(false);
+              isDraggingRef.current = false;
 
-            // 화살표 캔버스도 정리
-            clearArrowCanvas();
-          }}
-        />
+              // 화살표 캔버스도 정리
+              clearArrowCanvas();
+            }}
+          />
 
-        {/* 화살표 전용 Canvas (게임 Canvas 위에 오버레이) */}
-        <canvas
-          ref={arrowCanvasRef}
-          width={BOARD_SIZE} // CSS 픽셀 기준 (실제 픽셀은 useEffect에서 DPR 반영)
-          height={BOARD_SIZE}
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            pointerEvents: 'none', // 마우스 이벤트는 아래 Canvas로 전달
-            zIndex: 9999,
-          }}
-        />
+          {/* 화살표 전용 Canvas (게임 Canvas 위에 오버레이) */}
+          <canvas
+            ref={arrowCanvasRef}
+            width={BOARD_SIZE} // CSS 픽셀 기준 (실제 픽셀은 useEffect에서 DPR 반영)
+            height={BOARD_SIZE}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              pointerEvents: 'none', // 마우스 이벤트는 아래 Canvas로 전달
+              zIndex: 9999,
+            }}
+          />
 
-        {isAnimating && <_.AnimatingIndicator>움직이는 중...</_.AnimatingIndicator>}
-      </_.CanvasContainer>
+          {isAnimating && <_.AnimatingIndicator>움직이는 중...</_.AnimatingIndicator>}
+        </_.CanvasContainer>
+
+        <_.NotificationArea>
+          <_.NotificationTitle>추모관 등록 현황</_.NotificationTitle>
+          {notifications.length === 0 ? (
+            <div
+              style={{
+                textAlign: 'center',
+                color: 'var(--primary-black, #2e2e2e)',
+                fontSize: '12px',
+                fontFamily: 'Galmuri11',
+                opacity: 0.7,
+                padding: '20px 0',
+              }}
+            >
+              아직 아웃된 돌이 없습니다.
+            </div>
+          ) : (
+            notifications.map((notification) => (
+              <_.NotificationItem
+                key={notification.id}
+                player={notification.player}
+                isNew={notification.isNew}
+              >
+                <_.NotificationIcon player={notification.player} />
+                {notification.message}
+              </_.NotificationItem>
+            ))
+          )}
+        </_.NotificationArea>
+      </_.GameArea>
 
       <_.Controls>
         <_.ResetButton onClick={resetGame}>게임 다시 시작</_.ResetButton>
