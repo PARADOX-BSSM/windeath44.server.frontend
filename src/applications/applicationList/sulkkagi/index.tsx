@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import * as Matter from 'matter-js';
 import * as _ from './style';
-import { createAllStones, STONE_RADIUS } from './data';
+import { createAllStones, STONE_RADIUS, BIG_STONE_RADIUS } from './data';
 
 const BOARD_SIZE = 400;
 const BOARD_PADDING = 40;
@@ -21,7 +21,7 @@ const Sulkkagi = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [gameState, setGameState] = useState<'playing' | 'player1wins' | 'player2wins'>('playing');
   const [isAnimating, setIsAnimating] = useState(false);
-  const [stoneCount, setStoneCount] = useState({ player1: 3, player2: 3 });
+  const [stoneCount, setStoneCount] = useState({ player1: 4, player2: 4 }); // 일반돌 3개 + 큰돌 1개
   const [notifications, setNotifications] = useState<
     { id: number; player: number; message: string; isNew: boolean }[]
   >([]);
@@ -299,12 +299,15 @@ const Sulkkagi = () => {
       const x = stone.position.x;
       const y = stone.position.y;
 
+      // 돌의 실제 반지름 (큰 돌 vs 일반 돌)
+      const stoneRadius = stone.isBig ? BIG_STONE_RADIUS : STONE_RADIUS;
+
       // 보드 밖의 돌은 그리지 않음
       if (
-        x < -STONE_RADIUS ||
-        x > BOARD_SIZE + STONE_RADIUS ||
-        y < -STONE_RADIUS ||
-        y > BOARD_SIZE + STONE_RADIUS
+        x < -stoneRadius ||
+        x > BOARD_SIZE + stoneRadius ||
+        y < -stoneRadius ||
+        y > BOARD_SIZE + stoneRadius
       ) {
         return;
       }
@@ -312,7 +315,7 @@ const Sulkkagi = () => {
       // 그림자
       ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
       ctx.beginPath();
-      ctx.arc(x + 2, y + 2, STONE_RADIUS, 0, Math.PI * 2);
+      ctx.arc(x + 2, y + 2, stoneRadius, 0, Math.PI * 2);
       ctx.fill();
 
       // 선택된 돌인지 확인 (UI용 state 사용)
@@ -323,7 +326,7 @@ const Sulkkagi = () => {
       ctx.strokeStyle = stone.render.strokeStyle;
       ctx.lineWidth = stone.render.lineWidth;
       ctx.beginPath();
-      ctx.arc(x, y, STONE_RADIUS, 0, Math.PI * 2);
+      ctx.arc(x, y, stoneRadius, 0, Math.PI * 2);
       ctx.fill();
       if (stone.render.lineWidth > 0) {
         ctx.stroke();
@@ -338,7 +341,7 @@ const Sulkkagi = () => {
         ctx.strokeStyle = 'rgba(255, 215, 0, 0.6)'; // 반투명 금색
         ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.arc(x, y, STONE_RADIUS + 8 + extraRadius, 0, Math.PI * 2);
+        ctx.arc(x, y, stoneRadius + 8 + extraRadius, 0, Math.PI * 2);
         ctx.stroke();
       }
     });
@@ -456,7 +459,8 @@ const Sulkkagi = () => {
       const dx = pos.x - stone.position.x;
       const dy = pos.y - stone.position.y;
       const distance = Math.sqrt(dx * dx + dy * dy);
-      return distance <= STONE_RADIUS && stone.player === currentPlayer;
+      const stoneRadius = stone.isBig ? BIG_STONE_RADIUS : STONE_RADIUS;
+      return distance <= stoneRadius && stone.player === currentPlayer;
     });
 
     // 이전 선택 해제
@@ -524,7 +528,8 @@ const Sulkkagi = () => {
         const dx = pos.x - stone.position.x;
         const dy = pos.y - stone.position.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
-        return distance <= STONE_RADIUS && stone.player === currentPlayer;
+        const stoneRadius = stone.isBig ? BIG_STONE_RADIUS : STONE_RADIUS;
+        return distance <= stoneRadius && stone.player === currentPlayer;
       });
 
       canvas.style.cursor = hoveredStone ? 'grab' : 'default';
@@ -555,8 +560,8 @@ const Sulkkagi = () => {
       const limitedDistance = Math.min(distance, maxDistance);
       const powerRatio = limitedDistance / maxDistance;
 
-      // 힘 계산 - 더 강하게 조정
-      const basePower = 0.015; // 기본 힘을 더 강하게
+      // 힘 계산 - 큰 돌이면 더 강한 힘 적용
+      const basePower = selectedStone.isBig ? 0.025 : 0.015; // 큰 돌은 더 강한 힘
       const power = powerRatio * basePower;
 
       // 방향은 원래 벡터를 정규화해서 사용
@@ -632,7 +637,7 @@ const Sulkkagi = () => {
     setAimStart(null);
     setAimCurrent(null);
     setIsAnimating(false);
-    setStoneCount({ player1: 3, player2: 3 });
+    setStoneCount({ player1: 4, player2: 4 }); // 일반돌 3개 + 큰돌 1개
     setNotifications([]);
     notificationIdRef.current = 0;
     player1CountRef.current = 0; // 하얀돌 카운터 초기화
