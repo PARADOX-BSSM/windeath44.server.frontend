@@ -219,7 +219,9 @@ const Sulkkagi = () => {
         // 히스테리시스 적용: 6 이상이면 켬
         if (distance > 6) {
           const maxDistance = 150;
-          const powerRatio = Math.min(distance / maxDistance, 1.0);
+          // 최대 거리 제한: 100%에 도달하면 더 이상 늘어나지 않음
+          const limitedDistance = Math.min(distance, maxDistance);
+          const powerRatio = limitedDistance / maxDistance;
 
           // 최애의 사인 핑크/보라 그라데이션
           let arrowColor: string;
@@ -239,14 +241,16 @@ const Sulkkagi = () => {
             arrowColor = `rgb(${r}, ${g}, ${b})`;
           }
 
-          // 화살표 크기 조절
-          const arrowLength = Math.max(distance * 0.8, 30);
+          // 화살표 크기 조절 (제한된 거리 기준)
+          const arrowLength = Math.max(limitedDistance * 0.8, 30);
           const lineWidth = 2 + powerRatio * 6;
           const arrowHeadSize = 8 + powerRatio * 12;
 
-          // 화살표 끝점 + 각도
-          const arrowEndX = stoneX - (dx / distance) * arrowLength;
-          const arrowEndY = stoneY - (dy / distance) * arrowLength;
+          // 화살표 끝점 + 각도 (제한된 거리 기준)
+          const normalizedDx = dx / distance;
+          const normalizedDy = dy / distance;
+          const arrowEndX = stoneX - normalizedDx * arrowLength;
+          const arrowEndY = stoneY - normalizedDy * arrowLength;
           const angle = Math.atan2(-dy, -dx);
 
           // 화살표 몸체
@@ -621,11 +625,22 @@ const Sulkkagi = () => {
     const distance = Math.sqrt(dx * dx + dy * dy);
 
     if (distance > 5 && selectedStone) {
-      const power = Math.min(distance / 50, 0.3);
+      // 화살표와 동일한 powerRatio 계산
+      const maxDistance = 150;
+      const limitedDistance = Math.min(distance, maxDistance);
+      const powerRatio = limitedDistance / maxDistance;
+
+      // 힘 계산 - 더 강하게 조정
+      const basePower = 0.015; // 기본 힘을 더 강하게
+      const power = powerRatio * basePower;
+
+      // 방향은 원래 벡터를 정규화해서 사용
+      const normalizedDx = dx / distance;
+      const normalizedDy = dy / distance;
 
       Matter.Body.applyForce(selectedStone, selectedStone.position, {
-        x: -dx * power * 0.001,
-        y: -dy * power * 0.001,
+        x: -normalizedDx * power,
+        y: -normalizedDy * power,
       });
 
       setCurrentPlayer((p) => (p === 1 ? 2 : 1));
