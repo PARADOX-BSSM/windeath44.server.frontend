@@ -215,7 +215,7 @@ const useApps = (): TaskType[] => {
       ),
       type: 'App',
       id: 2225,
-      name: 'memorailHistory',
+      name: 'memorialHistory',
       layer: undefined,
       appSetup: {
         Image: 'default',

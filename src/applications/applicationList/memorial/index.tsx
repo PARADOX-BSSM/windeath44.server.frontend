@@ -33,6 +33,7 @@ const Memorial = ({ memorialId, characterId, stackProps }: dataStructureProps) =
   const taskTransform = useAtomValue(taskTransformerAtom);
   const taskSearch = useAtomValue(taskSearchAtom);
   const [content, setContent] = useState<string>('');
+  const { stack, push, pop, top } = stackProps;
   const [characterData, setCharacterData] = useState<CharacterData>({
     characterId: 0,
     animeId: 0,
@@ -99,6 +100,7 @@ const Memorial = ({ memorialId, characterId, stackProps }: dataStructureProps) =
     }
   }, [characterData.animeId]);
 
+  console.log('스택', stack, push, pop, top);
   const handleCommit = () => {
     const InputValues = {
       stackProps: stackProps,
@@ -112,7 +114,7 @@ const Memorial = ({ memorialId, characterId, stackProps }: dataStructureProps) =
       profileImage: characterData.imageUrl,
     };
     taskTransform?.('', '미리보기');
-    stackProps.push(taskSearch?.('MemorialCommit', InputValues));
+    push(taskSearch?.('MemorialCommit', InputValues));
   };
   return (
     <_.Main>
@@ -126,7 +128,7 @@ const Memorial = ({ memorialId, characterId, stackProps }: dataStructureProps) =
               </_.TextContainer>
               <_.History
                 onClick={() => {
-                  stackProps.push(taskSearch?.('memorailHistory', stackProps));
+                  push(taskSearch?.('memorialHistory', stackProps));
                 }}
               >
                 기록

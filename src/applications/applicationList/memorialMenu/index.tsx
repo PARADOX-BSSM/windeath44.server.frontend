@@ -87,12 +87,9 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
     if (idx === 1) {
       push(
         taskSearch?.('memorial', {
-          stack: stack,
-          push: push,
-          pop: pop,
-          top: top,
           memorialId: 5,
           characterId: 5,
+          stackProps,
         }),
       );
     }
