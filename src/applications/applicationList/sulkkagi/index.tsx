@@ -96,13 +96,9 @@ const Sulkkagi = () => {
         frictionAir: 0.02,
         friction: 0.8,
         restitution: 0.6,
-        // @ts-expect-error - 커스텀 속성
         player: 1,
-        // @ts-expect-error - 커스텀 속성
         id: 1,
-        // @ts-expect-error - 커스텀 속성
         originalColor: 'white',
-        // @ts-expect-error - 커스텀 속성
         isSelected: false,
       }),
       Bodies.circle(150, 120, STONE_RADIUS, {
@@ -301,7 +297,7 @@ const Sulkkagi = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // 바둑판 배경
-    ctx.fillStyle = '#DEB887';
+    ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // 바둑판 선
