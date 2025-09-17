@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import * as Matter from 'matter-js';
 import * as _ from './style';
+import { createAllStones, STONE_RADIUS } from './data';
 
 const BOARD_SIZE = 400;
-const STONE_RADIUS = 12;
 const BOARD_PADDING = 40;
 
 const Sulkkagi = () => {
@@ -92,83 +92,8 @@ const Sulkkagi = () => {
       }),
     ];
 
-    // 돌 생성
-    const stones = [
-      // 하얀돌
-      Bodies.circle(100, 100, STONE_RADIUS, {
-        label: 'stone',
-        render: { fillStyle: 'white', strokeStyle: 'transparent', lineWidth: 0 },
-        frictionAir: 0.02,
-        friction: 0.8,
-        restitution: 0.6,
-        player: 1,
-        id: 1,
-        originalColor: 'white',
-        isSelected: false,
-        isOut: false,
-      }),
-      Bodies.circle(150, 120, STONE_RADIUS, {
-        label: 'stone',
-        render: { fillStyle: 'white', strokeStyle: 'transparent', lineWidth: 0 },
-        frictionAir: 0.02,
-        friction: 0.8,
-        restitution: 0.6,
-        player: 1 as any,
-        id: 2 as any,
-        originalColor: 'white' as any,
-        isSelected: false as any,
-        isOut: false as any,
-      }),
-      Bodies.circle(200, 110, STONE_RADIUS, {
-        label: 'stone',
-        render: { fillStyle: 'white', strokeStyle: 'transparent', lineWidth: 0 },
-        frictionAir: 0.02,
-        friction: 0.8,
-        restitution: 0.6,
-        player: 1 as any,
-        id: 3 as any,
-        originalColor: 'white' as any,
-        isSelected: false as any,
-        isOut: false as any,
-      }),
-      // 까만돌
-      Bodies.circle(100, 300, STONE_RADIUS, {
-        label: 'stone',
-        render: { fillStyle: 'black', strokeStyle: 'transparent', lineWidth: 0 },
-        frictionAir: 0.02,
-        friction: 0.8,
-        restitution: 0.6,
-        player: 2 as any,
-        id: 4 as any,
-        originalColor: 'black' as any,
-        isSelected: false as any,
-        isOut: false as any,
-      }),
-      Bodies.circle(150, 280, STONE_RADIUS, {
-        label: 'stone',
-        render: { fillStyle: 'black', strokeStyle: 'transparent', lineWidth: 0 },
-        frictionAir: 0.02,
-        friction: 0.8,
-        restitution: 0.6,
-        player: 2 as any,
-        id: 5 as any,
-        originalColor: 'black' as any,
-        isSelected: false as any,
-        isOut: false as any,
-      }),
-      Bodies.circle(200, 290, STONE_RADIUS, {
-        label: 'stone',
-        render: { fillStyle: 'black', strokeStyle: 'transparent', lineWidth: 0 },
-        frictionAir: 0.02,
-        friction: 0.8,
-        restitution: 0.6,
-        player: 2 as any,
-        id: 6 as any,
-        originalColor: 'black' as any,
-        isSelected: false as any,
-        isOut: false as any,
-      }),
-    ];
+    // 돌 생성 (data.ts에서 가져오기)
+    const stones = createAllStones();
 
     // 월드에 추가
     World.add(engine.world, [...walls, ...stones]);
@@ -694,81 +619,8 @@ const Sulkkagi = () => {
     // 기존 돌들 제거
     World.remove(engineRef.current.world, stonesRef.current);
 
-    // 새 돌들 생성
-    const newStones = [
-      Bodies.circle(100, 100, STONE_RADIUS, {
-        label: 'stone',
-        render: { fillStyle: 'white', strokeStyle: 'transparent', lineWidth: 0 },
-        frictionAir: 0.02,
-        friction: 0.8,
-        restitution: 0.6,
-        player: 1 as any,
-        id: 1 as any,
-        originalColor: 'white' as any,
-        isSelected: false as any,
-        isOut: false as any,
-      }),
-      Bodies.circle(150, 120, STONE_RADIUS, {
-        label: 'stone',
-        render: { fillStyle: 'white', strokeStyle: 'transparent', lineWidth: 0 },
-        frictionAir: 0.02,
-        friction: 0.8,
-        restitution: 0.6,
-        player: 1 as any,
-        id: 2 as any,
-        originalColor: 'white' as any,
-        isSelected: false as any,
-        isOut: false as any,
-      }),
-      Bodies.circle(200, 110, STONE_RADIUS, {
-        label: 'stone',
-        render: { fillStyle: 'white', strokeStyle: 'transparent', lineWidth: 0 },
-        frictionAir: 0.02,
-        friction: 0.8,
-        restitution: 0.6,
-        player: 1 as any,
-        id: 3 as any,
-        originalColor: 'white' as any,
-        isSelected: false as any,
-        isOut: false as any,
-      }),
-      Bodies.circle(100, 300, STONE_RADIUS, {
-        label: 'stone',
-        render: { fillStyle: 'black', strokeStyle: 'transparent', lineWidth: 0 },
-        frictionAir: 0.02,
-        friction: 0.8,
-        restitution: 0.6,
-        player: 2 as any,
-        id: 4 as any,
-        originalColor: 'black' as any,
-        isSelected: false as any,
-        isOut: false as any,
-      }),
-      Bodies.circle(150, 280, STONE_RADIUS, {
-        label: 'stone',
-        render: { fillStyle: 'black', strokeStyle: 'transparent', lineWidth: 0 },
-        frictionAir: 0.02,
-        friction: 0.8,
-        restitution: 0.6,
-        player: 2 as any,
-        id: 5 as any,
-        originalColor: 'black' as any,
-        isSelected: false as any,
-        isOut: false as any,
-      }),
-      Bodies.circle(200, 290, STONE_RADIUS, {
-        label: 'stone',
-        render: { fillStyle: 'black', strokeStyle: 'transparent', lineWidth: 0 },
-        frictionAir: 0.02,
-        friction: 0.8,
-        restitution: 0.6,
-        player: 2 as any,
-        id: 6 as any,
-        originalColor: 'black' as any,
-        isSelected: false as any,
-        isOut: false as any,
-      }),
-    ];
+    // 새 돌들 생성 (data.ts에서 가져오기)
+    const newStones = createAllStones();
 
     Matter.World.add(engineRef.current.world, newStones);
     stonesRef.current = newStones;
