@@ -19,14 +19,17 @@ import { useGetAnimation } from '@/api/anime/getAnimation.ts';
 import ribbon from '@/assets/memorial_ribbon.svg';
 
 interface dataStructureProps {
+  memorialId: number;
+  characterId: number;
+  stackProps: stackProps;
+}
+interface stackProps {
   stack: any[];
   push: any;
   pop: any;
   top: any;
-  memorialId: number;
-  characterId: number;
 }
-const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStructureProps) => {
+const Memorial = ({ memorialId, characterId, stackProps }: dataStructureProps) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
   const taskSearch = useAtomValue(taskSearchAtom);
   const [content, setContent] = useState<string>('');
@@ -96,12 +99,6 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
     }
   }, [characterData.animeId]);
 
-  const stackProps = {
-    stack: stack,
-    push: push,
-    pop: pop,
-    top: top,
-  };
   const handleCommit = () => {
     const InputValues = {
       stackProps: stackProps,
@@ -115,7 +112,7 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
       profileImage: characterData.imageUrl,
     };
     taskTransform?.('', '미리보기');
-    push(taskSearch?.('MemorialCommit', InputValues));
+    stackProps.push(taskSearch?.('MemorialCommit', InputValues));
   };
   return (
     <_.Main>
@@ -129,7 +126,7 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
               </_.TextContainer>
               <_.History
                 onClick={() => {
-                  push(taskSearch?.('memorailHistory', stackProps));
+                  stackProps.push(taskSearch?.('memorailHistory', stackProps));
                 }}
               >
                 기록

@@ -1,4 +1,4 @@
-import { memo, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import * as _ from '@/applications/applicationList/search/style.ts';
 import Folder from '@/assets/search/folder.svg';
 import Search_task from '@/applications/applicationList/search/search_task';
@@ -11,13 +11,24 @@ import { memorial } from '@/config';
 
 type Character = { characterId: number; [k: string]: any };
 type AnimeItem = { animeId: number; [k: string]: any };
+interface dataStructureProps {
+  stack: any[];
+  push: any;
+  pop: any;
+  top: any;
+}
 
 const EMPTY_ARR = Object.freeze([]) as readonly any[];
 
-const Search = () => {
+const Search = ({ stack, push, pop, top }: dataStructureProps) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [isColumn, setIsColumn] = useState(false);
-
+  const stackProps = {
+    stack: stack,
+    push: push,
+    pop: pop,
+    top: top,
+  };
   // 검색 상태
   const [fillDeath, setFillDeath] = useState<'모두' | string>('모두');
   const [ani, setAni] = useState(''); // 애니 이름(검색어)
@@ -156,8 +167,7 @@ const Search = () => {
   const hasError = isError || isMemorialError || isAnimesError;
 
   // console.log('캐링터', characters);
-  // console.log('메모리얼즈', memorials);
-
+  // console.log('메모리얼즈', memorials);;
   return (
     <_.main>
       <_.main_serve>
@@ -182,6 +192,7 @@ const Search = () => {
             <Viewer
               characters={characters}
               memorials={memorials}
+              stackProps={stackProps}
             />
           ) : (
             <div>결과가 없습니다.</div>
