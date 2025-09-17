@@ -178,13 +178,16 @@ const Sulkkagi = () => {
           const arrowEndY = stoneY - normalizedDy * arrowLength;
           const angle = Math.atan2(-dy, -dx);
 
-          // 화살표 몸체
+          // 화살표 몸체 (헤드 크기만큼 짧게 그어서 헤드와 겹치지 않도록)
+          const bodyEndX = arrowEndX + normalizedDx * (arrowHeadSize * 0.7);
+          const bodyEndY = arrowEndY + normalizedDy * (arrowHeadSize * 0.7);
+
           ctx.strokeStyle = arrowColor;
           ctx.lineWidth = lineWidth;
           ctx.lineCap = 'round';
           ctx.beginPath();
           ctx.moveTo(stoneX, stoneY);
-          ctx.lineTo(arrowEndX, arrowEndY);
+          ctx.lineTo(bodyEndX, bodyEndY);
           ctx.stroke();
 
           // 화살표 머리
