@@ -4,31 +4,31 @@ export const STONE_RADIUS = 12;
 
 // 돌의 물리 속성 설정
 export const STONE_PHYSICS = {
-  frictionAir: 0.02, // 공기 저항 (움직임 중 서서히 속도 감소)
+  frictionAir: 0.04, // 공기 저항 (움직임 중 서서히 속도 감소)
   friction: 0.8, // 마찰력 (다른 돌이나 벽과의 마찰)
-  restitution: 0.6, // 반발력 (부딪혔을 때 튕기는 정도)
+  restitution: 0.8, // 반발력 (부딪혔을 때 튕기는 정도)
 };
 
 // 돌 초기 위치 및 속성 데이터
 export const INITIAL_STONES = [
   // 하얀돌들
   {
-    x: 100,
+    x: 300,
     y: 100,
     player: 1,
     id: 1,
     color: 'white',
   },
   {
-    x: 150,
-    y: 120,
+    x: 200,
+    y: 100,
     player: 1,
     id: 2,
     color: 'white',
   },
   {
-    x: 200,
-    y: 110,
+    x: 100,
+    y: 100,
     player: 1,
     id: 3,
     color: 'white',
@@ -42,15 +42,15 @@ export const INITIAL_STONES = [
     color: 'black',
   },
   {
-    x: 150,
-    y: 280,
+    x: 200,
+    y: 300,
     player: 2,
     id: 5,
     color: 'black',
   },
   {
-    x: 200,
-    y: 290,
+    x: 300,
+    y: 300,
     player: 2,
     id: 6,
     color: 'black',
