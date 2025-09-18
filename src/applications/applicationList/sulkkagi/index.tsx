@@ -30,6 +30,8 @@ const Sulkkagi = ({ stack, push, pop, top }: dataStructureProps) => {
   const [isDragging, setIsDragging] = useState(false);
   const [gameState, setGameState] = useState<'playing' | 'player1wins' | 'player2wins'>('playing');
   const [showResultModal, setShowResultModal] = useState(false);
+  const [gameMode, setGameMode] = useState<'pvp' | 'ai'>('ai'); // 기본을 AI 모드로 설정
+  const [isAiTurn, setIsAiTurn] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [stoneCount, setStoneCount] = useState({ player1: 4, player2: 4 }); // 일반돌 3개 + 큰돌 1개
   const [notifications, setNotifications] = useState<
@@ -70,6 +72,17 @@ const Sulkkagi = ({ stack, push, pop, top }: dataStructureProps) => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // AI 턴 자동 실행
+  useEffect(() => {
+    if (gameMode === 'ai' && currentPlayer === 1 && !isAnimating && gameState === 'playing' && !isAiTurn) {
+      const timer = setTimeout(() => {
+        executeAiMove();
+      }, 500); // 0.5초 딜레이 후 AI 움직임
+
+      return () => clearTimeout(timer);
+    }
+  }, [currentPlayer, isAnimating, gameState, gameMode, isAiTurn]);
 
   const initializeMatter = () => {
     const { Engine, World, Bodies, Runner } = Matter;
@@ -466,6 +479,11 @@ const Sulkkagi = ({ stack, push, pop, top }: dataStructureProps) => {
       return;
     }
 
+    // AI 모드에서는 player1(하얀돌)은 AI가 조작하므로 사람은 player2(검은돌)만 조작 가능
+    if (gameMode === 'ai' && currentPlayer === 1) {
+      return;
+    }
+
     const pos = getMousePos(e);
 
     const clickedStone = stonesRef.current.find((stone: any) => {
@@ -536,6 +554,12 @@ const Sulkkagi = ({ stack, push, pop, top }: dataStructureProps) => {
       // 호버 상태에서 커서 변경
       const canvas = canvasRef.current;
       if (!canvas) return;
+
+      // AI 모드에서는 player1 턴일 때 커서 변경 안함
+      if (gameMode === 'ai' && currentPlayer === 1) {
+        canvas.style.cursor = 'default';
+        return;
+      }
 
       const hoveredStone = stonesRef.current.find((stone: any) => {
         if (!stone.position) return false;
@@ -630,6 +654,85 @@ const Sulkkagi = ({ stack, push, pop, top }: dataStructureProps) => {
     ctx.clearRect(0, 0, BOARD_SIZE, BOARD_SIZE);
   };
 
+  // AI 플레이어 로직
+  const executeAiMove = () => {
+    if (!engineRef.current || currentPlayer !== 1 || isAnimating || gameState !== 'playing') {
+      return;
+    }
+
+    setIsAiTurn(true);
+
+    // AI가 조작할 수 있는 돌들 (player1) 찾기
+    const aiStones = stonesRef.current.filter(
+      (stone: StoneBody) => stone.player === 1 && !stone.isOut
+    );
+
+    if (aiStones.length === 0) return;
+
+    // 상대방 돌들 (player2) 찾기
+    const enemyStones = stonesRef.current.filter(
+      (stone: StoneBody) => stone.player === 2 && !stone.isOut
+    );
+
+    if (enemyStones.length === 0) return;
+
+    // AI 전략: 가장 가까운 상대방 돌을 향해 공격
+    let bestMove: { stone: StoneBody; target: StoneBody; force: number } | null = null;
+    let minDistance = Infinity;
+
+    for (const aiStone of aiStones) {
+      for (const enemyStone of enemyStones) {
+        const dx = enemyStone.position.x - aiStone.position.x;
+        const dy = enemyStone.position.y - aiStone.position.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance < minDistance) {
+          minDistance = distance;
+
+          // 힘 계산 (거리에 따라 조절)
+          const force = aiStone.isBig ? 0.025 : 0.012; // 큰 돌은 더 강하게
+
+          bestMove = {
+            stone: aiStone,
+            target: enemyStone,
+            force: force
+          };
+        }
+      }
+    }
+
+    if (bestMove) {
+      // 1초 후 AI 공격 실행 (사람이 보기 좋게)
+      setTimeout(() => {
+        const { stone, target, force } = bestMove;
+
+        // 방향 계산
+        const dx = target.position.x - stone.position.x;
+        const dy = target.position.y - stone.position.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const normalizedDx = dx / distance;
+        const normalizedDy = dy / distance;
+
+        // 약간의 랜덤성 추가 (너무 완벽하지 않게)
+        const randomAngle = (Math.random() - 0.5) * 0.3; // ±0.15 라디안
+        const finalDx = normalizedDx * Math.cos(randomAngle) - normalizedDy * Math.sin(randomAngle);
+        const finalDy = normalizedDx * Math.sin(randomAngle) + normalizedDy * Math.cos(randomAngle);
+
+        // 힘 적용
+        Matter.Body.applyForce(stone, stone.position, {
+          x: finalDx * force,
+          y: finalDy * force,
+        });
+
+        // 차례 변경
+        setCurrentPlayer(2);
+        setIsAiTurn(false);
+      }, 1000);
+    } else {
+      setIsAiTurn(false);
+    }
+  };
+
   const resetGame = () => {
     if (!engineRef.current) return;
 
@@ -654,6 +757,7 @@ const Sulkkagi = ({ stack, push, pop, top }: dataStructureProps) => {
     setStoneCount({ player1: 4, player2: 4 }); // 일반돌 3개 + 큰돌 1개
     setNotifications([]);
     setShowResultModal(false);
+    setIsAiTurn(false);
     notificationIdRef.current = 0;
     player1CountRef.current = 0; // 하얀돌 카운터 초기화
     player2CountRef.current = 0; // 까만돌 카운터 초기화
@@ -675,7 +779,13 @@ const Sulkkagi = ({ stack, push, pop, top }: dataStructureProps) => {
           <div>
             현재 차례:
             <_.CurrentPlayer player={currentPlayer}>
-              {currentPlayer === 1 ? '하얀돌' : '까만돌'}
+              {gameMode === 'ai' ?
+                (currentPlayer === 1 ?
+                  (isAiTurn ? '컴퓨터 (생각 중...)' : '컴퓨터') :
+                  '플레이어'
+                ) :
+                (currentPlayer === 1 ? '하얀돌' : '까만돌')
+              }
             </_.CurrentPlayer>
           </div>
 
@@ -687,11 +797,11 @@ const Sulkkagi = ({ stack, push, pop, top }: dataStructureProps) => {
         <_.StoneCountContainer>
           <_.PlayerStoneCount player={1}>
             <_.StoneIcon player={1} />
-            하얀돌 {stoneCount.player1}개
+            {gameMode === 'ai' ? '컴퓨터' : '하얀돌'} {stoneCount.player1}개
           </_.PlayerStoneCount>
           <_.PlayerStoneCount player={2}>
             <_.StoneIcon player={2} />
-            까만돌 {stoneCount.player2}개
+            {gameMode === 'ai' ? '플레이어' : '까만돌'} {stoneCount.player2}개
           </_.PlayerStoneCount>
         </_.StoneCountContainer>
       </_.GameInfo>
@@ -804,9 +914,12 @@ const Sulkkagi = ({ stack, push, pop, top }: dataStructureProps) => {
           <_.ResultContent>
             <_.ResultTitle>게임 종료!</_.ResultTitle>
             <_.ResultMessage>
-              {gameState === 'player1wins' ? '하얀돌' : '까만돌'} 승리!
+              {gameMode === 'ai' ?
+                (gameState === 'player1wins' ? '컴퓨터' : '플레이어') :
+                (gameState === 'player1wins' ? '하얀돌' : '까만돌')
+              } 승리!
               <br />
-              모든 {gameState === 'player2wins' ? '하얀돌' : '까만돌'}이 추모관에 등록되었습니다.
+              상대방의 모든 돌이 추모관에 등록되었습니다.
             </_.ResultMessage>
             <_.ResultCloseButton onClick={resetGame}>다시 시작</_.ResultCloseButton>
           </_.ResultContent>
