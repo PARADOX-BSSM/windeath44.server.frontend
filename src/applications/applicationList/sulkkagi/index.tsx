@@ -653,7 +653,7 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
     ctx.clearRect(0, 0, BOARD_SIZE, BOARD_SIZE);
   };
 
-  // AI 플레이어 로직
+  // 개선된 AI 플레이어 로직
   const executeAiMove = () => {
     if (!engineRef.current || currentPlayer !== 1 || isAnimating || gameState !== 'playing') {
       return;
@@ -675,52 +675,23 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
 
     if (enemyStones.length === 0) return;
 
-    // AI 전략: 가장 가까운 상대방 돌을 향해 공격
-    let bestMove: { stone: StoneBody; target: StoneBody; force: number } | null = null;
-    let minDistance = Infinity;
-
-    for (const aiStone of aiStones) {
-      for (const enemyStone of enemyStones) {
-        const dx = enemyStone.position.x - aiStone.position.x;
-        const dy = enemyStone.position.y - aiStone.position.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-
-        if (distance < minDistance) {
-          minDistance = distance;
-
-          // 힘 계산 (거리에 따라 조절)
-          const force = aiStone.isBig ? 0.025 : 0.012; // 큰 돌은 더 강하게
-
-          bestMove = {
-            stone: aiStone,
-            target: enemyStone,
-            force: force,
-          };
-        }
-      }
-    }
+    // AI 전략 계산
+    const bestMove = calculateBestMove(aiStones, enemyStones);
 
     if (bestMove) {
       // 1초 후 AI 공격 실행 (사람이 보기 좋게)
       setTimeout(() => {
-        const { stone, target, force } = bestMove;
-
-        // 방향 계산
-        const dx = target.position.x - stone.position.x;
-        const dy = target.position.y - stone.position.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        const normalizedDx = dx / distance;
-        const normalizedDy = dy / distance;
+        const { stone, direction, power } = bestMove;
 
         // 약간의 랜덤성 추가 (너무 완벽하지 않게)
-        const randomAngle = (Math.random() - 0.5) * 0.3; // ±0.15 라디안
-        const finalDx = normalizedDx * Math.cos(randomAngle) - normalizedDy * Math.sin(randomAngle);
-        const finalDy = normalizedDx * Math.sin(randomAngle) + normalizedDy * Math.cos(randomAngle);
+        const randomAngle = (Math.random() - 0.5) * 0.2; // ±0.1 라디안
+        const finalDx = direction.x * Math.cos(randomAngle) - direction.y * Math.sin(randomAngle);
+        const finalDy = direction.x * Math.sin(randomAngle) + direction.y * Math.cos(randomAngle);
 
         // 힘 적용
         Matter.Body.applyForce(stone, stone.position, {
-          x: finalDx * force,
-          y: finalDy * force,
+          x: finalDx * power,
+          y: finalDy * power,
         });
 
         // 차례 변경
@@ -730,6 +701,159 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
     } else {
       setIsAiTurn(false);
     }
+  };
+
+  // AI 전략 계산 함수
+  const calculateBestMove = (aiStones: StoneBody[], enemyStones: StoneBody[]) => {
+    let bestScore = -Infinity;
+    let bestMove: { stone: StoneBody; direction: { x: number; y: number }; power: number } | null =
+      null;
+
+    for (const aiStone of aiStones) {
+      for (const enemyStone of enemyStones) {
+        const moveScore = evaluateMove(aiStone, enemyStone, aiStones, enemyStones);
+
+        if (moveScore.score > bestScore) {
+          bestScore = moveScore.score;
+          bestMove = {
+            stone: aiStone,
+            direction: moveScore.direction,
+            power: moveScore.power,
+          };
+        }
+      }
+    }
+
+    return bestMove;
+  };
+
+  // 개별 수의 점수 계산
+  const evaluateMove = (
+    aiStone: StoneBody,
+    targetEnemy: StoneBody,
+    allAiStones: StoneBody[],
+    allEnemyStones: StoneBody[],
+  ) => {
+    const dx = targetEnemy.position.x - aiStone.position.x;
+    const dy = targetEnemy.position.y - aiStone.position.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    if (distance === 0) return { score: -1000, direction: { x: 0, y: 0 }, power: 0 };
+
+    const normalizedDx = dx / distance;
+    const normalizedDy = dy / distance;
+
+    // 기본 점수 계산
+    let score = 0;
+
+    // 1. 거리 점수 (가까울수록 좋음)
+    const distanceScore = (Math.max(0, 300 - distance) / 300) * 100;
+    score += distanceScore;
+
+    // 2. 경계 근접성 점수 (상대방 돌을 경계로 밀어낼 가능성)
+    const enemyToBorderDistance = Math.min(
+      targetEnemy.position.x, // 왼쪽 경계
+      targetEnemy.position.y, // 위쪽 경계
+      BOARD_SIZE - targetEnemy.position.x, // 오른쪽 경계
+      BOARD_SIZE - targetEnemy.position.y, // 아래쪽 경계
+    );
+    const borderScore = (Math.max(0, 100 - enemyToBorderDistance) / 100) * 150;
+    score += borderScore;
+
+    // 3. 큰 돌 활용 보너스
+    if (aiStone.isBig && distance < 200) {
+      score += 50; // 큰 돌을 가까운 거리에서 사용하면 보너스
+    }
+
+    // 4. 연쇄 공격 가능성 (다른 적 돌도 함께 밀어낼 수 있는지)
+    let chainScore = 0;
+    for (const otherEnemy of allEnemyStones) {
+      if (otherEnemy.id === targetEnemy.id) continue;
+
+      const distToOther = Math.sqrt(
+        Math.pow(otherEnemy.position.x - targetEnemy.position.x, 2) +
+          Math.pow(otherEnemy.position.y - targetEnemy.position.y, 2),
+      );
+
+      if (distToOther < 50) {
+        // 다른 적 돌이 가까이 있으면
+        chainScore += 30;
+      }
+    }
+    score += chainScore;
+
+    // 5. 자신의 안전성 (공격 후 자신이 위험해지는지)
+    const safetyPenalty = calculateSafetyPenalty(
+      aiStone,
+      normalizedDx,
+      normalizedDy,
+      allEnemyStones,
+    );
+    score -= safetyPenalty;
+
+    // 힘 계산 (거리와 상황에 따라 조절)
+    let power: number;
+    if (distance < 80) {
+      // 가까운 거리: 약한 힘으로 정밀 타격
+      power = aiStone.isBig ? 0.015 : 0.008;
+    } else if (distance < 150) {
+      // 중간 거리: 중간 힘
+      power = aiStone.isBig ? 0.025 : 0.012;
+    } else {
+      // 먼 거리: 강한 힘
+      power = aiStone.isBig ? 0.035 : 0.018;
+    }
+
+    // 경계 근처 적에게는 더 강한 힘 사용
+    if (enemyToBorderDistance < 60) {
+      power *= 1.3;
+    }
+
+    return {
+      score,
+      direction: { x: normalizedDx, y: normalizedDy },
+      power,
+    };
+  };
+
+  // 안전성 패널티 계산
+  const calculateSafetyPenalty = (
+    aiStone: StoneBody,
+    dirX: number,
+    dirY: number,
+    enemyStones: StoneBody[],
+  ) => {
+    // 공격 후 예상 위치 계산
+    const estimatedNewX = aiStone.position.x + dirX * 30; // 반동 예상
+    const estimatedNewY = aiStone.position.y + dirY * 30;
+
+    let penalty = 0;
+
+    // 경계에 너무 가까워지면 패널티
+    const borderDistance = Math.min(
+      estimatedNewX,
+      estimatedNewY,
+      BOARD_SIZE - estimatedNewX,
+      BOARD_SIZE - estimatedNewY,
+    );
+
+    if (borderDistance < 40) {
+      penalty += (40 - borderDistance) * 2;
+    }
+
+    // 적 돌들 근처로 가면 패널티 (반격 위험)
+    for (const enemy of enemyStones) {
+      const distToEnemy = Math.sqrt(
+        Math.pow(enemy.position.x - estimatedNewX, 2) +
+          Math.pow(enemy.position.y - estimatedNewY, 2),
+      );
+
+      if (distToEnemy < 60) {
+        penalty += (60 - distToEnemy) * 0.5;
+      }
+    }
+
+    return penalty;
   };
 
   const resetGame = () => {
