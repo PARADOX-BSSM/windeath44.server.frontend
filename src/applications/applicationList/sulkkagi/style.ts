@@ -250,3 +250,102 @@ export const NotificationIcon = styled.div<{ player: number }>`
   image-rendering: -moz-crisp-edges;
   image-rendering: crisp-edges;
 `;
+
+export const ResultModal = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(46, 46, 46, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+`;
+
+export const ResultContent = styled.div`
+  background: var(--very-light-primary-color, #ffeefd);
+  border: 2px solid var(--stroke, #e774dd);
+  box-shadow:
+    -2px -2px 0px 0px var(--primary-black) inset,
+    2px 2px 0px 0px #fff inset,
+    -3px -3px 0px 0px var(--dark-primary-color) inset,
+    3px 3px 0px 0px var(--secondary-color) inset;
+  padding: 32px;
+  max-width: 320px;
+  text-align: center;
+  animation: slideIn 0.3s ease;
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-20px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+`;
+
+export const ResultTitle = styled.h2`
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--primary-black, #2e2e2e);
+  margin-bottom: 16px;
+  font-family: Galmuri11;
+  text-shadow: 1px 1px 0px var(--stroke, #e774dd);
+`;
+
+export const ResultMessage = styled.div`
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--primary-black, #2e2e2e);
+  margin-bottom: 24px;
+  font-family: Galmuri11;
+  line-height: 1.5;
+`;
+
+export const ResultCloseButton = styled.button`
+  display: block;
+  margin: 0 auto;
+  padding: 12px 24px;
+  background: var(--stroke, #e774dd);
+  color: white;
+  border: 2px solid var(--primary-black, #2e2e2e);
+  box-shadow:
+    -1px -1px 0px 0px var(--primary-black) inset,
+    1px 1px 0px 0px #fff inset;
+  cursor: pointer;
+  font-family: Galmuri11;
+  font-size: 16px;
+  font-weight: 400;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: var(--dark-primary-color, #d645c7);
+    transform: translate(-1px, -1px);
+    box-shadow:
+      -2px -2px 0px 0px var(--primary-black) inset,
+      2px 2px 0px 0px #fff inset,
+      2px 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  &:active {
+    transform: translate(0px, 0px);
+    box-shadow:
+      -1px -1px 0px 0px var(--primary-black) inset,
+      1px 1px 0px 0px #fff inset;
+  }
+`;

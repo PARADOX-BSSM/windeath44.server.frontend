@@ -29,6 +29,7 @@ const Sulkkagi = ({ stack, push, pop, top }: dataStructureProps) => {
   const [aimCurrent, setAimCurrent] = useState<{ x: number; y: number } | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [gameState, setGameState] = useState<'playing' | 'player1wins' | 'player2wins'>('playing');
+  const [showResultModal, setShowResultModal] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [stoneCount, setStoneCount] = useState({ player1: 4, player2: 4 }); // 일반돌 3개 + 큰돌 1개
   const [notifications, setNotifications] = useState<
@@ -441,17 +442,11 @@ const Sulkkagi = ({ stack, push, pop, top }: dataStructureProps) => {
     if (player1Count === 0) {
       setGameState('player2wins');
       setIsAnimating(false);
-      // 3초 후 자동으로 게임 재시작
-      setTimeout(() => {
-        resetGame();
-      }, 3000);
+      setShowResultModal(true);
     } else if (player2Count === 0) {
       setGameState('player1wins');
       setIsAnimating(false);
-      // 3초 후 자동으로 게임 재시작
-      setTimeout(() => {
-        resetGame();
-      }, 3000);
+      setShowResultModal(true);
     } else {
       setIsAnimating(movingStones > 0);
     }
@@ -658,6 +653,7 @@ const Sulkkagi = ({ stack, push, pop, top }: dataStructureProps) => {
     setIsAnimating(false);
     setStoneCount({ player1: 4, player2: 4 }); // 일반돌 3개 + 큰돌 1개
     setNotifications([]);
+    setShowResultModal(false);
     notificationIdRef.current = 0;
     player1CountRef.current = 0; // 하얀돌 카운터 초기화
     player2CountRef.current = 0; // 까만돌 카운터 초기화
@@ -802,6 +798,20 @@ const Sulkkagi = ({ stack, push, pop, top }: dataStructureProps) => {
           그만두기
         </_.ResetButton>
       </_.Controls>
+
+      {showResultModal && (
+        <_.ResultModal>
+          <_.ResultContent>
+            <_.ResultTitle>게임 종료!</_.ResultTitle>
+            <_.ResultMessage>
+              {gameState === 'player1wins' ? '하얀돌' : '까만돌'} 승리!
+              <br />
+              상대방의 모든 돌이 추모관에 등록되었습니다.
+            </_.ResultMessage>
+            <_.ResultCloseButton onClick={resetGame}>다시 시작</_.ResultCloseButton>
+          </_.ResultContent>
+        </_.ResultModal>
+      )}
     </_.Container>
   );
 };
