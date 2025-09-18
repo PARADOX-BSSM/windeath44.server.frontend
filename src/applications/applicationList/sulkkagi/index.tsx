@@ -987,7 +987,7 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
             }}
           />
 
-          {isAnimating && <_.AnimatingIndicator>움직이는 중...</_.AnimatingIndicator>}
+          {isAnimating && <_.AnimatingIndicator>돌 굴러가는 중...</_.AnimatingIndicator>}
         </_.CanvasContainer>
 
         <_.NotificationArea>

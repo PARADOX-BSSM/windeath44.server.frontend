@@ -130,7 +130,6 @@ export const AnimatingIndicator = styled.div`
   padding: 4px 8px;
   font-family: Galmuri11;
   font-size: 12px;
-  border: 2px solid var(--primary-black, #2e2e2e);
   box-shadow:
     -1px -1px 0px 0px var(--primary-black) inset,
     1px 1px 0px 0px #fff inset;
