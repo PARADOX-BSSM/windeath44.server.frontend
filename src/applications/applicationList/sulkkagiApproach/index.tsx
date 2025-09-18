@@ -31,7 +31,7 @@ const SulkkagiApproach = ({
     // console.log("top: ", top());
   }, [stack]);
   useEffect(() => {
-    push(taskSearch?.('sulkkagiMain', stackProps));
+    push(taskSearch?.('sulkkagiMenu', stackProps));
   }, []);
   return <>{top()?.component}</>;
 };
