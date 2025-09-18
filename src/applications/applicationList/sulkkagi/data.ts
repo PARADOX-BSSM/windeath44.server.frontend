@@ -94,7 +94,7 @@ export const INITIAL_STONES = [
   // 하얀돌 팀 큰 돌
   {
     x: 200,
-    y: 60,
+    y: 110,
     player: 1,
     id: 11,
     color: '#f0f0f0', // 연한 회색 (하얀돌보다 조금 어둡게)
@@ -103,7 +103,7 @@ export const INITIAL_STONES = [
   // 까만돌 팀 큰 돌
   {
     x: 200,
-    y: 340,
+    y: 290,
     player: 2,
     id: 12,
     color: '#2c2c2c', // 진한 회색 (까만돌보다 조금 밝게)
