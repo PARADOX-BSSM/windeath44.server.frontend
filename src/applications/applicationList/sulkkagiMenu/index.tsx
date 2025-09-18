@@ -80,14 +80,14 @@ const SulkkagiMenu = ({ stack, push, pop, top }: dataStructureProps) => {
               </_.DescriptionSection>
 
               <_.DescriptionSection>
-                <strong>승리 조건</strong>
-                <p>상대방의 모든 돌이 보드 밖으로 나가면 승리!</p>
-                <p>큰 돌은 더 강력하지만 조종하기 어렵습니다.</p>
+                <strong>추모관</strong>
+                <p>보드 밖으로 나간 돌들을 추모합시다.</p>
               </_.DescriptionSection>
 
               <_.DescriptionSection>
-                <strong>추모관</strong>
-                <p>보드 밖으로 나간 돌들을 추모합시다.</p>
+                <strong>참고</strong>
+                <p>1. 큰 돌은 더 강력하지만 꽤나 무겁습니다.</p>
+                <p>2. 이 게임은 적당한 피지컬을 요구합니다.</p>
               </_.DescriptionSection>
             </_.DescriptionText>
 
