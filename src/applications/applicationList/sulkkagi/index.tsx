@@ -806,7 +806,7 @@ const Sulkkagi = ({ stack, push, pop, top }: dataStructureProps) => {
             <_.ResultMessage>
               {gameState === 'player1wins' ? '하얀돌' : '까만돌'} 승리!
               <br />
-              상대방의 모든 돌이 추모관에 등록되었습니다.
+              모든 {gameState === 'player2wins' ? '하얀돌' : '까만돌'}이 추모관에 등록되었습니다.
             </_.ResultMessage>
             <_.ResultCloseButton onClick={resetGame}>다시 시작</_.ResultCloseButton>
           </_.ResultContent>

@@ -335,11 +335,6 @@ export const ResultCloseButton = styled.button`
 
   &:hover {
     background: var(--dark-primary-color, #d645c7);
-    transform: translate(-1px, -1px);
-    box-shadow:
-      -2px -2px 0px 0px var(--primary-black) inset,
-      2px 2px 0px 0px #fff inset,
-      2px 2px 4px rgba(0, 0, 0, 0.3);
   }
 
   &:active {
