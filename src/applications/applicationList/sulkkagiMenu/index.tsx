@@ -25,8 +25,15 @@ const SulkkagiMenu = ({ stack, push, pop, top }: dataStructureProps) => {
   };
 
   const handleStartGame = () => {
-    push(taskSearch?.('sulkkagiMain', stackProps));
-    // console.log('게임 시작!');
+    // AI 모드로 게임 시작
+    const aiStackProps = { ...stackProps, gameMode: 'ai' };
+    push(taskSearch?.('sulkkagiMain', aiStackProps));
+  };
+
+  const handleStartPvpGame = () => {
+    // PvP 모드로 게임 시작
+    const pvpStackProps = { ...stackProps, gameMode: 'pvp' };
+    push(taskSearch?.('sulkkagiMain', pvpStackProps));
   };
 
   const handleExitGame = () => {
@@ -44,8 +51,13 @@ const SulkkagiMenu = ({ stack, push, pop, top }: dataStructureProps) => {
 
       <_.MenuContainer>
         <_.MenuButton onClick={handleStartGame}>
+          <_.ButtonIcon>▷</_.ButtonIcon>
+          <_.ButtonText>컴퓨터와 대전</_.ButtonText>
+        </_.MenuButton>
+
+        <_.MenuButton onClick={handleStartPvpGame}>
           <_.ButtonIcon>▶</_.ButtonIcon>
-          <_.ButtonText>게임 시작</_.ButtonText>
+          <_.ButtonText>친구와 대전</_.ButtonText>
         </_.MenuButton>
 
         <_.MenuButton onClick={handleToggleDescription}>

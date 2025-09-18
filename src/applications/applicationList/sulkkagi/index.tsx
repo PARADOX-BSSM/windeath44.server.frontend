@@ -13,16 +13,17 @@ interface dataStructureProps {
   push: any;
   pop: any;
   top: any;
+  gameMode?: 'ai' | 'pvp';
 }
 
-const Sulkkagi = ({ stack, push, pop, top }: dataStructureProps) => {
+const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const arrowCanvasRef = useRef<HTMLCanvasElement>(null); // 화살표 전용 Canvas
   const engineRef = useRef<Matter.Engine | null>(null);
   const animationRef = useRef<number | null>(null);
   const stonesRef = useRef<Matter.Body[]>([]);
 
-  // 🔒 UI표시용 state (렌더용)
+  // UI표시용 state (렌더용)
   const [currentPlayer, setCurrentPlayer] = useState(1);
   const [selectedStoneId, setSelectedStoneId] = useState<number | null>(null);
   const [aimStart, setAimStart] = useState<{ x: number; y: number } | null>(null);
@@ -30,7 +31,6 @@ const Sulkkagi = ({ stack, push, pop, top }: dataStructureProps) => {
   const [isDragging, setIsDragging] = useState(false);
   const [gameState, setGameState] = useState<'playing' | 'player1wins' | 'player2wins'>('playing');
   const [showResultModal, setShowResultModal] = useState(false);
-  const [gameMode, setGameMode] = useState<'pvp' | 'ai'>('ai'); // 기본을 AI 모드로 설정
   const [isAiTurn, setIsAiTurn] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [stoneCount, setStoneCount] = useState({ player1: 4, player2: 4 }); // 일반돌 3개 + 큰돌 1개
@@ -75,7 +75,13 @@ const Sulkkagi = ({ stack, push, pop, top }: dataStructureProps) => {
 
   // AI 턴 자동 실행
   useEffect(() => {
-    if (gameMode === 'ai' && currentPlayer === 1 && !isAnimating && gameState === 'playing' && !isAiTurn) {
+    if (
+      gameMode === 'ai' &&
+      currentPlayer === 1 &&
+      !isAnimating &&
+      gameState === 'playing' &&
+      !isAiTurn
+    ) {
       const timer = setTimeout(() => {
         executeAiMove();
       }, 500); // 0.5초 딜레이 후 AI 움직임
@@ -664,14 +670,14 @@ const Sulkkagi = ({ stack, push, pop, top }: dataStructureProps) => {
 
     // AI가 조작할 수 있는 돌들 (player1) 찾기
     const aiStones = stonesRef.current.filter(
-      (stone: StoneBody) => stone.player === 1 && !stone.isOut
+      (stone: StoneBody) => stone.player === 1 && !stone.isOut,
     );
 
     if (aiStones.length === 0) return;
 
     // 상대방 돌들 (player2) 찾기
     const enemyStones = stonesRef.current.filter(
-      (stone: StoneBody) => stone.player === 2 && !stone.isOut
+      (stone: StoneBody) => stone.player === 2 && !stone.isOut,
     );
 
     if (enemyStones.length === 0) return;
@@ -695,7 +701,7 @@ const Sulkkagi = ({ stack, push, pop, top }: dataStructureProps) => {
           bestMove = {
             stone: aiStone,
             target: enemyStone,
-            force: force
+            force: force,
           };
         }
       }
@@ -779,13 +785,15 @@ const Sulkkagi = ({ stack, push, pop, top }: dataStructureProps) => {
           <div>
             현재 차례:
             <_.CurrentPlayer player={currentPlayer}>
-              {gameMode === 'ai' ?
-                (currentPlayer === 1 ?
-                  (isAiTurn ? '컴퓨터 (생각 중...)' : '컴퓨터') :
-                  '플레이어'
-                ) :
-                (currentPlayer === 1 ? '하얀돌' : '까만돌')
-              }
+              {gameMode === 'ai'
+                ? currentPlayer === 1
+                  ? isAiTurn
+                    ? '컴퓨터 (생각 중...)'
+                    : '컴퓨터'
+                  : '플레이어'
+                : currentPlayer === 1
+                  ? '하얀돌'
+                  : '까만돌'}
             </_.CurrentPlayer>
           </div>
 
@@ -914,10 +922,14 @@ const Sulkkagi = ({ stack, push, pop, top }: dataStructureProps) => {
           <_.ResultContent>
             <_.ResultTitle>게임 종료!</_.ResultTitle>
             <_.ResultMessage>
-              {gameMode === 'ai' ?
-                (gameState === 'player1wins' ? '컴퓨터' : '플레이어') :
-                (gameState === 'player1wins' ? '하얀돌' : '까만돌')
-              } 승리!
+              {gameMode === 'ai'
+                ? gameState === 'player1wins'
+                  ? '컴퓨터'
+                  : '플레이어'
+                : gameState === 'player1wins'
+                  ? '하얀돌'
+                  : '까만돌'}{' '}
+              승리!
               <br />
               상대방의 모든 돌이 추모관에 등록되었습니다.
             </_.ResultMessage>
