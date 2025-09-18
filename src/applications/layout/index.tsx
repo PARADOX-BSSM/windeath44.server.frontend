@@ -243,7 +243,7 @@ const Application = (props: ApplicationProps) => {
             const internal = original.props.children as React.ReactElement;
             const type = internal.type;
 
-            if (props.name === '추모관') {
+            if (props.name === '추모관' ) {
               return (
                 <Suspense fallback={null}>
                   {React.createElement(type, { window, setWindow, setUpHeight, setUpWidth })}
