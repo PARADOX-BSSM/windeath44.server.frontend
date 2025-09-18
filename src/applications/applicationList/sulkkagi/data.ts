@@ -12,8 +12,8 @@ export const STONE_PHYSICS = {
 
 // 큰 돌 전용 물리 속성 (더 잘 움직이도록)
 export const BIG_STONE_PHYSICS = {
-  frictionAir: 0.025, // 공기 저항 낮음 (더 오래 굴러감)
-  friction: 0.7, // 마찰력 낮음 (더 잘 미끄러짐)
+  frictionAir: 0.03, // 공기 저항 낮음 (더 오래 굴러감)
+  friction: 0.5, // 마찰력 낮음 (더 잘 미끄러짐)
   restitution: 0.9, // 반발력 높음 (더 잘 튕김)
 };
 

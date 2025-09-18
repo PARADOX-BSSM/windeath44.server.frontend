@@ -30,8 +30,9 @@ const SulkkagiMenu = ({ stack, push, pop, top }: dataStructureProps) => {
   };
 
   const handleExitGame = () => {
-    removeTask(taskSearch?.('설까기')!);
-    // console.log('게임 종료!');
+    if (window.confirm('정말로 설까기를 종료하시겠습니까?')) {
+      removeTask(taskSearch?.('설까기')!);
+    }
   };
 
   const handleToggleDescription = () => {

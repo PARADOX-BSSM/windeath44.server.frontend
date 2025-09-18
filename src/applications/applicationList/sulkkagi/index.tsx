@@ -2,11 +2,20 @@ import { useState, useRef, useEffect } from 'react';
 import * as Matter from 'matter-js';
 import * as _ from './style';
 import { createAllStones, STONE_RADIUS, BIG_STONE_RADIUS } from './data';
+import { useAtomValue } from 'jotai';
+import { taskSearchAtom } from '@/atoms/taskTransformer';
 
 const BOARD_SIZE = 400;
 const BOARD_PADDING = 40;
 
-const Sulkkagi = () => {
+interface dataStructureProps {
+  stack: any[];
+  push: any;
+  pop: any;
+  top: any;
+}
+
+const Sulkkagi = ({ stack, push, pop, top }: dataStructureProps) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const arrowCanvasRef = useRef<HTMLCanvasElement>(null); // 화살표 전용 Canvas
   const engineRef = useRef<Matter.Engine | null>(null);
@@ -784,7 +793,14 @@ const Sulkkagi = () => {
       </_.GameArea>
 
       <_.Controls>
-        <_.ResetButton onClick={resetGame}>게임 다시 시작</_.ResetButton>
+        <_.ResetButton
+          onClick={() => {
+            pop(top);
+            // console.log('그만두기');
+          }}
+        >
+          그만두기
+        </_.ResetButton>
       </_.Controls>
     </_.Container>
   );
