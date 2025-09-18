@@ -1,17 +1,37 @@
 import { useState } from 'react';
 import * as _ from './style';
+import { useAtomValue } from 'jotai';
+import { taskSearchAtom } from '@/atoms/taskTransformer';
+import { useProcessManager } from '@/hooks/processManager';
 
-const SulkkagiMenu = () => {
+interface dataStructureProps {
+  stack: any[];
+  push: any;
+  pop: any;
+  top: any;
+}
+
+const SulkkagiMenu = ({ stack, push, pop, top }: dataStructureProps) => {
   const [showGameDescription, setShowGameDescription] = useState(false);
 
+  const taskSearch = useAtomValue(taskSearchAtom);
+  const [, , removeTask] = useProcessManager();
+
+  const stackProps = {
+    stack: stack,
+    push: push,
+    pop: pop,
+    top: top,
+  };
+
   const handleStartGame = () => {
-    // TODO: 게임 시작 로직 구현
-    console.log('게임 시작!');
+    push(taskSearch?.('sulkkagiMain', stackProps));
+    // console.log('게임 시작!');
   };
 
   const handleExitGame = () => {
-    // TODO: 게임 종료 로직 구현
-    console.log('게임 종료!');
+    removeTask(taskSearch?.('설까기')!);
+    // console.log('게임 종료!');
   };
 
   const handleToggleDescription = () => {
@@ -68,7 +88,7 @@ const SulkkagiMenu = () => {
 
               <_.DescriptionSection>
                 <strong>추모관</strong>
-                <p>보드 밖으로 나간 돌들은 추모합시다.</p>
+                <p>보드 밖으로 나간 돌들을 추모합시다.</p>
               </_.DescriptionSection>
             </_.DescriptionText>
 
