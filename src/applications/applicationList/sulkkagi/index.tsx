@@ -2,8 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import * as Matter from 'matter-js';
 import * as _ from './style';
 import { createAllStones, STONE_RADIUS, BIG_STONE_RADIUS } from './data';
-import { useAtomValue } from 'jotai';
-import { taskSearchAtom } from '@/atoms/taskTransformer';
+import { CURSOR_IMAGES, setCursorImage } from '@/lib/setCursorImg';
 
 const BOARD_SIZE = 400;
 const BOARD_PADDING = 40;
@@ -533,10 +532,7 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
       clickedStone.isSelected = true;
 
       // 드래그 시작 효과
-      const canvas = canvasRef.current;
-      if (canvas) {
-        canvas.style.cursor = 'grabbing';
-      }
+      setCursorImage(CURSOR_IMAGES.drag);
     } else {
       // 빈 공간 클릭 시 선택 해제 (state + ref)
       setSelectedStoneId(null);
@@ -563,7 +559,7 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
 
       // AI 모드에서는 player1 턴일 때 커서 변경 안함
       if (gameMode === 'ai' && currentPlayer === 1) {
-        canvas.style.cursor = 'default';
+        setCursorImage(CURSOR_IMAGES.default);
         return;
       }
 
@@ -576,7 +572,7 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
         return distance <= stoneRadius && stone.player === currentPlayer;
       });
 
-      canvas.style.cursor = hoveredStone ? 'grab' : 'default';
+      setCursorImage(hoveredStone ? CURSOR_IMAGES.hand : CURSOR_IMAGES.default);
     }
   };
 
@@ -633,10 +629,7 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
     }
 
     // 커서 복구
-    const canvas = canvasRef.current;
-    if (canvas) {
-      canvas.style.cursor = 'default';
-    }
+    setCursorImage(CURSOR_IMAGES.default);
 
     // state + ref 동기 해제
     setSelectedStoneId(null);
@@ -836,10 +829,7 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
                 }
               }
               // 커서 복구
-              const canvas = canvasRef.current;
-              if (canvas) {
-                canvas.style.cursor = 'default';
-              }
+              setCursorImage(CURSOR_IMAGES.default);
 
               // state + ref 모두 초기화
               setSelectedStoneId(null);
@@ -912,6 +902,8 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
             pop(top);
             // console.log('그만두기');
           }}
+          onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+          onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
         >
           그만두기
         </_.ResetButton>
@@ -933,7 +925,13 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
               <br />
               상대방의 모든 돌이 추모관에 등록되었습니다.
             </_.ResultMessage>
-            <_.ResultCloseButton onClick={resetGame}>다시 시작</_.ResultCloseButton>
+            <_.ResultCloseButton
+              onClick={resetGame}
+              onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+              onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+            >
+              다시 시작
+            </_.ResultCloseButton>
           </_.ResultContent>
         </_.ResultModal>
       )}

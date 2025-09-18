@@ -65,7 +65,7 @@ export const MenuButton = styled.button<MenuButtonProps>`
     1px 1px 0px 0px #fff inset,
     -2px -2px 0px 0px var(--dark-primary-color) inset,
     2px 2px 0px 0px var(--secondary-color) inset;
-  cursor: pointer;
+  cursor: none;
   font-family: Galmuri11;
   font-size: 16px;
   font-weight: 400;
@@ -186,7 +186,7 @@ export const CloseButton = styled.button`
   box-shadow:
     -1px -1px 0px 0px var(--primary-black) inset,
     1px 1px 0px 0px #fff inset;
-  cursor: pointer;
+  cursor: none;
   font-family: Galmuri11;
   font-size: 14px;
   font-weight: 400;

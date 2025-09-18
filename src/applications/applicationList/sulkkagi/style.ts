@@ -117,7 +117,7 @@ export const GameCanvas = styled.canvas`
     2px 2px 0px 0px #fff inset,
     -4px -4px 0px 0px var(--dark-primary-color) inset,
     4px 4px 0px 0px var(--secondary-color) inset;
-  cursor: crosshair;
+  cursor: none;
   background-color: var(--light-primary-color, #ffd1fb);
 `;
 
@@ -153,7 +153,7 @@ export const ResetButton = styled.button`
     -2px -2px 0px 0px var(--dark-primary-color) inset,
     2px 2px 0px 0px var(--secondary-color) inset;
   border: none;
-  cursor: pointer;
+  cursor: none;
   color: var(--primary-black, #2e2e2e);
   font-family: Galmuri11;
   font-size: 16px;
@@ -327,7 +327,7 @@ export const ResultCloseButton = styled.button`
   box-shadow:
     -1px -1px 0px 0px var(--primary-black) inset,
     1px 1px 0px 0px #fff inset;
-  cursor: pointer;
+  cursor: none;
   font-family: Galmuri11;
   font-size: 16px;
   font-weight: 400;

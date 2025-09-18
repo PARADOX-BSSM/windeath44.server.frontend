@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import * as _ from './style';
-import { useAtomValue } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { taskSearchAtom } from '@/atoms/taskTransformer';
 import { useProcessManager } from '@/hooks/processManager';
+import { CURSOR_IMAGES, setCursorImage } from '@/lib/setCursorImg';
 
 interface dataStructureProps {
   stack: any[];
@@ -50,17 +51,29 @@ const SulkkagiMenu = ({ stack, push, pop, top }: dataStructureProps) => {
       <_.Subtitle>최애의 사인 미니게임</_.Subtitle>
 
       <_.MenuContainer>
-        <_.MenuButton onClick={handleStartGame}>
+        <_.MenuButton
+          onClick={handleStartGame}
+          onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+          onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+        >
           <_.ButtonIcon>▷</_.ButtonIcon>
           <_.ButtonText>컴퓨터와 대전</_.ButtonText>
         </_.MenuButton>
 
-        <_.MenuButton onClick={handleStartPvpGame}>
+        <_.MenuButton
+          onClick={handleStartPvpGame}
+          onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+          onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+        >
           <_.ButtonIcon>▶</_.ButtonIcon>
           <_.ButtonText>친구와 대전</_.ButtonText>
         </_.MenuButton>
 
-        <_.MenuButton onClick={handleToggleDescription}>
+        <_.MenuButton
+          onClick={handleToggleDescription}
+          onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+          onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+        >
           <_.ButtonIcon>?</_.ButtonIcon>
           <_.ButtonText>게임 설명</_.ButtonText>
         </_.MenuButton>
@@ -68,6 +81,8 @@ const SulkkagiMenu = ({ stack, push, pop, top }: dataStructureProps) => {
         <_.MenuButton
           onClick={handleExitGame}
           isExit
+          onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+          onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
         >
           <_.ButtonIcon>×</_.ButtonIcon>
           <_.ButtonText>나가기</_.ButtonText>
@@ -103,7 +118,13 @@ const SulkkagiMenu = ({ stack, push, pop, top }: dataStructureProps) => {
               </_.DescriptionSection>
             </_.DescriptionText>
 
-            <_.CloseButton onClick={handleToggleDescription}>닫기</_.CloseButton>
+            <_.CloseButton
+              onClick={handleToggleDescription}
+              onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+              onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+            >
+              닫기
+            </_.CloseButton>
           </_.DescriptionContent>
         </_.DescriptionModal>
       )}
