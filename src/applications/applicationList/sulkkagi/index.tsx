@@ -1047,7 +1047,13 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
                   : '까만돌'}{' '}
               승리!
               <br />
-              상대방의 모든 돌이 추모관에 등록되었습니다.
+              {gameMode === 'ai'
+                ? gameState === 'player1wins'
+                  ? '당신의 모든 돌이 추모관에 등록되었습니다.'
+                  : '컴퓨터의 모든 돌이 추모관에 등록되었습니다.'
+                : gameState === 'player1wins'
+                  ? '까만돌이 모두 추모관에 등록되었습니다.'
+                  : '하얀돌이 모두 추모관에 등록되었습니다.'}
             </_.ResultMessage>
             <_.ResultCloseButton
               onClick={resetGame}
