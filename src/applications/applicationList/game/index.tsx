@@ -5,6 +5,8 @@ import rythmGame from '@/assets/appIcons/piano.svg';
 import game from '@/assets/appIcons/game.svg';
 
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
+import { taskTransformerAtom } from '@/atoms/taskTransformer.ts';
+import { useAtomValue } from 'jotai';
 
 const gameItems = [
   { icon: rythmGame, name: '리듬게임' },
@@ -12,6 +14,7 @@ const gameItems = [
 ];
 
 const Game: React.FC = () => {
+  const taskTransform = useAtomValue(taskTransformerAtom);
   return (
     <_.Container>
       <_.MainWindow>
@@ -21,6 +24,7 @@ const Game: React.FC = () => {
               key={index}
               onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
               onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+              onClick={() => taskTransform?.('아케이드', '설까기')}
             >
               <_.GameIcon src={item.icon} />
               <_.GameName>{item.name}</_.GameName>
