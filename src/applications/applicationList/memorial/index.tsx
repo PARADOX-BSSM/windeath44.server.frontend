@@ -2,7 +2,7 @@ import IndexMenu from '@/applications/components/indexMenu';
 import Comment from '@/applications/components/comment';
 import * as _ from './style';
 import { index_data } from './data';
-import { useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer';
 import { useMemorialGet } from '@/api/memorial/memorialGet.ts';
 import { useEffect, useState } from 'react';
@@ -17,18 +17,19 @@ import { useCommentWrite } from '@/api/memorial/memorialCommentWrite.ts';
 import { parseCustomContent } from '@/lib/customTag/parseCustomContent.tsx';
 import { useGetAnimation } from '@/api/anime/getAnimation.ts';
 import ribbon from '@/assets/memorial_ribbon.svg';
-import { contentProps, stackProps } from '@/modules/typeModule.tsx';
 
 interface dataStructureProps {
+  stack: any[];
+  push: any;
+  pop: any;
+  top: any;
   memorialId: number;
   characterId: number;
-  stackProps: stackProps;
 }
-const Memorial = ({ memorialId, characterId, stackProps }: dataStructureProps) => {
+const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStructureProps) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
   const taskSearch = useAtomValue(taskSearchAtom);
   const [content, setContent] = useState<string>('');
-  const { push } = stackProps;
   const [characterData, setCharacterData] = useState<CharacterData>({
     characterId: 0,
     animeId: 0,
@@ -59,7 +60,7 @@ const Memorial = ({ memorialId, characterId, stackProps }: dataStructureProps) =
   const [animation, setAnimation] = useState<string>('');
   const mutationAnimation = useGetAnimation(setAnimation);
   const [memorialComment, setMemorialComment] = useState<MemorialCommentsData[]>([]);
-  const mutationGetMemorialComments = useGetMemorialComments(setMemorialComment);
+  const mutaionGetMemorialComments = useGetMemorialComments(setMemorialComment);
   const mutationCommentWrite = useCommentWrite();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -71,14 +72,14 @@ const Memorial = ({ memorialId, characterId, stackProps }: dataStructureProps) =
       {
         onSuccess: () => {
           setContent('');
-          mutationGetMemorialComments.mutate({ memorialId });
+          mutaionGetMemorialComments.mutate({ memorialId });
         },
       },
     );
   };
   useEffect(() => {
     mutationMemorialGet.mutate(memorialId);
-    mutationGetMemorialComments.mutate({ memorialId });
+    mutaionGetMemorialComments.mutate({ memorialId });
     mutationGetCharacter.mutate(characterId);
   }, []);
 
@@ -95,21 +96,13 @@ const Memorial = ({ memorialId, characterId, stackProps }: dataStructureProps) =
     }
   }, [characterData.animeId]);
 
-  const handleCommit = () => {
-    const InputValues = {
-      stackProps: stackProps,
-      name: characterData.name,
-      deathReason: characterData.deathReason,
-      date: characterData.deathOfDay,
-      lifeCycle: characterData.lifeTime,
-      anime: animation,
-      animeId: characterData.animeId,
-      age: characterData.age,
-      profileImage: characterData.imageUrl,
-    };
-    taskTransform?.('', '미리보기', InputValues);
-    push(taskSearch?.('MemorialCommit', InputValues));
+  const stackProps = {
+    stack: stack,
+    push: push,
+    pop: pop,
+    top: top,
   };
+
   return (
     <_.Main>
       <_.Container>
@@ -122,12 +115,19 @@ const Memorial = ({ memorialId, characterId, stackProps }: dataStructureProps) =
               </_.TextContainer>
               <_.History
                 onClick={() => {
-                  push(taskSearch?.('memorialHistory', stackProps));
+                  push(taskSearch?.('memorailHistory', stackProps));
                 }}
               >
                 기록
               </_.History>
-              <_.DocumentUpdate onClick={handleCommit}>문서 수정</_.DocumentUpdate>
+              <_.DocumentUpdate
+                onClick={() => {
+                  taskTransform?.('', '미리보기');
+                  push(taskSearch?.('MemorialCommit', stackProps));
+                }}
+              >
+                문서 수정
+              </_.DocumentUpdate>
             </_.Header>
             <_.ContentContainer>
               <_.IndexWrapper>
@@ -135,6 +135,7 @@ const Memorial = ({ memorialId, characterId, stackProps }: dataStructureProps) =
                 <_.Index>
                   <_.IndexTitle>목차</_.IndexTitle>
                   {index_data.map((item, idx) => {
+                    // console.log(idx);
                     return (
                       <IndexMenu
                         text={item}
