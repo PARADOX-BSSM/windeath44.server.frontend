@@ -2,30 +2,10 @@ import * as _ from './style';
 import MemorialTextarea from '@/applications/components/memorialTextarea';
 import { useEffect, useState } from 'react';
 import { useGetUserMutation } from '@/api/user/getUser.ts';
-import { useAtom } from 'jotai';
-import { inputContent, inputPortage } from '@/atoms/inputManager.ts';
 import { usePostCommit } from '@/api/memorial/userCommit.ts';
-// import { useAtomValue } from 'jotai';
-// import { taskSearchAtom } from '@/atoms/taskTransformer';
-
-interface stackProps {
-  stack: any[];
-  push: any;
-  pop: any;
-  top: any;
-}
-
-interface inputProps {
-  stackProps: stackProps;
-  name: string;
-  deathReason: string;
-  date: string;
-  lifeCycle: number;
-  anime: string;
-  animeId: number;
-  age: number;
-  profileImage: string;
-}
+import { inputProps } from '@/modules/typeModule.tsx';
+import { useAtom } from 'jotai';
+import { memorialContentAtom } from '@/atoms/memorialManager.ts';
 
 const MemorialCommit = ({
   stackProps,
@@ -38,15 +18,10 @@ const MemorialCommit = ({
   age,
   profileImage,
 }: inputProps) => {
-  // const taskSearch = useAtomValue(taskSearchAtom);
-  // memorial id 들고 오기
   const [userName, setUserName] = useState('winshine0326');
   const { mutate: getUser, data, isPending, error } = useGetUserMutation();
-  const [inputValue] = useAtom(inputPortage);
-  // const [inputValue, useInputValue] = useAtom(inputPortage);
   const mutateUsePostCommit = usePostCommit();
-
-  console.log(inputValue);
+  const [, setMemorialContent] = useAtom(memorialContentAtom);
 
   useEffect(() => {
     getUser(undefined, {
@@ -58,7 +33,14 @@ const MemorialCommit = ({
         console.error('에러:', err);
       },
     });
-  }, []);
+
+    return () => {
+      setMemorialContent({
+        characterId: '',
+        content: '',
+      });
+    };
+  }, [getUser, setMemorialContent]);
 
   return (
     <_.Container>
@@ -122,6 +104,19 @@ const MemorialCommit = ({
                   <_.CharacterInformationRow>
                     <_.CharacterInformationRowAttribute>
                       <_.CharacterInformationRowAttributeText>
+                        사인
+                      </_.CharacterInformationRowAttributeText>
+                    </_.CharacterInformationRowAttribute>
+                    <_.CharacterInformationRowValue>
+                      <_.CharacterInformationRowValueText>
+                        {deathReason}
+                      </_.CharacterInformationRowValueText>
+                    </_.CharacterInformationRowValue>
+                  </_.CharacterInformationRow>
+
+                  <_.CharacterInformationRow>
+                    <_.CharacterInformationRowAttribute>
+                      <_.CharacterInformationRowAttributeText>
                         애니메이션
                       </_.CharacterInformationRowAttributeText>
                     </_.CharacterInformationRowAttribute>
@@ -141,8 +136,8 @@ const MemorialCommit = ({
       <MemorialTextarea
         btnText="이 내용으로 문서에 병합하기"
         from={userName}
-        content=""
         isPerson={true}
+        isReadonly={false}
       />
     </_.Container>
   );

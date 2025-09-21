@@ -17,23 +17,18 @@ import { useCommentWrite } from '@/api/memorial/memorialCommentWrite.ts';
 import { parseCustomContent } from '@/lib/customTag/parseCustomContent.tsx';
 import { useGetAnimation } from '@/api/anime/getAnimation.ts';
 import ribbon from '@/assets/memorial_ribbon.svg';
+import { contentProps, stackProps } from '@/modules/typeModule.tsx';
 
 interface dataStructureProps {
   memorialId: number;
   characterId: number;
   stackProps: stackProps;
 }
-interface stackProps {
-  stack: any[];
-  push: any;
-  pop: any;
-  top: any;
-}
 const Memorial = ({ memorialId, characterId, stackProps }: dataStructureProps) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
   const taskSearch = useAtomValue(taskSearchAtom);
   const [content, setContent] = useState<string>('');
-  const { stack, push, pop, top } = stackProps;
+  const { push } = stackProps;
   const [characterData, setCharacterData] = useState<CharacterData>({
     characterId: 0,
     animeId: 0,
@@ -100,7 +95,6 @@ const Memorial = ({ memorialId, characterId, stackProps }: dataStructureProps) =
     }
   }, [characterData.animeId]);
 
-  console.log('스택', stack, push, pop, top);
   const handleCommit = () => {
     const InputValues = {
       stackProps: stackProps,
@@ -113,7 +107,7 @@ const Memorial = ({ memorialId, characterId, stackProps }: dataStructureProps) =
       age: characterData.age,
       profileImage: characterData.imageUrl,
     };
-    taskTransform?.('', '미리보기');
+    taskTransform?.('', '미리보기', InputValues);
     push(taskSearch?.('MemorialCommit', InputValues));
   };
   return (
@@ -141,7 +135,6 @@ const Memorial = ({ memorialId, characterId, stackProps }: dataStructureProps) =
                 <_.Index>
                   <_.IndexTitle>목차</_.IndexTitle>
                   {index_data.map((item, idx) => {
-                    // console.log(idx);
                     return (
                       <IndexMenu
                         text={item}

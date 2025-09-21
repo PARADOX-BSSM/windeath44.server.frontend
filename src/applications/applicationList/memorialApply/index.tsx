@@ -9,29 +9,24 @@ import AvatarEditor from 'react-avatar-editor';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
 import { useGetUserMutation } from '@/api/user/getUser';
 import FilterBlock from '@/applications/components/filterBlock';
+import { contentProps, stackProps } from '@/modules/typeModule.tsx';
 
 interface dataStructureProps {
-  stack: any[];
-  push: any;
-  pop: any;
-  top: any;
+  stackProps: stackProps;
+  contentProps: contentProps;
 }
-
-const MemorialApply = ({}: dataStructureProps) => {
+const MemorialApply = ({ stackProps, contentProps }: dataStructureProps) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
   const [userName, setUserName] = useState('winshine0326');
   const [inputValue, setInputValue] = useAtom(inputPortage);
   const { mutate: getUser, data, isPending, error } = useGetUserMutation();
-
   const [profileImage, setProfileImage] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-
   const profileImgRef = useRef<HTMLDivElement | null>(null);
   const [cropSize, setCropSize] = useState<{ width: number; height: number }>({
     width: 0,
     height: 0,
   });
-
   const deathReason = [
     '자연사(自然死)',
     '병사(病死)',
@@ -285,6 +280,7 @@ const MemorialApply = ({}: dataStructureProps) => {
           from={userName}
           content="<목차>마지막 순간</목차>
 <동영상>https://www.youtube.com/watch?v=oMk46C5Cjws</동영상>"
+          contentProps={contentProps}
           isPerson={true}
         />
       </_.TextAreaContainer>

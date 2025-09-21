@@ -1,23 +1,38 @@
-import { Suspense, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAtomValue } from 'jotai';
 import MemorialBtn from '@/applications/components/memorialBtn';
 import * as _ from './style.ts';
-import { taskSearchAtom } from '@/atoms/taskTransformer.ts';
+import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer.ts';
 import { alerterAtom } from '@/atoms/alerter.ts';
 import Choten from '@/assets/profile/choten.svg';
 import { useProcessManager } from '@/hooks/processManager.tsx';
-
-interface dataStructureProps {
-  stack: any[];
-  push: any;
-  pop: any;
-  top: any;
-}
+import { stackProps } from '@/modules/typeModule.tsx';
 
 const btnList = ['추모관 검색', '즐겨찾기', '추모관 신청'];
 
-const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
+const MemorialMenu = ({ stack, push, pop, top }: stackProps) => {
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
+  const taskTransform = useAtomValue(taskTransformerAtom);
+
+  const stackProps = {
+    stack: stack,
+    push: push,
+    pop: pop,
+    top: top,
+  };
+
+  const InputValues = {
+    stackProps: stackProps,
+    name: '',
+    deathReason: '',
+    date: '',
+    lifeCycle: 0,
+    anime: '',
+    animeId: 0,
+    age: 0,
+    profileImage: '',
+  };
+
   const [description, setDescription] = useState<JSX.Element | null>(
     <>
       최애의 사인은 작품 내에서 사망한 애니메이션 캐릭터를 추모하는 공간입니다.
@@ -30,15 +45,6 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
   const setAlert = useAtomValue(alerterAtom);
   const taskSearch = useAtomValue(taskSearchAtom);
   const [, addTask, removeTask] = useProcessManager();
-
-  const stackProps = {
-    stack: stack,
-    push: push,
-    pop: pop,
-    top: top,
-  };
-
-  const memorialPreview = taskSearch?.('미리보기')!;
 
   useEffect(() => {
     if (selectedIdx === 0) {
@@ -81,8 +87,7 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
 
   const moveTo = (idx: number | null) => {
     if (idx === 0) {
-      console.log(taskSearch?.('Search', stackProps));
-      push(taskSearch?.('Search', stackProps));
+      push(taskSearch?.('Search', { stackProps }));
     }
     if (idx === 1) {
       push(
@@ -105,9 +110,9 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
             거절될 수 있습니다.
           </>,
           () => {
-            push(taskSearch?.('MemorialApply', stackProps));
+            push(taskSearch?.('MemorialApply', { stackProps }));
             removeTask(taskSearch?.('경고')!);
-            addTask(memorialPreview);
+            taskTransform?.('', '미리보기', InputValues);
           },
         );
       }

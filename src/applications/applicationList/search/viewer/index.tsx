@@ -4,17 +4,12 @@ import myComputer from '@/assets/appIcons/my_computer.svg';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
 import { useAtomValue } from 'jotai';
 import { useEffect } from 'react';
+import { stackProps } from '@/modules/typeModule.tsx';
 
 interface ViewerProps {
   characters: any[];
   memorials: any[];
-  stackProps: dataStructureProps;
-}
-interface dataStructureProps {
-  stack: any[];
-  push: any;
-  pop: any;
-  top: any;
+  stackProps: stackProps;
 }
 
 const Viewer = ({ characters, memorials, stackProps }: ViewerProps) => {
@@ -33,9 +28,6 @@ const Viewer = ({ characters, memorials, stackProps }: ViewerProps) => {
               const relatedMemorials =
                 memorials?.filter((memorial) => memorial.characterId === character.characterId) ??
                 [];
-
-              // console.log(memorials, character);
-
               return (
                 <MemorialWithIcon
                   key={character.characterId}
