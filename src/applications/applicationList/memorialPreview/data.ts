@@ -1,1 +1,1 @@
-export const index_data = [''];
+export const index_data = ['마지막 순간'];

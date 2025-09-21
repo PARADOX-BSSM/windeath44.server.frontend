@@ -2,26 +2,25 @@ import * as _ from './style';
 import MemorialTextarea from '@/applications/components/memorialTextarea';
 import { useEffect, useState } from 'react';
 import { useGetUserMutation } from '@/api/user/getUser.ts';
-import { usePostCommit } from '@/api/memorial/userCommit.ts';
-import { inputProps } from '@/modules/typeModule.tsx';
 import { useAtom } from 'jotai';
-import { memorialContentAtom } from '@/atoms/memorialManager.ts';
+import { inputContent } from '@/atoms/inputManager.ts';
+// import { useAtomValue } from 'jotai';
+// import { taskSearchAtom } from '@/atoms/taskTransformer';
 
-const MemorialCommit = ({
-  stackProps,
-  name,
-  deathReason,
-  date,
-  lifeCycle,
-  anime,
-  animeId,
-  age,
-  profileImage,
-}: inputProps) => {
+interface dataStructureProps {
+  stack: any[];
+  push: any;
+  pop: any;
+  top: any;
+}
+
+const MemorialCommit = ({ stack, push, pop, top }: dataStructureProps) => {
+  // const taskSearch = useAtomValue(taskSearchAtom);
   const [userName, setUserName] = useState('winshine0326');
   const { mutate: getUser, data, isPending, error } = useGetUserMutation();
-  const mutateUsePostCommit = usePostCommit();
-  const [, setMemorialContent] = useAtom(memorialContentAtom);
+  const contentIn = useAtom(inputContent);
+
+  console.log(contentIn);
 
   useEffect(() => {
     getUser(undefined, {
@@ -33,21 +32,14 @@ const MemorialCommit = ({
         console.error('에러:', err);
       },
     });
-
-    return () => {
-      setMemorialContent({
-        characterId: '',
-        content: '',
-      });
-    };
-  }, [getUser, setMemorialContent]);
+  }, []);
 
   return (
     <_.Container>
       <_.Section1>
         <_.Header>
           <_.HeaderTextContainer>
-            <_.CharacterName>{name}</_.CharacterName>
+            <_.CharacterName>호시노 아이</_.CharacterName>
             <_.Status>문서 수정 중</_.Status>
           </_.HeaderTextContainer>
           <_.AuthorshipFrom>@{userName}의 수정 요청</_.AuthorshipFrom>
@@ -57,7 +49,7 @@ const MemorialCommit = ({
             <_.CharacterProfileBox>
               <_.CharacterProfile>
                 <_.CharacterProfileImg />
-                <_.CharacterProfileName>{name}</_.CharacterProfileName>
+                <_.CharacterProfileName>호시노 아이</_.CharacterProfileName>
               </_.CharacterProfile>
 
               <_.CharacterInformation>
@@ -70,7 +62,7 @@ const MemorialCommit = ({
                     </_.CharacterInformationRowAttribute>
                     <_.CharacterInformationRowValue>
                       <_.CharacterInformationRowValueText>
-                        향년 {age}세
+                        향년 20세
                       </_.CharacterInformationRowValueText>
                     </_.CharacterInformationRowValue>
                   </_.CharacterInformationRow>
@@ -83,7 +75,7 @@ const MemorialCommit = ({
                     </_.CharacterInformationRowAttribute>
                     <_.CharacterInformationRowValue>
                       <_.CharacterInformationRowValueText>
-                        {date}
+                        2023.04.12
                       </_.CharacterInformationRowValueText>
                     </_.CharacterInformationRowValue>
                   </_.CharacterInformationRow>
@@ -95,22 +87,7 @@ const MemorialCommit = ({
                       </_.CharacterInformationRowAttributeText>
                     </_.CharacterInformationRowAttribute>
                     <_.CharacterInformationRowValue>
-                      <_.CharacterInformationRowValueText>
-                        {lifeCycle}화
-                      </_.CharacterInformationRowValueText>
-                    </_.CharacterInformationRowValue>
-                  </_.CharacterInformationRow>
-
-                  <_.CharacterInformationRow>
-                    <_.CharacterInformationRowAttribute>
-                      <_.CharacterInformationRowAttributeText>
-                        사인
-                      </_.CharacterInformationRowAttributeText>
-                    </_.CharacterInformationRowAttribute>
-                    <_.CharacterInformationRowValue>
-                      <_.CharacterInformationRowValueText>
-                        {deathReason}
-                      </_.CharacterInformationRowValueText>
+                      <_.CharacterInformationRowValueText>1일</_.CharacterInformationRowValueText>
                     </_.CharacterInformationRowValue>
                   </_.CharacterInformationRow>
 
@@ -122,7 +99,7 @@ const MemorialCommit = ({
                     </_.CharacterInformationRowAttribute>
                     <_.CharacterInformationRowValue>
                       <_.CharacterInformationRowValueText>
-                        {anime}
+                        최애의 아이
                       </_.CharacterInformationRowValueText>
                     </_.CharacterInformationRowValue>
                   </_.CharacterInformationRow>
@@ -136,8 +113,8 @@ const MemorialCommit = ({
       <MemorialTextarea
         btnText="이 내용으로 문서에 병합하기"
         from={userName}
+        content=""
         isPerson={true}
-        isReadonly={false}
       />
     </_.Container>
   );

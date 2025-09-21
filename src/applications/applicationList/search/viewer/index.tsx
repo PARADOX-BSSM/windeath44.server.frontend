@@ -2,17 +2,15 @@ import * as _ from '@/applications/applicationList/search/viewer/style.ts';
 import MemorialWithIcon from '@/applications/components/memorialWithIcon';
 import myComputer from '@/assets/appIcons/my_computer.svg';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
-import { useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { useEffect } from 'react';
-import { stackProps } from '@/modules/typeModule.tsx';
 
 interface ViewerProps {
   characters: any[];
   memorials: any[];
-  stackProps: stackProps;
 }
 
-const Viewer = ({ characters, memorials, stackProps }: ViewerProps) => {
+const Viewer = ({ characters, memorials }: ViewerProps) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
 
   useEffect(() => {
@@ -28,6 +26,9 @@ const Viewer = ({ characters, memorials, stackProps }: ViewerProps) => {
               const relatedMemorials =
                 memorials?.filter((memorial) => memorial.characterId === character.characterId) ??
                 [];
+
+              // console.log(memorials, character);
+
               return (
                 <MemorialWithIcon
                   key={character.characterId}
@@ -42,7 +43,6 @@ const Viewer = ({ characters, memorials, stackProps }: ViewerProps) => {
                     taskTransform?.('', 'memorial', {
                       memorialId: memorialId,
                       characterId: characterId,
-                      stackProps: stackProps,
                     });
                   }}
                 />

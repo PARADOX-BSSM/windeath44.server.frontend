@@ -11,10 +11,6 @@ import setting from '@/assets/appIcons/setting.svg';
 import search from '@/assets/appIcons/search.svg';
 import trashBin from '@/assets/appIcons/empty_bin.svg';
 import chatbot from '@/assets/appIcons/ChatBot.svg';
-import game from '@/assets/appIcons/game.svg';
-import Sulkkagi from '../applicationList/sulkkagi';
-import SulkkagiApproach from '../applicationList/sulkkagiApproach';
-import SulkkagiMenu from '../applicationList/sulkkagiMenu';
 
 // lazy를 이용한 어플리케이션 컴포넌트 로드
 const Terminal = lazy(() => import('@/applications/applicationList/terminal/index.tsx'));
@@ -63,8 +59,6 @@ const ChatbotSelect = lazy(() => import('@/applications/applicationList/chatbotS
 const ChatBot = lazy(() => import('@/applications/applicationList/chatBot/index.tsx'));
 
 const AdminApp = lazy(() => import('@/applications/applicationList/adminApp/index.tsx'));
-
-const GameApp = lazy(() => import('@/applications/applicationList/game/index.tsx'));
 
 //Application Import 형식 예시
 /*
@@ -218,7 +212,7 @@ const useApps = (): TaskType[] => {
       ),
       type: 'App',
       id: 2225,
-      name: 'memorialHistory',
+      name: 'memorailHistory',
       layer: undefined,
       appSetup: {
         Image: 'default',
@@ -487,82 +481,6 @@ const useApps = (): TaskType[] => {
         minHeight: 500,
         setUpWidth: 800,
         setUpHeight: 562,
-      },
-      visible: false,
-    },
-    {
-      component: (
-        <Suspense fallback={null}>
-          <GameApp />
-        </Suspense>
-      ),
-      type: 'App',
-      id: 2238,
-      name: '아케이드',
-      layer: undefined,
-      appSetup: {
-        Image: game,
-        minWidth: 340,
-        minHeight: 500,
-        setUpWidth: 800,
-        setUpHeight: 562,
-      },
-      visible: true,
-    },
-    {
-      component: (
-        <Suspense fallback={null}>
-          <SulkkagiApproach />
-        </Suspense>
-      ),
-      type: 'App',
-      id: 2239,
-      name: '설까기',
-      layer: undefined,
-      appSetup: {
-        Image: game,
-        minWidth: 750,
-        minHeight: 750,
-        setUpWidth: 800,
-        setUpHeight: 800,
-      },
-      visible: false,
-    },
-    {
-      component: (
-        <Suspense fallback={null}>
-          <SulkkagiMenu />
-        </Suspense>
-      ),
-      type: 'App',
-      id: 2240,
-      name: 'sulkkagiMenu',
-      layer: undefined,
-      appSetup: {
-        Image: game,
-        minWidth: 300,
-        minHeight: 300,
-        setUpWidth: 400,
-        setUpHeight: 400,
-      },
-      visible: false,
-    },
-    {
-      component: (
-        <Suspense fallback={null}>
-          <Sulkkagi />
-        </Suspense>
-      ),
-      type: 'App',
-      id: 2241,
-      name: 'sulkkagiMain',
-      layer: undefined,
-      appSetup: {
-        Image: game,
-        minWidth: 750,
-        minHeight: 750,
-        setUpWidth: 800,
-        setUpHeight: 800,
       },
       visible: false,
     },
