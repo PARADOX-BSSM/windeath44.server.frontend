@@ -6,7 +6,9 @@
       "Read(//Users/rsc/Desktop/프로젝트/windeath44.server.frontend/**)",
       "mcp__figma-dev-mode-mcp-server__get_image",
       "mcp__figma-dev-mode-mcp-server__get_code",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm run lint)"
     ],
     "deny": [],
     "ask": [],
