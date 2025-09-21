@@ -31,37 +31,44 @@ const MergeBtn = ({ text }: PropsType) => {
 
     console.log({ ...inputValue, ...contentValue });
 
-    createCharacterMutation.mutate(
-      { ...inputValue, ...contentValue },
-      {
-        onSuccess: (characterId: number) => {
-          uploadImageMutation.mutate({
-            image: inputValue.profileImage,
-            characterId: characterId,
-          });
-          applyMemorialMutation.mutate({
-            characterId: characterId,
-            content: contentValue.content,
-          });
-          useInputValue({
-            name: '',
-            deathReason: '자연사(自然死)' as deathType,
-            date: '',
-            lifeCycle: 0,
-            anime: '',
-            animeId: '',
-            age: 0,
-            profileImage: '',
-            phrase: '',
-          });
-          useContentValue({ characterId: '', content: '' });
-          let task = taskSearch?.('미리보기');
-          if (task) removeTask(task);
-          task = taskSearch?.('추모관');
-          if (task) removeTask(task);
+    const isApply = taskSearch?.('MemorialApply');
+    const isCommit = taskSearch?.('MemorialCommit');
+
+    if (isApply) {
+      createCharacterMutation.mutate(
+        { ...inputValue, ...contentValue },
+        {
+          onSuccess: (characterId: number) => {
+            uploadImageMutation.mutate({
+              image: inputValue.profileImage,
+              characterId: characterId,
+            });
+            applyMemorialMutation.mutate({
+              characterId: characterId,
+              content: contentValue.content,
+            });
+            useInputValue({
+              name: '',
+              deathReason: '자연사(自然死)' as deathType,
+              date: '',
+              lifeCycle: 0,
+              anime: '',
+              animeId: '',
+              age: 0,
+              profileImage: '',
+              phrase: '',
+            });
+            useContentValue({ characterId: '', content: '' });
+            let task = taskSearch?.('미리보기');
+            if (task) removeTask(task);
+            task = taskSearch?.('추모관');
+            if (task) removeTask(task);
+          },
         },
-      },
-    );
+      );
+    }
+    if (isCommit) {
+    }
   };
 
   return <_.SubmitBtn onClick={handleSubmit}>{text}</_.SubmitBtn>;

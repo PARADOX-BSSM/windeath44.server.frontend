@@ -1,9 +1,10 @@
 import * as _ from './style';
 import MemorialTextarea from '@/applications/components/memorialTextarea';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useGetUserMutation } from '@/api/user/getUser.ts';
 import { useAtom } from 'jotai';
 import { inputContent, inputPortage } from '@/atoms/inputManager.ts';
+import { userIdAtom } from '@/atoms/memorialManager.ts';
 // import { useAtomValue } from 'jotai';
 // import { taskSearchAtom } from '@/atoms/taskTransformer';
 
@@ -16,10 +17,10 @@ interface dataStructureProps {
 
 const MemorialCommit = ({ stack, push, pop, top }: dataStructureProps) => {
   // const taskSearch = useAtomValue(taskSearchAtom);
-  const [userName, setUserName] = useState('winshine0326');
   const { mutate: getUser, data, isPending, error } = useGetUserMutation();
   const contentIn = useAtom(inputContent);
   const [inputValue] = useAtom(inputPortage);
+  const [userId, setUserId] = useAtom(userIdAtom);
 
   console.log(contentIn);
 
@@ -27,7 +28,7 @@ const MemorialCommit = ({ stack, push, pop, top }: dataStructureProps) => {
     getUser(undefined, {
       onSuccess: (data) => {
         console.log('성공:', data);
-        setUserName(data.data.userId);
+        setUserId(data.data.userId);
       },
       onError: (err) => {
         console.error('에러:', err);
@@ -43,7 +44,7 @@ const MemorialCommit = ({ stack, push, pop, top }: dataStructureProps) => {
             <_.CharacterName>호시노 아이</_.CharacterName>
             <_.Status>문서 수정 중</_.Status>
           </_.HeaderTextContainer>
-          <_.AuthorshipFrom>@{userName}의 수정 요청</_.AuthorshipFrom>
+          <_.AuthorshipFrom>@{userId}의 수정 요청</_.AuthorshipFrom>
         </_.Header>
         <_.CharacterProfileContainer>
           <_.CharacterProfileInnerContainer>
@@ -115,7 +116,7 @@ const MemorialCommit = ({ stack, push, pop, top }: dataStructureProps) => {
 
       <MemorialTextarea
         btnText="이 내용으로 문서에 병합하기"
-        from={userName}
+        from={userId}
         content=""
         isPerson={true}
       />

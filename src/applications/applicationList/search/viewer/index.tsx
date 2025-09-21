@@ -4,6 +4,7 @@ import myComputer from '@/assets/appIcons/my_computer.svg';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
 import { useAtom, useAtomValue } from 'jotai';
 import { useEffect } from 'react';
+import { memorialIdAtom } from '@/atoms/memorialManager.ts';
 
 interface ViewerProps {
   characters: any[];
@@ -12,6 +13,7 @@ interface ViewerProps {
 
 const Viewer = ({ characters, memorials }: ViewerProps) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
+  const [memorialId, setMemorialId] = useAtom(memorialIdAtom);
 
   useEffect(() => {
     console.log(characters);
@@ -35,9 +37,9 @@ const Viewer = ({ characters, memorials }: ViewerProps) => {
                   icon={myComputer}
                   name={character.name}
                   onDoubleClick={() => {
-                    let memorialId = 5;
                     if (relatedMemorials.length > 0) {
-                      memorialId = relatedMemorials[0].memorialId;
+                      setMemorialId(relatedMemorials[0].memorialId);
+                      // memorialId = relatedMemorials[0].memorialId;
                     }
                     const characterId = character.characterId;
                     taskTransform?.('', 'memorial', {
