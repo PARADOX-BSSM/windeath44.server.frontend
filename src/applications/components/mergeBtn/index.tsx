@@ -6,6 +6,8 @@ import { inputPortage, inputContent } from '@/atoms/inputManager';
 import { taskSearchAtom } from '@/atoms/taskTransformer';
 import { useProcessManager } from '@/hooks/processManager';
 import { useAtom, useAtomValue } from 'jotai';
+import { usePostCommit } from '@/api/memorial/userCommit.ts';
+import { memorialIdAtom, userIdAtom } from '@/atoms/memorialManager.ts';
 
 interface PropsType {
   text: string;
@@ -14,7 +16,10 @@ interface PropsType {
 const MergeBtn = ({ text }: PropsType) => {
   const [inputValue, useInputValue] = useAtom(inputPortage);
   const [contentValue, useContentValue] = useAtom(inputContent);
+  const [userId] = useAtom(userIdAtom);
+  const [memorialId] = useAtom(memorialIdAtom);
   const createCharacterMutation = useCreateCharacter();
+  const commitMutation = usePostCommit();
   const uploadImageMutation = useUploadImage();
   const applyMemorialMutation = useApplyMemorial();
   const [, , removeTask] = useProcessManager();
@@ -68,6 +73,29 @@ const MergeBtn = ({ text }: PropsType) => {
       );
     }
     if (isCommit) {
+      commitMutation.mutate(
+        { memorialId, content: contentValue.content, userId },
+        {
+          onSuccess: () => {
+            useInputValue({
+              name: '',
+              deathReason: '자연사(自然死)' as deathType,
+              date: '',
+              lifeCycle: 0,
+              anime: '',
+              animeId: '',
+              age: 0,
+              profileImage: '',
+              phrase: '',
+            });
+            useContentValue({ characterId: '', content: '' });
+            let task = taskSearch?.('미리보기');
+            if (task) removeTask(task);
+            task = taskSearch?.('추모관');
+            if (task) removeTask(task);
+          },
+        },
+      );
     }
   };
 

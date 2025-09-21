@@ -2,7 +2,7 @@ import api from '@/api/axiosInstance.ts';
 import { memorial } from '@/config';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
-type commitValue = { memorialId: number; content: string; userId: number };
+type commitValue = { memorialId: number; content: string; userId: string };
 type ApiResponse<T> = {
   message?: string;
   data?: T | null;
