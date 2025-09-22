@@ -3,7 +3,7 @@ import { memorial } from '@/config';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 type commitValue = { memorialId: number; content: string; userId: string };
-type ApiResponse<T> = {
+type apiResponse<T> = {
   message?: string;
   data?: T | null;
 };
@@ -12,7 +12,7 @@ const postMemorialCommit = async ({
   memorialId,
   content,
   userId,
-}: commitValue): Promise<ApiResponse<commitValue>> => {
+}: commitValue): Promise<apiResponse<string>> => {
   try {
     const data = {
       memorialId,
@@ -40,11 +40,14 @@ export const usePostCommit = () => {
     onError: () => {},
   });
 };
-
+type pullRequestValue = { memorialPullRequestId: number; userId: string };
 //user의 memorial pull request 사항을 저장하는 api
-const postMemorialPullRequest = async (data1, userId): Promise => {
-  const data = data1;
-  const response = await api.get(`:${memorial}/pull-request`, {
+const postMemorialPullRequest = async ({
+  memorialPullRequestId,
+  userId,
+}: pullRequestValue): Promise<apiResponse<string>> => {
+  const data = memorialPullRequestId;
+  const response = await api.post(`:${memorial}/pull-request`, data, {
     headers: {
       'user-id': userId,
       'Content-Type': 'application/json',
@@ -62,23 +65,38 @@ export const usePostPullRequest = () => {
     onError: () => {},
   });
 };
+type commitRespone = {
+  memorialCommitId: number;
+  userId: string;
+  memorialId: number;
+  content: string;
+  createdAt: string;
+};
+type memorialId = {
+  memorialId: number;
+};
 //get commits
-const getMemorialCommits = async (memorialId): Promise<void> => {
+const getMemorialCommits = async ({
+  memorialId,
+}: memorialId): Promise<apiResponse<commitRespone>> => {
   const response = await api.get(`:${memorial}commits/${memorialId}`);
   return response.data;
 };
-export const useGetCommitsQuery = ({ memorialId }) => {
+export const useGetCommitsQuery = ({ memorialId }: memorialId) => {
   return useQuery({
     queryKey: [],
     queryFn: () => getMemorialCommits({ memorialId }),
   });
 };
+type commitId = {
+  commitId: number;
+};
 //get commit by commitId
-const getCommitById = async (commitId): Promise<void> => {
+const getCommitById = async ({ commitId }: commitId): Promise<apiResponse<commitRespone>> => {
   const response = await api.get(`:${memorial}commits/id/${commitId}`);
   return response.data;
 };
-export const useGetCommitsByIdQuery = ({ commitId }) => {
+export const useGetCommitsByIdQuery = ({ commitId }: commitId) => {
   return useQuery({
     queryKey: [],
     queryFn: () => getCommitById({ commitId }),
