@@ -81,6 +81,18 @@ const LogIn = ({ changeToSignUp, changeToEmailCheck }: Props) => {
                 },
               );
             }
+          } else {
+            setAlert?.(
+              Choten,
+              <>
+                로그인에 실패했습니다.
+                <br />
+                잠시 후 다시 시도해주세요.
+              </>,
+              () => {
+                taskTransform?.('경고', '');
+              },
+            );
           }
         },
       },
