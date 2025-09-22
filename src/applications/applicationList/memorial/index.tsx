@@ -4,6 +4,7 @@ import * as _ from './style';
 import { index_data } from './data';
 import { useAtom, useAtomValue } from 'jotai';
 import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer';
+import { alerterAtom } from '@/atoms/alerter';
 import { useMemorialGet } from '@/api/memorial/memorialGet.ts';
 import { useEffect, useState } from 'react';
 import { useGetCharacter } from '@/api/anime/getCharacter.ts';
@@ -17,6 +18,7 @@ import { useCommentWrite } from '@/api/memorial/memorialCommentWrite.ts';
 import { parseCustomContent } from '@/lib/customTag/parseCustomContent.tsx';
 import { useGetAnimation } from '@/api/anime/getAnimation.ts';
 import ribbon from '@/assets/memorial_ribbon.svg';
+import Choten from '@/assets/profile/choten.svg';
 
 interface dataStructureProps {
   stack: any[];
@@ -29,6 +31,7 @@ interface dataStructureProps {
 const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStructureProps) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
   const taskSearch = useAtomValue(taskSearchAtom);
+  const setAlert = useAtomValue(alerterAtom);
   const [content, setContent] = useState<string>('');
   const [characterData, setCharacterData] = useState<CharacterData>({
     characterId: 0,
@@ -72,15 +75,77 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
       {
         onSuccess: () => {
           setContent('');
-          mutaionGetMemorialComments.mutate({ memorialId });
+          mutaionGetMemorialComments.mutate(
+            { memorialId },
+            {
+              onError: () => {
+                setAlert?.(
+                  Choten,
+                  <>
+                    추모글을 가져오는 중 문제가 발생했습니다.
+                    <br />
+                    잠시 후 다시 시도해 주세요.
+                  </>,
+                  () => {
+                    taskTransform?.('경고', '');
+                  },
+                );
+              },
+            },
+          );
         },
       },
     );
   };
   useEffect(() => {
-    mutationMemorialGet.mutate(memorialId);
-    mutaionGetMemorialComments.mutate({ memorialId });
-    mutationGetCharacter.mutate(characterId);
+    mutationMemorialGet.mutate(memorialId, {
+      onError: () => {
+        setAlert?.(
+          Choten,
+          <>
+            추모관 정보를 가져오는 중 문제가 발생했습니다.
+            <br />
+            잠시 후 다시 시도해 주세요.
+          </>,
+          () => {
+            taskTransform?.('경고', '');
+          },
+        );
+      },
+    });
+    mutaionGetMemorialComments.mutate(
+      { memorialId },
+      {
+        onError: () => {
+          setAlert?.(
+            Choten,
+            <>
+              추모글을 가져오는 중 문제가 발생했습니다.
+              <br />
+              잠시 후 다시 시도해 주세요.
+            </>,
+            () => {
+              taskTransform?.('경고', '');
+            },
+          );
+        },
+      },
+    );
+    mutationGetCharacter.mutate(characterId, {
+      onError: () => {
+        setAlert?.(
+          Choten,
+          <>
+            캐릭터 정보를 가져오는 중 문제가 발생했습니다.
+            <br />
+            잠시 후 다시 시도해 주세요.
+          </>,
+          () => {
+            taskTransform?.('경고', '');
+          },
+        );
+      },
+    });
   }, []);
 
   if (!characterData) {
@@ -92,7 +157,21 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
 
   useEffect(() => {
     if (characterData.animeId) {
-      mutationAnimation.mutate(characterData.animeId);
+      mutationAnimation.mutate(characterData.animeId, {
+        onError: () => {
+          setAlert?.(
+            Choten,
+            <>
+              애니메이션 정보를 가져오는 중 문제가 발생했습니다.
+              <br />
+              잠시 후 다시 시도해 주세요.
+            </>,
+            () => {
+              taskTransform?.('경고', '');
+            },
+          );
+        },
+      });
     }
   }, [characterData.animeId]);
 

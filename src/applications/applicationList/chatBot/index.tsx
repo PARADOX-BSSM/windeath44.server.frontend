@@ -7,6 +7,9 @@ import Ame from '@/assets/profile/ame.svg';
 import Hosino from '@/assets/character/hosino.svg';
 import { useDoChat } from '@/api/chatbot/chat';
 import { useGetChatBotQuery } from '@/api/chatbot/getChatBot';
+import { useAtomValue } from 'jotai';
+import { alerterAtom } from '@/atoms/alerter';
+import { taskTransformerAtom } from '@/atoms/taskTransformer';
 
 interface Message {
   id: string;
@@ -26,6 +29,8 @@ const ChatBot = () => {
   const character = '호시노 아이';
   const [message, setMessage] = useState('');
   const doChatMutation = useDoChat();
+  const setAlert = useAtomValue(alerterAtom);
+  const taskTransform = useAtomValue(taskTransformerAtom);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [messages, setMessages] = useState<Message[]>([
     // {
@@ -112,6 +117,9 @@ const ChatBot = () => {
         },
         onError: () => {
           setIsLoading(false);
+          setAlert?.(Choten, <>채팅 중 오류가 발생했습니다.</>, () => {
+            taskTransform?.('경고', '');
+          });
         },
       },
     );

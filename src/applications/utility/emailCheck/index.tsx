@@ -44,6 +44,19 @@ const EmailChack = ({ changeToLogIn, changeToAuth }: Props) => {
         onSuccess: () => {
           changeToAuth();
         },
+        onError: () => {
+          setAlert?.(
+            Choten,
+            <>
+              이메일 전송에 실패했습니다.
+              <br />
+              다시 시도해 주세요.
+            </>,
+            () => {
+              taskTransform?.('경고', '');
+            },
+          );
+        },
       },
     );
   };

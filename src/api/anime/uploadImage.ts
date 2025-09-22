@@ -39,11 +39,7 @@ const uploadImage = async ({ image, characterId }: uploadImageType): Promise<str
     // console.log(response);
     return '성공했어요~!~!~!';
   } catch (error: any) {
-    if (error.response?.data) {
-      alert('이미지 업로드 오류');
-    } else {
-      alert('이미지 업로드 중 오류가 발생했습니다.');
-    }
+    console.error('이미지 업로드 오류:', error);
     throw error;
   }
 };
