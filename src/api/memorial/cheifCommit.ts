@@ -2,10 +2,27 @@ import api from '@/api/axiosInstance.ts';
 import { memorial } from '@/config';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
+type apiResponse<T> = {
+  message?: string;
+  data?: T | null;
+};
+type mergeableRequest = {
+  memorialPullRequestId: number;
+  userId: number;
+};
+type mergeableResponse = {
+  memorialPullRequestId: number;
+  latestMemorialPullRequestId: number | null;
+  mergeable: boolean;
+  conflict: string | null;
+};
 // chief mergeable
-const postMemorialMergeable = async (memorialPullRequestId, userId): Promise<> => {
+const postMemorialMergeable = async ({
+  memorialPullRequestId,
+  userId,
+}: mergeableRequest): Promise<apiResponse<mergeableResponse>> => {
   const data = memorialPullRequestId;
-  const response = await api.post(`:${memorial}/mergeable`, {
+  const response = await api.post(`:${memorial}/mergeable`, data, {
     headers: {
       'user-id': userId,
       'Content-Type': 'application/json',
@@ -24,9 +41,12 @@ export const usePostMergeable = () => {
   });
 };
 // chief merge
-const postMemorialMerge = async (memorialPullRequestId, userId): Promise<> => {
+const postMemorialMerge = async ({
+  memorialPullRequestId,
+  userId,
+}: mergeableRequest): Promise<apiResponse<string>> => {
   const data = memorialPullRequestId;
-  const response = await api.patch(`:${memorial}/merge`, {
+  const response = await api.patch(`:${memorial}/merge`, data, {
     headers: {
       'user-id': userId,
       'Content-Type': 'application/json',
@@ -43,12 +63,23 @@ export const usePatchMerge = () => {
     onError: () => {},
   });
 };
+
 // chief resolve
-const postMemorialResolve = async (memorialPullRequestId, userId): Promise<> => {
-  const data = memorialPullRequestId;
-  // memorialPullRequestId;
-  // resolved;
-  const response = await api.patch(`:${memorial}/resolve`, {
+type resolveRequest = {
+  memorialPullRequestId: number;
+  userId: number;
+  resolved: string;
+};
+const postMemorialResolve = async ({
+  memorialPullRequestId,
+  userId,
+  resolved,
+}: resolveRequest): Promise<apiResponse<object>> => {
+  const data = {
+    memorialPullRequestId,
+    resolved,
+  };
+  const response = await api.patch(`:${memorial}/resolve`, data, {
     headers: {
       'user-id': userId,
       'Content-Type': 'application/json',
@@ -65,12 +96,17 @@ export const usePatchMemorialResolve = () => {
     onError: () => {},
   });
 };
+
 // chief reject
-const postMemorialReject = async (memorialPullRequestId, userId): Promise<> => {
+type memorialPullRequestId = {
+  memorialPullRequestId: number;
+};
+const postMemorialReject = async ({
+  memorialPullRequestId,
+}: memorialPullRequestId): Promise<apiResponse<object>> => {
   const data = memorialPullRequestId;
-  const response = await api.patch(`:${memorial}/reject`, {
+  const response = await api.patch(`:${memorial}/reject`, data, {
     headers: {
-      'user-id': userId,
       'Content-Type': 'application/json',
     },
   });
@@ -86,22 +122,28 @@ export const usePatchMemorialReject = () => {
   });
 };
 // chief get prs by memorial id
-const getPullRequestsByMemorialId = async (memorialId): Promise<> => {
-  const response = await api.patch(`:${memorial}/pull-requests/${memorialId}`);
+type memorialId = {
+  memorialId: number;
+};
+const getPullRequestsByMemorialId = async ({ memorialId }: memorialId): Promise<object> => {
+  const response = await api.get(`:${memorial}/pull-requests/${memorialId}`);
   return response.data;
 };
-export const useGetPrsQuery = ({ memorialId }) => {
+export const useGetPrsQuery = ({ memorialId }: memorialId) => {
   return useQuery({
     queryKey: [],
     queryFn: () => getPullRequestsByMemorialId({ memorialId }),
   });
 };
 // chief get pr by request id
-const getPullRequestByRequestId = async (requestId): Promise<> => {
+type requestId = {
+  requestId: number;
+};
+const getPullRequestByRequestId = async ({ requestId }: requestId): Promise<object> => {
   const response = await api.patch(`:${memorial}/pull-request/${requestId}`);
   return response.data;
 };
-export const useGetPrQuery = ({ requestId }) => {
+export const useGetPrQuery = ({ requestId }: requestId) => {
   return useQuery({
     queryKey: [],
     queryFn: () => getPullRequestByRequestId({ requestId }),
