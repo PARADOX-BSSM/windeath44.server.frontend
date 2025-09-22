@@ -788,7 +788,7 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
     ctx.clearRect(0, 0, BOARD_SIZE, BOARD_SIZE);
   };
 
-  // 개선된 AI 플레이어 로직
+  // 강화된 AI 플레이어 로직
   const executeAiMove = () => {
     if (!engineRef.current || currentPlayer !== 1 || isAnimating || gameState !== 'playing') {
       return;
@@ -797,29 +797,35 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
     setIsAiTurn(true);
 
     // AI가 조작할 수 있는 돌들 (player1) 찾기
-    const aiStones = stonesRef.current.filter(
-      (stone: StoneBody) => stone.player === 1 && !stone.isOut,
-    );
+    const aiStones = stonesRef.current.filter((stone: any) => stone.player === 1 && !stone.isOut);
 
     if (aiStones.length === 0) return;
 
     // 상대방 돌들 (player2) 찾기
     const enemyStones = stonesRef.current.filter(
-      (stone: StoneBody) => stone.player === 2 && !stone.isOut,
+      (stone: any) => stone.player === 2 && !stone.isOut,
     );
 
     if (enemyStones.length === 0) return;
 
-    // AI 전략 계산
-    const bestMove = calculateBestMove(aiStones, enemyStones);
+    // 강화된 AI 전략 계산
+    const bestMove = calculateEnhancedBestMove(aiStones, enemyStones);
 
     if (bestMove) {
-      // 1초 후 AI 공격 실행 (사람이 보기 좋게)
+      // 1초 후 AI 행동 실행 (사람이 보기 좋게)
       setTimeout(() => {
-        const { stone, direction, power } = bestMove;
+        const { stone, direction, power, moveType } = bestMove;
 
-        // 약간의 랜덤성 추가 (너무 완벽하지 않게)
-        const randomAngle = (Math.random() - 0.5) * 0.2; // ±0.1 라디안
+        // 이동 타입에 따른 랜덤성 조절
+        let randomAngle = 0;
+        if (moveType === 'attack') {
+          randomAngle = (Math.random() - 0.5) * 0.15; // 공격시 정확도 높임
+        } else if (moveType === 'defensive') {
+          randomAngle = (Math.random() - 0.5) * 0.3; // 방어시 더 자유롭게
+        } else {
+          randomAngle = (Math.random() - 0.5) * 0.2; // 일반적인 경우
+        }
+
         const finalDx = direction.x * Math.cos(randomAngle) - direction.y * Math.sin(randomAngle);
         const finalDy = direction.x * Math.sin(randomAngle) + direction.y * Math.cos(randomAngle);
 
@@ -838,11 +844,251 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
     }
   };
 
-  // AI 전략 계산 함수
-  const calculateBestMove = (aiStones: StoneBody[], enemyStones: StoneBody[]) => {
+  // 강화된 AI 전략 계산 함수
+  const calculateEnhancedBestMove = (aiStones: any[], enemyStones: any[]) => {
     let bestScore = -Infinity;
-    let bestMove: { stone: StoneBody; direction: { x: number; y: number }; power: number } | null =
-      null;
+    let bestMove: {
+      stone: any;
+      direction: { x: number; y: number };
+      power: number;
+      moveType: 'attack' | 'defensive' | 'positioning';
+    } | null = null;
+
+    for (const aiStone of aiStones) {
+      // 1. 벽 위험도 평가
+      const wallDanger = evaluateWallDanger(aiStone);
+
+      // 2. 방어 우선 상황 체크
+      if (wallDanger > 0.7) {
+        // 위험한 상황: 벽에서 도망가기
+        const escapeMove = calculateEscapeMove(aiStone);
+        if (escapeMove && escapeMove.score > bestScore) {
+          bestScore = escapeMove.score;
+          bestMove = {
+            stone: aiStone,
+            direction: escapeMove.direction,
+            power: escapeMove.power,
+            moveType: 'defensive',
+          };
+        }
+        continue; // 다른 전략 고려하지 않음
+      }
+
+      // 3. 공격 기회 평가
+      for (const enemyStone of enemyStones) {
+        const attackMove = evaluateAttackMove(aiStone, enemyStone, aiStones, enemyStones);
+
+        if (attackMove.score > bestScore) {
+          bestScore = attackMove.score;
+          bestMove = {
+            stone: aiStone,
+            direction: attackMove.direction,
+            power: attackMove.power,
+            moveType: 'attack',
+          };
+        }
+      }
+
+      // 4. 포지션 개선 기회 평가
+      const positionMove = evaluatePositioning(aiStone, aiStones, enemyStones);
+      if (positionMove.score > bestScore) {
+        bestScore = positionMove.score;
+        bestMove = {
+          stone: aiStone,
+          direction: positionMove.direction,
+          power: positionMove.power,
+          moveType: 'positioning',
+        };
+      }
+    }
+
+    return bestMove;
+  };
+
+  // 벽 위험도 평가 함수
+  const evaluateWallDanger = (stone: any) => {
+    const x = stone.position.x;
+    const y = stone.position.y;
+
+    const distanceToWalls = [
+      x, // 왼쪽 벽
+      y, // 위쪽 벽
+      BOARD_SIZE - x, // 오른쪽 벽
+      BOARD_SIZE - y, // 아래쪽 벽
+    ];
+
+    const minDistance = Math.min(...distanceToWalls);
+    const dangerThreshold = 60; // 위험 거리 임계값
+
+    if (minDistance > dangerThreshold) return 0;
+    return 1 - minDistance / dangerThreshold;
+  };
+
+  // 벽에서 도망가는 이동 계산
+  const calculateEscapeMove = (stone: any) => {
+    const x = stone.position.x;
+    const y = stone.position.y;
+
+    // 보드 중앙으로 향하는 방향 계산
+    const centerX = BOARD_SIZE / 2;
+    const centerY = BOARD_SIZE / 2;
+
+    const dx = centerX - x;
+    const dy = centerY - y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    if (distance === 0) return null;
+
+    return {
+      score: 500, // 높은 우선순위
+      direction: { x: dx / distance, y: dy / distance },
+      power: stone.isBig ? 0.02 : 0.01, // 적당한 힘으로
+    };
+  };
+
+  // 공격 이동 평가 (기존 로직 개선)
+  const evaluateAttackMove = (
+    aiStone: any,
+    targetEnemy: any,
+    allAiStones: any[],
+    allEnemyStones: any[],
+  ) => {
+    const dx = targetEnemy.position.x - aiStone.position.x;
+    const dy = targetEnemy.position.y - aiStone.position.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    if (distance === 0) return { score: -1000, direction: { x: 0, y: 0 }, power: 0 };
+
+    const normalizedDx = dx / distance;
+    const normalizedDy = dy / distance;
+
+    let score = 0;
+
+    // 1. 거리 점수 (가까울수록 좋음)
+    const distanceScore = (Math.max(0, 300 - distance) / 300) * 100;
+    score += distanceScore;
+
+    // 2. 적의 벽 근접성 (적을 벽으로 밀어낼 가능성)
+    const enemyWallDanger = evaluateWallDanger(targetEnemy);
+    score += enemyWallDanger * 200; // 벽에 가까운 적을 우선 타격
+
+    // 3. 큰 돌 vs 작은 돌 전략
+    const stoneAdvantage = evaluateStoneAdvantage(aiStone, targetEnemy, distance);
+    score += stoneAdvantage;
+
+    // 4. 자신의 안전성 확인
+    const safetyPenalty = calculateSafetyPenalty(
+      aiStone,
+      normalizedDx,
+      normalizedDy,
+      allEnemyStones,
+    );
+    score -= safetyPenalty;
+
+    // 5. 동적 힘 조절
+    const power = calculateDynamicPower(aiStone, targetEnemy, distance, enemyWallDanger);
+
+    return {
+      score,
+      direction: { x: normalizedDx, y: normalizedDy },
+      power,
+    };
+  };
+
+  // 돌 우위성 평가 (큰돌 vs 작은돌 전략)
+  const evaluateStoneAdvantage = (aiStone: any, enemyStone: any, distance: number) => {
+    const aiIsBig = aiStone.isBig;
+    const enemyIsBig = enemyStone.isBig;
+
+    // 큰 돌로 작은 돌 공격: 매우 유리
+    if (aiIsBig && !enemyIsBig && distance < 150) {
+      return 100;
+    }
+
+    // 작은 돌로 큰 돌 공격: 가까운 거리에서만
+    if (!aiIsBig && enemyIsBig && distance < 80) {
+      return 50;
+    }
+
+    // 같은 크기: 보통
+    if (aiIsBig === enemyIsBig) {
+      return 20;
+    }
+
+    return 0;
+  };
+
+  // 동적 힘 조절
+  const calculateDynamicPower = (
+    aiStone: any,
+    enemyStone: any,
+    distance: number,
+    enemyWallDanger: number,
+  ) => {
+    const basePower = aiStone.isBig ? 0.025 : 0.012;
+    let powerMultiplier = 1;
+
+    // 거리에 따른 힘 조절
+    if (distance < 80) {
+      powerMultiplier = 0.6; // 가까운 거리: 약한 힘
+    } else if (distance < 150) {
+      powerMultiplier = 0.8; // 중간 거리: 중간 힘
+    } else {
+      powerMultiplier = 1.0; // 먼 거리: 기본 힘
+    }
+
+    // 적이 벽에 가까우면 더 강하게
+    if (enemyWallDanger > 0.5) {
+      powerMultiplier *= 1.3;
+    }
+
+    // 큰 돌의 경우 힘 조절을 더 세밀하게
+    if (aiStone.isBig) {
+      powerMultiplier *= 0.9; // 큰 돌은 조금 더 신중하게
+    }
+
+    return basePower * powerMultiplier;
+  };
+
+  // 포지셔닝 평가
+  const evaluatePositioning = (aiStone: any, allAiStones: any[], allEnemyStones: any[]) => {
+    const x = aiStone.position.x;
+    const y = aiStone.position.y;
+
+    // 보드 중앙에 가까울수록 좋음
+    const centerX = BOARD_SIZE / 2;
+    const centerY = BOARD_SIZE / 2;
+    const distanceToCenter = Math.sqrt((x - centerX) ** 2 + (y - centerY) ** 2);
+
+    // 너무 중앙에 있으면 점수 낮춤 (다양성을 위해)
+    let positionScore = 0;
+    if (distanceToCenter > 50 && distanceToCenter < 120) {
+      positionScore = 50; // 적당한 중앙 위치
+    } else if (distanceToCenter > 150) {
+      positionScore = 30; // 중앙으로 이동 필요
+    }
+
+    if (positionScore > 0) {
+      const dx = centerX - x + (Math.random() - 0.5) * 60; // 약간의 랜덤성
+      const dy = centerY - y + (Math.random() - 0.5) * 60;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance > 0) {
+        return {
+          score: positionScore,
+          direction: { x: dx / distance, y: dy / distance },
+          power: aiStone.isBig ? 0.015 : 0.008,
+        };
+      }
+    }
+
+    return { score: 0, direction: { x: 0, y: 0 }, power: 0 };
+  };
+
+  // 기존 AI 전략 계산 함수 (호환성을 위해 유지)
+  const calculateBestMove = (aiStones: any[], enemyStones: any[]) => {
+    let bestScore = -Infinity;
+    let bestMove: { stone: any; direction: { x: number; y: number }; power: number } | null = null;
 
     for (const aiStone of aiStones) {
       for (const enemyStone of enemyStones) {
@@ -864,10 +1110,10 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
 
   // 개별 수의 점수 계산
   const evaluateMove = (
-    aiStone: StoneBody,
-    targetEnemy: StoneBody,
-    allAiStones: StoneBody[],
-    allEnemyStones: StoneBody[],
+    aiStone: any,
+    targetEnemy: any,
+    allAiStones: any[],
+    allEnemyStones: any[],
   ) => {
     const dx = targetEnemy.position.x - aiStone.position.x;
     const dy = targetEnemy.position.y - aiStone.position.y;
@@ -952,12 +1198,7 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
   };
 
   // 안전성 패널티 계산
-  const calculateSafetyPenalty = (
-    aiStone: StoneBody,
-    dirX: number,
-    dirY: number,
-    enemyStones: StoneBody[],
-  ) => {
+  const calculateSafetyPenalty = (aiStone: any, dirX: number, dirY: number, enemyStones: any[]) => {
     // 공격 후 예상 위치 계산
     const estimatedNewX = aiStone.position.x + dirX * 30; // 반동 예상
     const estimatedNewY = aiStone.position.y + dirY * 30;
