@@ -65,6 +65,9 @@ function drawStoneWithSvgBackground(
   if (img && img.complete && img.naturalWidth > 0) {
     ctx.save();
 
+    // 이미지 스무딩 비활성화 (픽셀 아트를 위해)
+    ctx.imageSmoothingEnabled = false;
+
     // 원형 클리핑 마스크 적용
     ctx.beginPath();
     ctx.arc(x, y, r, 0, Math.PI * 2);
@@ -157,6 +160,18 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
   // Matter.js 초기화
   useEffect(() => {
     initializeMatter();
+
+    // 메인 게임 캔버스 DPR 스케일링
+    const mainCanvas = canvasRef.current;
+    if (mainCanvas) {
+      const dpr = window.devicePixelRatio || 1;
+      mainCanvas.width = BOARD_SIZE * dpr;
+      mainCanvas.height = BOARD_SIZE * dpr;
+      mainCanvas.style.width = `${BOARD_SIZE}px`;
+      mainCanvas.style.height = `${BOARD_SIZE}px`;
+      const ctx = mainCanvas.getContext('2d');
+      ctx?.scale(dpr, dpr);
+    }
 
     // 화살표 캔버스 DPR 스케일링
     const c = arrowCanvasRef.current;
@@ -410,11 +425,12 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
     if (!canvas || !engineRef.current) return;
 
     const ctx = canvas.getContext('2d')!;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // DPI 스케일링을 고려한 Canvas 크기로 clear
+    ctx.clearRect(0, 0, BOARD_SIZE, BOARD_SIZE);
 
     // 바둑판 배경
     ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillRect(0, 0, BOARD_SIZE, BOARD_SIZE);
 
     // 바둑판 선
     ctx.strokeStyle = '#8B4513';
