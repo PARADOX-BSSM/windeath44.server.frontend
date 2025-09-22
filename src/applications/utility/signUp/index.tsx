@@ -31,6 +31,48 @@ const SignUp = ({ changeToLogIn }: Props) => {
   const verifyEmailMutation = useVerifyEmail();
 
   const sendAuth = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (name.length == 0) {
+      setAlert?.(
+        Choten,
+        <>
+          사용자 이름이 잘못되었습니다.
+          <br />
+          다시 입력해 주세요.
+        </>,
+        () => {
+          taskTransform?.('경고', '');
+        },
+      );
+      return;
+    }
+    if (userId.length == 0) {
+      setAlert?.(
+        Choten,
+        <>
+          아이디가 잘못되었습니다.
+          <br />
+          다시 입력해 주세요.
+        </>,
+        () => {
+          taskTransform?.('경고', '');
+        },
+      );
+      return;
+    }
+    if (email.length == 0 || !email.includes('@')) {
+      setAlert?.(
+        Choten,
+        <>
+          이메일이 잘못되었습니다.
+          <br />
+          다시 입력해 주세요.
+        </>,
+        () => {
+          taskTransform?.('경고', '');
+        },
+      );
+      return;
+    }
     if (pw !== checkingPw) {
       setAlert?.(
         Choten,
