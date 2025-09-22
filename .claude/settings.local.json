@@ -8,7 +8,8 @@
       "mcp__figma-dev-mode-mcp-server__get_code",
       "Bash(cat:*)",
       "Bash(npm run build:*)",
-      "Bash(npm run lint)"
+      "Bash(npm run lint)",
+      "Bash(npm run dev:*)"
     ],
     "deny": [],
     "ask": [],

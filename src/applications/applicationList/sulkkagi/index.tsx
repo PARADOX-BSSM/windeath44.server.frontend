@@ -3,6 +3,88 @@ import * as Matter from 'matter-js';
 import * as _ from './style';
 import { createAllStones, STONE_RADIUS, BIG_STONE_RADIUS } from './data';
 import { CURSOR_IMAGES, setCursorImage } from '@/lib/setCursorImg';
+import whiteStoneUrl from '@/assets/sulkkagi/white_stone.svg?url';
+import blackStoneUrl from '@/assets/sulkkagi/black_stone.svg?url';
+
+// 전역 이미지 캐시
+let globalStoneImages: {
+  white: HTMLImageElement | null;
+  black: HTMLImageElement | null;
+} = { white: null, black: null };
+let globalImagesLoaded = false;
+
+// 전역 이미지 로딩 함수
+const loadGlobalStoneImages = (): Promise<void> => {
+  if (globalImagesLoaded) return Promise.resolve();
+
+  return new Promise((resolve) => {
+    let loadedCount = 0;
+    const totalImages = 2;
+
+    const checkComplete = () => {
+      loadedCount++;
+      if (loadedCount === totalImages) {
+        globalImagesLoaded = true;
+        resolve();
+      }
+    };
+
+    // 하얀 돌 이미지 로드
+    const whiteImg = new Image();
+    whiteImg.onload = checkComplete;
+    whiteImg.onerror = checkComplete; // 에러시에도 완료 처리
+    whiteImg.src = whiteStoneUrl;
+    globalStoneImages.white = whiteImg;
+
+    // 검은 돌 이미지 로드
+    const blackImg = new Image();
+    blackImg.onload = checkComplete;
+    blackImg.onerror = checkComplete; // 에러시에도 완료 처리
+    blackImg.src = blackStoneUrl;
+    globalStoneImages.black = blackImg;
+  });
+};
+
+// SVG 배경 이미지를 사용한 돌 렌더링 함수
+function drawStoneWithSvgBackground(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  r: number,
+  theme: 'white' | 'black',
+) {
+  const img = theme === 'white' ? globalStoneImages.white : globalStoneImages.black;
+
+  // 그림자 효과 먼저 그리기
+  ctx.save();
+  ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
+  ctx.shadowBlur = 4;
+  ctx.shadowOffsetX = 2;
+  ctx.shadowOffsetY = 2;
+
+  if (img && img.complete && img.naturalWidth > 0) {
+    ctx.save();
+
+    // 원형 클리핑 마스크 적용
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.clip();
+
+    // SVG 이미지를 돌 크기에 맞게 스케일링하여 그리기 (원래 크기로 복원)
+    const imgSize = r * 2;
+    ctx.drawImage(img, x - imgSize / 2, y - imgSize / 2, imgSize, imgSize);
+
+    ctx.restore();
+  } else {
+    // 이미지가 로드되지 않았으면 기본 원형 돌
+    ctx.fillStyle = theme === 'white' ? '#f0f0f0' : '#2c2c2c';
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  ctx.restore();
+}
 
 const BOARD_SIZE = 400;
 const BOARD_PADDING = 40;
@@ -40,10 +122,37 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
   const player1CountRef = useRef(0); // 하얀돌 추모관 등록 카운터
   const player2CountRef = useRef(0); // 까만돌 추모관 등록 카운터
 
+  // SVG 이미지 로딩 상태
+  const [imagesLoaded, setImagesLoaded] = useState(false);
+
   const isDraggingRef = useRef(false);
   const selectedStoneIdRef = useRef<number | null>(null);
   const aimStartRef = useRef<{ x: number; y: number } | null>(null);
   const aimCurrentRef = useRef<{ x: number; y: number } | null>(null);
+
+  // SVG 이미지 로딩을 위한 useEffect
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        await loadGlobalStoneImages();
+        setImagesLoaded(true);
+      } catch (error) {
+        console.error('Failed to load stone images:', error);
+        setImagesLoaded(true); // 에러가 발생해도 기본 돌로 렌더링하기 위해 true로 설정
+      }
+    };
+
+    loadImages();
+  }, []);
+
+  // 이미지 로딩 완료 시 강제 리렌더링
+  useEffect(() => {
+    if (imagesLoaded) {
+      requestAnimationFrame(() => {
+        draw();
+      });
+    }
+  }, [imagesLoaded]);
 
   // Matter.js 초기화
   useEffect(() => {
@@ -342,7 +451,7 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
       });
     });
 
-    // 돌 그리기
+    // 돌 그리기 (절차적 렌더링 사용)
     stonesRef.current.forEach((stone: any) => {
       if (!stone.position || stone.isOut) return; // 아웃된 돌은 그리지 않음
 
@@ -352,23 +461,19 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
       // 돌의 실제 반지름 (큰 돌 vs 일반 돌)
       const stoneRadius = stone.isBig ? BIG_STONE_RADIUS : STONE_RADIUS;
 
-      // 그림자
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
-      ctx.beginPath();
-      ctx.arc(x + 2, y + 2, stoneRadius, 0, Math.PI * 2);
-      ctx.fill();
-
       // 선택된 돌인지 확인 (UI용 state 사용)
       const isSelected = selectedStoneId === stone.id;
 
-      // 돌 그리기 (기본 색상 사용)
-      ctx.fillStyle = stone.originalColor;
-      ctx.strokeStyle = stone.render.strokeStyle;
-      ctx.lineWidth = stone.render.lineWidth;
-      ctx.beginPath();
-      ctx.arc(x, y, stoneRadius, 0, Math.PI * 2);
-      ctx.fill();
+      // SVG 배경 이미지를 사용한 돌 렌더링
+      const theme = stone.player === 1 ? 'white' : 'black';
+      drawStoneWithSvgBackground(ctx, x, y, stoneRadius, theme);
+
+      // 선택 테두리
       if (stone.render.lineWidth > 0) {
+        ctx.strokeStyle = stone.render.strokeStyle;
+        ctx.lineWidth = stone.render.lineWidth;
+        ctx.beginPath();
+        ctx.arc(x, y, stoneRadius, 0, Math.PI * 2);
         ctx.stroke();
       }
 
