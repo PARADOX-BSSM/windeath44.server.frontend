@@ -6,8 +6,9 @@ import { inputPortage, inputContent } from '@/atoms/inputManager';
 import { taskSearchAtom } from '@/atoms/taskTransformer';
 import { useProcessManager } from '@/hooks/processManager';
 import { useAtom, useAtomValue } from 'jotai';
-import { usePostCommit } from '@/api/memorial/userCommit.ts';
+import { usePostCommit, usePostPullRequest } from '@/api/memorial/userCommit.ts';
 import { memorialIdAtom, userIdAtom } from '@/atoms/memorialManager.ts';
+import { useGetPrsQuery } from '@/api/memorial/cheifCommit.ts';
 
 interface PropsType {
   text: string;
@@ -20,6 +21,8 @@ const MergeBtn = ({ text }: PropsType) => {
   const [memorialId] = useAtom(memorialIdAtom);
   const createCharacterMutation = useCreateCharacter();
   const commitMutation = usePostCommit();
+  const { data, isLoading, isError, error } = useGetPrsQuery({ memorialId });
+  const pullRequestMutation = usePostPullRequest();
   const uploadImageMutation = useUploadImage();
   const applyMemorialMutation = useApplyMemorial();
   const [, , removeTask] = useProcessManager();
@@ -77,6 +80,10 @@ const MergeBtn = ({ text }: PropsType) => {
         { memorialId, content: contentValue.content, userId },
         {
           onSuccess: () => {
+            pullRequestMutation.mutate({
+              memorialPullRequestId: data.memorialPullRequestId,
+              userId,
+            });
             useInputValue({
               name: '',
               deathReason: '자연사(自然死)' as deathType,

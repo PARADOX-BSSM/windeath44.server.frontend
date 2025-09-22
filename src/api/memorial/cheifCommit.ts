@@ -125,7 +125,29 @@ export const usePatchMemorialReject = () => {
 type memorialId = {
   memorialId: number;
 };
-const getPullRequestsByMemorialId = async ({ memorialId }: memorialId): Promise<object> => {
+type memorial = {
+  memorialId: number;
+  characterId: number;
+  bowCount: number;
+};
+type memorialCommit = {
+  memorialCommitId: number;
+  userId: string;
+  memorial: memorial;
+  content: string;
+  createdAt: string | null;
+};
+type memorialIdResponses = {
+  memorialPullRequestId: number;
+  userId: string;
+  memorialCommit: memorialCommit;
+  memorial: memorial;
+  state: string;
+  updatedAt: string | null;
+};
+const getPullRequestsByMemorialId = async ({
+  memorialId,
+}: memorialId): Promise<memorialIdResponses> => {
   const response = await api.get(`:${memorial}/pull-requests/${memorialId}`);
   return response.data;
 };
@@ -139,7 +161,9 @@ export const useGetPrsQuery = ({ memorialId }: memorialId) => {
 type requestId = {
   requestId: number;
 };
-const getPullRequestByRequestId = async ({ requestId }: requestId): Promise<object> => {
+const getPullRequestByRequestId = async ({
+  requestId,
+}: requestId): Promise<memorialIdResponses> => {
   const response = await api.patch(`:${memorial}/pull-request/${requestId}`);
   return response.data;
 };
