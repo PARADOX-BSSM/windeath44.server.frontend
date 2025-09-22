@@ -12,10 +12,7 @@ const logOut = async (): Promise<string> => {
   } catch (error) {
     const axiosError = error as AxiosError;
     if (axiosError.response?.headers) {
-      alert(`로그아웃 실패`);
       console.log(`로그아웃 실패: ${JSON.stringify(axiosError.response.headers)}`);
-    } else {
-      alert('로그아웃 중 오류가 발생했습니다.');
     }
     throw error;
   }

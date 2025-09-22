@@ -19,10 +19,7 @@ export const verifyEmailCode = async ({ email, check }: authParams): Promise<boo
   } catch (error) {
     const axiosError = error as AxiosError;
     if (axiosError.response?.data) {
-      alert(`인증 실패: 다시 입력해 주세요!`);
       console.log(`인증 실패: ${JSON.stringify(axiosError.response.data)}`);
-    } else {
-      alert('인증코드 확인 중 오류가 발생했습니다.');
     }
     throw error;
   }

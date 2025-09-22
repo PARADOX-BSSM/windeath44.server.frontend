@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { memorial } from '@/config';
 import { useMutation } from '@tanstack/react-query';
 import React from 'react';
@@ -50,13 +49,7 @@ export const useGetMemorialComments = (
       setMemorialComment(data.data.data);
     },
     onError: (err: unknown) => {
-      alert('댓글 조회 실패' + err);
-
-      if (axios.isAxiosError(err)) {
-        alert('Axios error:' + err.response);
-      } else {
-        alert('Unknown error:' + err);
-      }
+      console.error('댓글 조회 실패', err);
     },
   });
 };

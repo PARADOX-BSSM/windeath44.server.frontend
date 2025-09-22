@@ -26,10 +26,7 @@ const applyMemorial = async ({
     return true;
   } catch (error: any) {
     if (error.response?.data) {
-      alert(`추모관 등록 오류`);
-      console.log(`이메일 전송 실패: ${JSON.stringify(error.response.data)}`);
-    } else {
-      alert('추모관 등록 중 오류가 발생했습니다.');
+      console.log(`추모관 등록 실패: ${JSON.stringify(error.response.data)}`);
     }
     throw error;
   }
@@ -39,7 +36,7 @@ export const useApplyMemorial = () => {
   return useMutation({
     mutationFn: applyMemorial,
     onSuccess: () => {
-      alert('추모관이 성공적으로 등록되었습니다.');
+      console.log('추모관이 성공적으로 등록되었습니다.');
     },
     onError: () => {},
   });

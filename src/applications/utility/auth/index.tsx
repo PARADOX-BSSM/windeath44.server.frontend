@@ -59,6 +59,19 @@ const Auth = ({ changeToPassword, changeToEmailCheck }: Props) => {
         onSuccess: () => {
           changeToPassword();
         },
+        onError: () => {
+          setAlert?.(
+            Choten,
+            <>
+              인증 코드 검증에 실패했습니다.
+              <br />
+              다시 시도해 주세요.
+            </>,
+            () => {
+              taskTransform?.('경고', '');
+            },
+          );
+        },
       },
     );
   };

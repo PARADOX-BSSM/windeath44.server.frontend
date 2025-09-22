@@ -56,6 +56,15 @@ const PasswordChange = ({ changeToLogIn }: Props) => {
         onSuccess: () => {
           changeToLogIn();
         },
+        onError: () => {
+          setAlert?.(
+            Choten,
+            <>비밀번호 재설정 중 오류가 발생했습니다!!<br />다시 시도해주세요!</>,
+            () => {
+              taskTransform?.('경고', '');
+            }
+          );
+        },
       },
     );
   };

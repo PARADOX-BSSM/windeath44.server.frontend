@@ -16,12 +16,9 @@ const changeKeyValidation = async ({ authorizationCode }: ChangeKeyValidation) =
   } catch (error: any) {
     console.error(error);
     if (error.response?.data) {
-      alert(`인증 코드 검증 실패: 다시 시도해 주세요!!`);
       console.log(`인증 코드 검증 실패: ${JSON.stringify(error.response.data)}`);
-    } else {
-      alert('인증 코드 검증 중 오류가 발생했습니다.');
     }
-    return false;
+    throw error;
   }
 };
 export const useChangeKeyValidation = () => {

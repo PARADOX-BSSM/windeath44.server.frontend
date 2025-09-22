@@ -101,7 +101,29 @@ const SignUp = ({ changeToLogIn }: Props) => {
       );
       return;
     }
-    signUpMutation.mutate({ name, userId, email, pw, changeToLogIn });
+    signUpMutation.mutate(
+      { name, userId, email, pw, changeToLogIn },
+      {
+        onSuccess: () => {
+          setAlert?.(
+            Choten,
+            <>회원가입이 완료되었습니다.</>,
+            () => {
+              taskTransform?.('경고', '');
+            }
+          );
+        },
+        onError: () => {
+          setAlert?.(
+            Choten,
+            <>회원가입 실패: 다시 시도해 주세요!!</>,
+            () => {
+              taskTransform?.('경고', '');
+            }
+          );
+        }
+      }
+    );
     e.preventDefault();
   };
 
@@ -113,6 +135,22 @@ const SignUp = ({ changeToLogIn }: Props) => {
         onSuccess: () => {
           setClick(true);
           setTimeLeft(180);
+          setAlert?.(
+            Choten,
+            <>이메일이 성공적으로 전송되었습니다.</>,
+            () => {
+              taskTransform?.('경고', '');
+            }
+          );
+        },
+        onError: () => {
+          setAlert?.(
+            Choten,
+            <>이메일 전송 실패: 다시 입력해 주세요!</>,
+            () => {
+              taskTransform?.('경고', '');
+            }
+          );
         },
       },
     );
@@ -120,8 +158,27 @@ const SignUp = ({ changeToLogIn }: Props) => {
   const verifyCode = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (check.length == 5) {
-      verifyEmailMutation.mutate({ email, check });
-      setClick(false);
+      verifyEmailMutation.mutate({ email, check }, {
+        onSuccess: () => {
+          setClick(false);
+          setAlert?.(
+            Choten,
+            <>인증이 완료되었습니다.</>,
+            () => {
+              taskTransform?.('경고', '');
+            }
+          );
+        },
+        onError: () => {
+          setAlert?.(
+            Choten,
+            <>인증 실패: 다시 입력해 주세요!</>,
+            () => {
+              taskTransform?.('경고', '');
+            }
+          );
+        }
+      });
     } else {
       setAlert?.(Choten, <>인증코드 5자리를 입력하지 않았습니다.</>, () => {
         taskTransform?.('경고', '');
