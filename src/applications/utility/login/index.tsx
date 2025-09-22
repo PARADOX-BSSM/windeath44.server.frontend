@@ -9,7 +9,7 @@ import { taskTransformerAtom } from '@/atoms/taskTransformer';
 import MemorialBtn from '@/applications/components/memorialBtn';
 import { isLogInedAtom } from '@/atoms/windowManager';
 import { alerterAtom } from '@/atoms/alerter';
-import { Axios, AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 type Props = {
   changeToSignUp: () => void;
   changeToEmailCheck: () => void;
@@ -44,6 +44,34 @@ const LogIn = ({ changeToSignUp, changeToEmailCheck }: Props) => {
   const checkLogIn = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const id = userId;
+    if (id.length === 0) {
+      setAlert?.(
+        Choten,
+        <>
+          아이디가 잘못되었습니다.
+          <br />
+          다시 입력해 주세요.
+        </>,
+        () => {
+          taskTransform?.('경고', '');
+        },
+      );
+      return;
+    }
+    if (password.length === 0) {
+      setAlert?.(
+        Choten,
+        <>
+          비밀번호가 잘못되었습니다.
+          <br />
+          다시 입력해 주세요.
+        </>,
+        () => {
+          taskTransform?.('경고', '');
+        },
+      );
+      return;
+    }
     logInMutation.mutate(
       { id, password },
       {
