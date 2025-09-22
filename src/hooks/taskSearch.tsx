@@ -26,9 +26,13 @@ export const useTaskSearchFunction = () => {
     const internal = original.props.children as React.ReactElement;
     const type = internal.type;
 
+    // 기존 props를 유지하고 새로운 props를 병합
+    const existingProps = internal.props || {};
+
     foundTask.component = (
       <Suspense fallback={null}>
         {React.createElement(type, {
+          ...existingProps,
           ...(props ?? {}),
         })}
       </Suspense>
