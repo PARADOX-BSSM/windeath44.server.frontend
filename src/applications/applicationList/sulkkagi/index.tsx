@@ -73,17 +73,31 @@ function drawStoneWithSvgBackground(
     ctx.arc(x, y, r, 0, Math.PI * 2);
     ctx.clip();
 
-    // SVG 이미지를 돌 크기에 맞게 스케일링하여 그리기 (원래 크기로 복원)
-    const imgSize = r * 2;
+    // SVG 이미지를 돌 크기에 맞게 스케일링하여 그리기 (약간 작게)
+    const imgSize = r * 1.8;
     ctx.drawImage(img, x - imgSize / 2, y - imgSize / 2, imgSize, imgSize);
 
     ctx.restore();
+
+    // 돌 윤곽선 그리기
+    ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.stroke();
   } else {
     // 이미지가 로드되지 않았으면 기본 원형 돌
     ctx.fillStyle = theme === 'white' ? '#f0f0f0' : '#2c2c2c';
     ctx.beginPath();
     ctx.arc(x, y, r, 0, Math.PI * 2);
     ctx.fill();
+
+    // 기본 돌에도 윤곽선 추가
+    ctx.strokeStyle = theme === 'white' ? 'rgba(0, 0, 0, 0.3)' : 'rgba(255, 255, 255, 0.4)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.stroke();
   }
 
   ctx.restore();
