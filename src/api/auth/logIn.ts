@@ -29,11 +29,11 @@ const logIn = async ({ id, password }: authParams): Promise<string> => {
     return accessToken;
   } catch (error) {
     const axiosError = error as AxiosError;
-    if (axiosError.response?.headers) {
-      alert(`로그인 실패: 다시 입력해 주세요!`);
+    if (axiosError.response && axiosError.response.headers) {
+      // alert(`로그인 실패: 다시 입력해 주세요!`);
       console.log(`로그인 실패: ${JSON.stringify(axiosError.response.headers)}`);
     } else {
-      alert('로그인 중 오류가 발생했습니다.');
+      // alert('로그인 중 오류가 발생했습니다.');
     }
     throw error;
   }

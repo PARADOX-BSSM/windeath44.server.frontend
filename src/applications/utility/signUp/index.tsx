@@ -1,11 +1,15 @@
 import * as _ from './style';
 import Logo from '@/assets/windeath44.svg';
+import Choten from '@/assets/profile/choten.svg';
 import { useEffect, useState } from 'react';
 import Inputs from '@/applications/components/inputs';
 import { useSignUp } from '@/api/user/signUp.ts';
 import { useEmailValidation } from '@/api/auth/emailValidationRequest.ts';
 import { useVerifyEmail } from '@/api/auth/verifyEmailCode.ts';
 import MemorialBtn from '@/applications/components/memorialBtn';
+import { useAtomValue } from 'jotai';
+import { alerterAtom } from '@/atoms/alerter';
+import { taskTransformerAtom } from '@/atoms/taskTransformer';
 type Props = {
   changeToLogIn: () => void;
 };
@@ -19,17 +23,82 @@ const SignUp = ({ changeToLogIn }: Props) => {
   const [click, setClick] = useState(false);
   const [timeLeft, setTimeLeft] = useState(180);
 
+  const setAlert = useAtomValue(alerterAtom);
+  const taskTransform = useAtomValue(taskTransformerAtom);
+
   const signUpMutation = useSignUp();
   const emailValidationMutation = useEmailValidation();
   const verifyEmailMutation = useVerifyEmail();
 
   const sendAuth = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (name.length == 0) {
+      setAlert?.(
+        Choten,
+        <>
+          사용자 이름이 잘못되었습니다.
+          <br />
+          다시 입력해 주세요.
+        </>,
+        () => {
+          taskTransform?.('경고', '');
+        },
+      );
+      return;
+    }
+    if (userId.length == 0) {
+      setAlert?.(
+        Choten,
+        <>
+          아이디가 잘못되었습니다.
+          <br />
+          다시 입력해 주세요.
+        </>,
+        () => {
+          taskTransform?.('경고', '');
+        },
+      );
+      return;
+    }
+    if (email.length == 0 || !email.includes('@')) {
+      setAlert?.(
+        Choten,
+        <>
+          이메일이 잘못되었습니다.
+          <br />
+          다시 입력해 주세요.
+        </>,
+        () => {
+          taskTransform?.('경고', '');
+        },
+      );
+      return;
+    }
     if (pw !== checkingPw) {
-      alert('비밀번호가 일치하지 않습니다.');
+      setAlert?.(
+        Choten,
+        <>
+          비밀번호가 일치하지 않습니다.
+          <br />
+          다시 입력해 주세요.
+        </>,
+        () => {
+          taskTransform?.('경고', '');
+        },
+      );
       return;
     }
     if (pw.length < 8 || pw.length > 20) {
-      alert('비밀번호는 8~20 문자만 허용합니다.\n 다시 입력해 주세요!!');
+      setAlert?.(
+        Choten,
+        <>
+          비밀번호가 8~20자리가 아닙니다.
+          <br />
+          다시 입력해 주세요.
+        </>,
+        () => {
+          taskTransform?.('경고', '');
+        },
+      );
       return;
     }
     signUpMutation.mutate({ name, userId, email, pw, changeToLogIn });
@@ -54,7 +123,9 @@ const SignUp = ({ changeToLogIn }: Props) => {
       verifyEmailMutation.mutate({ email, check });
       setClick(false);
     } else {
-      alert('인증코드 5자리를 입력하지 않았습니다.');
+      setAlert?.(Choten, <>인증코드 5자리를 입력하지 않았습니다.</>, () => {
+        taskTransform?.('경고', '');
+      });
     }
   };
   useEffect(() => {
@@ -76,8 +147,8 @@ const SignUp = ({ changeToLogIn }: Props) => {
     return `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
   };
 
-  const buttonWidth = "144px";
-  const buttonHeight = "42px";
+  const buttonWidth = '144px';
+  const buttonHeight = '42px';
   const buttonFontSize = '20px';
 
   return (
@@ -123,8 +194,8 @@ const SignUp = ({ changeToLogIn }: Props) => {
                 onClick={sendEmail}
                 type="submit"
                 active={true}
-                height='34px'
-                fontSize={"16px"}
+                height="34px"
+                fontSize={'16px'}
               />
             </_.btnSet>
           </_.set>
@@ -143,8 +214,8 @@ const SignUp = ({ changeToLogIn }: Props) => {
                 onClick={verifyCode}
                 type="submit"
                 active={true}
-                height='34px'
-                fontSize={"16px"}
+                height="34px"
+                fontSize={'16px'}
               />
             </_.btnSet>
           </_.set>
@@ -173,8 +244,8 @@ const SignUp = ({ changeToLogIn }: Props) => {
             onClick={sendAuth}
             type="submit"
             active={true}
-            widthPercent={buttonWidth}
-            heightPercent={buttonHeight}
+            width={buttonWidth}
+            height={buttonHeight}
             fontSize={buttonFontSize}
           />
           <MemorialBtn
@@ -182,8 +253,8 @@ const SignUp = ({ changeToLogIn }: Props) => {
             onClick={changeToLogIn}
             type="submit"
             active={true}
-            widthPercent={buttonWidth}
-            heightPercent={buttonHeight}
+            width={buttonWidth}
+            height={buttonHeight}
             fontSize={buttonFontSize}
           />
         </_.tempButtonsStyle>
