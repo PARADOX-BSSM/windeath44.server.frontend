@@ -858,9 +858,10 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
       // 1. 벽 위험도 평가
       const wallDanger = evaluateWallDanger(aiStone);
 
-      // 2. 방어 우선 상황 체크
-      if (wallDanger > 0.7) {
-        // 위험한 상황: 벽에서 도망가기
+      // 2. 방어 우선 상황 체크 (더 공격적으로 조정)
+      if (wallDanger > 0.85) {
+        // 위험 임계값을 높여서 더 공격적으로
+        // 매우 위험한 상황에서만 도망가기
         const escapeMove = calculateEscapeMove(aiStone);
         if (escapeMove && escapeMove.score > bestScore) {
           bestScore = escapeMove.score;
@@ -905,7 +906,7 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
     return bestMove;
   };
 
-  // 벽 위험도 평가 함수
+  // 강화된 벽 위험도 평가 함수
   const evaluateWallDanger = (stone: any) => {
     const x = stone.position.x;
     const y = stone.position.y;
@@ -918,10 +919,13 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
     ];
 
     const minDistance = Math.min(...distanceToWalls);
-    const dangerThreshold = 60; // 위험 거리 임계값
 
-    if (minDistance > dangerThreshold) return 0;
-    return 1 - minDistance / dangerThreshold;
+    // 단계별 위험도 계산
+    if (minDistance > 80) return 0; // 안전
+    if (minDistance > 60) return 0.2; // 약간 위험
+    if (minDistance > 40) return 0.5; // 위험
+    if (minDistance > 20) return 0.8; // 매우 위험
+    return 1.0; // 극도로 위험
   };
 
   // 벽에서 도망가는 이동 계산
@@ -946,7 +950,7 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
     };
   };
 
-  // 공격 이동 평가 (기존 로직 개선)
+  // 강화된 공격 이동 평가
   const evaluateAttackMove = (
     aiStone: any,
     targetEnemy: any,
@@ -964,34 +968,197 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
 
     let score = 0;
 
-    // 1. 거리 점수 (가까울수록 좋음)
+    // 1. 아웃 가능성 평가 (새로운 핵심 기능)
+    const knockoutPotential = evaluateKnockoutPotential(
+      aiStone,
+      targetEnemy,
+      normalizedDx,
+      normalizedDy,
+    );
+    score += knockoutPotential.score;
+
+    // 2. 거리 점수 (가까울수록 좋음)
     const distanceScore = (Math.max(0, 300 - distance) / 300) * 100;
     score += distanceScore;
 
-    // 2. 적의 벽 근접성 (적을 벽으로 밀어낼 가능성)
+    // 3. 적의 벽 근접성 (적을 벽으로 밀어낼 가능성)
     const enemyWallDanger = evaluateWallDanger(targetEnemy);
-    score += enemyWallDanger * 200; // 벽에 가까운 적을 우선 타격
+    score += enemyWallDanger * 250; // 벽에 가까운 적을 더 우선 타격
 
-    // 3. 큰 돌 vs 작은 돌 전략
+    // 4. 큰 돌 vs 작은 돌 전략
     const stoneAdvantage = evaluateStoneAdvantage(aiStone, targetEnemy, distance);
     score += stoneAdvantage;
 
-    // 4. 자신의 안전성 확인
+    // 5. 자신의 안전성 확인 (강화됨)
+    const selfKnockoutRisk = evaluateSelfKnockoutRisk(
+      aiStone,
+      normalizedDx,
+      normalizedDy,
+      distance,
+      knockoutPotential.canKnockout,
+    );
     const safetyPenalty = calculateSafetyPenalty(
       aiStone,
       normalizedDx,
       normalizedDy,
       allEnemyStones,
     );
+
+    // 자신이 아웃될 위험이 높으면 점수를 크게 감점
+    score -= selfKnockoutRisk.penalty;
     score -= safetyPenalty;
 
-    // 5. 동적 힘 조절
-    const power = calculateDynamicPower(aiStone, targetEnemy, distance, enemyWallDanger);
+    // 자신이 아웃될 확률이 높으면 아예 공격하지 않음
+    if (selfKnockoutRisk.willSelfKnockout) {
+      return { score: -2000, direction: { x: normalizedDx, y: normalizedDy }, power: 0 };
+    }
+
+    // 6. 강화된 동적 힘 조절 (아웃 가능성 + 안전성 고려)
+    const power = calculateEnhancedPower(
+      aiStone,
+      targetEnemy,
+      distance,
+      enemyWallDanger,
+      knockoutPotential.canKnockout,
+      { x: normalizedDx, y: normalizedDy },
+    );
 
     return {
       score,
       direction: { x: normalizedDx, y: normalizedDy },
       power,
+    };
+  };
+
+  // 자신의 아웃 위험 평가 함수 (새로운 안전 기능)
+  const evaluateSelfKnockoutRisk = (
+    aiStone: any,
+    attackDirX: number,
+    attackDirY: number,
+    attackDistance: number,
+    isStrongAttack: boolean,
+  ) => {
+    const currentX = aiStone.position.x;
+    const currentY = aiStone.position.y;
+
+    // 공격 시 반동 계산 (뉴턴의 제3법칙)
+    const recoilMultiplier = isStrongAttack ? 0.4 : 0.25; // 강한 공격일수록 큰 반동
+    const baseRecoil = attackDistance > 150 ? 35 : attackDistance > 100 ? 25 : 15;
+    const recoilDistance = baseRecoil * recoilMultiplier;
+
+    // 큰 돌은 반동이 작음 (관성이 큼)
+    const massReduction = aiStone.isBig ? 0.7 : 1.0;
+    const finalRecoilDistance = recoilDistance * massReduction;
+
+    // 반동 방향 (공격 방향의 반대)
+    const recoilDirX = -attackDirX;
+    const recoilDirY = -attackDirY;
+
+    // 반동 후 예상 위치
+    const predictedX = currentX + recoilDirX * finalRecoilDistance;
+    const predictedY = currentY + recoilDirY * finalRecoilDistance;
+
+    // 반동 후 벽과의 거리
+    const distanceToWallAfterRecoil = Math.min(
+      predictedX,
+      predictedY,
+      BOARD_SIZE - predictedX,
+      BOARD_SIZE - predictedY,
+    );
+
+    let penalty = 0;
+    let willSelfKnockout = false;
+
+    // 반동으로 벽 밖으로 나가는지 확인
+    if (predictedX < 0 || predictedX > BOARD_SIZE || predictedY < 0 || predictedY > BOARD_SIZE) {
+      penalty = 1000; // 확실한 자기 아웃: 매우 큰 패널티
+      willSelfKnockout = true;
+    } else if (distanceToWallAfterRecoil < 15) {
+      penalty = 600; // 매우 위험
+      willSelfKnockout = true;
+    } else if (distanceToWallAfterRecoil < 30) {
+      penalty = 300; // 위험
+    } else if (distanceToWallAfterRecoil < 50) {
+      penalty = 150; // 약간 위험
+    }
+
+    // 현재 벽에 가까운 상태에서 공격하는 경우 추가 패널티
+    const currentWallDanger = evaluateWallDanger(aiStone);
+    if (currentWallDanger > 0.5) {
+      penalty *= 1 + currentWallDanger; // 현재 위험도에 비례해서 패널티 증가
+    }
+
+    return {
+      penalty,
+      willSelfKnockout,
+      predictedPosition: { x: predictedX, y: predictedY },
+      recoilDistance: finalRecoilDistance,
+    };
+  };
+
+  // 아웃 가능성 평가 함수 (새로운 핵심 기능)
+  const evaluateKnockoutPotential = (
+    aiStone: any,
+    targetEnemy: any,
+    dirX: number,
+    dirY: number,
+  ) => {
+    const enemyX = targetEnemy.position.x;
+    const enemyY = targetEnemy.position.y;
+
+    // 공격 후 적의 예상 이동 거리 계산
+    const aiMass = aiStone.isBig ? 1.5 : 1.0;
+    const enemyMass = targetEnemy.isBig ? 1.5 : 1.0;
+    const massRatio = aiMass / enemyMass;
+
+    // 예상 이동 거리 (물리 시뮬레이션 근사)
+    const estimatedKickDistance = massRatio * 80; // 기본 킥 거리
+
+    // 적이 이동할 예상 위치
+    const predictedX = enemyX + dirX * estimatedKickDistance;
+    const predictedY = enemyY + dirY * estimatedKickDistance;
+
+    // 예상 위치가 벽 밖인지 확인
+    const willBeOut =
+      predictedX < 0 || predictedX > BOARD_SIZE || predictedY < 0 || predictedY > BOARD_SIZE;
+
+    // 벽과의 거리로 아웃 확률 계산
+    const distanceToWallAfterHit = Math.min(
+      predictedX,
+      predictedY,
+      BOARD_SIZE - predictedX,
+      BOARD_SIZE - predictedY,
+    );
+
+    let knockoutScore = 0;
+    let canKnockout = false;
+
+    if (willBeOut) {
+      // 확실한 아웃: 최고 점수
+      knockoutScore = 500;
+      canKnockout = true;
+    } else if (distanceToWallAfterHit < 30) {
+      // 매우 높은 아웃 확률
+      knockoutScore = 300;
+      canKnockout = true;
+    } else if (distanceToWallAfterHit < 60) {
+      // 높은 아웃 확률
+      knockoutScore = 150;
+      canKnockout = true;
+    } else if (distanceToWallAfterHit < 100) {
+      // 중간 아웃 확률
+      knockoutScore = 75;
+    }
+
+    // 큰 돌로 작은 돌을 치는 경우 보너스
+    if (aiStone.isBig && !targetEnemy.isBig) {
+      knockoutScore *= 1.3;
+    }
+
+    return {
+      score: knockoutScore,
+      canKnockout,
+      estimatedDistance: estimatedKickDistance,
     };
   };
 
@@ -1018,36 +1185,73 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
     return 0;
   };
 
-  // 동적 힘 조절
+  // 강화된 동적 힘 조절 (아웃 가능성 + 자신의 안전성 고려)
+  const calculateEnhancedPower = (
+    aiStone: any,
+    enemyStone: any,
+    distance: number,
+    enemyWallDanger: number,
+    canKnockout: boolean,
+    attackDirection: { x: number; y: number } = { x: 0, y: 0 },
+  ) => {
+    const basePower = aiStone.isBig ? 0.025 : 0.012; // 기본 파워를 조금 줄임 (안전성 고려)
+    let powerMultiplier = 1;
+
+    // 자신의 현재 위험도 평가
+    const selfWallDanger = evaluateWallDanger(aiStone);
+
+    // 자신이 위험한 상황에서는 파워를 줄임
+    if (selfWallDanger > 0.7) {
+      powerMultiplier *= 0.6; // 매우 위험하면 40% 감소
+    } else if (selfWallDanger > 0.5) {
+      powerMultiplier *= 0.8; // 위험하면 20% 감소
+    }
+
+    // 아웃 가능성이 높고 자신이 안전할 때만 강하게 공격
+    if (canKnockout && selfWallDanger < 0.5) {
+      powerMultiplier *= 1.4; // 자신이 안전할 때만 강하게
+    } else if (canKnockout && selfWallDanger < 0.7) {
+      powerMultiplier *= 1.2; // 약간 위험하면 조금만 강하게
+    } else {
+      // 일반적인 거리에 따른 힘 조절
+      if (distance < 80) {
+        powerMultiplier *= 0.7; // 가까운 거리: 약간 약한 힘
+      } else if (distance < 150) {
+        powerMultiplier *= 0.9; // 중간 거리: 조금 약한 힘
+      } else {
+        powerMultiplier *= 1.0; // 먼 거리: 기본 힘
+      }
+    }
+
+    // 적이 벽에 매우 가까우면 더욱 강하게 (단, 자신이 안전할 때만)
+    if (enemyWallDanger > 0.7 && selfWallDanger < 0.5) {
+      powerMultiplier *= 1.3; // 벽에 매우 가까우면 30% 추가
+    } else if (enemyWallDanger > 0.5 && selfWallDanger < 0.6) {
+      powerMultiplier *= 1.1; // 벽에 가까우면 10% 추가
+    }
+
+    // 큰 돌로 작은 돌을 공격하는 경우 추가 파워 (안전할 때만)
+    if (aiStone.isBig && !enemyStone.isBig && selfWallDanger < 0.6) {
+      powerMultiplier *= 1.1; // 안전할 때만 10% 추가 파워
+    }
+
+    // 최대 파워 제한 (자신의 위험도에 따라 조절)
+    const maxPowerBase = aiStone.isBig ? 0.045 : 0.03;
+    const maxPower = maxPowerBase * (1 - selfWallDanger * 0.3); // 위험할수록 최대 파워 제한
+    const finalPower = Math.min(basePower * powerMultiplier, maxPower);
+
+    return Math.max(finalPower, 0.005); // 최소 파워 보장
+  };
+
+  // 기존 동적 힘 조절 (호환성을 위해 유지)
   const calculateDynamicPower = (
     aiStone: any,
     enemyStone: any,
     distance: number,
     enemyWallDanger: number,
   ) => {
-    const basePower = aiStone.isBig ? 0.025 : 0.012;
-    let powerMultiplier = 1;
-
-    // 거리에 따른 힘 조절
-    if (distance < 80) {
-      powerMultiplier = 0.6; // 가까운 거리: 약한 힘
-    } else if (distance < 150) {
-      powerMultiplier = 0.8; // 중간 거리: 중간 힘
-    } else {
-      powerMultiplier = 1.0; // 먼 거리: 기본 힘
-    }
-
-    // 적이 벽에 가까우면 더 강하게
-    if (enemyWallDanger > 0.5) {
-      powerMultiplier *= 1.3;
-    }
-
-    // 큰 돌의 경우 힘 조절을 더 세밀하게
-    if (aiStone.isBig) {
-      powerMultiplier *= 0.9; // 큰 돌은 조금 더 신중하게
-    }
-
-    return basePower * powerMultiplier;
+    // 새로운 함수를 호출하되 canKnockout은 false로 처리
+    return calculateEnhancedPower(aiStone, enemyStone, distance, enemyWallDanger, false);
   };
 
   // 포지셔닝 평가
