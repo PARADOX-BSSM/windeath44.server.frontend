@@ -96,24 +96,24 @@ const SulkkagiMenu = ({ stack, push, pop, top }: dataStructureProps) => {
             <_.DescriptionText>
               <_.DescriptionSection>
                 <strong>게임 목표</strong>
-                <p>상대방의 모든 돌을 보드 밖으로 밀어내세요!</p>
+                <p>상대방의 모든 설을 보드 밖으로 밀어내세요!</p>
               </_.DescriptionSection>
 
               <_.DescriptionSection>
                 <strong>조작법</strong>
-                <p>1. 자신의 돌을 클릭하여 선택</p>
+                <p>1. 자신의 설을 클릭하여 선택</p>
                 <p>2. 마우스를 드래그하여 방향과 힘 조절</p>
-                <p>3. 마우스를 놓으면 돌이 날아갑니다</p>
+                <p>3. 마우스를 놓으면 설이 날아갑니다</p>
               </_.DescriptionSection>
 
               <_.DescriptionSection>
                 <strong>추모관</strong>
-                <p>보드 밖으로 나간 돌들을 추모합시다.</p>
+                <p>보드 밖으로 나간 설들을 추모합시다.</p>
               </_.DescriptionSection>
 
               <_.DescriptionSection>
                 <strong>참고</strong>
-                <p>1. 큰 돌은 더 강력하지만 꽤나 무겁습니다.</p>
+                <p>1. 큰 설은 더 강력하지만 꽤나 무겁습니다.</p>
                 <p>2. 이 게임은 적당한 피지컬을 요구합니다.</p>
               </_.DescriptionSection>
             </_.DescriptionText>

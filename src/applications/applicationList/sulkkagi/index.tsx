@@ -3,6 +3,105 @@ import * as Matter from 'matter-js';
 import * as _ from './style';
 import { createAllStones, STONE_RADIUS, BIG_STONE_RADIUS } from './data';
 import { CURSOR_IMAGES, setCursorImage } from '@/lib/setCursorImg';
+import whiteStoneUrl from '@/assets/sulkkagi/white_stone.svg?url';
+import blackStoneUrl from '@/assets/sulkkagi/black_stone.svg?url';
+
+// 전역 이미지 캐시
+let globalStoneImages: {
+  white: HTMLImageElement | null;
+  black: HTMLImageElement | null;
+} = { white: null, black: null };
+let globalImagesLoaded = false;
+
+// 전역 이미지 로딩 함수
+const loadGlobalStoneImages = (): Promise<void> => {
+  if (globalImagesLoaded) return Promise.resolve();
+
+  return new Promise((resolve) => {
+    let loadedCount = 0;
+    const totalImages = 2;
+
+    const checkComplete = () => {
+      loadedCount++;
+      if (loadedCount === totalImages) {
+        globalImagesLoaded = true;
+        resolve();
+      }
+    };
+
+    // 하얀 돌 이미지 로드
+    const whiteImg = new Image();
+    whiteImg.onload = checkComplete;
+    whiteImg.onerror = checkComplete; // 에러시에도 완료 처리
+    whiteImg.src = whiteStoneUrl;
+    globalStoneImages.white = whiteImg;
+
+    // 검은 돌 이미지 로드
+    const blackImg = new Image();
+    blackImg.onload = checkComplete;
+    blackImg.onerror = checkComplete; // 에러시에도 완료 처리
+    blackImg.src = blackStoneUrl;
+    globalStoneImages.black = blackImg;
+  });
+};
+
+// SVG 배경 이미지를 사용한 돌 렌더링 함수
+function drawStoneWithSvgBackground(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  r: number,
+  theme: 'white' | 'black',
+) {
+  const img = theme === 'white' ? globalStoneImages.white : globalStoneImages.black;
+
+  // 그림자 효과 먼저 그리기
+  ctx.save();
+  ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
+  ctx.shadowBlur = 4;
+  ctx.shadowOffsetX = 2;
+  ctx.shadowOffsetY = 2;
+
+  if (img && img.complete && img.naturalWidth > 0) {
+    ctx.save();
+
+    // 이미지 스무딩 비활성화 (픽셀 아트를 위해)
+    ctx.imageSmoothingEnabled = false;
+
+    // 원형 클리핑 마스크 적용
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.clip();
+
+    // SVG 이미지를 돌 크기에 맞게 스케일링하여 그리기 (약간 작게)
+    const imgSize = r * 1.8;
+    ctx.drawImage(img, x - imgSize / 2, y - imgSize / 2, imgSize, imgSize);
+
+    ctx.restore();
+
+    // 돌 윤곽선 그리기
+    ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.stroke();
+  } else {
+    // 이미지가 로드되지 않았으면 기본 원형 돌
+    ctx.fillStyle = theme === 'white' ? '#f0f0f0' : '#2c2c2c';
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 기본 돌에도 윤곽선 추가
+    ctx.strokeStyle = theme === 'white' ? 'rgba(0, 0, 0, 0.3)' : 'rgba(255, 255, 255, 0.4)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+
+  ctx.restore();
+}
 
 const BOARD_SIZE = 400;
 const BOARD_PADDING = 40;
@@ -40,14 +139,53 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
   const player1CountRef = useRef(0); // 하얀돌 추모관 등록 카운터
   const player2CountRef = useRef(0); // 까만돌 추모관 등록 카운터
 
+  // SVG 이미지 로딩 상태
+  const [imagesLoaded, setImagesLoaded] = useState(false);
+
   const isDraggingRef = useRef(false);
   const selectedStoneIdRef = useRef<number | null>(null);
   const aimStartRef = useRef<{ x: number; y: number } | null>(null);
   const aimCurrentRef = useRef<{ x: number; y: number } | null>(null);
 
+  // SVG 이미지 로딩을 위한 useEffect
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        await loadGlobalStoneImages();
+        setImagesLoaded(true);
+      } catch (error) {
+        console.error('Failed to load stone images:', error);
+        setImagesLoaded(true); // 에러가 발생해도 기본 돌로 렌더링하기 위해 true로 설정
+      }
+    };
+
+    loadImages();
+  }, []);
+
+  // 이미지 로딩 완료 시 강제 리렌더링
+  useEffect(() => {
+    if (imagesLoaded) {
+      requestAnimationFrame(() => {
+        draw();
+      });
+    }
+  }, [imagesLoaded]);
+
   // Matter.js 초기화
   useEffect(() => {
     initializeMatter();
+
+    // 메인 게임 캔버스 DPR 스케일링
+    const mainCanvas = canvasRef.current;
+    if (mainCanvas) {
+      const dpr = window.devicePixelRatio || 1;
+      mainCanvas.width = BOARD_SIZE * dpr;
+      mainCanvas.height = BOARD_SIZE * dpr;
+      mainCanvas.style.width = `${BOARD_SIZE}px`;
+      mainCanvas.style.height = `${BOARD_SIZE}px`;
+      const ctx = mainCanvas.getContext('2d');
+      ctx?.scale(dpr, dpr);
+    }
 
     // 화살표 캔버스 DPR 스케일링
     const c = arrowCanvasRef.current;
@@ -301,11 +439,12 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
     if (!canvas || !engineRef.current) return;
 
     const ctx = canvas.getContext('2d')!;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // DPI 스케일링을 고려한 Canvas 크기로 clear
+    ctx.clearRect(0, 0, BOARD_SIZE, BOARD_SIZE);
 
     // 바둑판 배경
     ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillRect(0, 0, BOARD_SIZE, BOARD_SIZE);
 
     // 바둑판 선
     ctx.strokeStyle = '#8B4513';
@@ -342,7 +481,7 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
       });
     });
 
-    // 돌 그리기
+    // 돌 그리기 (절차적 렌더링 사용)
     stonesRef.current.forEach((stone: any) => {
       if (!stone.position || stone.isOut) return; // 아웃된 돌은 그리지 않음
 
@@ -352,23 +491,19 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
       // 돌의 실제 반지름 (큰 돌 vs 일반 돌)
       const stoneRadius = stone.isBig ? BIG_STONE_RADIUS : STONE_RADIUS;
 
-      // 그림자
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
-      ctx.beginPath();
-      ctx.arc(x + 2, y + 2, stoneRadius, 0, Math.PI * 2);
-      ctx.fill();
-
       // 선택된 돌인지 확인 (UI용 state 사용)
       const isSelected = selectedStoneId === stone.id;
 
-      // 돌 그리기 (기본 색상 사용)
-      ctx.fillStyle = stone.originalColor;
-      ctx.strokeStyle = stone.render.strokeStyle;
-      ctx.lineWidth = stone.render.lineWidth;
-      ctx.beginPath();
-      ctx.arc(x, y, stoneRadius, 0, Math.PI * 2);
-      ctx.fill();
+      // SVG 배경 이미지를 사용한 돌 렌더링
+      const theme = stone.player === 1 ? 'white' : 'black';
+      drawStoneWithSvgBackground(ctx, x, y, stoneRadius, theme);
+
+      // 선택 테두리
       if (stone.render.lineWidth > 0) {
+        ctx.strokeStyle = stone.render.strokeStyle;
+        ctx.lineWidth = stone.render.lineWidth;
+        ctx.beginPath();
+        ctx.arc(x, y, stoneRadius, 0, Math.PI * 2);
         ctx.stroke();
       }
 
@@ -401,7 +536,7 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
   };
 
   const addNotification = (player: number) => {
-    const playerName = player === 1 ? '하얀돌' : '까만돌';
+    const playerName = player === 1 ? '하얀설' : '까만설';
 
     // 팀별 카운터 증가
     let playerCount: number;
@@ -653,7 +788,7 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
     ctx.clearRect(0, 0, BOARD_SIZE, BOARD_SIZE);
   };
 
-  // 개선된 AI 플레이어 로직
+  // 강화된 AI 플레이어 로직
   const executeAiMove = () => {
     if (!engineRef.current || currentPlayer !== 1 || isAnimating || gameState !== 'playing') {
       return;
@@ -662,29 +797,35 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
     setIsAiTurn(true);
 
     // AI가 조작할 수 있는 돌들 (player1) 찾기
-    const aiStones = stonesRef.current.filter(
-      (stone: StoneBody) => stone.player === 1 && !stone.isOut,
-    );
+    const aiStones = stonesRef.current.filter((stone: any) => stone.player === 1 && !stone.isOut);
 
     if (aiStones.length === 0) return;
 
     // 상대방 돌들 (player2) 찾기
     const enemyStones = stonesRef.current.filter(
-      (stone: StoneBody) => stone.player === 2 && !stone.isOut,
+      (stone: any) => stone.player === 2 && !stone.isOut,
     );
 
     if (enemyStones.length === 0) return;
 
-    // AI 전략 계산
-    const bestMove = calculateBestMove(aiStones, enemyStones);
+    // 강화된 AI 전략 계산
+    const bestMove = calculateEnhancedBestMove(aiStones, enemyStones);
 
     if (bestMove) {
-      // 1초 후 AI 공격 실행 (사람이 보기 좋게)
+      // 1초 후 AI 행동 실행 (사람이 보기 좋게)
       setTimeout(() => {
-        const { stone, direction, power } = bestMove;
+        const { stone, direction, power, moveType } = bestMove;
 
-        // 약간의 랜덤성 추가 (너무 완벽하지 않게)
-        const randomAngle = (Math.random() - 0.5) * 0.2; // ±0.1 라디안
+        // 이동 타입에 따른 랜덤성 조절
+        let randomAngle = 0;
+        if (moveType === 'attack') {
+          randomAngle = (Math.random() - 0.5) * 0.15; // 공격시 정확도 높임
+        } else if (moveType === 'defensive') {
+          randomAngle = (Math.random() - 0.5) * 0.3; // 방어시 더 자유롭게
+        } else {
+          randomAngle = (Math.random() - 0.5) * 0.2; // 일반적인 경우
+        }
+
         const finalDx = direction.x * Math.cos(randomAngle) - direction.y * Math.sin(randomAngle);
         const finalDy = direction.x * Math.sin(randomAngle) + direction.y * Math.cos(randomAngle);
 
@@ -703,11 +844,455 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
     }
   };
 
-  // AI 전략 계산 함수
-  const calculateBestMove = (aiStones: StoneBody[], enemyStones: StoneBody[]) => {
+  // 강화된 AI 전략 계산 함수
+  const calculateEnhancedBestMove = (aiStones: any[], enemyStones: any[]) => {
     let bestScore = -Infinity;
-    let bestMove: { stone: StoneBody; direction: { x: number; y: number }; power: number } | null =
-      null;
+    let bestMove: {
+      stone: any;
+      direction: { x: number; y: number };
+      power: number;
+      moveType: 'attack' | 'defensive' | 'positioning';
+    } | null = null;
+
+    for (const aiStone of aiStones) {
+      // 1. 벽 위험도 평가
+      const wallDanger = evaluateWallDanger(aiStone);
+
+      // 2. 방어 우선 상황 체크 (더 공격적으로 조정)
+      if (wallDanger > 0.85) {
+        // 위험 임계값을 높여서 더 공격적으로
+        // 매우 위험한 상황에서만 도망가기
+        const escapeMove = calculateEscapeMove(aiStone);
+        if (escapeMove && escapeMove.score > bestScore) {
+          bestScore = escapeMove.score;
+          bestMove = {
+            stone: aiStone,
+            direction: escapeMove.direction,
+            power: escapeMove.power,
+            moveType: 'defensive',
+          };
+        }
+        continue; // 다른 전략 고려하지 않음
+      }
+
+      // 3. 공격 기회 평가
+      for (const enemyStone of enemyStones) {
+        const attackMove = evaluateAttackMove(aiStone, enemyStone, aiStones, enemyStones);
+
+        if (attackMove.score > bestScore) {
+          bestScore = attackMove.score;
+          bestMove = {
+            stone: aiStone,
+            direction: attackMove.direction,
+            power: attackMove.power,
+            moveType: 'attack',
+          };
+        }
+      }
+
+      // 4. 포지션 개선 기회 평가
+      const positionMove = evaluatePositioning(aiStone, aiStones, enemyStones);
+      if (positionMove.score > bestScore) {
+        bestScore = positionMove.score;
+        bestMove = {
+          stone: aiStone,
+          direction: positionMove.direction,
+          power: positionMove.power,
+          moveType: 'positioning',
+        };
+      }
+    }
+
+    return bestMove;
+  };
+
+  // 강화된 벽 위험도 평가 함수
+  const evaluateWallDanger = (stone: any) => {
+    const x = stone.position.x;
+    const y = stone.position.y;
+
+    const distanceToWalls = [
+      x, // 왼쪽 벽
+      y, // 위쪽 벽
+      BOARD_SIZE - x, // 오른쪽 벽
+      BOARD_SIZE - y, // 아래쪽 벽
+    ];
+
+    const minDistance = Math.min(...distanceToWalls);
+
+    // 단계별 위험도 계산
+    if (minDistance > 80) return 0; // 안전
+    if (minDistance > 60) return 0.2; // 약간 위험
+    if (minDistance > 40) return 0.5; // 위험
+    if (minDistance > 20) return 0.8; // 매우 위험
+    return 1.0; // 극도로 위험
+  };
+
+  // 벽에서 도망가는 이동 계산
+  const calculateEscapeMove = (stone: any) => {
+    const x = stone.position.x;
+    const y = stone.position.y;
+
+    // 보드 중앙으로 향하는 방향 계산
+    const centerX = BOARD_SIZE / 2;
+    const centerY = BOARD_SIZE / 2;
+
+    const dx = centerX - x;
+    const dy = centerY - y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    if (distance === 0) return null;
+
+    return {
+      score: 500, // 높은 우선순위
+      direction: { x: dx / distance, y: dy / distance },
+      power: stone.isBig ? 0.02 : 0.01, // 적당한 힘으로
+    };
+  };
+
+  // 강화된 공격 이동 평가
+  const evaluateAttackMove = (
+    aiStone: any,
+    targetEnemy: any,
+    allAiStones: any[],
+    allEnemyStones: any[],
+  ) => {
+    const dx = targetEnemy.position.x - aiStone.position.x;
+    const dy = targetEnemy.position.y - aiStone.position.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    if (distance === 0) return { score: -1000, direction: { x: 0, y: 0 }, power: 0 };
+
+    const normalizedDx = dx / distance;
+    const normalizedDy = dy / distance;
+
+    let score = 0;
+
+    // 1. 아웃 가능성 평가 (새로운 핵심 기능)
+    const knockoutPotential = evaluateKnockoutPotential(
+      aiStone,
+      targetEnemy,
+      normalizedDx,
+      normalizedDy,
+    );
+    score += knockoutPotential.score;
+
+    // 2. 거리 점수 (가까울수록 좋음)
+    const distanceScore = (Math.max(0, 300 - distance) / 300) * 100;
+    score += distanceScore;
+
+    // 3. 적의 벽 근접성 (적을 벽으로 밀어낼 가능성)
+    const enemyWallDanger = evaluateWallDanger(targetEnemy);
+    score += enemyWallDanger * 250; // 벽에 가까운 적을 더 우선 타격
+
+    // 4. 큰 돌 vs 작은 돌 전략
+    const stoneAdvantage = evaluateStoneAdvantage(aiStone, targetEnemy, distance);
+    score += stoneAdvantage;
+
+    // 5. 자신의 안전성 확인 (강화됨)
+    const selfKnockoutRisk = evaluateSelfKnockoutRisk(
+      aiStone,
+      normalizedDx,
+      normalizedDy,
+      distance,
+      knockoutPotential.canKnockout,
+    );
+    const safetyPenalty = calculateSafetyPenalty(
+      aiStone,
+      normalizedDx,
+      normalizedDy,
+      allEnemyStones,
+    );
+
+    // 자신이 아웃될 위험이 높으면 점수를 크게 감점
+    score -= selfKnockoutRisk.penalty;
+    score -= safetyPenalty;
+
+    // 자신이 아웃될 확률이 높으면 아예 공격하지 않음
+    if (selfKnockoutRisk.willSelfKnockout) {
+      return { score: -2000, direction: { x: normalizedDx, y: normalizedDy }, power: 0 };
+    }
+
+    // 6. 강화된 동적 힘 조절 (아웃 가능성 + 안전성 고려)
+    const power = calculateEnhancedPower(
+      aiStone,
+      targetEnemy,
+      distance,
+      enemyWallDanger,
+      knockoutPotential.canKnockout,
+      { x: normalizedDx, y: normalizedDy },
+    );
+
+    return {
+      score,
+      direction: { x: normalizedDx, y: normalizedDy },
+      power,
+    };
+  };
+
+  // 자신의 아웃 위험 평가 함수 (새로운 안전 기능)
+  const evaluateSelfKnockoutRisk = (
+    aiStone: any,
+    attackDirX: number,
+    attackDirY: number,
+    attackDistance: number,
+    isStrongAttack: boolean,
+  ) => {
+    const currentX = aiStone.position.x;
+    const currentY = aiStone.position.y;
+
+    // 공격 시 반동 계산 (뉴턴의 제3법칙)
+    const recoilMultiplier = isStrongAttack ? 0.4 : 0.25; // 강한 공격일수록 큰 반동
+    const baseRecoil = attackDistance > 150 ? 35 : attackDistance > 100 ? 25 : 15;
+    const recoilDistance = baseRecoil * recoilMultiplier;
+
+    // 큰 돌은 반동이 작음 (관성이 큼)
+    const massReduction = aiStone.isBig ? 0.7 : 1.0;
+    const finalRecoilDistance = recoilDistance * massReduction;
+
+    // 반동 방향 (공격 방향의 반대)
+    const recoilDirX = -attackDirX;
+    const recoilDirY = -attackDirY;
+
+    // 반동 후 예상 위치
+    const predictedX = currentX + recoilDirX * finalRecoilDistance;
+    const predictedY = currentY + recoilDirY * finalRecoilDistance;
+
+    // 반동 후 벽과의 거리
+    const distanceToWallAfterRecoil = Math.min(
+      predictedX,
+      predictedY,
+      BOARD_SIZE - predictedX,
+      BOARD_SIZE - predictedY,
+    );
+
+    let penalty = 0;
+    let willSelfKnockout = false;
+
+    // 반동으로 벽 밖으로 나가는지 확인
+    if (predictedX < 0 || predictedX > BOARD_SIZE || predictedY < 0 || predictedY > BOARD_SIZE) {
+      penalty = 1000; // 확실한 자기 아웃: 매우 큰 패널티
+      willSelfKnockout = true;
+    } else if (distanceToWallAfterRecoil < 15) {
+      penalty = 600; // 매우 위험
+      willSelfKnockout = true;
+    } else if (distanceToWallAfterRecoil < 30) {
+      penalty = 300; // 위험
+    } else if (distanceToWallAfterRecoil < 50) {
+      penalty = 150; // 약간 위험
+    }
+
+    // 현재 벽에 가까운 상태에서 공격하는 경우 추가 패널티
+    const currentWallDanger = evaluateWallDanger(aiStone);
+    if (currentWallDanger > 0.5) {
+      penalty *= 1 + currentWallDanger; // 현재 위험도에 비례해서 패널티 증가
+    }
+
+    return {
+      penalty,
+      willSelfKnockout,
+      predictedPosition: { x: predictedX, y: predictedY },
+      recoilDistance: finalRecoilDistance,
+    };
+  };
+
+  // 아웃 가능성 평가 함수 (새로운 핵심 기능)
+  const evaluateKnockoutPotential = (
+    aiStone: any,
+    targetEnemy: any,
+    dirX: number,
+    dirY: number,
+  ) => {
+    const enemyX = targetEnemy.position.x;
+    const enemyY = targetEnemy.position.y;
+
+    // 공격 후 적의 예상 이동 거리 계산
+    const aiMass = aiStone.isBig ? 1.5 : 1.0;
+    const enemyMass = targetEnemy.isBig ? 1.5 : 1.0;
+    const massRatio = aiMass / enemyMass;
+
+    // 예상 이동 거리 (물리 시뮬레이션 근사)
+    const estimatedKickDistance = massRatio * 80; // 기본 킥 거리
+
+    // 적이 이동할 예상 위치
+    const predictedX = enemyX + dirX * estimatedKickDistance;
+    const predictedY = enemyY + dirY * estimatedKickDistance;
+
+    // 예상 위치가 벽 밖인지 확인
+    const willBeOut =
+      predictedX < 0 || predictedX > BOARD_SIZE || predictedY < 0 || predictedY > BOARD_SIZE;
+
+    // 벽과의 거리로 아웃 확률 계산
+    const distanceToWallAfterHit = Math.min(
+      predictedX,
+      predictedY,
+      BOARD_SIZE - predictedX,
+      BOARD_SIZE - predictedY,
+    );
+
+    let knockoutScore = 0;
+    let canKnockout = false;
+
+    if (willBeOut) {
+      // 확실한 아웃: 최고 점수
+      knockoutScore = 500;
+      canKnockout = true;
+    } else if (distanceToWallAfterHit < 30) {
+      // 매우 높은 아웃 확률
+      knockoutScore = 300;
+      canKnockout = true;
+    } else if (distanceToWallAfterHit < 60) {
+      // 높은 아웃 확률
+      knockoutScore = 150;
+      canKnockout = true;
+    } else if (distanceToWallAfterHit < 100) {
+      // 중간 아웃 확률
+      knockoutScore = 75;
+    }
+
+    // 큰 돌로 작은 돌을 치는 경우 보너스
+    if (aiStone.isBig && !targetEnemy.isBig) {
+      knockoutScore *= 1.3;
+    }
+
+    return {
+      score: knockoutScore,
+      canKnockout,
+      estimatedDistance: estimatedKickDistance,
+    };
+  };
+
+  // 돌 우위성 평가 (큰돌 vs 작은돌 전략)
+  const evaluateStoneAdvantage = (aiStone: any, enemyStone: any, distance: number) => {
+    const aiIsBig = aiStone.isBig;
+    const enemyIsBig = enemyStone.isBig;
+
+    // 큰 돌로 작은 돌 공격: 매우 유리
+    if (aiIsBig && !enemyIsBig && distance < 150) {
+      return 100;
+    }
+
+    // 작은 돌로 큰 돌 공격: 가까운 거리에서만
+    if (!aiIsBig && enemyIsBig && distance < 80) {
+      return 50;
+    }
+
+    // 같은 크기: 보통
+    if (aiIsBig === enemyIsBig) {
+      return 20;
+    }
+
+    return 0;
+  };
+
+  // 강화된 동적 힘 조절 (아웃 가능성 + 자신의 안전성 고려)
+  const calculateEnhancedPower = (
+    aiStone: any,
+    enemyStone: any,
+    distance: number,
+    enemyWallDanger: number,
+    canKnockout: boolean,
+    attackDirection: { x: number; y: number } = { x: 0, y: 0 },
+  ) => {
+    const basePower = aiStone.isBig ? 0.025 : 0.012; // 기본 파워를 조금 줄임 (안전성 고려)
+    let powerMultiplier = 1;
+
+    // 자신의 현재 위험도 평가
+    const selfWallDanger = evaluateWallDanger(aiStone);
+
+    // 자신이 위험한 상황에서는 파워를 줄임
+    if (selfWallDanger > 0.7) {
+      powerMultiplier *= 0.6; // 매우 위험하면 40% 감소
+    } else if (selfWallDanger > 0.5) {
+      powerMultiplier *= 0.8; // 위험하면 20% 감소
+    }
+
+    // 아웃 가능성이 높고 자신이 안전할 때만 강하게 공격
+    if (canKnockout && selfWallDanger < 0.5) {
+      powerMultiplier *= 1.4; // 자신이 안전할 때만 강하게
+    } else if (canKnockout && selfWallDanger < 0.7) {
+      powerMultiplier *= 1.2; // 약간 위험하면 조금만 강하게
+    } else {
+      // 일반적인 거리에 따른 힘 조절
+      if (distance < 80) {
+        powerMultiplier *= 0.7; // 가까운 거리: 약간 약한 힘
+      } else if (distance < 150) {
+        powerMultiplier *= 0.9; // 중간 거리: 조금 약한 힘
+      } else {
+        powerMultiplier *= 1.0; // 먼 거리: 기본 힘
+      }
+    }
+
+    // 적이 벽에 매우 가까우면 더욱 강하게 (단, 자신이 안전할 때만)
+    if (enemyWallDanger > 0.7 && selfWallDanger < 0.5) {
+      powerMultiplier *= 1.3; // 벽에 매우 가까우면 30% 추가
+    } else if (enemyWallDanger > 0.5 && selfWallDanger < 0.6) {
+      powerMultiplier *= 1.1; // 벽에 가까우면 10% 추가
+    }
+
+    // 큰 돌로 작은 돌을 공격하는 경우 추가 파워 (안전할 때만)
+    if (aiStone.isBig && !enemyStone.isBig && selfWallDanger < 0.6) {
+      powerMultiplier *= 1.1; // 안전할 때만 10% 추가 파워
+    }
+
+    // 최대 파워 제한 (자신의 위험도에 따라 조절)
+    const maxPowerBase = aiStone.isBig ? 0.045 : 0.03;
+    const maxPower = maxPowerBase * (1 - selfWallDanger * 0.3); // 위험할수록 최대 파워 제한
+    const finalPower = Math.min(basePower * powerMultiplier, maxPower);
+
+    return Math.max(finalPower, 0.005); // 최소 파워 보장
+  };
+
+  // 기존 동적 힘 조절 (호환성을 위해 유지)
+  const calculateDynamicPower = (
+    aiStone: any,
+    enemyStone: any,
+    distance: number,
+    enemyWallDanger: number,
+  ) => {
+    // 새로운 함수를 호출하되 canKnockout은 false로 처리
+    return calculateEnhancedPower(aiStone, enemyStone, distance, enemyWallDanger, false);
+  };
+
+  // 포지셔닝 평가
+  const evaluatePositioning = (aiStone: any, allAiStones: any[], allEnemyStones: any[]) => {
+    const x = aiStone.position.x;
+    const y = aiStone.position.y;
+
+    // 보드 중앙에 가까울수록 좋음
+    const centerX = BOARD_SIZE / 2;
+    const centerY = BOARD_SIZE / 2;
+    const distanceToCenter = Math.sqrt((x - centerX) ** 2 + (y - centerY) ** 2);
+
+    // 너무 중앙에 있으면 점수 낮춤 (다양성을 위해)
+    let positionScore = 0;
+    if (distanceToCenter > 50 && distanceToCenter < 120) {
+      positionScore = 50; // 적당한 중앙 위치
+    } else if (distanceToCenter > 150) {
+      positionScore = 30; // 중앙으로 이동 필요
+    }
+
+    if (positionScore > 0) {
+      const dx = centerX - x + (Math.random() - 0.5) * 60; // 약간의 랜덤성
+      const dy = centerY - y + (Math.random() - 0.5) * 60;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance > 0) {
+        return {
+          score: positionScore,
+          direction: { x: dx / distance, y: dy / distance },
+          power: aiStone.isBig ? 0.015 : 0.008,
+        };
+      }
+    }
+
+    return { score: 0, direction: { x: 0, y: 0 }, power: 0 };
+  };
+
+  // 기존 AI 전략 계산 함수 (호환성을 위해 유지)
+  const calculateBestMove = (aiStones: any[], enemyStones: any[]) => {
+    let bestScore = -Infinity;
+    let bestMove: { stone: any; direction: { x: number; y: number }; power: number } | null = null;
 
     for (const aiStone of aiStones) {
       for (const enemyStone of enemyStones) {
@@ -729,10 +1314,10 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
 
   // 개별 수의 점수 계산
   const evaluateMove = (
-    aiStone: StoneBody,
-    targetEnemy: StoneBody,
-    allAiStones: StoneBody[],
-    allEnemyStones: StoneBody[],
+    aiStone: any,
+    targetEnemy: any,
+    allAiStones: any[],
+    allEnemyStones: any[],
   ) => {
     const dx = targetEnemy.position.x - aiStone.position.x;
     const dy = targetEnemy.position.y - aiStone.position.y;
@@ -817,12 +1402,7 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
   };
 
   // 안전성 패널티 계산
-  const calculateSafetyPenalty = (
-    aiStone: StoneBody,
-    dirX: number,
-    dirY: number,
-    enemyStones: StoneBody[],
-  ) => {
+  const calculateSafetyPenalty = (aiStone: any, dirX: number, dirY: number, enemyStones: any[]) => {
     // 공격 후 예상 위치 계산
     const estimatedNewX = aiStone.position.x + dirX * 30; // 반동 예상
     const estimatedNewY = aiStone.position.y + dirY * 30;
@@ -987,7 +1567,7 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
             }}
           />
 
-          {isAnimating && <_.AnimatingIndicator>돌 굴러가는 중...</_.AnimatingIndicator>}
+          {isAnimating && <_.AnimatingIndicator>설 굴러가는 중...</_.AnimatingIndicator>}
         </_.CanvasContainer>
 
         <_.NotificationArea>
@@ -1003,7 +1583,7 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
                 padding: '20px 0',
               }}
             >
-              아직 아웃된 돌이 없습니다.
+              아직 아웃된 설이 없습니다.
             </div>
           ) : (
             notifications.map((notification) => (
@@ -1043,17 +1623,17 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
                   ? '컴퓨터'
                   : '플레이어'
                 : gameState === 'player1wins'
-                  ? '하얀돌'
-                  : '까만돌'}{' '}
+                  ? '하얀설'
+                  : '까만설'}{' '}
               승리!
               <br />
               {gameMode === 'ai'
                 ? gameState === 'player1wins'
-                  ? '당신의 모든 돌이 추모관에 등록되었습니다.'
-                  : '컴퓨터의 모든 돌이 추모관에 등록되었습니다.'
+                  ? '당신의 모든 설이 추모관에 등록되었습니다.'
+                  : '컴퓨터의 모든 설이 추모관에 등록되었습니다.'
                 : gameState === 'player1wins'
-                  ? '까만돌이 모두 추모관에 등록되었습니다.'
-                  : '하얀돌이 모두 추모관에 등록되었습니다.'}
+                  ? '까만설이 모두 추모관에 등록되었습니다.'
+                  : '하얀설이 모두 추모관에 등록되었습니다.'}
             </_.ResultMessage>
             <_.ResultCloseButton
               onClick={resetGame}

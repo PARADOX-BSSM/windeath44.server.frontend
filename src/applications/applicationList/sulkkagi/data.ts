@@ -120,7 +120,7 @@ export const createStone = (stoneData: (typeof INITIAL_STONES)[0]) => {
   // 큰 돌이면 전용 물리 속성 사용
   const physics = isBig ? BIG_STONE_PHYSICS : STONE_PHYSICS;
 
-  return Matter.Bodies.circle(stoneData.x, stoneData.y, radius, {
+  const body = Matter.Bodies.circle(stoneData.x, stoneData.y, radius, {
     label: 'stone',
     render: {
       fillStyle: stoneData.color,
@@ -132,13 +132,17 @@ export const createStone = (stoneData: (typeof INITIAL_STONES)[0]) => {
     restitution: physics.restitution,
     // 큰 돌도 일반 돌과 비슷한 밀도로 (잘 움직이도록)
     density: isBig ? 0.0015 : 0.001,
-    player: stoneData.player as any,
-    id: stoneData.id as any,
-    originalColor: stoneData.color as any,
-    isSelected: false as any,
-    isOut: false as any,
-    isBig: isBig || (false as any),
   });
+
+  // 커스텀 속성들을 body에 추가
+  (body as any).player = stoneData.player;
+  (body as any).id = stoneData.id;
+  (body as any).originalColor = stoneData.color;
+  (body as any).isSelected = false;
+  (body as any).isOut = false;
+  (body as any).isBig = isBig || false;
+
+  return body;
 };
 
 // 모든 돌들을 생성하는 함수
