@@ -536,7 +536,7 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
   };
 
   const addNotification = (player: number) => {
-    const playerName = player === 1 ? '하얀돌' : '까만돌';
+    const playerName = player === 1 ? '하얀설' : '까만설';
 
     // 팀별 카운터 증가
     let playerCount: number;
@@ -1363,7 +1363,7 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
             }}
           />
 
-          {isAnimating && <_.AnimatingIndicator>돌 굴러가는 중...</_.AnimatingIndicator>}
+          {isAnimating && <_.AnimatingIndicator>설 굴러가는 중...</_.AnimatingIndicator>}
         </_.CanvasContainer>
 
         <_.NotificationArea>
@@ -1379,7 +1379,7 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
                 padding: '20px 0',
               }}
             >
-              아직 아웃된 돌이 없습니다.
+              아직 아웃된 설이 없습니다.
             </div>
           ) : (
             notifications.map((notification) => (
@@ -1419,17 +1419,17 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
                   ? '컴퓨터'
                   : '플레이어'
                 : gameState === 'player1wins'
-                  ? '하얀돌'
-                  : '까만돌'}{' '}
+                  ? '하얀설'
+                  : '까만설'}{' '}
               승리!
               <br />
               {gameMode === 'ai'
                 ? gameState === 'player1wins'
-                  ? '당신의 모든 돌이 추모관에 등록되었습니다.'
-                  : '컴퓨터의 모든 돌이 추모관에 등록되었습니다.'
+                  ? '당신의 모든 설이 추모관에 등록되었습니다.'
+                  : '컴퓨터의 모든 설이 추모관에 등록되었습니다.'
                 : gameState === 'player1wins'
-                  ? '까만돌이 모두 추모관에 등록되었습니다.'
-                  : '하얀돌이 모두 추모관에 등록되었습니다.'}
+                  ? '까만설이 모두 추모관에 등록되었습니다.'
+                  : '하얀설이 모두 추모관에 등록되었습니다.'}
             </_.ResultMessage>
             <_.ResultCloseButton
               onClick={resetGame}
