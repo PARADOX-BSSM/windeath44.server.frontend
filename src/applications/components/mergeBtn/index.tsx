@@ -15,8 +15,8 @@ interface PropsType {
 }
 
 const MergeBtn = ({ text }: PropsType) => {
-  const [inputValue, useInputValue] = useAtom(inputPortage);
-  const [contentValue, useContentValue] = useAtom(inputContent);
+  const [inputValue, setInputValue] = useAtom(inputPortage);
+  const [contentIn, setContentIn] = useAtom(inputContent);
   const [userId] = useAtom(userIdAtom);
   const [memorialId] = useAtom(memorialIdAtom);
   const createCharacterMutation = useCreateCharacter();
@@ -37,14 +37,14 @@ const MergeBtn = ({ text }: PropsType) => {
       return;
     }
 
-    console.log({ ...inputValue, ...contentValue });
+    console.log({ ...inputValue, ...contentIn });
 
     const isApply = taskSearch?.('MemorialApply');
     const isCommit = taskSearch?.('MemorialCommit');
 
     if (isApply) {
       createCharacterMutation.mutate(
-        { ...inputValue, ...contentValue },
+        { ...inputValue, ...contentIn },
         {
           onSuccess: (characterId: number) => {
             uploadImageMutation.mutate({
@@ -53,9 +53,9 @@ const MergeBtn = ({ text }: PropsType) => {
             });
             applyMemorialMutation.mutate({
               characterId: characterId,
-              content: contentValue.content,
+              content: contentIn.content,
             });
-            useInputValue({
+            setInputValue({
               name: '',
               deathReason: '자연사(自然死)' as deathType,
               date: '',
@@ -66,7 +66,7 @@ const MergeBtn = ({ text }: PropsType) => {
               profileImage: '',
               phrase: '',
             });
-            useContentValue({ characterId: '', content: '' });
+            setContentIn({ characterId: '', content: '' });
             let task = taskSearch?.('미리보기');
             if (task) removeTask(task);
             task = taskSearch?.('추모관');
@@ -77,14 +77,15 @@ const MergeBtn = ({ text }: PropsType) => {
     }
     if (isCommit) {
       commitMutation.mutate(
-        { memorialId, content: contentValue.content, userId },
+        { memorialId, content: contentIn.content, userId },
         {
           onSuccess: () => {
+            if (data === undefined) return;
             pullRequestMutation.mutate({
               memorialPullRequestId: data.memorialPullRequestId,
               userId,
             });
-            useInputValue({
+            setInputValue({
               name: '',
               deathReason: '자연사(自然死)' as deathType,
               date: '',
@@ -95,7 +96,7 @@ const MergeBtn = ({ text }: PropsType) => {
               profileImage: '',
               phrase: '',
             });
-            useContentValue({ characterId: '', content: '' });
+            setContentIn({ characterId: '', content: '' });
             let task = taskSearch?.('미리보기');
             if (task) removeTask(task);
             task = taskSearch?.('추모관');

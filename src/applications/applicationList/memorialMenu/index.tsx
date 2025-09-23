@@ -2,7 +2,7 @@ import { Suspense, useEffect, useState } from 'react';
 import { useAtomValue } from 'jotai';
 import MemorialBtn from '@/applications/components/memorialBtn';
 import * as _ from './style.ts';
-import { taskSearchAtom } from '@/atoms/taskTransformer.ts';
+import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer.ts';
 import { alerterAtom } from '@/atoms/alerter.ts';
 import Choten from '@/assets/profile/choten.svg';
 import { useProcessManager } from '@/hooks/processManager.tsx';
@@ -29,9 +29,16 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
 
   const setAlert = useAtomValue(alerterAtom);
   const taskSearch = useAtomValue(taskSearchAtom);
+  const taskTransform = useAtomValue(taskTransformerAtom);
   const [, addTask, removeTask] = useProcessManager();
 
   const stackProps = {
+    stack: stack,
+    push: push,
+    pop: pop,
+    top: top,
+  };
+  const applyProps = {
     stack: stack,
     push: push,
     pop: pop,
@@ -108,9 +115,8 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
             거절될 수 있습니다.
           </>,
           () => {
-            push(taskSearch?.('MemorialApply', stackProps));
-            removeTask(taskSearch?.('경고')!);
-            addTask(memorialPreview);
+            taskTransform?.('경고', '미리보기', applyProps);
+            push(taskSearch?.('MemorialApply', applyProps));
           },
         );
       }

@@ -30,6 +30,7 @@ export const useTaskSearchFunction = () => {
       <Suspense fallback={null}>
         {React.createElement(type, {
           ...(props ?? {}),
+          __key: Math.random(),
         })}
       </Suspense>
     );

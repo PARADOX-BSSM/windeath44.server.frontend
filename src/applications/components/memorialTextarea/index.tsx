@@ -28,11 +28,12 @@ const MemorialTextarea = ({
     taskTransform?.('', '도움말');
   };
   useEffect(() => {
+    if (!setContentIn || contentIn.content) return; // 이미 내용이 있으면 덮어쓰지 않음
     setContentIn((prev) => ({
       ...prev,
       content: content,
     }));
-  }, [content, setContentIn]);
+  }, [content, setContentIn]); // contentIn.content는 의존성에서 제외
 
   return (
     <>
