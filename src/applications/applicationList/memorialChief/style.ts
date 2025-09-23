@@ -221,3 +221,110 @@ export const ButtonContainer = styled.div`
   align-items: center;
   gap: 8px;
 `;
+
+export const PullRequestsContainer = styled.div`
+  display: flex;
+  padding: 10px 0px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  align-self: stretch;
+  border-top: 2px solid #E774DD;
+  margin-top: 20px;
+`;
+
+export const LoadingText = styled.div`
+  color: #666;
+  font-family: Galmuri11;
+  font-size: 16px;
+  text-align: center;
+  padding: 20px;
+`;
+
+export const EmptyMessage = styled.div`
+  color: #666;
+  font-family: Galmuri11;
+  font-size: 16px;
+  text-align: center;
+  padding: 40px;
+  width: 100%;
+  background: #F9F9F9;
+  border: 1px solid #DDD;
+`;
+
+export const ConflictResolveContainer = styled.div`
+  display: flex;
+  padding: 20px 0px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  align-self: stretch;
+  border-top: 2px solid #FF6B6B;
+  margin-top: 20px;
+  background: #FFF9F9;
+`;
+
+export const ConflictInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-self: stretch;
+  padding: 0 20px;
+`;
+
+export const ConflictLabel = styled.div`
+  color: #2E2E2E;
+  font-family: Galmuri11;
+  font-size: 16px;
+  font-weight: 400;
+`;
+
+export const ConflictText = styled.div`
+  color: #FF6B6B;
+  font-family: Galmuri11;
+  font-size: 14px;
+  padding: 10px;
+  background: #FFF;
+  border: 1px solid #FF6B6B;
+  border-radius: 4px;
+  white-space: pre-wrap;
+`;
+
+export const ResolveInputContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-self: stretch;
+  padding: 0 20px;
+`;
+
+export const ResolveLabel = styled.div`
+  color: #2E2E2E;
+  font-family: Galmuri11;
+  font-size: 16px;
+  font-weight: 400;
+`;
+
+export const ResolveTextarea = styled.textarea`
+  font-family: Galmuri11;
+  font-size: 14px;
+  padding: 10px;
+  border: 1px solid #DDD;
+  border-radius: 4px;
+  resize: vertical;
+  min-height: 80px;
+
+  &:focus {
+    outline: none;
+    border-color: #E774DD;
+  }
+`;
+
+export const ConflictButtonContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: center;
+`;
