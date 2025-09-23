@@ -1,17 +1,20 @@
 import axios from 'axios';
 import { auth } from '@/config';
+import { getCookie, setCookie } from '@/api/auth/cookie';
 
 const api = axios.create({
   withCredentials: true,
 });
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('authorization');
-  // console.log('interceptor:', { url: config.url, token });
-
-  if (token && !config.url?.includes('/login')) {
-    console.log(true);
-    config.headers.Authorization = `Bearer ${token}`;
+  // Read access token from cookie and attach as Authorization header for protected endpoints
+  const token = getCookie('access_token');
+  const url = config.url ?? '';
+  const isAuthEndpoint =
+    url.includes('/login') || url.includes('/reissue') || url.includes('/logout');
+  if (token && !isAuthEndpoint) {
+    config.headers = config.headers ?? {};
+    (config.headers as any).Authorization = `Bearer ${token}`;
   }
   return config;
 });
@@ -26,13 +29,17 @@ api.interceptors.response.use(
 
       try {
         const res = await axios.post(`${auth}/reissue`, {}, { withCredentials: true });
-        const newAccessToken = res.data.accessToken;
-        localStorage.setItem('access_token', newAccessToken);
-
-        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+        // If server returns a new accessToken, persist it to cookie
+        const newToken = (res.data && (res.data.accessToken || res.data.token)) as
+          | string
+          | undefined;
+        if (newToken) {
+          setCookie('access_token', newToken, 1);
+          originalRequest.headers = originalRequest.headers ?? {};
+          originalRequest.headers.Authorization = `Bearer ${newToken}`;
+        }
         return api(originalRequest);
       } catch (refreshError) {
-        localStorage.removeItem('access_token');
         window.location.href = '/login';
         return Promise.reject(refreshError);
       }
