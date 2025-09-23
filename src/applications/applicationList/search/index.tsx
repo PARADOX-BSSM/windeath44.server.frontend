@@ -113,9 +113,9 @@ const Search = () => {
     [characters],
   );
 
-  useEffect(() => {
-    console.log(characters);
-  }, [characters]);
+  // useEffect(() => {
+  //   console.log(characters);
+  // }, [characters]);
 
   // queryKey 안정화: 정렬된 복사본 사용
   const characterKey = useMemo(
@@ -148,9 +148,9 @@ const Search = () => {
 
   const memorials = memorialsResp?.data ?? [];
 
-  useEffect(() => {
-    console.log(memorials);
-  }, [memorials]);
+  // useEffect(() => {
+  //   console.log(memorials);
+  // }, [memorials]);
 
   const onLoadMore = () => {
     if (typeof normalized.nextCursorId === 'number') setCursorId(normalized.nextCursorId);
@@ -189,18 +189,10 @@ const Search = () => {
             setName={setName}
           />
 
-          {isBusy ? (
-            <div>불러오는 중...</div>
-          ) : hasError ? (
-            <div>검색 중 오류가 발생했습니다.</div>
-          ) : characters.length > 0 ? (
-            <Viewer
-              characters={characters}
-              memorials={memorials}
-            />
-          ) : (
-            <div>결과가 없습니다.</div>
-          )}
+          <Viewer
+            characters={characters}
+            memorials={memorials}
+          />
         </_.search_task>
 
         <_.object>
