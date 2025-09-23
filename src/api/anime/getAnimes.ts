@@ -22,7 +22,7 @@ interface FetchAnimesParams {
   animeName?: string;
 }
 
-const fetchAnimesPage = async ({
+export const fetchAnimesPage = async ({
   cursorId = null,
   size = 10,
   animeName = '',
