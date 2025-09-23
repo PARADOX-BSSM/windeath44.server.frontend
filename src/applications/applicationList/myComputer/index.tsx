@@ -64,18 +64,26 @@ const MyComputer = () => {
     );
   };
 
+  const isLoggedIn = localStorage.getItem('isLogIned') === 'true';
+  const isUserReady =
+    !!(userData && (userData as any).data && (userData as any).data.name) && !isPending && !error;
+
+  if (isLoggedIn && !isUserReady) {
+    return null;
+  }
+
   return (
     <_.Container>
       <_.LeftContainer>
         <_.ProfileContainer>
           <_.ProfileImg src={Choten} />
-          <_.ProfileName>
-            <_.ProfileName>
-              {localStorage.getItem('isLogIned') === 'true'
-                ? (userData?.data?.name ?? '로딩 중...')
-                : '게스트'}
-            </_.ProfileName>
-          </_.ProfileName>
+          {isLoggedIn ? (
+            isUserReady ? (
+              <_.ProfileName>{(userData as any).data.name}</_.ProfileName>
+            ) : null
+          ) : (
+            <_.ProfileName>게스트</_.ProfileName>
+          )}
         </_.ProfileContainer>
         {renderMemorialBtn()}
       </_.LeftContainer>
