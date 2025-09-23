@@ -12,8 +12,6 @@ import { memorial } from '@/config';
 type Character = { characterId: number; [k: string]: any };
 type AnimeItem = { animeId: number; [k: string]: any };
 
-const EMPTY_ARR = Object.freeze([]) as readonly any[];
-
 const Search = () => {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [isColumn, setIsColumn] = useState(false);
@@ -86,7 +84,6 @@ const Search = () => {
     cursorId,
   });
 
-  // ✅ 교체된 정규화 블록
   const normalized = useMemo(() => {
     const p = integrated as any;
 
@@ -152,10 +149,6 @@ const Search = () => {
   //   console.log(memorials);
   // }, [memorials]);
 
-  const onLoadMore = () => {
-    if (typeof normalized.nextCursorId === 'number') setCursorId(normalized.nextCursorId);
-  };
-
   // 레이아웃 관찰
   useEffect(() => {
     const el = wrapperRef.current;
@@ -169,9 +162,6 @@ const Search = () => {
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
-
-  const isBusy = isLoading || isMemorialLoading || isAnimesLoading;
-  const hasError = isError || isMemorialError || isAnimesError;
 
   return (
     <_.main>
