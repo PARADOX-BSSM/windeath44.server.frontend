@@ -15,29 +15,37 @@ const MyComputer = () => {
   const setAlert = useAtomValue(alerterAtom);
   const logOutMutation = useLogOut();
   const { mutate: getUser, data: userData, isPending, error } = useGetUserMutation();
+  const [loggedIn, setLoggedIn] = React.useState(localStorage.getItem('isLogIned') === 'true');
 
   React.useEffect(() => {
-    if (localStorage.getItem('isLogIned') === 'true') {
-      getUser();
+    if (loggedIn) {
+      getUser(undefined as unknown as void, {
+        onError: () => {
+          // 세션 만료 등으로 401 발생 시 로그인 상태 해제
+          localStorage.setItem('isLogIned', 'false');
+          setLoggedIn(false);
+        },
+      });
     }
-  }, []);
+  }, [loggedIn, getUser]);
 
-  React.useEffect(() => {
-    console.log('userData:', userData);
-  }, [userData]);
+  // React.useEffect(() => {
+  //   console.log('userData:', userData);
+  // }, [userData]);
 
   const renderMemorialBtn = () => {
-    const isLoggedIn = localStorage.getItem('isLogIned') === 'true';
+    const isLoggedIn = loggedIn;
     return (
       <MemorialBtn
         name={isLoggedIn ? '로그아웃' : '로그인'}
         onClick={() => {
-          console.log(isLoggedIn);
+          // console.log(isLoggedIn);
           taskTransform?.('', isLoggedIn ? '' : '로그인');
           if (isLoggedIn) {
             localStorage.removeItem('access_token');
             localStorage.setItem('isLogIned', 'false');
             sessionStorage.setItem('hasBootedSession', 'false');
+            setLoggedIn(false);
             // logOutMutation.mutate(undefined, {
             //   onSuccess: () => {
             //     location.reload();
@@ -64,18 +72,26 @@ const MyComputer = () => {
     );
   };
 
+  const isLoggedIn = loggedIn;
+  const isUserReady =
+    !!(userData && (userData as any).data && (userData as any).data.name) && !isPending && !error;
+
+  if (isLoggedIn && !isUserReady) {
+    return null;
+  }
+
   return (
     <_.Container>
       <_.LeftContainer>
         <_.ProfileContainer>
           <_.ProfileImg src={Choten} />
-          <_.ProfileName>
-            <_.ProfileName>
-              {localStorage.getItem('isLogIned') === 'true'
-                ? (userData?.data?.name ?? '로딩 중...')
-                : '게스트'}
-            </_.ProfileName>
-          </_.ProfileName>
+          {isLoggedIn ? (
+            isUserReady ? (
+              <_.ProfileName>{(userData as any).data.name}</_.ProfileName>
+            ) : null
+          ) : (
+            <_.ProfileName>게스트</_.ProfileName>
+          )}
         </_.ProfileContainer>
         {renderMemorialBtn()}
       </_.LeftContainer>

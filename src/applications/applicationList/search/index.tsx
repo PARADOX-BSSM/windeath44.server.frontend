@@ -4,15 +4,13 @@ import Folder from '@/assets/search/folder.svg';
 import Search_task from '@/applications/applicationList/search/search_task';
 import Viewer from '@/applications/applicationList/search/viewer';
 import { useGetIntegratedCharactersQuery } from '@/api/anime/getCharactersByIntegratedSearching';
-import { useGetAnimesQuery } from '@/api/anime/getAnimes';
+import { fetchAnimesPage } from '@/api/anime/getAnimes';
 import { useQuery } from '@tanstack/react-query';
 import api from '@/api/axiosInstance';
 import { memorial } from '@/config';
 
 type Character = { characterId: number; [k: string]: any };
 type AnimeItem = { animeId: number; [k: string]: any };
-
-const EMPTY_ARR = Object.freeze([]) as readonly any[];
 
 const Search = () => {
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -37,29 +35,44 @@ const Search = () => {
   }, [nameParam, deathParam, aniParam]);
 
   // ------ 애니 이름 -> 애니 ID 조회 (검색어 있을 때만) ------
-  const {
-    data: animesResp,
-    isLoading: isAnimesLoading,
-    isError: isAnimesError,
-  } = useGetAnimesQuery({
-    size: 50,
-    animeName: aniParam,
-  });
+  const [animesResp, setAnimesResp] = useState<any>(null);
+  const [isAnimesLoading, setIsAnimesLoading] = useState(false);
+  const [isAnimesError, setIsAnimesError] = useState(false);
+
+  useEffect(() => {
+    let aborted = false;
+    const run = async () => {
+      if (!aniParam) {
+        setAnimesResp(null);
+        return;
+      }
+      setIsAnimesLoading(true);
+      setIsAnimesError(false);
+      try {
+        const resp = await fetchAnimesPage({ size: 50, animeName: aniParam });
+        if (!aborted) setAnimesResp(resp);
+      } catch (e) {
+        if (!aborted) setIsAnimesError(true);
+      } finally {
+        if (!aborted) setIsAnimesLoading(false);
+      }
+    };
+    run();
+    return () => {
+      aborted = true;
+    };
+  }, [aniParam]);
 
   // 서버 스키마가 { data: { values: AnimeItem[] } } 라고 가정
   const animeIdParam = useMemo<string[] | undefined>(() => {
-    const values = (animesResp?.data?.values as AnimeItem[] | undefined) ?? [];
+    const values = (animesResp?.data?.data as AnimeItem[] | undefined) ?? [];
     if (!values.length) return undefined; // 검색어 비었거나 결과 없으면 필터 미적용 = 전체
     const ids = values.map((v) => v?.animeId).filter((id): id is number => typeof id === 'number');
     return ids.length ? ids.map(String) : undefined; // API가 array[string] 기대 시 문자열화
   }, [animesResp]);
 
   // ------ 1) 통합 캐릭터 검색 (항상 실행: 비어 있으면 전체 결과) ------
-  const {
-    data: integrated,
-    isLoading,
-    isError,
-  } = useGetIntegratedCharactersQuery({
+  const { data: integrated } = useGetIntegratedCharactersQuery({
     name: nameParam, // 비어있으면 sanitize에서 제거 → 전체
     animeId: animeIdParam, // undefined면 제거 → 전체
     deathReason: deathParam, // undefined면 제거 → 전체
@@ -67,7 +80,6 @@ const Search = () => {
     cursorId,
   });
 
-  // ✅ 교체된 정규화 블록
   const normalized = useMemo(() => {
     const p = integrated as any;
 
@@ -94,9 +106,9 @@ const Search = () => {
     [characters],
   );
 
-  useEffect(() => {
-    console.log(characters);
-  }, [characters]);
+  // useEffect(() => {
+  //   console.log(characters);
+  // }, [characters]);
 
   // queryKey 안정화: 정렬된 복사본 사용
   const characterKey = useMemo(
@@ -129,13 +141,9 @@ const Search = () => {
 
   const memorials = memorialsResp?.data ?? [];
 
-  useEffect(() => {
-    console.log(memorials);
-  }, [memorials]);
-
-  const onLoadMore = () => {
-    if (typeof normalized.nextCursorId === 'number') setCursorId(normalized.nextCursorId);
-  };
+  // useEffect(() => {
+  //   console.log(memorials);
+  // }, [memorials]);
 
   // 레이아웃 관찰
   useEffect(() => {
@@ -150,9 +158,6 @@ const Search = () => {
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
-
-  const isBusy = isLoading || isMemorialLoading || isAnimesLoading;
-  const hasError = isError || isMemorialError || isAnimesError;
 
   return (
     <_.main>
@@ -170,18 +175,10 @@ const Search = () => {
             setName={setName}
           />
 
-          {isBusy ? (
-            <div>불러오는 중...</div>
-          ) : hasError ? (
-            <div>검색 중 오류가 발생했습니다.</div>
-          ) : characters.length > 0 ? (
-            <Viewer
-              characters={characters}
-              memorials={memorials}
-            />
-          ) : (
-            <div>결과가 없습니다.</div>
-          )}
+          <Viewer
+            characters={characters}
+            memorials={memorials}
+          />
         </_.search_task>
 
         <_.object>

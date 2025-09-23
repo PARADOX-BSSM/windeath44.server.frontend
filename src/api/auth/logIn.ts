@@ -2,6 +2,7 @@ import { AxiosError, AxiosResponse } from 'axios';
 import api from '@/api/axiosInstance';
 import { useMutation } from '@tanstack/react-query';
 import { auth } from '@/config';
+import { setCookie } from '@/api/auth/cookie';
 
 interface authParams {
   id: string;
@@ -18,14 +19,8 @@ const logIn = async ({ id, password }: authParams): Promise<string> => {
     console.log(response.headers);
 
     const accessToken: string | undefined = response.headers['authorization'];
-
-    console.log('token', accessToken);
-    console.log('full response', response);
-
-    if (!accessToken) {
-      throw new Error('accessToken 없음');
-    }
-    localStorage.setItem('access_token', accessToken);
+    if (!accessToken) throw new Error('accessToken 없음');
+    setCookie('access_token', accessToken, 1);
     return accessToken;
   } catch (error) {
     const axiosError = error as AxiosError;
