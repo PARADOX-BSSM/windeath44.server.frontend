@@ -18,6 +18,7 @@ import { useCommentWrite } from '@/api/memorial/memorialCommentWrite.ts';
 import { parseCustomContent } from '@/lib/customTag/parseCustomContent.tsx';
 import { useGetAnimation } from '@/api/anime/getAnimation.ts';
 import ribbon from '@/assets/memorial_ribbon.svg';
+import { inputPortage } from '@/atoms/inputManager.ts';
 import Choten from '@/assets/profile/choten.svg';
 
 interface dataStructureProps {
@@ -181,7 +182,22 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
     pop: pop,
     top: top,
   };
-
+  const handleCommit = () => {
+    const [, useInputValue] = useAtom(inputPortage);
+    useInputValue({
+      name: characterData.name,
+      deathReason: characterData.deathReason,
+      date: characterData.deathOfDay,
+      lifeCycle: characterData.lifeTime,
+      anime: animation,
+      animeId: characterData.animeId,
+      age: characterData.age,
+      profileImage: characterData.imageUrl,
+      phrase: '',
+    });
+    taskTransform?.('', '미리보기');
+    push(taskSearch?.('MemorialCommit', stackProps));
+  };
   return (
     <_.Main>
       <_.Container>
@@ -199,14 +215,7 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
               >
                 기록
               </_.History>
-              <_.DocumentUpdate
-                onClick={() => {
-                  taskTransform?.('', '미리보기');
-                  push(taskSearch?.('MemorialCommit', stackProps));
-                }}
-              >
-                문서 수정
-              </_.DocumentUpdate>
+              <_.DocumentUpdate onClick={handleCommit}>문서 수정</_.DocumentUpdate>
             </_.Header>
             <_.ContentContainer>
               <_.IndexWrapper>

@@ -19,7 +19,7 @@ interface dataStructureProps {
 
 const MemorialApply = ({}: dataStructureProps) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
-  const [userName, setUserName] = useState('winshine0326');
+  const [userName, setUserName] = useState('guest');
   const [inputValue, setInputValue] = useAtom(inputPortage);
   const { mutate: getUser, data, isPending, error } = useGetUserMutation();
 
