@@ -72,11 +72,7 @@ const Search = () => {
   }, [animesResp]);
 
   // ------ 1) 통합 캐릭터 검색 (항상 실행: 비어 있으면 전체 결과) ------
-  const {
-    data: integrated,
-    isLoading,
-    isError,
-  } = useGetIntegratedCharactersQuery({
+  const { data: integrated } = useGetIntegratedCharactersQuery({
     name: nameParam, // 비어있으면 sanitize에서 제거 → 전체
     animeId: animeIdParam, // undefined면 제거 → 전체
     deathReason: deathParam, // undefined면 제거 → 전체
