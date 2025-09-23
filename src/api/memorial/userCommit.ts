@@ -18,7 +18,7 @@ const postMemorialCommit = async ({
       memorialId,
       content,
     };
-    const response = await api.post(`:${memorial}/commit`, data, {
+    const response = await api.post(`${memorial}/commit`, data, {
       headers: {
         'user-id': userId,
         'Content-Type': 'application/json',
