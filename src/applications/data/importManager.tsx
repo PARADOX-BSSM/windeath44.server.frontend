@@ -66,6 +66,8 @@ const AdminApp = lazy(() => import('@/applications/applicationList/adminApp/inde
 
 const GameApp = lazy(() => import('@/applications/applicationList/game/index.tsx'));
 
+const MemorialChief = lazy(() => import('@/applications/applicationList/memorialChief/index.tsx'));
+
 //Application Import 형식 예시
 /*
 {
@@ -274,6 +276,30 @@ const useApps = (): TaskType[] => {
         minHeight: 420,
         setUpWidth: 890,
         setUpHeight: 577,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <MemorialChief
+            stack={[]}
+            push={undefined}
+            pop={undefined}
+            top={undefined}
+          />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2228,
+      name: '상주 관리',
+      layer: undefined,
+      appSetup: {
+        Image: 'default',
+        minWidth: 600,
+        minHeight: 500,
+        setUpWidth: 900,
+        setUpHeight: 650,
       },
       visible: false,
     },
