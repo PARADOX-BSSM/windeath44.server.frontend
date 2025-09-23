@@ -7,7 +7,8 @@ import { taskSearchAtom } from '@/atoms/taskTransformer';
 import { inputPortage } from '@/atoms/inputManager';
 import { useProcessManager } from '@/hooks/processManager';
 import { CURSOR_IMAGES, setCursorImage } from '@/lib/setCursorImg';
-import { useInfiniteAnime } from '@/api/anime/getAnime';
+import { useInfiniteAnimes } from '@/api/anime/getAnimes';
+import type { InputPortageType } from '@/modules/inputPortageInterface';
 
 interface Anime {
   animeId: number;
@@ -23,7 +24,7 @@ const AnimationSelect: React.FC = () => {
 
   const [name, setName] = useState<string>('');
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, refetch } = useInfiniteAnime(
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, refetch } = useInfiniteAnimes(
     10,
     name,
   );
@@ -41,9 +42,12 @@ const AnimationSelect: React.FC = () => {
   };
 
   const filtered: Anime[] = data
-    ? data.pages
-        .flatMap((page) => page.data.values)
-        .filter((anim) => anim.name.toLowerCase().includes(name.trim().toLowerCase()))
+    ? (data.pages ?? [])
+        .flatMap((page) => page?.data?.values ?? [])
+        .filter(
+          (anim) =>
+            !!anim && !!anim.name && anim.name.toLowerCase().includes(name.trim().toLowerCase()),
+        )
     : [];
 
   const uniqueAnimations: Anime[] = Array.from(
@@ -76,10 +80,10 @@ const AnimationSelect: React.FC = () => {
             <_.Item
               key={animation.animeId}
               onClick={() => {
-                setInputValue((prev) => ({
+                setInputValue((prev: InputPortageType) => ({
                   ...prev,
                   anime: animation.name,
-                  animeId: animation.animeId.toString(),
+                  animeId: animation.animeId,
                 }));
                 const task = taskSearch?.('애니메이션 선택');
                 if (task) removeTask(task);
