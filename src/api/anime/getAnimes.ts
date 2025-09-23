@@ -11,7 +11,7 @@ interface AnimeItem {
 interface AnimeResponse {
   message: string;
   data: {
-    values: AnimeItem[];
+    data: AnimeItem[];
     hasNext: boolean;
   };
 }
@@ -57,9 +57,9 @@ export const useInfiniteAnimes = (size: number, name: string | '') => {
     },
     initialPageParam: null,
     getNextPageParam: (lastPage, allPages) => {
-      const lastValues = allPages.at(-1)!.data.values;
-      if (!lastValues || lastValues.length === 0) return undefined;
-      const lastAnime = lastValues[lastValues.length - 1];
+      const lastItems = allPages.at(-1)!.data.data;
+      if (!lastItems || lastItems.length === 0) return undefined;
+      const lastAnime = lastItems[lastItems.length - 1];
       return lastPage.data.hasNext ? lastAnime.animeId : undefined;
     },
   });

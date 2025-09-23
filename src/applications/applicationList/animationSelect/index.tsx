@@ -43,7 +43,7 @@ const AnimationSelect: React.FC = () => {
 
   const filtered: Anime[] = data
     ? (data.pages ?? [])
-        .flatMap((page) => page?.data?.values ?? [])
+        .flatMap((page) => page?.data?.data ?? [])
         .filter(
           (anim) =>
             !!anim && !!anim.name && anim.name.toLowerCase().includes(name.trim().toLowerCase()),
