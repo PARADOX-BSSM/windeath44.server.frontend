@@ -1,9 +1,13 @@
 import * as _ from './style';
 import Logo from '@/assets/windeath44.svg';
+import Choten from '@/assets/profile/choten.svg';
 import Inputs from '@/applications/components/inputs';
 import React, { useState } from 'react';
 import { useResetPassword } from '@/api/user/resetUserPassword.ts';
 import MemorialBtn from '@/applications/components/memorialBtn';
+import { useAtomValue } from 'jotai';
+import { alerterAtom } from '@/atoms/alerter';
+import { taskTransformerAtom } from '@/atoms/taskTransformer';
 interface Props {
   changeToLogIn: () => void;
 }
@@ -12,14 +16,38 @@ const PasswordChange = ({ changeToLogIn }: Props) => {
   const [checkingPw, setCheckingPw] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const mutateResetPassword = useResetPassword();
+
+  const setAlert = useAtomValue(alerterAtom);
+  const taskTransform = useAtomValue(taskTransformerAtom);
+
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (!email || !password || !checkingPw) {
-      alert('모든 필드를 입력해주세요.');
+      setAlert?.(
+        Choten,
+        <>
+          빈 입력칸이 존재합니다.
+          <br />
+          다시 입력해 주세요.
+        </>,
+        () => {
+          taskTransform?.('경고', '');
+        },
+      );
       return;
     }
     if (password !== checkingPw) {
-      alert('비밀번호가 일치하지 않습니다.');
+      setAlert?.(
+        Choten,
+        <>
+          비밀번호가 일치하지 않습니다.
+          <br />
+          다시 입력해 주세요.
+        </>,
+        () => {
+          taskTransform?.('경고', '');
+        },
+      );
       return;
     }
     mutateResetPassword.mutate(
@@ -27,6 +55,15 @@ const PasswordChange = ({ changeToLogIn }: Props) => {
       {
         onSuccess: () => {
           changeToLogIn();
+        },
+        onError: () => {
+          setAlert?.(
+            Choten,
+            <>비밀번호 재설정 중 오류가 발생했습니다!!<br />다시 시도해주세요!</>,
+            () => {
+              taskTransform?.('경고', '');
+            }
+          );
         },
       },
     );

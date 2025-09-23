@@ -5,6 +5,10 @@ import { useMemorialBow } from '@/api/memorial/memorialBow.ts';
 import { useEffect, useState } from 'react';
 import { useMemorialGet } from '@/api/memorial/countBowsByMi.ts';
 import Mourners from '@/applications/components/mourners';
+import { useAtomValue } from 'jotai';
+import { alerterAtom } from '@/atoms/alerter';
+import { taskTransformerAtom } from '@/atoms/taskTransformer';
+import Choten from '@/assets/profile/choten.svg';
 
 interface bowProps {
   memorialId: number;
@@ -13,12 +17,28 @@ interface bowProps {
 const Bow = ({ memorialId }: bowProps) => {
   const [totalBow, setTotalBow] = useState<number | null>(null);
   const mutationMemorialGet = useMemorialGet(setTotalBow);
+  const setAlert = useAtomValue(alerterAtom);
+  const taskTransform = useAtomValue(taskTransformerAtom);
   const mutationMemorialBows = useMemorialBow();
   const addBow = () => {
     mutationMemorialBows.mutate(memorialId);
   };
   useEffect(() => {
-    mutationMemorialGet.mutate(memorialId);
+    mutationMemorialGet.mutate(memorialId, {
+      onError: () => {
+        setAlert?.(
+          Choten,
+          <>
+            정보를 가져오는 중 문제가 발생했습니다.
+            <br />
+            잠시 후 다시 시도해 주세요.
+          </>,
+          () => {
+            taskTransform?.('경고', '');
+          },
+        );
+      },
+    });
   }, []);
   console.log(totalBow);
   return (

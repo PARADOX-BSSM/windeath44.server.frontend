@@ -35,10 +35,7 @@ const createCharacter = async (inputData: InputPortageType): Promise<number> => 
     return response.data.data.characterId;
   } catch (error: any) {
     if (error.response?.data) {
-      alert(`캐릭터 등록 오류`);
       console.log(`캐릭터 등록 실패: ${JSON.stringify(error.response.data)}`);
-    } else {
-      alert('캐릭터 등록 중 오류가 발생했습니다.');
     }
     throw error;
   }

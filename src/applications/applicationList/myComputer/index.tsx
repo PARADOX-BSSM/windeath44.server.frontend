@@ -3,6 +3,7 @@ import * as _ from './style.ts';
 import myComputer from '@/assets/appIcons/my_computer.svg';
 import Choten from '@/assets/profile/choten.svg';
 import { taskTransformerAtom } from '@/atoms/taskTransformer.ts';
+import { alerterAtom } from '@/atoms/alerter';
 import { useAtomValue } from 'jotai';
 import MemorialWithIcon from '@/applications/components/memorialWithIcon/index.tsx';
 import { useLogOut } from '@/api/auth/logout.ts';
@@ -11,6 +12,7 @@ import React from 'react';
 
 const MyComputer = () => {
   const taskTransform = useAtomValue(taskTransformerAtom);
+  const setAlert = useAtomValue(alerterAtom);
   const logOutMutation = useLogOut();
   const { mutate: getUser, data: userData, isPending, error } = useGetUserMutation();
 
@@ -36,11 +38,20 @@ const MyComputer = () => {
             localStorage.removeItem('access_token');
             localStorage.setItem('isLogIned', 'false');
             sessionStorage.setItem('hasBootedSession', 'false');
-            location.reload();
             // logOutMutation.mutate(undefined, {
-            //   onSuccess: () => {},
+            //   onSuccess: () => {
+            //     location.reload();
+            //   },
             //   onError: (error) => {
             //     console.error('로그아웃 실패', error);
+            //     setAlert?.(
+            //       Choten,
+            //       <>로그아웃 중 오류가 발생했습니다.</>,
+            //       () => {
+            //         taskTransform?.('경고', '');
+            //       }
+            //     );
+            //     location.reload(); // 에러가 발생해도 로그아웃 처리
             //   },
             // });
           }

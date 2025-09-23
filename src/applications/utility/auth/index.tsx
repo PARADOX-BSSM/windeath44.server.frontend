@@ -1,8 +1,12 @@
 import React, { useRef, useState } from 'react';
 import * as _ from '@/applications/utility/auth/style.ts';
 import Logo from '@/assets/windeath44.svg';
+import Choten from '@/assets/profile/choten.svg';
 import { useChangeKeyValidation } from '@/api/auth/changeKeyValidation.ts';
 import MemorialBtn from '@/applications/components/memorialBtn';
+import { useAtomValue } from 'jotai';
+import { alerterAtom } from '@/atoms/alerter';
+import { taskTransformerAtom } from '@/atoms/taskTransformer';
 interface Props {
   changeToPassword: () => void;
   changeToEmailCheck: () => void;
@@ -12,6 +16,10 @@ const Auth = ({ changeToPassword, changeToEmailCheck }: Props) => {
   const [code, setCode] = useState<string[]>(Array(inputLength).fill(''));
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
   const mutationChangeKeyValidation = useChangeKeyValidation();
+
+  const setAlert = useAtomValue(alerterAtom);
+  const taskTransform = useAtomValue(taskTransformerAtom);
+
   const handleChange = (value: string, index: number) => {
     if (!/^[a-zA-Z0-9]?$/.test(value)) return; // 숫자 & 알파벳만 허용
     const newCode = [...code];
@@ -28,6 +36,21 @@ const Auth = ({ changeToPassword, changeToEmailCheck }: Props) => {
     }
   };
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (code.length < inputLength) {
+      setAlert?.(
+        Choten,
+        <>
+          인증코드가 잘못되었습니다.
+          <br />
+          다시 입력해 주세요.
+        </>,
+        () => {
+          taskTransform?.('경고', '');
+        },
+      );
+      return;
+    }
+
     e.preventDefault();
     const authorizationCode = code.join('');
     mutationChangeKeyValidation.mutate(
@@ -36,12 +59,25 @@ const Auth = ({ changeToPassword, changeToEmailCheck }: Props) => {
         onSuccess: () => {
           changeToPassword();
         },
+        onError: () => {
+          setAlert?.(
+            Choten,
+            <>
+              인증 코드 검증에 실패했습니다.
+              <br />
+              다시 시도해 주세요.
+            </>,
+            () => {
+              taskTransform?.('경고', '');
+            },
+          );
+        },
       },
     );
   };
 
-  const buttonWidth = "144px";
-  const buttonHeight = "42px";
+  const buttonWidth = '144px';
+  const buttonHeight = '42px';
   const buttonFontSize = '20px';
 
   return (

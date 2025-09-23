@@ -34,7 +34,6 @@ export const useGetCharacter = (
       setCharacterData(data.data);
     },
     onError: (err: Error) => {
-      alert('정보를 가져오는 중 문제가 발생했습니다!!\n 다시 시도해주세요!');
       console.log(err);
     },
   });

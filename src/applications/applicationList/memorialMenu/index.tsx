@@ -108,9 +108,7 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
         setAlert(
           Choten,
           <>
-            알림
-            <br />
-            최애의 사인에 부적합하다고 판단되는 추모관은
+            최애의 사인에 부적합하다고 판단되는 내용은
             <br />
             거절될 수 있습니다.
           </>,
