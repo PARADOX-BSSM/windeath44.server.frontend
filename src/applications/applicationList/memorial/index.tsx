@@ -197,7 +197,7 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
     });
 
     // taskTransform으로 캐릭터 정보와 추모관 데이터 전달
-    taskTransform?.('', 'MemorialCommit', {
+    taskTransform?.('', '추모관 수정', {
       memorialId: memorialId,
       characterId: characterId,
       characterData: characterData,

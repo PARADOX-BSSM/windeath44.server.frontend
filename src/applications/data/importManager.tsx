@@ -68,6 +68,8 @@ const GameApp = lazy(() => import('@/applications/applicationList/game/index.tsx
 
 const MemorialChief = lazy(() => import('@/applications/applicationList/memorialChief/index.tsx'));
 
+const MemorialPRManager = lazy(() => import('@/applications/applicationList/memorialPRManager/index.tsx'));
+
 //Application Import 형식 예시
 /*
 {
@@ -244,7 +246,7 @@ const useApps = (): TaskType[] => {
       ),
       type: 'App',
       id: 2226,
-      name: 'MemorialCommit',
+      name: '추모관 수정',
       layer: undefined,
       appSetup: {
         Image: 'default',
@@ -589,6 +591,32 @@ const useApps = (): TaskType[] => {
         minHeight: 750,
         setUpWidth: 800,
         setUpHeight: 800,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <MemorialPRManager
+            stack={[]}
+            push={undefined}
+            pop={undefined}
+            top={undefined}
+            memorialId={0}
+            memorialName=""
+          />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2242,
+      name: 'memorialPRManager',
+      layer: undefined,
+      appSetup: {
+        Image: 'default',
+        minWidth: 600,
+        minHeight: 500,
+        setUpWidth: 900,
+        setUpHeight: 650,
       },
       visible: false,
     },

@@ -55,7 +55,7 @@ const MergeBtn = ({ text }: PropsType) => {
     console.log({ ...inputValue, ...contentIn });
 
     const isApply = currentStackTop?.name === 'MemorialApply';
-    const isCommit = currentStackTop?.name === 'MemorialCommit';
+    const isCommit = taskList.some((task) => task.name === '추모관 수정');
 
     if (isApply) {
       createCharacterMutation.mutate(
@@ -146,12 +146,12 @@ const MergeBtn = ({ text }: PropsType) => {
       commitMutation.mutate(
         { memorialId, content: contentIn.content, userId },
         {
-          onSuccess: () => {
-            if (data === undefined) return;
+          onSuccess: (commitResponse) => {
+            if (commitResponse?.data === undefined || commitResponse.data === null) return;
+            console.log(commitResponse.data);
             pullRequestMutation.mutate(
               {
-                memorialPullRequestId: data.memorialPullRequestId,
-                userId,
+                memorialCommitId: parseInt(commitResponse.data),
               },
               {
                 onError: () => {
@@ -183,7 +183,7 @@ const MergeBtn = ({ text }: PropsType) => {
             setContentIn({ characterId: '', content: '' });
             let task = taskSearch?.('미리보기');
             if (task) removeTask(task);
-            task = taskSearch?.('추모관');
+            task = taskSearch?.('추모관 수정');
             if (task) removeTask(task);
           },
           onError: () => {

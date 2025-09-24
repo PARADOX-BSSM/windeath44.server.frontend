@@ -8,10 +8,13 @@ export interface CheckMergeableRequest {
 }
 
 export interface CheckMergeableResponse {
-  memorialPullRequestId: number;
-  latestMemorialPullRequestId: number | null;
-  mergeable: boolean;
-  conflict: string | null;
+  message: string;
+  data: {
+    memorialPullRequestId: number;
+    latestMemorialPullRequestId: number | null;
+    mergeable: boolean;
+    conflict: string | null;
+  };
 }
 
 // 실제 병합 API 타입
@@ -43,7 +46,7 @@ export const checkMergeable = async (request: CheckMergeableRequest): Promise<Ch
 
 // 실제 병합 API
 export const mergeMemorialPullRequest = async (request: MergeRequest): Promise<MergeResponse> => {
-  const response = await api.post(`${memorial}/merge`, request, {});
+  const response = await api.patch(`${memorial}/merge`, request, {});
   return response.data;
 };
 

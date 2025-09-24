@@ -40,16 +40,16 @@ export const usePostCommit = () => {
     onError: () => {},
   });
 };
-type pullRequestValue = { memorialPullRequestId: number; userId: string };
+type pullRequestValue = { memorialCommitId: number };
 //user의 memorial pull request 사항을 저장하는 api
 const postMemorialPullRequest = async ({
-  memorialPullRequestId,
-  userId,
+  memorialCommitId,
 }: pullRequestValue): Promise<apiResponse<string>> => {
-  const data = memorialPullRequestId;
-  const response = await api.post(`:${memorial}/pull-request`, data, {
+  const data = {
+    memorialCommitId: memorialCommitId,
+  };
+  const response = await api.post(`${memorial}/pull-request`, data, {
     headers: {
-      'user-id': userId,
       'Content-Type': 'application/json',
     },
   });
@@ -79,7 +79,7 @@ type memorialId = {
 const getMemorialCommits = async ({
   memorialId,
 }: memorialId): Promise<apiResponse<commitRespone>> => {
-  const response = await api.get(`:${memorial}commits/${memorialId}`);
+  const response = await api.get(`${memorial}commits/${memorialId}`);
   return response.data;
 };
 export const useGetCommitsQuery = ({ memorialId }: memorialId) => {
@@ -93,7 +93,7 @@ type commitId = {
 };
 //get commit by commitId
 const getCommitById = async ({ commitId }: commitId): Promise<apiResponse<commitRespone>> => {
-  const response = await api.get(`:${memorial}commits/id/${commitId}`);
+  const response = await api.get(`${memorial}commits/id/${commitId}`);
   return response.data;
 };
 export const useGetCommitsByIdQuery = ({ commitId }: commitId) => {
