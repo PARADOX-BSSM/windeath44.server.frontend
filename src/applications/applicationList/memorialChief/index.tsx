@@ -6,8 +6,14 @@ import Choten from '@/assets/profile/choten.svg';
 import MemorialBtn from '@/applications/components/memorialBtn';
 import { useGetMyChiefMemorialsQuery } from '@/api/memorial/getChiefMemorials';
 import { useGetMemorialPullRequestsQuery } from '@/api/memorial/getMemorialPullRequests';
-import { useCheckMergeableMutation, useMergeMemorialPullRequestMutation, useResolveMemorialPullRequestMutation } from '@/api/memorial/mergeMemorialPullRequest';
-import { useState } from 'react';
+import {
+  useCheckMergeableMutation,
+  useMergeMemorialPullRequestMutation,
+  useResolveMemorialPullRequestMutation,
+} from '@/api/memorial/mergeMemorialPullRequest';
+import { useMemorialGet, memorialData } from '@/api/memorial/memorialGet';
+import { useGetCharacter, CharacterData } from '@/api/anime/getCharacter';
+import { useState, useEffect, useCallback } from 'react';
 
 interface dataStructureProps {
   stack: any[];
@@ -23,14 +29,57 @@ const MemorialChief = ({ stack, push, pop, top }: dataStructureProps) => {
   const [selectedMemorialId, setSelectedMemorialId] = useState<number | null>(null);
   const [conflictPR, setConflictPR] = useState<{ id: number; conflict: string } | null>(null);
   const [resolveText, setResolveText] = useState<string>('');
+  const [memorialDetails, setMemorialDetails] = useState<{
+    [key: string]: { memorial: memorialData; character: CharacterData };
+  }>({});
 
   // 실제 API로 상주 추모관 목록 조회
   const { data: chiefMemorialsData, isLoading, error } = useGetMyChiefMemorialsQuery();
 
   const chiefMemorialIds = chiefMemorialsData?.data || []; // string[] 형태
 
+  // 추모관 정보를 가져오는 mutation들
+  const memorialMutation = useMemorialGet(() => {});
+  const characterMutation = useGetCharacter(() => {});
+
+  // 추모관 상세 정보를 가져오는 함수
+  const fetchMemorialDetails = useCallback(async (memorialId: string) => {
+    if (memorialDetails[memorialId]) return; // 이미 로드된 경우 스킵
+
+    try {
+      const memorialResult = await memorialMutation.mutateAsync(parseInt(memorialId));
+      if (memorialResult.data) {
+        const characterResult = await characterMutation.mutateAsync(
+          memorialResult.data.characterId,
+        );
+        setMemorialDetails((prev) => ({
+          ...prev,
+          [memorialId]: {
+            memorial: memorialResult.data,
+            character: characterResult.data,
+          },
+        }));
+      }
+    } catch (error) {
+      console.error('추모관 정보 로딩 실패:', error);
+    }
+  }, [memorialDetails, memorialMutation, characterMutation]);
+
+  // 추모관 목록이 로드되면 각 추모관의 상세 정보를 가져옴
+  useEffect(() => {
+    if (chiefMemorialIds.length > 0) {
+      chiefMemorialIds.forEach((memorialId) => {
+        fetchMemorialDetails(memorialId);
+      });
+    }
+  }, [chiefMemorialIds, fetchMemorialDetails]);
+
   // 선택된 추도관의 Pull Requests 조회
-  const { data: pullRequestsData, isLoading: isPullRequestsLoading, refetch: refetchPullRequests } = useGetMemorialPullRequestsQuery(selectedMemorialId!);
+  const {
+    data: pullRequestsData,
+    isLoading: isPullRequestsLoading,
+    refetch: refetchPullRequests,
+  } = useGetMemorialPullRequestsQuery(selectedMemorialId!);
 
   const pullRequests = pullRequestsData?.data || [];
 
@@ -47,12 +96,16 @@ const MemorialChief = ({ stack, push, pop, top }: dataStructureProps) => {
   };
 
   const handleVisitMemorial = (memorialId: string) => {
-    push(
-      taskSearch?.('memorial', {
-        ...stackProps,
-        memorialId: parseInt(memorialId),
-      }),
-    );
+    const details = memorialDetails[memorialId];
+    if (details?.memorial) {
+      push(
+        taskSearch?.('memorial', {
+          ...stackProps,
+          memorialId: parseInt(memorialId),
+          characterId: details.memorial.characterId,
+        }),
+      );
+    }
   };
 
   const handleManagePullRequests = (memorialId: string) => {
@@ -71,7 +124,7 @@ const MemorialChief = ({ stack, push, pop, top }: dataStructureProps) => {
         // 충돌이 있는 경우 - 충돌 해결 UI 표시
         setConflictPR({
           id: memorialPullRequestId,
-          conflict: mergeableResult.conflict || '알 수 없는 충돌'
+          conflict: mergeableResult.conflict || '알 수 없는 충돌',
         });
         return;
       }
@@ -82,17 +135,10 @@ const MemorialChief = ({ stack, push, pop, top }: dataStructureProps) => {
       });
 
       // 3. 성공 시 알림 및 목록 새로고침
-      setAlert?.(
-        Choten,
-        <>
-          Pull Request가 성공적으로 병합되었습니다!
-        </>,
-        () => {
-          taskTransform?.('성공', '');
-          refetchPullRequests(); // PR 목록 새로고침
-        }
-      );
-
+      setAlert?.(Choten, <>Pull Request가 성공적으로 병합되었습니다!</>, () => {
+        taskTransform?.('성공', '');
+        refetchPullRequests(); // PR 목록 새로고침
+      });
     } catch (error: any) {
       // 에러 처리
       setAlert?.(
@@ -104,7 +150,7 @@ const MemorialChief = ({ stack, push, pop, top }: dataStructureProps) => {
         </>,
         () => {
           taskTransform?.('경고', '');
-        }
+        },
       );
     }
   };
@@ -112,15 +158,9 @@ const MemorialChief = ({ stack, push, pop, top }: dataStructureProps) => {
   // 충돌 해결 처리 함수
   const handleResolveConflict = async () => {
     if (!conflictPR || !resolveText.trim()) {
-      setAlert?.(
-        Choten,
-        <>
-          해결 내용을 입력해주세요.
-        </>,
-        () => {
-          taskTransform?.('경고', '');
-        }
-      );
+      setAlert?.(Choten, <>해결 내용을 입력해주세요.</>, () => {
+        taskTransform?.('경고', '');
+      });
       return;
     }
 
@@ -144,9 +184,8 @@ const MemorialChief = ({ stack, push, pop, top }: dataStructureProps) => {
           setConflictPR(null);
           setResolveText('');
           refetchPullRequests();
-        }
+        },
       );
-
     } catch (error: any) {
       setAlert?.(
         Choten,
@@ -157,25 +196,27 @@ const MemorialChief = ({ stack, push, pop, top }: dataStructureProps) => {
         </>,
         () => {
           taskTransform?.('경고', '');
-        }
+        },
       );
     }
   };
 
-  // 에러 처리
-  if (error) {
-    setAlert?.(
-      Choten,
-      <>
-        상주 추모관 목록을 가져오는 중 오류가 발생했습니다.
-        <br />
-        잠시 후 다시 시도해주세요.
-      </>,
-      () => {
-        taskTransform?.('경고', '');
-      }
-    );
-  }
+  // 에러 처리 - useEffect로 한 번만 실행
+  useEffect(() => {
+    if (error) {
+      setAlert?.(
+        Choten,
+        <>
+          상주 추모관 목록을 가져오는 중 오류가 발생했습니다.
+          <br />
+          잠시 후 다시 시도해주세요.
+        </>,
+        () => {
+          taskTransform?.('경고', '');
+        },
+      );
+    }
+  }, [error, setAlert, taskTransform]);
 
   // 로딩 상태 처리
   if (isLoading) {
@@ -189,9 +230,7 @@ const MemorialChief = ({ stack, push, pop, top }: dataStructureProps) => {
                   <_.Title>상주 관리</_.Title>
                   <_.Subtitle>로딩 중...</_.Subtitle>
                 </_.LeftHeader>
-                <_.BackButton onClick={() => pop()}>
-                  돌아가기
-                </_.BackButton>
+                <_.BackButton onClick={() => pop()}>돌아가기</_.BackButton>
               </_.InnerHeader>
             </_.Header>
           </_.ContentContainer>
@@ -226,8 +265,12 @@ const MemorialChief = ({ stack, push, pop, top }: dataStructureProps) => {
               <_.StatLabel>총 상주 추모관</_.StatLabel>
             </_.StatItem>
             <_.StatItem>
-              <_.StatNumber>{selectedMemorialId ? pullRequests.length : 0}</_.StatNumber>
-              <_.StatLabel>선택된 추모관 Pull Requests</_.StatLabel>
+              <_.StatNumber>
+                {selectedMemorialId
+                  ? pullRequests.filter((pr) => pr.state !== 'APPROVED').length
+                  : 0}
+              </_.StatNumber>
+              <_.StatLabel>선택된 대기중인 추모관 수정 요청</_.StatLabel>
             </_.StatItem>
           </_.StatsContainer>
 
@@ -235,37 +278,42 @@ const MemorialChief = ({ stack, push, pop, top }: dataStructureProps) => {
             <_.ListTitle>상주 추모관 목록</_.ListTitle>
             <_.MemorialListBox>
               <_.MemorialList>
-                {chiefMemorialIds.map((memorialId, index) => (
-                  <_.MemorialItem key={memorialId}>
-                    <_.MemorialInfo>
-                      <_.MemorialName>추모관 ID: {memorialId}</_.MemorialName>
-                      <_.MemorialDetails>
-                        <_.DetailText>상주 권한으로 관리 가능</_.DetailText>
-                      </_.MemorialDetails>
-                    </_.MemorialInfo>
+                {chiefMemorialIds.map((memorialId) => {
+                  const details = memorialDetails[memorialId];
+                  const characterName = details?.character?.name || '로딩 중...';
+                  return (
+                    <_.MemorialItem key={memorialId}>
+                      <_.MemorialInfo>
+                        <_.MemorialName>{characterName}의 추모관</_.MemorialName>
+                        <_.MemorialDetails>
+                          <_.DetailText>추모관 ID: {memorialId}</_.DetailText>
+                          <_.DetailText>상주 권한으로 관리 가능</_.DetailText>
+                        </_.MemorialDetails>
+                      </_.MemorialInfo>
 
-                    <_.ButtonContainer>
-                      <MemorialBtn
-                        name="방문"
-                        onClick={() => handleVisitMemorial(memorialId)}
-                        type="submit"
-                        active={true}
-                        width="60px"
-                        height="32px"
-                        fontSize="12px"
-                      />
-                      <MemorialBtn
-                        name="PR 관리"
-                        onClick={() => handleManagePullRequests(memorialId)}
-                        type="submit"
-                        active={true}
-                        width="60px"
-                        height="32px"
-                        fontSize="12px"
-                      />
-                    </_.ButtonContainer>
-                  </_.MemorialItem>
-                ))}
+                      <_.ButtonContainer>
+                        <MemorialBtn
+                          name="방문"
+                          onClick={() => handleVisitMemorial(memorialId)}
+                          type="submit"
+                          active={true}
+                          width="60px"
+                          height="32px"
+                          fontSize="12px"
+                        />
+                        <MemorialBtn
+                          name="PR 관리"
+                          onClick={() => handleManagePullRequests(memorialId)}
+                          type="submit"
+                          active={true}
+                          width="60px"
+                          height="32px"
+                          fontSize="12px"
+                        />
+                      </_.ButtonContainer>
+                    </_.MemorialItem>
+                  );
+                })}
               </_.MemorialList>
             </_.MemorialListBox>
           </_.MemorialListContainer>
@@ -273,11 +321,14 @@ const MemorialChief = ({ stack, push, pop, top }: dataStructureProps) => {
           {selectedMemorialId && (
             <_.PullRequestsContainer>
               <_.ListTitle>Pull Requests (추모관 ID: {selectedMemorialId})</_.ListTitle>
-              {isPullRequestsLoading || checkMergeableMutation.isPending || mergeMutation.isPending || resolveMutation.isPending ? (
+              {isPullRequestsLoading ||
+              checkMergeableMutation.isPending ||
+              mergeMutation.isPending ||
+              resolveMutation.isPending ? (
                 <_.LoadingText>
-                  {isPullRequestsLoading && 'Pull Requests 로딩 중...'}
+                  {isPullRequestsLoading && '수정 요청 로딩 중...'}
                   {checkMergeableMutation.isPending && '병합 가능 여부 확인 중...'}
-                  {mergeMutation.isPending && 'Pull Request 병합 중...'}
+                  {mergeMutation.isPending && '수정 요청 병합 중...'}
                   {resolveMutation.isPending && '충돌 해결 중...'}
                 </_.LoadingText>
               ) : (
@@ -286,42 +337,49 @@ const MemorialChief = ({ stack, push, pop, top }: dataStructureProps) => {
                     {pullRequests.length === 0 ? (
                       <_.EmptyMessage>아직 Pull Request가 없습니다.</_.EmptyMessage>
                     ) : (
-                      pullRequests.map((pr) => (
-                        <_.MemorialItem key={pr.memorialPullRequestId}>
-                          <_.MemorialInfo>
-                            <_.MemorialName>PR #{pr.memorialPullRequestId}</_.MemorialName>
-                            <_.MemorialDetails>
-                              <_.DetailText>사용자: {pr.userId}</_.DetailText>
-                              <_.DetailText>상태: {pr.state}</_.DetailText>
-                              <_.DetailText>수정일: {pr.updatedAt}</_.DetailText>
-                            </_.MemorialDetails>
-                          </_.MemorialInfo>
+                      pullRequests
+                        .filter((pr) => pr.state !== 'APPROVED') // 승인된 PR은 제외
+                        .map((pr) => (
+                          <_.MemorialItem key={pr.memorialPullRequestId}>
+                            <_.MemorialInfo>
+                              <_.MemorialName>PR #{pr.memorialPullRequestId}</_.MemorialName>
+                              <_.MemorialDetails>
+                                <_.DetailText>사용자: {pr.userId}</_.DetailText>
+                                <_.DetailText>상태: {pr.state}</_.DetailText>
+                                <_.DetailText>수정일: {pr.updatedAt}</_.DetailText>
+                              </_.MemorialDetails>
+                            </_.MemorialInfo>
 
-                          <_.ButtonContainer>
-                            <MemorialBtn
-                              name="병합"
-                              onClick={() => handleMergePullRequest(pr.memorialPullRequestId)}
-                              type="submit"
-                              active={pr.state === 'pending' && !checkMergeableMutation.isPending && !mergeMutation.isPending && !resolveMutation.isPending}
-                              width="50px"
-                              height="32px"
-                              fontSize="12px"
-                            />
-                            <MemorialBtn
-                              name="거절"
-                              onClick={() => {
-                                // TODO: PR 거절 API 호출
-                                console.log('PR 거절:', pr.memorialPullRequestId);
-                              }}
-                              type="submit"
-                              active={pr.state === 'pending'}
-                              width="50px"
-                              height="32px"
-                              fontSize="12px"
-                            />
-                          </_.ButtonContainer>
-                        </_.MemorialItem>
-                      ))
+                            <_.ButtonContainer>
+                              <MemorialBtn
+                                name="병합"
+                                onClick={() => handleMergePullRequest(pr.memorialPullRequestId)}
+                                type="submit"
+                                active={
+                                  pr.state === 'pending' &&
+                                  !checkMergeableMutation.isPending &&
+                                  !mergeMutation.isPending &&
+                                  !resolveMutation.isPending
+                                }
+                                width="50px"
+                                height="32px"
+                                fontSize="12px"
+                              />
+                              <MemorialBtn
+                                name="거절"
+                                onClick={() => {
+                                  // TODO: PR 거절 API 호출
+                                  console.log('PR 거절:', pr.memorialPullRequestId);
+                                }}
+                                type="submit"
+                                active={pr.state === 'pending'}
+                                width="50px"
+                                height="32px"
+                                fontSize="12px"
+                              />
+                            </_.ButtonContainer>
+                          </_.MemorialItem>
+                        ))
                     )}
                   </_.MemorialList>
                 </_.MemorialListBox>

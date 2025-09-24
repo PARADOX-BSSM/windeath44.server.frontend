@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo, useCallback } from 'react';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { useStack } from '@/hooks/dataStructure.tsx';
 import { taskSearchAtom } from '@/atoms/taskTransformer.ts';
@@ -21,21 +21,25 @@ const MemorialApproach = ({
   const taskSearch = useAtomValue(taskSearchAtom);
   const setCurrentStackTop = useSetAtom(currentStackTopAtom);
 
-  const stackProps = {
+  const stackProps = useMemo(() => ({
     stack: stack,
     push: push,
     pop: pop,
     top: top,
-  };
+  }), [stack, push, pop, top]);
 
   useEffect(() => {
     // console.log("stack: ", stack);
     // console.log("top: ", top());
-    setCurrentStackTop(top());
-  }, [stack, setCurrentStackTop]);
+    const currentTop = top();
+    setCurrentStackTop(currentTop);
+  }, [stack, top, setCurrentStackTop]);
+
   useEffect(() => {
-    push(taskSearch?.('memorialMenu', stackProps));
-  }, []);
+    if (taskSearch && stack.length === 0) {
+      push(taskSearch('memorialMenu', stackProps));
+    }
+  }, [taskSearch, push, stackProps, stack.length]);
   return <>{top()?.component}</>;
 };
 export default MemorialApproach;
