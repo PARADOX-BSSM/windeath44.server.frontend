@@ -84,7 +84,10 @@ const MyComputer = () => {
     <_.Container>
       <_.LeftContainer>
         <_.ProfileContainer>
-          <_.ProfileImg src={Choten} />
+          <_.ProfileImg
+            src={Choten}
+            draggable="false"
+          />
           {isLoggedIn ? (
             isUserReady ? (
               <_.ProfileName>{(userData as any).data.name}</_.ProfileName>
