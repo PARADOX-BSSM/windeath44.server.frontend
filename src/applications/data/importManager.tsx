@@ -330,7 +330,7 @@ const useApps = (): TaskType[] => {
       name: '경고',
       layer: undefined,
       appSetup: {
-        Image: 'default',
+        Image: setting,
         minWidth: 50,
         minHeight: 25,
         setUpWidth: 690,
