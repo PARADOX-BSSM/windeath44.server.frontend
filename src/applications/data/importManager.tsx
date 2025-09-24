@@ -463,7 +463,7 @@ const useApps = (): TaskType[] => {
       name: '분신사바 메인',
       layer: undefined,
       appSetup: {
-        Image: setting,
+        Image: chatbot,
         minWidth: 340,
         minHeight: 500,
         setUpWidth: 800,
