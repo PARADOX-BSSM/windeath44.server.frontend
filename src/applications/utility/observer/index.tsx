@@ -30,7 +30,10 @@ const Observer = () => {
                 addTask(Application);
               }}
             >
-              <_.SnapshotImg src={Application.appSetup?.Image} />
+              <_.SnapshotImg
+                src={Application.appSetup?.Image}
+                draggable="false"
+              />
               <_.SnapshotText>{Application.name}</_.SnapshotText>
             </_.Snapshot>
           );

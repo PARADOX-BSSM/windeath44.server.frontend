@@ -41,7 +41,10 @@ const TaskBar = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
                 onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
                 onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
               >
-                <_.StartImg src={StartImg}></_.StartImg>
+                <_.StartImg
+                  src={StartImg}
+                  draggable="false"
+                ></_.StartImg>
               </_.Observer>
             );
           } else {
