@@ -1667,8 +1667,8 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
                     : '컴퓨터'
                   : '플레이어'
                 : currentPlayer === 1
-                  ? '하얀돌'
-                  : '까만돌'}
+                  ? '하얀설'
+                  : '까만설'}
             </_.CurrentPlayer>
           </div>
 
@@ -1680,11 +1680,11 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
         <_.StoneCountContainer>
           <_.PlayerStoneCount player={1}>
             <_.StoneIcon player={1} />
-            {gameMode === 'ai' ? '컴퓨터' : '하얀돌'} {stoneCount.player1}개
+            {gameMode === 'ai' ? '컴퓨터' : '하얀설'} {stoneCount.player1}개
           </_.PlayerStoneCount>
           <_.PlayerStoneCount player={2}>
             <_.StoneIcon player={2} />
-            {gameMode === 'ai' ? '플레이어' : '까만돌'} {stoneCount.player2}개
+            {gameMode === 'ai' ? '플레이어' : '까만설'} {stoneCount.player2}개
           </_.PlayerStoneCount>
         </_.StoneCountContainer>
       </_.GameInfo>
