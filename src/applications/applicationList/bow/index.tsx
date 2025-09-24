@@ -21,7 +21,12 @@ const Bow = ({ memorialId }: bowProps) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
   const mutationMemorialBows = useMemorialBow();
   const addBow = () => {
-    mutationMemorialBows.mutate(memorialId);
+    mutationMemorialBows.mutate(memorialId, {
+      onSuccess: () => {
+        // 서버 응답 성공 시에만 UI 숫자 증가
+        setTotalBow(prev => (prev ? prev + 1 : 1));
+      }
+    });
   };
   useEffect(() => {
     mutationMemorialGet.mutate(memorialId, {
@@ -39,8 +44,8 @@ const Bow = ({ memorialId }: bowProps) => {
         );
       },
     });
-  }, []);
-  console.log(totalBow);
+  }, [memorialId]); // memorialId만 의존성으로 사용
+  // console.log(totalBow);
   return (
     <_.main>
       <_.nbow>
