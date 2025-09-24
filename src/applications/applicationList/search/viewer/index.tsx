@@ -9,9 +9,13 @@ import { memorialIdAtom } from '@/atoms/memorialManager.ts';
 interface ViewerProps {
   characters: any[];
   memorials: any[];
+  stack?: any[];
+  push?: any;
+  pop?: any;
+  top?: any;
 }
 
-const Viewer = ({ characters, memorials }: ViewerProps) => {
+const Viewer = ({ characters, memorials, stack, push, pop, top }: ViewerProps) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
   const [memorialId, setMemorialId] = useAtom(memorialIdAtom);
 
@@ -48,6 +52,10 @@ const Viewer = ({ characters, memorials }: ViewerProps) => {
                     taskTransform?.('', 'memorial', {
                       memorialId: targetMemorialId,
                       characterId: characterId,
+                      stack: stack,
+                      push: push,
+                      pop: pop,
+                      top: top,
                     });
                   }}
                 />
