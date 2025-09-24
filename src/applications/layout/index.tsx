@@ -175,10 +175,9 @@ const Application = (props: ApplicationProps) => {
 
       // 화면 경계 제한 (헤더가 최소 30px 이상 보이도록)
       const minTop = 0; // 상단 경계
-      const maxTop = globalThis.innerHeight - 30; // 하단 경계 (헤더 높이 30px 고려)
+      const maxTop = globalThis.innerHeight - 90; // 하단 경계 (헤더 높이 30px 고려)
       const minLeft = -Number(window.width) + 100; // 좌측 경계 (100px 정도는 보이도록)
       const maxLeft = globalThis.innerWidth - 100; // 우측 경계
-
       // 경계 내로 제한
       newTop = Math.max(minTop, Math.min(maxTop, newTop));
       newLeft = Math.max(minLeft, Math.min(maxLeft, newLeft));
