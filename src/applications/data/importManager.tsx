@@ -117,7 +117,7 @@ const useApps = (): TaskType[] => {
         setUpWidth: 300,
         setUpHeight: 400,
       },
-      visible: true,
+      visible: false,
     },
     {
       component: (
