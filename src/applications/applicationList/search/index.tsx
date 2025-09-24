@@ -65,35 +65,50 @@ const Search = () => {
 
   // 서버 스키마가 { data: { values: AnimeItem[] } } 라고 가정
   const animeIdParam = useMemo<string[] | undefined>(() => {
+    if (!aniParam) return undefined; // 검색어가 없으면 undefined 반환
     const values = (animesResp?.data?.data as AnimeItem[] | undefined) ?? [];
-    if (!values.length) return undefined; // 검색어 비었거나 결과 없으면 필터 미적용 = 전체
+    if (!values.length) return []; // 검색어가 있지만 결과 없으면 빈 배열 = 검색 결과 없음
     const ids = values.map((v) => v?.animeId).filter((id): id is number => typeof id === 'number');
-    return ids.length ? ids.map(String) : undefined; // API가 array[string] 기대 시 문자열화
-  }, [animesResp]);
+    return ids.length ? ids.map(String) : []; // API가 array[string] 기대 시 문자열화
+  }, [animesResp, aniParam]);
 
   // ------ 1) 통합 캐릭터 검색 (항상 실행: 비어 있으면 전체 결과) ------
-  const { data: integrated } = useGetIntegratedCharactersQuery({
+  const { data: integrated, isLoading: isIntegratedLoading, isError: isIntegratedError } = useGetIntegratedCharactersQuery({
     name: nameParam, // 비어있으면 sanitize에서 제거 → 전체
     animeId: animeIdParam, // undefined면 제거 → 전체
     deathReason: deathParam, // undefined면 제거 → 전체
     size: 100,
     cursorId,
+    memorialState: 'MEMORIALIZING',
   });
 
   const normalized = useMemo(() => {
     const p = integrated as any;
 
-    let values =
-      p?.values ?? p?.data?.values ?? (Array.isArray(p?.data) ? p.data : undefined) ?? [];
+    // console.log('Normalizing integrated data:', p);
 
-    if (!Array.isArray(values) && values?.values && Array.isArray(values.values)) {
-      values = values.values;
+    let values = [];
+
+    // 다양한 응답 구조 처리
+    if (p?.data?.data && Array.isArray(p.data.data)) {
+      values = p.data.data; // { data: { data: [...] } }
+    } else if (p?.values && Array.isArray(p.values)) {
+      values = p.values; // { values: [...] }
+    } else if (p?.data?.values && Array.isArray(p.data.values)) {
+      values = p.data.values; // { data: { values: [...] } }
+    } else if (Array.isArray(p?.data)) {
+      values = p.data; // { data: [...] }
+    } else if (Array.isArray(p)) {
+      values = p; // [...]
     }
 
     const next =
       (typeof p?.nextCursorId === 'number' && p.nextCursorId) ??
       (typeof p?.data?.nextCursorId === 'number' && p.data.nextCursorId) ??
+      (typeof p?.data?.data?.nextCursorId === 'number' && p.data.data.nextCursorId) ??
       undefined;
+
+    // console.log('Normalized values:', values, 'nextCursorId:', next);
 
     return { values, nextCursorId: next };
   }, [integrated]);
@@ -112,7 +127,7 @@ const Search = () => {
 
   // queryKey 안정화: 정렬된 복사본 사용
   const characterKey = useMemo(
-    () => (characterIds.length ? [...characterIds].sort((a, b) => a - b) : []),
+    () => characterIds,
     [characterIds],
   );
 
@@ -123,7 +138,7 @@ const Search = () => {
     isError: isMemorialError,
   } = useQuery({
     queryKey: ['memorials', 'recently-updated', 1, characterKey],
-    enabled: characterKey.length > 0,
+    enabled: characterKey.length > 0 && !isAnimesLoading && (!aniParam || animeIdParam !== undefined),
     queryFn: async () => {
       const resp = await api.post(
         `${memorial}/character-filtered`,
@@ -142,8 +157,15 @@ const Search = () => {
   const memorials = memorialsResp?.data ?? [];
 
   // useEffect(() => {
-  //   console.log(memorials);
-  // }, [memorials]);
+  //   console.log('Search - Characters:', characters.length, 'Memorials:', memorials.length);
+  //   console.log('Memorials data:', memorials);
+  //   console.log('Loading states - Animes:', isAnimesLoading, 'Memorial:', isMemorialLoading, 'Integrated:', isIntegratedLoading);
+  //   console.log('Error states - Animes:', isAnimesError, 'Memorial:', isMemorialError, 'Integrated:', isIntegratedError);
+  //   console.log('Search params - name:', nameParam, 'animeId:', animeIdParam, 'death:', deathParam);
+  //   console.log('CharacterIds:', characterIds, 'CharacterKey:', characterKey);
+  //   console.log('Memorial query enabled:', characterKey.length > 0 && !isAnimesLoading && (!aniParam || animeIdParam !== undefined));
+  //   console.log('Raw integrated data:', integrated);
+  // }, [memorials, characters, isAnimesLoading, isMemorialLoading, isAnimesError, isMemorialError, isIntegratedLoading, isIntegratedError, nameParam, animeIdParam, deathParam, integrated, characterIds, characterKey, aniParam]);
 
   // 레이아웃 관찰
   useEffect(() => {
