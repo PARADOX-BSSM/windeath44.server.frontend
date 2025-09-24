@@ -66,4 +66,8 @@ export const SnapshotText = styled.p`
 export const SnapshotImg = styled.img`
   width: 48px;
   height: 48px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 `;
