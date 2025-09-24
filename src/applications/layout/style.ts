@@ -29,18 +29,30 @@ export const MinimizeButton = styled(HeaderButton)<{ isFocus: boolean }>`
   background-color: ${({ isFocus }) => (isFocus ? 'rgba(0, 0, 0, 0)' : 'rgba(0, 0, 0, 0.2)')};
   border: none;
   cursor: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 `;
 
 export const FullScreenButton = styled(HeaderButton)<{ isFocus: boolean }>`
   background-color: ${({ isFocus }) => (isFocus ? 'rgba(0, 0, 0, 0)' : 'rgba(0, 0, 0, 0.2)')};
   border: none;
   cursor: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 `;
 
 export const ExitButton = styled(HeaderButton)<{ isFocus: boolean }>`
   background-color: ${({ isFocus }) => (isFocus ? 'rgba(0, 0, 0, 0)' : 'rgba(0, 0, 0, 0.2)')};
   border: none;
   cursor: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 `;
 
 export const WindowContent = styled.section`
