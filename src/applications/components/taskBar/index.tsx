@@ -60,7 +60,7 @@ const TaskBar = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
                   onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
                 >
                   <_.ImgContainer
-                    src={FileImg}
+                    src={task.appSetup?.Image}
                     draggable="false"
                   />
                   <_.TaskName>{task.name}</_.TaskName>
@@ -80,7 +80,7 @@ const TaskBar = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
                   onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
                 >
                   <_.ImgContainer
-                    src={FileImg}
+                    src={task.appSetup?.Image}
                     draggable="false"
                   />
                   <_.TaskName>{task.name}</_.TaskName>
