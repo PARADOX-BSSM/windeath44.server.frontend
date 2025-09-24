@@ -12,6 +12,8 @@ import search from '@/assets/appIcons/search.svg';
 import trashBin from '@/assets/appIcons/empty_bin.svg';
 import chatbot from '@/assets/appIcons/ChatBot.svg';
 import game from '@/assets/appIcons/game.svg';
+import sulkkagi from '@/assets/sulkkagi/black_stone.svg';
+
 import Sulkkagi from '../applicationList/sulkkagi';
 import SulkkagiApproach from '../applicationList/sulkkagiApproach';
 import SulkkagiMenu from '../applicationList/sulkkagiMenu';
@@ -520,7 +522,7 @@ const useApps = (): TaskType[] => {
       name: '설까기',
       layer: undefined,
       appSetup: {
-        Image: game,
+        Image: sulkkagi,
         minWidth: 750,
         minHeight: 750,
         setUpWidth: 800,
@@ -539,7 +541,7 @@ const useApps = (): TaskType[] => {
       name: 'sulkkagiMenu',
       layer: undefined,
       appSetup: {
-        Image: game,
+        Image: sulkkagi,
         minWidth: 300,
         minHeight: 300,
         setUpWidth: 400,
@@ -558,7 +560,7 @@ const useApps = (): TaskType[] => {
       name: 'sulkkagiMain',
       layer: undefined,
       appSetup: {
-        Image: game,
+        Image: sulkkagi,
         minWidth: 750,
         minHeight: 750,
         setUpWidth: 800,
