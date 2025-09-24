@@ -81,6 +81,10 @@ export const Title = styled.p`
   font-style: normal;
   font-weight: 500;
   line-height: normal;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 `;
 
 export const HeartImg = styled.img`
