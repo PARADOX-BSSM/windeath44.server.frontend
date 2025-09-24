@@ -59,7 +59,10 @@ const TaskBar = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
                   onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
                   onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
                 >
-                  <_.ImgContainer src={FileImg} />
+                  <_.ImgContainer
+                    src={FileImg}
+                    draggable="false"
+                  />
                   <_.TaskName>{task.name}</_.TaskName>
                 </_.TaskItem>
               );
@@ -76,7 +79,10 @@ const TaskBar = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
                   onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
                   onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
                 >
-                  <_.ImgContainer src={FileImg} />
+                  <_.ImgContainer
+                    src={FileImg}
+                    draggable="false"
+                  />
                   <_.TaskName>{task.name}</_.TaskName>
                 </_.TaskItem>
               );
