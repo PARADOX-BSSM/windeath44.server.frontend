@@ -193,7 +193,7 @@ const Application = (props: ApplicationProps) => {
           </_.TitleContainer>
           <_.BtnContainer>
             <_.MinimizeButton
-              onClick={() => setIsMinimized(!isMinimized)}
+              onMouseDown={() => setIsMinimized(!isMinimized)}
               isFocus={focus === props.name}
             >
               <img
@@ -206,7 +206,7 @@ const Application = (props: ApplicationProps) => {
               />
             </_.MinimizeButton>
             <_.FullScreenButton
-              onClick={() => setIsFullScreen(!isFullScreen)}
+              onMouseDown={() => setIsFullScreen(!isFullScreen)}
               isFocus={focus === props.name}
             >
               <img
@@ -220,7 +220,7 @@ const Application = (props: ApplicationProps) => {
             </_.FullScreenButton>
 
             <_.ExitButton
-              onClick={() => {
+              onMouseDown={() => {
                 props.removeTask(props.removeCompnent);
                 if (!isLogIned) {
                   setIsLogIned('guest');
