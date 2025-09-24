@@ -185,7 +185,10 @@ const Application = (props: ApplicationProps) => {
       >
         <_.WindowHeader {...moveManager()}>
           <_.TitleContainer>
-            <_.HeartImg src={Heart} />
+            <_.HeartImg
+              src={Heart}
+              draggable="false"
+            />
             <_.Title>{props.name}</_.Title>
           </_.TitleContainer>
           <_.BtnContainer>
@@ -196,6 +199,7 @@ const Application = (props: ApplicationProps) => {
               <img
                 src={Min}
                 alt=""
+                draggable="false"
                 width="100%"
                 onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
                 onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
@@ -208,6 +212,7 @@ const Application = (props: ApplicationProps) => {
               <img
                 src={Full}
                 alt=""
+                draggable="false"
                 width="100%"
                 onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
                 onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
@@ -228,6 +233,7 @@ const Application = (props: ApplicationProps) => {
                 src={Exit}
                 alt=""
                 width="100%"
+                draggable="false"
                 onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
                 onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
               />
