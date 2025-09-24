@@ -1,6 +1,6 @@
 import * as _ from './style';
 import { useAtomValue } from 'jotai';
-import { taskTransformerAtom } from '@/atoms/taskTransformer';
+import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer';
 import { alerterAtom } from '@/atoms/alerter';
 import Choten from '@/assets/profile/choten.svg';
 import MemorialBtn from '@/applications/components/memorialBtn';
@@ -10,7 +10,6 @@ import {
   useMergeMemorialPullRequestMutation,
   useResolveMemorialPullRequestMutation,
 } from '@/api/memorial/mergeMemorialPullRequest';
-import { useGetCommitsByIdQuery } from '@/api/memorial/userCommit';
 import { useState, useEffect } from 'react';
 
 interface dataStructureProps {
@@ -22,13 +21,17 @@ interface dataStructureProps {
   memorialName: string;
 }
 
-const MemorialPRManager = ({ stack, push, pop, top, memorialId, memorialName }: dataStructureProps) => {
+const MemorialPRManager = ({
+  stack,
+  push,
+  pop,
+  top,
+  memorialId,
+  memorialName,
+}: dataStructureProps) => {
+  const taskSearch = useAtomValue(taskSearchAtom);
   const taskTransform = useAtomValue(taskTransformerAtom);
   const setAlert = useAtomValue(alerterAtom);
-  const [conflictPR, setConflictPR] = useState<{ id: number; conflict: string } | null>(null);
-  const [editedConflict, setEditedConflict] = useState<string>('');
-  const [selectedPR, setSelectedPR] = useState<{ id: number; commitId: number } | null>(null);
-
   // Pull Requests 조회
   const {
     data: pullRequestsData,
@@ -42,16 +45,24 @@ const MemorialPRManager = ({ stack, push, pop, top, memorialId, memorialName }: 
   // 병합 관련 mutations
   const checkMergeableMutation = useCheckMergeableMutation();
   const mergeMutation = useMergeMemorialPullRequestMutation();
-  const resolveMutation = useResolveMemorialPullRequestMutation();
 
-  // 선택된 PR의 커밋 내용 조회
-  const { data: commitData, isLoading: isCommitLoading } = useGetCommitsByIdQuery({
-    commitId: selectedPR?.commitId || 0,
-  });
+  const stackProps = {
+    stack: stack,
+    push: push,
+    pop: pop,
+    top: top,
+  };
 
-  // PR 상세보기 함수
-  const handleViewPRDetail = (memorialPullRequestId: number, commitId: number) => {
-    setSelectedPR({ id: memorialPullRequestId, commitId });
+  // PR 상세보기 함수 - 새로운 태스크 push
+  const handleViewPRDetail = (memorialPullRequestId: number, commitData: any) => {
+    push(
+      taskSearch?.('memorialPRDetail', {
+        ...stackProps,
+        prId: memorialPullRequestId,
+        commitData: commitData,
+        memorialName: memorialName,
+      }),
+    );
   };
 
   // PR 병합 처리 함수
@@ -63,14 +74,17 @@ const MemorialPRManager = ({ stack, push, pop, top, memorialId, memorialName }: 
       });
 
       if (!mergeableResult.data?.mergeable) {
-        // 충돌이 있는 경우 - 충돌 해결 UI 표시
+        // 충돌이 있는 경우 - 충돌 해결 태스크로 이동
         const conflict = mergeableResult.data?.conflict || '알 수 없는 충돌';
 
-        setConflictPR({
-          id: memorialPullRequestId,
-          conflict: conflict,
-        });
-        setEditedConflict(conflict); // 원본 충돌 내용으로 시작
+        push(
+          taskSearch?.('memorialConflictResolve', {
+            ...stackProps,
+            prId: memorialPullRequestId,
+            conflict: conflict,
+            memorialName: memorialName,
+          }),
+        );
         return;
       }
 
@@ -80,8 +94,8 @@ const MemorialPRManager = ({ stack, push, pop, top, memorialId, memorialName }: 
       });
 
       // 3. 성공 시 알림 및 목록 새로고침
-      setAlert?.(Choten, <>Pull Request가 성공적으로 병합되었습니다!</>, () => {
-        taskTransform?.('성공', '');
+      setAlert?.(Choten, <>수정 요청이 성공적으로 병합되었습니다!</>, () => {
+        taskTransform?.('경고', '');
         refetchPullRequests(); // PR 목록 새로고침
       });
     } catch (error: any) {
@@ -89,53 +103,7 @@ const MemorialPRManager = ({ stack, push, pop, top, memorialId, memorialName }: 
       setAlert?.(
         Choten,
         <>
-          Pull Request 병합 중 오류가 발생했습니다.
-          <br />
-          {error?.response?.data?.message || '알 수 없는 오류'}
-        </>,
-        () => {
-          taskTransform?.('경고', '');
-        },
-      );
-    }
-  };
-
-  // 충돌 해결 처리 함수
-  const handleResolveConflict = async () => {
-    if (!conflictPR || !editedConflict.trim()) {
-      setAlert?.(Choten, <>해결된 내용을 입력해주세요.</>, () => {
-        taskTransform?.('경고', '');
-      });
-      return;
-    }
-
-    try {
-      // 충돌 해결 API 호출 - 편집된 충돌 해결 내용을 전달
-      await resolveMutation.mutateAsync({
-        memorialPullRequestId: conflictPR.id,
-        resolved: editedConflict,
-      });
-
-      // 성공 시 충돌 UI 숨기고 PR 목록 새로고침
-      setAlert?.(
-        Choten,
-        <>
-          충돌이 성공적으로 해결되었습니다!
-          <br />
-          이제 다시 병합을 시도할 수 있습니다.
-        </>,
-        () => {
-          taskTransform?.('성공', '');
-          setConflictPR(null);
-          setEditedConflict('');
-          refetchPullRequests();
-        },
-      );
-    } catch (error: any) {
-      setAlert?.(
-        Choten,
-        <>
-          충돌 해결 중 오류가 발생했습니다.
+          수정 요청 병합 중 오류가 발생했습니다.
           <br />
           {error?.response?.data?.message || '알 수 없는 오류'}
         </>,
@@ -152,7 +120,7 @@ const MemorialPRManager = ({ stack, push, pop, top, memorialId, memorialName }: 
       setAlert?.(
         Choten,
         <>
-          Pull Requests를 가져오는 중 오류가 발생했습니다.
+          수정 요청을 가져오는 중 오류가 발생했습니다.
           <br />
           잠시 후 다시 시도해주세요.
         </>,
@@ -172,7 +140,7 @@ const MemorialPRManager = ({ stack, push, pop, top, memorialId, memorialName }: 
             <_.Header>
               <_.InnerHeader>
                 <_.LeftHeader>
-                  <_.Title>Pull Request 관리</_.Title>
+                  <_.Title>수정 요청 관리</_.Title>
                   <_.Subtitle>로딩 중...</_.Subtitle>
                 </_.LeftHeader>
                 <_.BackButton onClick={() => pop()}>돌아가기</_.BackButton>
@@ -191,7 +159,7 @@ const MemorialPRManager = ({ stack, push, pop, top, memorialId, memorialName }: 
           <_.Header>
             <_.InnerHeader>
               <_.LeftHeader>
-                <_.Title>Pull Request 관리</_.Title>
+                <_.Title>수정 요청 관리</_.Title>
                 <_.Subtitle>{memorialName}의 수정 요청을 관리합니다</_.Subtitle>
               </_.LeftHeader>
               <_.BackButton onClick={() => pop()}>돌아가기</_.BackButton>
@@ -201,9 +169,14 @@ const MemorialPRManager = ({ stack, push, pop, top, memorialId, memorialName }: 
           <_.StatsContainer>
             <_.StatItem>
               <_.StatNumber>
-                {pullRequests.filter((pr) => pr.state !== 'APPROVED').length}
+                {
+                  pullRequests.filter(
+                    (pr) =>
+                      pr.state !== 'APPROVED' && pr.state !== 'STORED' && pr.state !== 'RESOLVED',
+                  ).length
+                }
               </_.StatNumber>
-              <_.StatLabel>대기중인 Pull Requests</_.StatLabel>
+              <_.StatLabel>대기중인 수정 요청</_.StatLabel>
             </_.StatItem>
           </_.StatsContainer>
 
@@ -211,28 +184,33 @@ const MemorialPRManager = ({ stack, push, pop, top, memorialId, memorialName }: 
             <_.ListTitle>Pull Requests</_.ListTitle>
             {isPullRequestsLoading ||
             checkMergeableMutation.isPending ||
-            mergeMutation.isPending ||
-            resolveMutation.isPending ? (
+            mergeMutation.isPending ? (
               <_.LoadingText>
-                {isPullRequestsLoading && 'Pull Requests 로딩 중...'}
+                {isPullRequestsLoading && '수정 요청 로딩 중...'}
                 {checkMergeableMutation.isPending && '병합 가능 여부 확인 중...'}
-                {mergeMutation.isPending && 'Pull Request 병합 중...'}
-                {resolveMutation.isPending && '충돌 해결 중...'}
+                {mergeMutation.isPending && '수정 요청 병합 중...'}
               </_.LoadingText>
             ) : (
               <_.MemorialListBox>
                 <_.MemorialList>
                   {pullRequests.length === 0 ? (
-                    <_.EmptyMessage>아직 Pull Request가 없습니다.</_.EmptyMessage>
+                    <_.EmptyMessage>아직 P수정 요청이 없습니다.</_.EmptyMessage>
                   ) : (
                     pullRequests
-                      .filter((pr) => pr.state !== 'APPROVED') // 승인된 PR은 제외
+                      .filter(
+                        (pr) =>
+                          pr.state !== 'APPROVED' &&
+                          pr.state !== 'STORED' &&
+                          pr.state !== 'RESOLVED',
+                      ) // 승인된 PR은 제외
                       .map((pr) => (
                         <_.MemorialItem key={pr.memorialPullRequestId}>
                           <_.MemorialInfo>
                             <_.MemorialName
                               style={{ cursor: 'pointer', color: '#E774DD' }}
-                              onClick={() => handleViewPRDetail(pr.memorialPullRequestId, pr.memorialCommit.memorialCommitId)}
+                              onClick={() =>
+                                handleViewPRDetail(pr.memorialPullRequestId, pr.memorialCommit)
+                              }
                             >
                               PR #{pr.memorialPullRequestId}
                             </_.MemorialName>
@@ -251,8 +229,7 @@ const MemorialPRManager = ({ stack, push, pop, top, memorialId, memorialName }: 
                               active={
                                 pr.state === 'PENDING' &&
                                 !checkMergeableMutation.isPending &&
-                                !mergeMutation.isPending &&
-                                !resolveMutation.isPending
+                                !mergeMutation.isPending
                               }
                               width="50px"
                               height="32px"
@@ -278,102 +255,6 @@ const MemorialPRManager = ({ stack, push, pop, top, memorialId, memorialName }: 
               </_.MemorialListBox>
             )}
           </_.PullRequestsContainer>
-
-          {conflictPR && (
-            <_.ConflictResolveContainer>
-              <_.ListTitle>충돌 해결 (PR #{conflictPR.id})</_.ListTitle>
-
-              <_.ResolveInputContainer>
-                <_.ResolveLabel>충돌 내용 (직접 수정하세요):</_.ResolveLabel>
-                <_.ResolveTextarea
-                  value={editedConflict}
-                  onChange={(e) => setEditedConflict(e.target.value)}
-                  placeholder="Git 충돌 마커를 포함한 내용을 직접 수정하세요..."
-                  rows={12}
-                  style={{
-                    fontFamily: 'monospace',
-                    fontSize: '14px',
-                    lineHeight: '1.5',
-                    backgroundColor: '#f8f9fa',
-                    border: '2px solid #dee2e6',
-                    borderRadius: '4px',
-                    padding: '12px'
-                  }}
-                />
-              </_.ResolveInputContainer>
-
-              <_.ConflictButtonContainer>
-                <MemorialBtn
-                  name="해결 완료"
-                  onClick={handleResolveConflict}
-                  type="submit"
-                  active={!!editedConflict.trim() && !resolveMutation.isPending}
-                  width="80px"
-                  height="36px"
-                  fontSize="14px"
-                />
-                <MemorialBtn
-                  name="취소"
-                  onClick={() => {
-                    setConflictPR(null);
-                    setEditedConflict('');
-                  }}
-                  type="submit"
-                  active={true}
-                  width="60px"
-                  height="36px"
-                  fontSize="14px"
-                />
-              </_.ConflictButtonContainer>
-            </_.ConflictResolveContainer>
-          )}
-
-          {selectedPR && (
-            <_.ConflictResolveContainer style={{ borderTop: '2px solid #4299E1', background: '#F0F8FF' }}>
-              <_.ListTitle>PR #{selectedPR.id} 상세 내용</_.ListTitle>
-
-              {isCommitLoading ? (
-                <_.LoadingText>PR 내용을 불러오는 중...</_.LoadingText>
-              ) : (
-                <>
-                  <_.ConflictInfo>
-                    <_.ConflictLabel>커밋 정보:</_.ConflictLabel>
-                    <_.MemorialDetails>
-                      <_.DetailText>커밋 ID: {selectedPR.commitId}</_.DetailText>
-                      <_.DetailText>사용자: {commitData?.data?.userId}</_.DetailText>
-                      <_.DetailText>작성일: {commitData?.data?.createdAt}</_.DetailText>
-                    </_.MemorialDetails>
-                  </_.ConflictInfo>
-
-                  <_.ResolveInputContainer>
-                    <_.ResolveLabel>수정 내용:</_.ResolveLabel>
-                    <_.ConflictText style={{
-                      color: '#2E2E2E',
-                      border: '1px solid #4299E1',
-                      maxHeight: '300px',
-                      overflowY: 'auto',
-                      lineHeight: '1.6',
-                      minHeight: '100px'
-                    }}>
-                      {commitData?.data?.content || '내용을 불러올 수 없습니다.'}
-                    </_.ConflictText>
-                  </_.ResolveInputContainer>
-
-                  <_.ConflictButtonContainer>
-                    <MemorialBtn
-                      name="닫기"
-                      onClick={() => setSelectedPR(null)}
-                      type="button"
-                      active={true}
-                      width="60px"
-                      height="32px"
-                      fontSize="12px"
-                    />
-                  </_.ConflictButtonContainer>
-                </>
-              )}
-            </_.ConflictResolveContainer>
-          )}
         </_.ContentContainer>
       </_.InnerContainer>
     </_.Container>

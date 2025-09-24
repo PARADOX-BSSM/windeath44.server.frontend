@@ -93,7 +93,7 @@ type commitId = {
 };
 //get commit by commitId
 const getCommitById = async ({ commitId }: commitId): Promise<apiResponse<commitRespone>> => {
-  const response = await api.get(`${memorial}commits/id/${commitId}`);
+  const response = await api.get(`${memorial}/commits/id/${commitId}`);
   return response.data;
 };
 export const useGetCommitsByIdQuery = ({ commitId }: commitId) => {

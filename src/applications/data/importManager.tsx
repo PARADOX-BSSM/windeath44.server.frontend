@@ -70,6 +70,10 @@ const MemorialChief = lazy(() => import('@/applications/applicationList/memorial
 
 const MemorialPRManager = lazy(() => import('@/applications/applicationList/memorialPRManager/index.tsx'));
 
+const MemorialPRDetail = lazy(() => import('@/applications/applicationList/memorialPRDetail/index.tsx'));
+
+const MemorialConflictResolve = lazy(() => import('@/applications/applicationList/memorialConflictResolve/index.tsx'));
+
 //Application Import 형식 예시
 /*
 {
@@ -617,6 +621,66 @@ const useApps = (): TaskType[] => {
         minHeight: 500,
         setUpWidth: 900,
         setUpHeight: 650,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <MemorialPRDetail
+            stack={[]}
+            push={undefined}
+            pop={undefined}
+            top={undefined}
+            prId={0}
+            commitData={{
+              memorialCommitId: 0,
+              userId: '',
+              memorialId: 0,
+              content: '',
+              createdAt: '',
+            }}
+            memorialName=""
+          />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2243,
+      name: 'memorialPRDetail',
+      layer: undefined,
+      appSetup: {
+        Image: 'default',
+        minWidth: 650,
+        minHeight: 550,
+        setUpWidth: 950,
+        setUpHeight: 700,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <MemorialConflictResolve
+            stack={[]}
+            push={undefined}
+            pop={undefined}
+            top={undefined}
+            prId={0}
+            conflict=""
+            memorialName=""
+          />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2244,
+      name: 'memorialConflictResolve',
+      layer: undefined,
+      appSetup: {
+        Image: 'default',
+        minWidth: 700,
+        minHeight: 600,
+        setUpWidth: 1000,
+        setUpHeight: 750,
       },
       visible: false,
     },

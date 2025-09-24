@@ -35,32 +35,35 @@ const MemorialChief = ({ stack, push, pop, top }: dataStructureProps) => {
   const characterMutation = useGetCharacter(() => {});
 
   // 추모관 상세 정보를 가져오는 함수
-  const fetchMemorialDetails = useCallback(async (memorialId: string) => {
-    // 이미 요청한 ID인 경우 스킵
-    if (requestedIds.current.has(memorialId)) return;
+  const fetchMemorialDetails = useCallback(
+    async (memorialId: string) => {
+      // 이미 요청한 ID인 경우 스킵
+      if (requestedIds.current.has(memorialId)) return;
 
-    requestedIds.current.add(memorialId);
+      requestedIds.current.add(memorialId);
 
-    try {
-      const memorialResult = await memorialMutation.mutateAsync(parseInt(memorialId));
-      if (memorialResult.data) {
-        const characterResult = await characterMutation.mutateAsync(
-          memorialResult.data.characterId,
-        );
-        setMemorialDetails((prev) => ({
-          ...prev,
-          [memorialId]: {
-            memorial: memorialResult.data,
-            character: characterResult.data,
-          },
-        }));
+      try {
+        const memorialResult = await memorialMutation.mutateAsync(parseInt(memorialId));
+        if (memorialResult.data) {
+          const characterResult = await characterMutation.mutateAsync(
+            memorialResult.data.characterId,
+          );
+          setMemorialDetails((prev) => ({
+            ...prev,
+            [memorialId]: {
+              memorial: memorialResult.data,
+              character: characterResult.data,
+            },
+          }));
+        }
+      } catch (error) {
+        console.error('추모관 정보 로딩 실패:', error);
+        // 에러 발생 시 재요청 가능하도록 제거
+        requestedIds.current.delete(memorialId);
       }
-    } catch (error) {
-      console.error('추모관 정보 로딩 실패:', error);
-      // 에러 발생 시 재요청 가능하도록 제거
-      requestedIds.current.delete(memorialId);
-    }
-  }, [memorialMutation, characterMutation]);
+    },
+    [memorialMutation, characterMutation],
+  );
 
   // 추모관 목록이 로드되면 각 추모관의 상세 정보를 가져옴
   useEffect(() => {
@@ -70,7 +73,6 @@ const MemorialChief = ({ stack, push, pop, top }: dataStructureProps) => {
       });
     }
   }, [chiefMemorialIds, fetchMemorialDetails]);
-
 
   const stackProps = {
     stack: stack,
@@ -104,7 +106,6 @@ const MemorialChief = ({ stack, push, pop, top }: dataStructureProps) => {
       );
     }
   };
-
 
   // 에러 처리 - useEffect로 한 번만 실행
   useEffect(() => {
@@ -199,11 +200,11 @@ const MemorialChief = ({ stack, push, pop, top }: dataStructureProps) => {
                           fontSize="12px"
                         />
                         <MemorialBtn
-                          name="PR 관리"
+                          name="수정 요청 관리"
                           onClick={() => handleManagePullRequests(memorialId)}
                           type="submit"
                           active={true}
-                          width="60px"
+                          width="120px"
                           height="32px"
                           fontSize="12px"
                         />
