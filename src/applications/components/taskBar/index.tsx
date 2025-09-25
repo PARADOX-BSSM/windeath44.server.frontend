@@ -34,7 +34,7 @@ const TaskBar = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
                       setBackUpFocus(focus);
                       setFocus('Observer');
                     }
-                    console.log(startOption);
+// console.log(startOption);
                     return !prev;
                   });
                 }}
@@ -74,7 +74,7 @@ const TaskBar = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
                   onClick={(e) => {
                     e.stopPropagation();
                     setFocus(task.name);
-                    console.log(focus);
+// console.log(focus);
                   }}
                   onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
                   onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}

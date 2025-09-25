@@ -27,7 +27,7 @@ const doChat = async ({ chatbotId, content, userId }: DoChatInterface) => {
     return response.data;
   } catch (error: any) {
     if (error.response?.data) {
-      console.log(`채팅 실패 : ${JSON.stringify(error.response.data)}`);
+// console.log(`채팅 실패 : ${JSON.stringify(error.response.data)}`);
     }
     throw error;
   }

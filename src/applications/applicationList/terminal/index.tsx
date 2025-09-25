@@ -36,9 +36,9 @@ const Terminal = () => {
       <Input
         onKeyDown={(e) => {
           if (e.key === 'Enter') {
-            console.log('enter');
+// console.log('enter');
             Push(e.target.value);
-            console.log(history);
+// console.log(history);
             e.target.value = '';
           }
           setCommand(e.target.value);
@@ -48,7 +48,7 @@ const Terminal = () => {
         onClick={() => {
           getUser(undefined, {
             onSuccess: (data) => {
-              console.log('성공:', data);
+// console.log('성공:', data);
             },
             onError: (err) => {
               console.error('에러:', err);

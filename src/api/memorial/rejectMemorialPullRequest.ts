@@ -24,7 +24,7 @@ export const useRejectMemorialPullRequestMutation = () => {
   return useMutation({
     mutationFn: rejectMemorialPullRequest,
     onSuccess: (data) => {
-      console.log('Memorial Pull Request rejected successfully:', data);
+// console.log('Memorial Pull Request rejected successfully:', data);
     },
     onError: (error) => {
       console.error('Failed to reject Memorial Pull Request:', error);

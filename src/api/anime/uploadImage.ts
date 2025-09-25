@@ -48,7 +48,7 @@ export const useUploadImage = () => {
   return useMutation({
     mutationFn: uploadImage,
     onSuccess: () => {
-      console.log('이미지가 성공적으로 등록되었습니다.');
+// console.log('이미지가 성공적으로 등록되었습니다.');
       // alert('이미지가 성공적으로 등록되었습니다.');
     },
     onError: () => {},

@@ -12,7 +12,8 @@
       "Bash(npm run lint)",
       "Bash(npm run dev:*)",
       "mcp__apidog__read_project_oas_31b1m9",
-      "mcp__apidog__refresh_project_oas_31b1m9"
+      "mcp__apidog__refresh_project_oas_31b1m9",
+      "Bash(xargs sed:*)"
     ],
     "deny": [],
     "ask": [],

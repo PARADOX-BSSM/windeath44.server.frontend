@@ -17,7 +17,7 @@ const changeTemporaryKey = async ({ email }: authParams) => {
   } catch (error: any) {
     console.error(error);
     if (error.response?.data) {
-      console.log(`이메일 전송 실패: ${JSON.stringify(error.response.data)}`);
+// console.log(`이메일 전송 실패: ${JSON.stringify(error.response.data)}`);
     }
     throw error;
   }

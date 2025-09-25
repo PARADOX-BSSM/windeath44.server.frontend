@@ -26,7 +26,7 @@ export const useGetAnimation = (setAnimation: React.Dispatch<React.SetStateActio
       setAnimation(data.data.name);
     },
     onError: (err: Error) => {
-      console.log(err);
+// console.log(err);
     },
   });
 };

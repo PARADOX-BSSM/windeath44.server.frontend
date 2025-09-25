@@ -17,7 +17,7 @@ const logIn = async ({ id, password }: authParams): Promise<string> => {
       withCredentials: true,
     });
 
-    console.log(response.headers);
+    // console.log(response.headers);
 
     const accessToken: string | undefined = response.headers['authorization'];
     if (!accessToken) throw new Error('accessToken 없음');
@@ -27,7 +27,7 @@ const logIn = async ({ id, password }: authParams): Promise<string> => {
     const axiosError = error as AxiosError;
     if (axiosError.response && axiosError.response.headers) {
       // alert(`로그인 실패: 다시 입력해 주세요!`);
-      console.log(`로그인 실패: ${JSON.stringify(axiosError.response.headers)}`);
+      // console.log(`로그인 실패: ${JSON.stringify(axiosError.response.headers)}`);
     } else {
       // alert('로그인 중 오류가 발생했습니다.');
     }

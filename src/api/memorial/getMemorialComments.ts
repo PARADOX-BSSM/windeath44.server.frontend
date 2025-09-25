@@ -45,7 +45,7 @@ export const useGetMemorialComments = (
   return useMutation<MemorialCommentsResponse, Error, commentData>({
     mutationFn: getMemorialComments,
     onSuccess: (data: MemorialCommentsResponse) => {
-      console.log('onSuccess data', data.data.data);
+// console.log('onSuccess data', data.data.data);
       setMemorialComment(data.data.data);
     },
     onError: (err: unknown) => {

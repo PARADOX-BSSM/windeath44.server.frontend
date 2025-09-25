@@ -7,7 +7,7 @@ import { deleteCookie } from '@/api/auth/cookie';
 const logOut = async (): Promise<string> => {
   try {
     const response: AxiosResponse = await api.post(`${auth}/logout`, {}, { withCredentials: true });
-    console.log(response.headers);
+// console.log(response.headers);
     // Remove auth cookies locally; server should also invalidate refresh on logout
     deleteCookie('access_token');
     deleteCookie('refresh_token');
@@ -15,7 +15,7 @@ const logOut = async (): Promise<string> => {
   } catch (error) {
     const axiosError = error as AxiosError;
     if (axiosError.response?.headers) {
-      console.log(`로그아웃 실패: ${JSON.stringify(axiosError.response.headers)}`);
+// console.log(`로그아웃 실패: ${JSON.stringify(axiosError.response.headers)}`);
     }
     throw error;
   }
