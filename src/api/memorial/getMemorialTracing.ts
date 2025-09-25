@@ -23,7 +23,7 @@ const getMemorialTracing = async (
   const response = await axiosInstance.get(`${memorial}/memorial-tracing/${userId}`, {
     params: {
       size,
-      ...(cursor && { cursor: toUnixTime(cursor) })
+      ...(cursor && { cursor }),
     },
   });
   return response.data;
