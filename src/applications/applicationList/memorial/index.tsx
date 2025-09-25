@@ -18,6 +18,7 @@ import { useCommentWrite } from '@/api/memorial/memorialCommentWrite.ts';
 import { parseCustomContent } from '@/lib/customTag/parseCustomContent.tsx';
 import { useGetAnimation } from '@/api/anime/getAnimation.ts';
 import ribbon from '@/assets/memorial_ribbon.svg';
+import { inputPortage } from '@/atoms/inputManager.ts';
 import Choten from '@/assets/profile/choten.svg';
 
 interface dataStructureProps {
@@ -32,6 +33,7 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
   const taskTransform = useAtomValue(taskTransformerAtom);
   const taskSearch = useAtomValue(taskSearchAtom);
   const setAlert = useAtomValue(alerterAtom);
+  const [, setInputValue] = useAtom(inputPortage);
   const [content, setContent] = useState<string>('');
   const [characterData, setCharacterData] = useState<CharacterData>({
     characterId: 0,
@@ -181,7 +183,29 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
     pop: pop,
     top: top,
   };
+  const handleCommit = () => {
+    setInputValue({
+      name: characterData.name,
+      deathReason: characterData.deathReason,
+      date: characterData.deathOfDay,
+      lifeCycle: characterData.lifeTime,
+      anime: animation,
+      animeId: characterData.animeId,
+      age: characterData.age,
+      profileImage: characterData.imageUrl,
+      phrase: '',
+    });
 
+    // taskTransform으로 캐릭터 정보와 추모관 데이터 전달
+    taskTransform?.('', '추모관 수정', {
+      memorialId: memorialId,
+      characterId: characterId,
+      characterData: characterData,
+      memorialData: memorialData,
+      animation: animation,
+    });
+    taskTransform?.('', '미리보기');
+  };
   return (
     <_.Main>
       <_.Container>
@@ -194,19 +218,16 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
               </_.TextContainer>
               <_.History
                 onClick={() => {
-                  push(taskSearch?.('memorailHistory', stackProps));
+                  taskTransform?.('', '추모관 기록', {
+                    memorialId: memorialId,
+                    characterName: characterData.name,
+                    lastModified: memorialData.updatedAt,
+                  });
                 }}
               >
                 기록
               </_.History>
-              <_.DocumentUpdate
-                onClick={() => {
-                  taskTransform?.('', '미리보기');
-                  push(taskSearch?.('MemorialCommit', stackProps));
-                }}
-              >
-                문서 수정
-              </_.DocumentUpdate>
+              <_.DocumentUpdate onClick={handleCommit}>문서 수정</_.DocumentUpdate>
             </_.Header>
             <_.ContentContainer>
               <_.IndexWrapper>

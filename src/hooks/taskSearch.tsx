@@ -34,6 +34,7 @@ export const useTaskSearchFunction = () => {
         {React.createElement(type, {
           ...existingProps,
           ...(props ?? {}),
+          __key: Math.random(),
         })}
       </Suspense>
     );

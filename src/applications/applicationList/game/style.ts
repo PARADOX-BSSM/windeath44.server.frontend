@@ -33,6 +33,10 @@ export const ItemContainer = styled.div`
     1px 1px 0px 0px #2e2e2e inset,
     -2px -2px 0px 0px #dcafdd inset,
     2px 2px 0px 0px #dcafdd inset;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 `;
 
 export const GameItem = styled.div`

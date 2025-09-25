@@ -30,9 +30,12 @@ export const ProfileContainer = styled.div`
   gap: 9px;
 `;
 
-export const ProfileImg = styled.img`
+export const ProfileImg = styled.div<{ imgUrl: string }>`
   width: 116px;
   height: 116px;
+  background: #fff;
+  background-image: url(${(props) => props.imgUrl});
+  background-size: cover;
 `;
 
 export const ProfileName = styled.div`
@@ -108,4 +111,16 @@ export const Shadow = styled.div`
   border-style: solid;
   border-color: #fff;
   padding: 0.016rem 0.0625rem 0.0625rem 0.016rem;
+`;
+
+export const MessageText = styled.div`
+  color: #2e2e2e;
+  font-family: Galmuri11;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  text-align: center;
+  padding: 20px;
+  width: 100%;
 `;

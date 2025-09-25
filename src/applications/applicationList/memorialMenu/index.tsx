@@ -1,11 +1,12 @@
-import { Suspense, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAtomValue } from 'jotai';
 import MemorialBtn from '@/applications/components/memorialBtn';
 import * as _ from './style.ts';
-import { taskSearchAtom } from '@/atoms/taskTransformer.ts';
+import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer.ts';
+import { versionAtom } from '@/atoms/version.ts';
 import { alerterAtom } from '@/atoms/alerter.ts';
 import Choten from '@/assets/profile/choten.svg';
-import { useProcessManager } from '@/hooks/processManager.tsx';
+// import { useProcessManager } from '@/hooks/processManager.tsx';
 
 interface dataStructureProps {
   stack: any[];
@@ -14,7 +15,7 @@ interface dataStructureProps {
   top: any;
 }
 
-const btnList = ['추모관 검색', '즐겨찾기', '추모관 신청'];
+const btnList = ['추모관', '상주', '추모관 신청'];
 
 const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
@@ -29,7 +30,9 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
 
   const setAlert = useAtomValue(alerterAtom);
   const taskSearch = useAtomValue(taskSearchAtom);
-  const [, addTask, removeTask] = useProcessManager();
+  const taskTransform = useAtomValue(taskTransformerAtom);
+  const version = useAtomValue(versionAtom);
+  // const [, addTask, removeTask] = useProcessManager();
 
   const stackProps = {
     stack: stack,
@@ -37,31 +40,48 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
     pop: pop,
     top: top,
   };
+  const applyProps = {
+    stack: stack,
+    push: push,
+    pop: pop,
+    top: top,
+  };
 
-  const memorialPreview = taskSearch?.('미리보기')!;
+  // const memorialPreview = taskSearch?.('미리보기')!;
 
   useEffect(() => {
     if (selectedIdx === 0) {
       setDescription(
         <>
-          "추모관 검색"에서 다양한 캐릭터의 추모관을 찾아볼 수 있습니다.
+          "추모관"에서 다양한 캐릭터의 추모관을 찾아볼 수 있습니다.
           <br />
           <br />
-          <span style={{ fontSize: '1.375rem' }}>
-            * 추모관에서 다른 사람들과 함께 캐릭터에 대한 기억을 나눠볼 수 있습니다.
-          </span>
+          <div style={{ fontSize: '1.375rem' }}>
+            <div style={{ margin: '0 0 16px 0' }}>
+              * 추모관에서 다른 사람들과 함께 캐릭터에 대한 기억을 나눠볼 수 있습니다.
+            </div>
+            <div style={{ margin: '0 0 16px 0' }}>* 추모관에서 추모글을 작성해보세요.</div>
+            <div style={{ margin: '0 0 16px 0' }}>
+              * 추모관에서 다양한 활동을 통해 캐릭터를 기릴 수 있습니다.
+            </div>
+          </div>
         </>,
       );
     }
     if (selectedIdx === 1) {
       setDescription(
         <>
-          "즐겨찾기"에서 이전에 즐겨찾기에 등록해놓은 추모관을 볼 수 있습니다.
+          "상주"에서 자신이 상주인 추모관을 확인할 수 있습니다.
           <br />
           <br />
-          <span style={{ fontSize: '1.375rem' }}>
-            * 추모관을 즐겨찾기에 등록하여 편리하게 이동할 수 있습니다.
-          </span>
+          <div style={{ fontSize: '1.375rem' }}>
+            <div style={{ margin: '0 0 16px 0' }}>
+              * 상주는 추모관에서 가장 활발히 활동하는 사람에게 주어집니다.
+            </div>
+            <div style={{ margin: '0 0 16px 0' }}>
+              * 상주가 되면 추모관을 관리할 수 있는 권한이 주어집니다.
+            </div>
+          </div>
         </>,
       );
     }
@@ -71,9 +91,12 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
           "추모관 신청"에서 최애의 사인에 존재하지 않는 추모관을 신청할 수 있습니다.
           <br />
           <br />
-          <span style={{ fontSize: '1.375rem' }}>
-            * 추모관 신청은 주로 1~2일 내에 받아들여집니다.
-          </span>
+          <div style={{ fontSize: '1.375rem' }}>
+            <div style={{ margin: '0 0 16px 0' }}>
+              * 추모관 신청은 캐릭터의 사망이 공식적으로 확인된 경우에만 가능합니다.
+            </div>
+            <div style={{ margin: '0 0 16px 0' }}>* 추모관 신청은 주로 1~2일 내에 확인됩니다.</div>
+          </div>
         </>,
       );
     }
@@ -85,30 +108,20 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
       push(taskSearch?.('Search', stackProps));
     }
     if (idx === 1) {
-      push(
-        taskSearch?.('memorial', {
-          stack: stack,
-          push: push,
-          pop: pop,
-          top: top,
-          memorialId: 5,
-          characterId: 5,
-        }),
-      );
+      push(taskSearch?.('상주 관리', stackProps));
     }
     if (idx === 2) {
       if (setAlert) {
         setAlert(
           Choten,
           <>
-            최애의 사인에 부적합하다고 판단되는 내용은
+            최애의 사인에 부적합하다고 판단되는 추모관은
             <br />
             거절될 수 있습니다.
           </>,
           () => {
-            push(taskSearch?.('MemorialApply', stackProps));
-            removeTask(taskSearch?.('경고')!);
-            addTask(memorialPreview);
+            taskTransform?.('경고', '미리보기', applyProps);
+            push(taskSearch?.('MemorialApply', applyProps));
           },
         );
       }
@@ -120,7 +133,7 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
       <_.InnerContainer>
         <_.TextContainer>
           <_.Title>최애의 사인</_.Title>
-          <_.Version>ver 0.0.1</_.Version>
+          <_.Version>ver {version}</_.Version>
         </_.TextContainer>
         <_.MainContainer>
           <_.DescriptionBox>

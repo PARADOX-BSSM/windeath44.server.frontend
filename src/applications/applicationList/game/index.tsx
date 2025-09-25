@@ -2,7 +2,7 @@ import * as _ from './style';
 import React from 'react';
 import folder from '@/assets/search/folder.svg';
 import rythmGame from '@/assets/appIcons/piano.svg';
-import game from '@/assets/appIcons/game.svg';
+import sulkkagi from '@/assets/sulkkagi/black_stone.svg';
 
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
 import { taskTransformerAtom } from '@/atoms/taskTransformer.ts';
@@ -10,7 +10,7 @@ import { useAtomValue } from 'jotai';
 
 const gameItems = [
   { icon: rythmGame, name: '리듬게임' },
-  { icon: game, name: '설까기' },
+  { icon: sulkkagi, name: '설까기' },
 ];
 
 const Game: React.FC = () => {
@@ -26,7 +26,10 @@ const Game: React.FC = () => {
               onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
               onClick={() => taskTransform?.('아케이드', '설까기')}
             >
-              <_.GameIcon src={item.icon} />
+              <_.GameIcon
+                src={item.icon}
+                draggable="false"
+              />
               <_.GameName>{item.name}</_.GameName>
             </_.GameItem>
           ))}

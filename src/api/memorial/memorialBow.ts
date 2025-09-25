@@ -4,13 +4,16 @@ import api from '@/api/axiosInstance.ts';
 
 const memorialBow = async (memorialId: number) => {
   try {
-    const response = await api.post(`${memorial}/bow`, memorialId, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-        'Content-Type': 'application/json',
-      },
-      withCredentials: true,
-    });
+    const response = await api.post(`${memorial}/bow`,
+      { memorialId }, // 객체 형태로 전달
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+          'Content-Type': 'application/json',
+        },
+        withCredentials: true,
+      }
+    );
     return response.data;
   } catch (err) {
     console.error('절하기 값 불러오는 중 오류:', err);

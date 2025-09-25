@@ -6,15 +6,21 @@
       "Read(//Users/rsc/Desktop/프로젝트/windeath44.server.frontend/**)",
       "mcp__figma-dev-mode-mcp-server__get_image",
       "mcp__figma-dev-mode-mcp-server__get_code",
+      "mcp__apidog__*",
       "Bash(cat:*)",
       "Bash(npm run build:*)",
       "Bash(npm run lint)",
-      "Bash(npm run dev:*)"
+      "Bash(npm run dev:*)",
+      "mcp__apidog__read_project_oas_31b1m9",
+      "mcp__apidog__refresh_project_oas_31b1m9"
     ],
     "deny": [],
     "ask": [],
     "additionalDirectories": [
       "/Users/rsc/Desktop/프로젝트/windeath44.server.frontend/src/applications/applicationList"
     ]
-  }
+  },
+  "enabledMcpjsonServers": [
+    "apidog"
+  ]
 }

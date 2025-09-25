@@ -4,15 +4,13 @@ import Folder from '@/assets/search/folder.svg';
 import Search_task from '@/applications/applicationList/search/search_task';
 import Viewer from '@/applications/applicationList/search/viewer';
 import { useGetIntegratedCharactersQuery } from '@/api/anime/getCharactersByIntegratedSearching';
-import { useGetAnimesQuery } from '@/api/anime/getAnimes';
+import { fetchAnimesPage } from '@/api/anime/getAnimes';
 import { useQuery } from '@tanstack/react-query';
 import api from '@/api/axiosInstance';
 import { memorial } from '@/config';
 
 type Character = { characterId: number; [k: string]: any };
 type AnimeItem = { animeId: number; [k: string]: any };
-
-const EMPTY_ARR = Object.freeze([]) as readonly any[];
 
 const Search = () => {
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -37,52 +35,80 @@ const Search = () => {
   }, [nameParam, deathParam, aniParam]);
 
   // ------ 애니 이름 -> 애니 ID 조회 (검색어 있을 때만) ------
-  const {
-    data: animesResp,
-    isLoading: isAnimesLoading,
-    isError: isAnimesError,
-  } = useGetAnimesQuery({
-    size: 50,
-    animeName: aniParam,
-  });
+  const [animesResp, setAnimesResp] = useState<any>(null);
+  const [isAnimesLoading, setIsAnimesLoading] = useState(false);
+  const [isAnimesError, setIsAnimesError] = useState(false);
+
+  useEffect(() => {
+    let aborted = false;
+    const run = async () => {
+      if (!aniParam) {
+        setAnimesResp(null);
+        return;
+      }
+      setIsAnimesLoading(true);
+      setIsAnimesError(false);
+      try {
+        const resp = await fetchAnimesPage({ size: 50, animeName: aniParam });
+        if (!aborted) setAnimesResp(resp);
+      } catch (e) {
+        if (!aborted) setIsAnimesError(true);
+      } finally {
+        if (!aborted) setIsAnimesLoading(false);
+      }
+    };
+    run();
+    return () => {
+      aborted = true;
+    };
+  }, [aniParam]);
 
   // 서버 스키마가 { data: { values: AnimeItem[] } } 라고 가정
   const animeIdParam = useMemo<string[] | undefined>(() => {
-    const values = (animesResp?.data?.values as AnimeItem[] | undefined) ?? [];
-    if (!values.length) return undefined; // 검색어 비었거나 결과 없으면 필터 미적용 = 전체
+    if (!aniParam) return undefined; // 검색어가 없으면 undefined 반환
+    const values = (animesResp?.data?.data as AnimeItem[] | undefined) ?? [];
+    if (!values.length) return []; // 검색어가 있지만 결과 없으면 빈 배열 = 검색 결과 없음
     const ids = values.map((v) => v?.animeId).filter((id): id is number => typeof id === 'number');
-    return ids.length ? ids.map(String) : undefined; // API가 array[string] 기대 시 문자열화
-  }, [animesResp]);
+    return ids.length ? ids.map(String) : []; // API가 array[string] 기대 시 문자열화
+  }, [animesResp, aniParam]);
 
   // ------ 1) 통합 캐릭터 검색 (항상 실행: 비어 있으면 전체 결과) ------
-  const {
-    data: integrated,
-    isLoading,
-    isError,
-  } = useGetIntegratedCharactersQuery({
+  const { data: integrated, isLoading: isIntegratedLoading, isError: isIntegratedError } = useGetIntegratedCharactersQuery({
     name: nameParam, // 비어있으면 sanitize에서 제거 → 전체
     animeId: animeIdParam, // undefined면 제거 → 전체
     deathReason: deathParam, // undefined면 제거 → 전체
-    memorialState: 'MEMORIALIZING',
     size: 100,
     cursorId,
+    memorialState: 'MEMORIALIZING',
   });
 
-  // ✅ 교체된 정규화 블록
   const normalized = useMemo(() => {
     const p = integrated as any;
 
-    let values =
-      p?.values ?? p?.data?.values ?? (Array.isArray(p?.data) ? p.data : undefined) ?? [];
+    // console.log('Normalizing integrated data:', p);
 
-    if (!Array.isArray(values) && values?.values && Array.isArray(values.values)) {
-      values = values.values;
+    let values = [];
+
+    // 다양한 응답 구조 처리
+    if (p?.data?.data && Array.isArray(p.data.data)) {
+      values = p.data.data; // { data: { data: [...] } }
+    } else if (p?.values && Array.isArray(p.values)) {
+      values = p.values; // { values: [...] }
+    } else if (p?.data?.values && Array.isArray(p.data.values)) {
+      values = p.data.values; // { data: { values: [...] } }
+    } else if (Array.isArray(p?.data)) {
+      values = p.data; // { data: [...] }
+    } else if (Array.isArray(p)) {
+      values = p; // [...]
     }
 
     const next =
       (typeof p?.nextCursorId === 'number' && p.nextCursorId) ??
       (typeof p?.data?.nextCursorId === 'number' && p.data.nextCursorId) ??
+      (typeof p?.data?.data?.nextCursorId === 'number' && p.data.data.nextCursorId) ??
       undefined;
+
+    // console.log('Normalized values:', values, 'nextCursorId:', next);
 
     return { values, nextCursorId: next };
   }, [integrated]);
@@ -95,13 +121,13 @@ const Search = () => {
     [characters],
   );
 
-  useEffect(() => {
-    console.log(characters);
-  }, [characters]);
+  // useEffect(() => {
+  //   console.log(characters);
+  // }, [characters]);
 
   // queryKey 안정화: 정렬된 복사본 사용
   const characterKey = useMemo(
-    () => (characterIds.length ? [...characterIds].sort((a, b) => a - b) : []),
+    () => characterIds,
     [characterIds],
   );
 
@@ -112,7 +138,7 @@ const Search = () => {
     isError: isMemorialError,
   } = useQuery({
     queryKey: ['memorials', 'recently-updated', 1, characterKey],
-    enabled: characterKey.length > 0,
+    enabled: characterKey.length > 0 && !isAnimesLoading && (!aniParam || animeIdParam !== undefined),
     queryFn: async () => {
       const resp = await api.post(
         `${memorial}/character-filtered`,
@@ -130,13 +156,16 @@ const Search = () => {
 
   const memorials = memorialsResp?.data ?? [];
 
-  useEffect(() => {
-    console.log(memorials);
-  }, [memorials]);
-
-  const onLoadMore = () => {
-    if (typeof normalized.nextCursorId === 'number') setCursorId(normalized.nextCursorId);
-  };
+  // useEffect(() => {
+  //   console.log('Search - Characters:', characters.length, 'Memorials:', memorials.length);
+  //   console.log('Memorials data:', memorials);
+  //   console.log('Loading states - Animes:', isAnimesLoading, 'Memorial:', isMemorialLoading, 'Integrated:', isIntegratedLoading);
+  //   console.log('Error states - Animes:', isAnimesError, 'Memorial:', isMemorialError, 'Integrated:', isIntegratedError);
+  //   console.log('Search params - name:', nameParam, 'animeId:', animeIdParam, 'death:', deathParam);
+  //   console.log('CharacterIds:', characterIds, 'CharacterKey:', characterKey);
+  //   console.log('Memorial query enabled:', characterKey.length > 0 && !isAnimesLoading && (!aniParam || animeIdParam !== undefined));
+  //   console.log('Raw integrated data:', integrated);
+  // }, [memorials, characters, isAnimesLoading, isMemorialLoading, isAnimesError, isMemorialError, isIntegratedLoading, isIntegratedError, nameParam, animeIdParam, deathParam, integrated, characterIds, characterKey, aniParam]);
 
   // 레이아웃 관찰
   useEffect(() => {
@@ -151,9 +180,6 @@ const Search = () => {
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
-
-  const isBusy = isLoading || isMemorialLoading || isAnimesLoading;
-  const hasError = isError || isMemorialError || isAnimesError;
 
   return (
     <_.main>
@@ -171,18 +197,10 @@ const Search = () => {
             setName={setName}
           />
 
-          {isBusy ? (
-            <div>불러오는 중...</div>
-          ) : hasError ? (
-            <div>검색 중 오류가 발생했습니다.</div>
-          ) : characters.length > 0 ? (
-            <Viewer
-              characters={characters}
-              memorials={memorials}
-            />
-          ) : (
-            <div>결과가 없습니다.</div>
-          )}
+          <Viewer
+            characters={characters}
+            memorials={memorials}
+          />
         </_.search_task>
 
         <_.object>

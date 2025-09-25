@@ -14,7 +14,7 @@ interface bowProps {
   memorialId: number;
 }
 const Mourners = ({ memorialId }: bowProps) => {
-  console.log('아이디', memorialId);
+  // console.log('아이디', memorialId);
   const [bowData, setbowData] = useState<bowData[]>();
   const mutationMemorialChiefs = useMemorialChiefBows(setbowData, memorialId);
   const setAlert = useAtomValue(alerterAtom);
@@ -52,7 +52,7 @@ const Mourners = ({ memorialId }: bowProps) => {
               <_.UserInfo>
                 <_.UserNameSet>
                   <_.UserName>{user.name ? user.name : 'user'}</_.UserName>
-                  {index === 0 && <_.UserRoll>(상주)</_.UserRoll>}
+                  {index < 3 && <_.UserRoll>(상주)</_.UserRoll>}
                 </_.UserNameSet>
                 <_.UserNumber>{user.bowCount}회</_.UserNumber>
               </_.UserInfo>

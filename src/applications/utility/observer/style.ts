@@ -57,9 +57,17 @@ export const SnapshotText = styled.p`
   font-weight: 400;
   line-height: normal;
   flex: 1 0 0;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 `;
 
 export const SnapshotImg = styled.img`
   width: 48px;
   height: 48px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 `;

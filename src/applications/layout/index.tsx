@@ -168,10 +168,24 @@ const Application = (props: ApplicationProps) => {
     if (!isFullScreen) {
       let x = cursor[0];
       let y = cursor[1];
+
+      // 새로운 위치 계산
+      let newLeft = Number(window.left) + (x - beforeMoveParams[0]);
+      let newTop = Number(window.top) + (y - beforeMoveParams[1]);
+
+      // 화면 경계 제한 (헤더가 최소 30px 이상 보이도록)
+      const minTop = 0; // 상단 경계
+      const maxTop = globalThis.innerHeight - 90; // 하단 경계 (헤더 높이 30px 고려)
+      const minLeft = -Number(window.width) + 100; // 좌측 경계 (100px 정도는 보이도록)
+      const maxLeft = globalThis.innerWidth - 100; // 우측 경계
+      // 경계 내로 제한
+      newTop = Math.max(minTop, Math.min(maxTop, newTop));
+      newLeft = Math.max(minLeft, Math.min(maxLeft, newLeft));
+
       setWindow({
         ...window,
-        left: Number(window.left) + (x - beforeMoveParams[0]),
-        top: Number(window.top) + (y - beforeMoveParams[1]),
+        left: newLeft,
+        top: newTop,
         zIndex: layer - 1,
       });
     }
@@ -185,29 +199,34 @@ const Application = (props: ApplicationProps) => {
       >
         <_.WindowHeader {...moveManager()}>
           <_.TitleContainer>
-            <_.HeartImg src={Heart} />
+            <_.HeartImg
+              src={Heart}
+              draggable="false"
+            />
             <_.Title>{props.name}</_.Title>
           </_.TitleContainer>
           <_.BtnContainer>
             <_.MinimizeButton
-              onClick={() => setIsMinimized(!isMinimized)}
+              onMouseDown={() => setIsMinimized(!isMinimized)}
               isFocus={focus === props.name}
             >
               <img
                 src={Min}
                 alt=""
+                draggable="false"
                 width="100%"
                 onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
                 onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
               />
             </_.MinimizeButton>
             <_.FullScreenButton
-              onClick={() => setIsFullScreen(!isFullScreen)}
+              onMouseDown={() => setIsFullScreen(!isFullScreen)}
               isFocus={focus === props.name}
             >
               <img
                 src={Full}
                 alt=""
+                draggable="false"
                 width="100%"
                 onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
                 onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
@@ -215,7 +234,7 @@ const Application = (props: ApplicationProps) => {
             </_.FullScreenButton>
 
             <_.ExitButton
-              onClick={() => {
+              onMouseDown={() => {
                 props.removeTask(props.removeCompnent);
                 if (!isLogIned) {
                   setIsLogIned('guest');
@@ -228,6 +247,7 @@ const Application = (props: ApplicationProps) => {
                 src={Exit}
                 alt=""
                 width="100%"
+                draggable="false"
                 onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
                 onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
               />
@@ -243,7 +263,7 @@ const Application = (props: ApplicationProps) => {
             const internal = original.props.children as React.ReactElement;
             const type = internal.type;
 
-            if (props.name === '추모관' ) {
+            if (props.name === '추모관') {
               return (
                 <Suspense fallback={null}>
                   {React.createElement(type, { window, setWindow, setUpHeight, setUpWidth })}

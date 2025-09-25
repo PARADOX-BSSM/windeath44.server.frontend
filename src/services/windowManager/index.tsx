@@ -17,8 +17,6 @@ import { useTaskSearchFunction } from '@/hooks/taskSearch.tsx';
 import { useAlerter } from '@/hooks/alerter.tsx';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg.tsx';
 import { useDrag } from 'react-use-gesture';
-import { Simulate } from 'react-dom/test-utils';
-import resize = Simulate.resize;
 
 const Application = lazy(() => import('@/applications/layout/index.tsx'));
 
@@ -94,7 +92,6 @@ const WindowManager = () => {
   }, [isLogIned]);
 
   let resizeObserver = new ResizeObserver((_entries) => {
-    // console.log('resize');
     const container: HTMLElement = document.getElementById('cursorContainer') as HTMLElement;
     const cursor = document.getElementById('cursor');
     if (!container || !cursor) return;

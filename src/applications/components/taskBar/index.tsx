@@ -24,7 +24,6 @@ const TaskBar = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
           if (task.type === 'Shell') {
             return (
               <_.Observer
-                key={`shell-${task.name}`}
                 selected={startOption}
                 onClick={(e) => {
                   e.stopPropagation();
@@ -42,7 +41,10 @@ const TaskBar = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
                 onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
                 onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
               >
-                <_.StartImg src={StartImg}></_.StartImg>
+                <_.StartImg
+                  src={StartImg}
+                  draggable="false"
+                ></_.StartImg>
               </_.Observer>
             );
           } else {
@@ -57,7 +59,10 @@ const TaskBar = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
                   onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
                   onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
                 >
-                  <_.ImgContainer src={FileImg} />
+                  <_.ImgContainer
+                    src={task.appSetup?.Image}
+                    draggable="false"
+                  />
                   <_.TaskName>{task.name}</_.TaskName>
                 </_.TaskItem>
               );
@@ -74,7 +79,10 @@ const TaskBar = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
                   onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
                   onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
                 >
-                  <_.ImgContainer src={FileImg} />
+                  <_.ImgContainer
+                    src={task.appSetup?.Image}
+                    draggable="false"
+                  />
                   <_.TaskName>{task.name}</_.TaskName>
                 </_.TaskItem>
               );
