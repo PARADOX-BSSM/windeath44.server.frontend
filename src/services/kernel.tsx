@@ -1,41 +1,47 @@
-// import { useEffect, useState } from 'react';
-// import Booting from '@/services/booting/index.tsx';
-// import WindowManager from './windowManager/index.tsx';
-//
-// const SESSION_KEY = 'hasBootedSession';
+import { useEffect, useState } from 'react';
+import Booting from '@/services/booting/index.tsx';
+import WindowManager from './windowManager/index.tsx';
+import MobileConnect from '@/services/MobileConnect';
 
-import ErrorPage from '@/services/MobileConnect';
+const SESSION_KEY = 'hasBootedSession';
 
 function Kernel() {
-  // const [isBooting, setIsBooting] = useState(() => {
-  //   return sessionStorage.getItem(SESSION_KEY) !== 'true';
-  // });
-  //
-  // useEffect(() => {
-  //   const px = 16;
-  //   if (px > 0) {
-  //     document.documentElement.style.fontSize = `${px}px`;
-  //   }
-  // }, []);
-  //
-  // useEffect(() => {
-  //   if (isBooting) {
-  //     const id = window.setTimeout(() => {
-  //       sessionStorage.setItem(SESSION_KEY, 'true'); // 세션 동안만 유지
-  //       setIsBooting(false);
-  //     }, 2700);
-  //     return () => clearTimeout(id);
-  //   }
-  // }, [isBooting]);
-  //
-  // if (isBooting) {
-  //   return <Booting />;
-  // }
+  const [isBooting, setIsBooting] = useState(() => {
+    return sessionStorage.getItem(SESSION_KEY) !== 'true';
+  });
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const ua = navigator.userAgent;
+    const mobileRegex = /Mobi|Android|iPhone|iPad|iPod|Tablet/i;
+    setIsMobile(mobileRegex.test(ua));
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.style.fontSize = '16px';
+  }, []);
+
+  useEffect(() => {
+    if (isBooting) {
+      const id = window.setTimeout(() => {
+        sessionStorage.setItem(SESSION_KEY, 'true');
+        setIsBooting(false);
+      }, 2700);
+      return () => clearTimeout(id);
+    }
+  }, [isBooting]);
+
+  if (isMobile) {
+    return <MobileConnect />;
+  }
+
+  if (isBooting) {
+    return <Booting />;
+  }
 
   return (
     <div className="kernel">
-      {/*<WindowManager />*/}
-      <ErrorPage />
+      <WindowManager />
     </div>
   );
 }

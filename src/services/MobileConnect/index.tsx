@@ -1,7 +1,7 @@
 import * as _ from './style';
 import Error from '@/../public/assets/cursor/cursor_block.svg';
 
-export default function ErrorPage() {
+export default function MobileConnect() {
   return (
     <_.Container>
       <_.ErrorImg
