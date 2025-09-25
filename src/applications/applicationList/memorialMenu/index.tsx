@@ -3,6 +3,7 @@ import { useAtomValue } from 'jotai';
 import MemorialBtn from '@/applications/components/memorialBtn';
 import * as _ from './style.ts';
 import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer.ts';
+import { versionAtom } from '@/atoms/version.ts';
 import { alerterAtom } from '@/atoms/alerter.ts';
 import Choten from '@/assets/profile/choten.svg';
 // import { useProcessManager } from '@/hooks/processManager.tsx';
@@ -30,6 +31,7 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
   const setAlert = useAtomValue(alerterAtom);
   const taskSearch = useAtomValue(taskSearchAtom);
   const taskTransform = useAtomValue(taskTransformerAtom);
+  const version = useAtomValue(versionAtom);
   // const [, addTask, removeTask] = useProcessManager();
 
   const stackProps = {
@@ -131,7 +133,7 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
       <_.InnerContainer>
         <_.TextContainer>
           <_.Title>최애의 사인</_.Title>
-          <_.Version>ver 0.0.1</_.Version>
+          <_.Version>ver {version}</_.Version>
         </_.TextContainer>
         <_.MainContainer>
           <_.DescriptionBox>

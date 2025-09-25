@@ -113,7 +113,7 @@ const MemorailHistory = ({
               </_.LeftHeader>
               <_.GoToBackBtn
                 onClick={() => {
-                  pop();
+                  taskTransform?.('추모관 기록', '');
                 }}
               >
                 돌아가기

@@ -55,7 +55,7 @@ const MemorialConflictResolve = ({
         <>
           충돌이 성공적으로 해결되었습니다!
           <br />
-          이제 다시 병합을 시도할 수 있습니다.
+          자동으로 수정 요청이 병합됩니다.
         </>,
         () => {
           taskTransform?.('경고', '');
