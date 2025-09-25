@@ -10,6 +10,7 @@ import {
   useMergeMemorialPullRequestMutation,
   useResolveMemorialPullRequestMutation,
 } from '@/api/memorial/mergeMemorialPullRequest';
+import { useRejectMemorialPullRequestMutation } from '@/api/memorial/rejectMemorialPullRequest';
 import { useState, useEffect } from 'react';
 
 interface dataStructureProps {
@@ -45,6 +46,7 @@ const MemorialPRManager = ({
   // 병합 관련 mutations
   const checkMergeableMutation = useCheckMergeableMutation();
   const mergeMutation = useMergeMemorialPullRequestMutation();
+  const rejectMutation = useRejectMemorialPullRequestMutation();
 
   const stackProps = {
     stack: stack,
@@ -114,6 +116,32 @@ const MemorialPRManager = ({
     }
   };
 
+  // PR 거절 처리 함수
+  const handleRejectPullRequest = async (memorialPullRequestId: number) => {
+    try {
+      await rejectMutation.mutateAsync(memorialPullRequestId);
+
+      // 성공 시 알림 및 목록 새로고침
+      setAlert?.(Choten, <>수정 요청이 거절되었습니다.</>, () => {
+        taskTransform?.('경고', '');
+        refetchPullRequests(); // PR 목록 새로고침
+      });
+    } catch (error: any) {
+      // 에러 처리
+      setAlert?.(
+        Choten,
+        <>
+          수정 요청 거절 중 오류가 발생했습니다.
+          <br />
+          {error?.response?.data?.message || '알 수 없는 오류'}
+        </>,
+        () => {
+          taskTransform?.('경고', '');
+        },
+      );
+    }
+  };
+
   // 에러 처리
   useEffect(() => {
     if (pullRequestsError) {
@@ -172,7 +200,10 @@ const MemorialPRManager = ({
                 {
                   pullRequests.filter(
                     (pr) =>
-                      pr.state !== 'APPROVED' && pr.state !== 'STORED' && pr.state !== 'RESOLVED',
+                      pr.state !== 'APPROVED' &&
+                      pr.state !== 'STORED' &&
+                      pr.state !== 'RESOLVED' &&
+                      pr.state !== 'REJECTED',
                   ).length
                 }
               </_.StatNumber>
@@ -184,11 +215,13 @@ const MemorialPRManager = ({
             <_.ListTitle>Pull Requests</_.ListTitle>
             {isPullRequestsLoading ||
             checkMergeableMutation.isPending ||
-            mergeMutation.isPending ? (
+            mergeMutation.isPending ||
+            rejectMutation.isPending ? (
               <_.LoadingText>
                 {isPullRequestsLoading && '수정 요청 로딩 중...'}
                 {checkMergeableMutation.isPending && '병합 가능 여부 확인 중...'}
                 {mergeMutation.isPending && '수정 요청 병합 중...'}
+                {rejectMutation.isPending && '수정 요청 거절 중...'}
               </_.LoadingText>
             ) : (
               <_.MemorialListBox>
@@ -201,7 +234,8 @@ const MemorialPRManager = ({
                         (pr) =>
                           pr.state !== 'APPROVED' &&
                           pr.state !== 'STORED' &&
-                          pr.state !== 'RESOLVED',
+                          pr.state !== 'RESOLVED' &&
+                          pr.state !== 'REJECTED',
                       ) // 승인된 PR은 제외
                       .map((pr) => (
                         <_.MemorialItem key={pr.memorialPullRequestId}>
@@ -237,12 +271,9 @@ const MemorialPRManager = ({
                             />
                             <MemorialBtn
                               name="거절"
-                              onClick={() => {
-                                // TODO: PR 거절 API 호출
-                                console.log('PR 거절:', pr.memorialPullRequestId);
-                              }}
+                              onClick={() => handleRejectPullRequest(pr.memorialPullRequestId)}
                               type="submit"
-                              active={pr.state === 'PENDING'}
+                              active={pr.state === 'PENDING' && !rejectMutation.isPending}
                               width="50px"
                               height="32px"
                               fontSize="12px"
