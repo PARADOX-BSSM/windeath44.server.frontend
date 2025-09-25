@@ -5,11 +5,12 @@ import Inputs from '@/applications/components/inputs';
 import { useAtom, useAtomValue } from 'jotai';
 import { useEffect, useState } from 'react';
 import { useLogIn } from '@/api/auth/logIn';
-import { taskTransformerAtom } from '@/atoms/taskTransformer';
+import { taskTransformerAtom, taskSearchAtom } from '@/atoms/taskTransformer';
 import MemorialBtn from '@/applications/components/memorialBtn';
 import { isLogInedAtom } from '@/atoms/windowManager';
 import { alerterAtom } from '@/atoms/alerter';
 import { AxiosError } from 'axios';
+import { useProcessManager } from '@/hooks/processManager';
 type Props = {
   changeToSignUp: () => void;
   changeToEmailCheck: () => void;
@@ -19,6 +20,8 @@ const LogIn = ({ changeToSignUp, changeToEmailCheck }: Props) => {
   const [password, setPassword] = useState<string>('');
   const logInMutation = useLogIn();
   const taskTransform = useAtomValue(taskTransformerAtom);
+  const taskSearch = useAtomValue(taskSearchAtom);
+  const [, , removeTask] = useProcessManager();
   const [isLogIned, setIsLogIned] = useAtom(isLogInedAtom);
 
   const setAlert = useAtomValue(alerterAtom);
@@ -78,7 +81,9 @@ const LogIn = ({ changeToSignUp, changeToEmailCheck }: Props) => {
         onSuccess: (token) => {
 // console.log('로그인 성공 토큰 :', token);
           setIsLogIned('true');
-          taskTransform?.('LogIn', '');
+          localStorage.setItem('isLogIned', 'true');
+          const loginTask = taskSearch?.('로그인');
+          if (loginTask) removeTask(loginTask);
         },
         onError: (error) => {
           console.error('로그인 실패', error);
@@ -167,7 +172,8 @@ const LogIn = ({ changeToSignUp, changeToEmailCheck }: Props) => {
             name="취소"
             onClick={() => {
               setIsLogIned('guest');
-              taskTransform?.('LogIn', '');
+              const loginTask = taskSearch?.('로그인');
+              if (loginTask) removeTask(loginTask);
             }}
             type="submit"
             width={buttonWidth}
