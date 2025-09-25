@@ -24,13 +24,13 @@ api.interceptors.response.use(
   async (err) => {
     const originalRequest = err.config;
 
-    console.log(err);
+    // console.log(err);
 
-    console.log('Error status:', err.response?.status);
-    console.log('Original request retry:', originalRequest._retry);
+    // console.log('Error status:', err.response?.status);
+    // console.log('Original request retry:', originalRequest._retry);
 
-    console.log(err.response?.status);
-    console.log(originalRequest._retry);
+    // console.log(err.response?.status);
+    // console.log(originalRequest._retry);
     if (err.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
@@ -38,22 +38,22 @@ api.interceptors.response.use(
         // Remove expired token before attempting reissue
         deleteCookie('access_token');
 
-        console.log('리이슈 요청 시작');
+        // console.log('리이슈 요청 시작');
         const res = await axios.post(`${auth}/reissue`, {}, { withCredentials: true });
-        console.log('리이슈 응답:', res.data);
-        console.log('응답 헤더:', res.headers);
+        // console.log('리이슈 응답:', res.data);
+        // console.log('응답 헤더:', res.headers);
 
         // Read new access token from authorization header (like login)
         const newToken = res.headers['authorization'];
-        console.log('새 토큰:', newToken);
+        // console.log('새 토큰:', newToken);
 
         if (newToken) {
           setCookie('access_token', newToken, 1);
           originalRequest.headers = originalRequest.headers ?? {};
           originalRequest.headers.Authorization = `Bearer ${newToken}`;
-          console.log('새 토큰 설정 완료');
+          // console.log('새 토큰 설정 완료');
         } else {
-          console.log('새 토큰을 받지 못함');
+          // console.log('새 토큰을 받지 못함');
         }
         return api(originalRequest);
       } catch (refreshError) {
