@@ -132,6 +132,8 @@ const MemorialCommit = ({
         from={userId}
         content={memorialData?.content || ''}
         isPerson={true}
+        memorialId={memorialData?.memorialId}
+        characterId={characterData?.characterId}
       />
     </_.Container>
   );
