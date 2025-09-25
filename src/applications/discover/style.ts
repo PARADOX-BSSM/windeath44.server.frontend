@@ -25,4 +25,8 @@ export const AppName = styled.p`
   font-style: normal;
   font-weight: 400;
   line-height: 1rem;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 `;
