@@ -71,6 +71,25 @@ const MyComputer = () => {
   const { mutate: getUser, data: userData, isPending, error } = useGetUserMutation();
   const [loggedIn, setLoggedIn] = React.useState(localStorage.getItem('isLogIned') === 'true');
 
+  // localStorage 변경 감지하여 로그인 상태 업데이트
+  React.useEffect(() => {
+    const handleStorageChange = () => {
+      const isLoggedIn = localStorage.getItem('isLogIned') === 'true';
+      setLoggedIn(isLoggedIn);
+    };
+
+    // storage 이벤트 리스너 (다른 탭에서 변경 시)
+    window.addEventListener('storage', handleStorageChange);
+
+    // 주기적으로 localStorage 확인 (같은 탭에서 변경 시)
+    const intervalId = setInterval(handleStorageChange, 100);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      clearInterval(intervalId);
+    };
+  }, []);
+
   // 최근 방문한 추모관 데이터 조회
   const userId = userData?.data?.userId || '';
   const {
