@@ -77,7 +77,7 @@ const MemorialViewer = ({ stack, push, pop, top, characterId, content }: dataStr
                 <_.Title>{characterData.name}</_.Title>
                 <_.Subtitle>수정 기록 보기</_.Subtitle>
               </_.TextContainer>
-              <_.BackButton onClick={() => taskTransform?.('추모관 뷰어', '')}>
+              <_.BackButton onClick={() => taskTransform?.('추모관 수정 요청 뷰어', '')}>
                 돌아가기
               </_.BackButton>
             </_.Header>

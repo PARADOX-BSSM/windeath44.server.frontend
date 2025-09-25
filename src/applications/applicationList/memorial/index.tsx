@@ -197,6 +197,7 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
     });
 
     // taskTransform으로 캐릭터 정보와 추모관 데이터 전달
+    taskTransform?.('', '미리보기');
     taskTransform?.('', '추모관 수정', {
       memorialId: memorialId,
       characterId: characterId,
@@ -204,7 +205,6 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
       memorialData: memorialData,
       animation: animation,
     });
-    taskTransform?.('', '미리보기');
   };
   return (
     <_.Main>
@@ -294,7 +294,7 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
 
           <_.GotoBow
             onClick={() => {
-              taskTransform?.('', 'Bow', { memorialId: memorialId });
+              taskTransform?.('', '절하기', { memorialId: memorialId });
             }}
           >
             절 하러가기

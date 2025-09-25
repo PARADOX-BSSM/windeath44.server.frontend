@@ -49,7 +49,7 @@ const Viewer = ({ characters, memorials, stack, push, pop, top }: ViewerProps) =
                       setMemorialId(targetMemorialId);
                     }
 
-                    taskTransform?.('', 'memorial', {
+                    taskTransform?.('', '추모관 뷰어', {
                       memorialId: targetMemorialId,
                       characterId: characterId,
                       stack: stack,

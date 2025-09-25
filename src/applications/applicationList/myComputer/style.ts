@@ -33,7 +33,7 @@ export const ProfileContainer = styled.div`
 export const ProfileImg = styled.div<{ imgUrl: string }>`
   width: 116px;
   height: 116px;
-  background: #fff;
+  background: #ffffff00;
   background-image: url(${(props) => props.imgUrl});
   background-size: cover;
 `;
