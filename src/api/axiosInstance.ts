@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { auth } from '@/config';
-import { getCookie, setCookie } from '@/api/auth/cookie';
+import { getCookie, setCookie, deleteCookie } from '@/api/auth/cookie';
 
 const api = axios.create({
   withCredentials: true,
@@ -24,10 +24,18 @@ api.interceptors.response.use(
   async (err) => {
     const originalRequest = err.config;
 
+    console.log(err);
+
+    console.log('Error status:', err.response?.status);
+    console.log('Original request retry:', originalRequest._retry);
+
+    console.log(err.response?.status);
+    console.log(originalRequest._retry);
     if (err.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
       try {
+        // Remove expired token before attempting reissue
         const res = await axios.post(`${auth}/reissue`, {}, { withCredentials: true });
         // If server returns a new accessToken, persist it to cookie
         const newToken = (res.data && (res.data.accessToken || res.data.token)) as
@@ -40,6 +48,8 @@ api.interceptors.response.use(
         }
         return api(originalRequest);
       } catch (refreshError) {
+        // Ensure token is deleted on refresh failure
+        deleteCookie('access_token');
         window.location.href = '/login';
         return Promise.reject(refreshError);
       }
