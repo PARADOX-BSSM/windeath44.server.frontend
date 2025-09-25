@@ -734,7 +734,6 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
       const maxDistance = 150;
       const limitedDistance = Math.min(distance, maxDistance);
       const powerRatio = limitedDistance / maxDistance;
-
       // 기준 힘
       const basePower = selectedStone.isBig ? 0.035 : 0.014;
       const power = powerRatio * basePower;

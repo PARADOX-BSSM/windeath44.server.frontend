@@ -43,10 +43,8 @@ api.interceptors.response.use(
         console.log('리이슈 응답:', res.data);
         console.log('응답 헤더:', res.headers);
 
-        // If server returns a new accessToken, persist it to cookie
-        const newToken = (res.data && (res.data.accessToken || res.data.token)) as
-          | string
-          | undefined;
+        // Read new access token from authorization header (like login)
+        const newToken = res.headers['authorization'];
         console.log('새 토큰:', newToken);
 
         if (newToken) {
