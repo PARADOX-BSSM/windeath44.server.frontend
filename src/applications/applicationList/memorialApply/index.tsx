@@ -65,7 +65,7 @@ const MemorialApply = ({}: dataStructureProps) => {
     }
     getUser(undefined, {
       onSuccess: (data) => {
-        console.log('성공:', data);
+// console.log('성공:', data);
         setUserName(data.data.userId);
       },
       onError: (err) => {
@@ -237,7 +237,7 @@ const MemorialApply = ({}: dataStructureProps) => {
                     <_.CharacterInformationRowValue>
                       <_.CharacterInformationRowValueText
                         onClick={() => {
-                          console.log(taskTransform);
+// console.log(taskTransform);
                           if (taskTransform) {
                             taskTransform('', '애니메이션 선택');
                           }

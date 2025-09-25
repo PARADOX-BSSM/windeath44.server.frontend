@@ -26,7 +26,7 @@ const postMemorialCommit = async ({
     });
     return response.data;
   } catch (error: any) {
-    console.log(`실패 : ${JSON.stringify(error.response.data)}`);
+// console.log(`실패 : ${JSON.stringify(error.response.data)}`);
     throw error;
   }
 };
@@ -35,7 +35,7 @@ export const usePostCommit = () => {
   return useMutation({
     mutationFn: postMemorialCommit,
     onSuccess: (e) => {
-      console.log(e);
+// console.log(e);
     },
     onError: () => {},
   });
@@ -60,7 +60,7 @@ export const usePostPullRequest = () => {
   return useMutation({
     mutationFn: postMemorialPullRequest,
     onSuccess: (e) => {
-      console.log(e);
+// console.log(e);
     },
     onError: () => {},
   });

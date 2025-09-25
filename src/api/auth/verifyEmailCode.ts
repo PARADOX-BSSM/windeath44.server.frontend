@@ -19,7 +19,7 @@ export const verifyEmailCode = async ({ email, check }: authParams): Promise<boo
   } catch (error) {
     const axiosError = error as AxiosError;
     if (axiosError.response?.data) {
-      console.log(`인증 실패: ${JSON.stringify(axiosError.response.data)}`);
+// console.log(`인증 실패: ${JSON.stringify(axiosError.response.data)}`);
     }
     throw error;
   }

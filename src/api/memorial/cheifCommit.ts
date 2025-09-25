@@ -35,7 +35,7 @@ export const usePostMergeable = () => {
   return useMutation({
     mutationFn: postMemorialMergeable,
     onSuccess: (e) => {
-      console.log(e);
+// console.log(e);
     },
     onError: () => {},
   });
@@ -58,7 +58,7 @@ export const usePatchMerge = () => {
   return useMutation({
     mutationFn: postMemorialMerge,
     onSuccess: (e) => {
-      console.log(e);
+// console.log(e);
     },
     onError: () => {},
   });
@@ -91,7 +91,7 @@ export const usePatchMemorialResolve = () => {
   return useMutation({
     mutationFn: postMemorialResolve,
     onSuccess: (e) => {
-      console.log(e);
+// console.log(e);
     },
     onError: () => {},
   });
@@ -116,7 +116,7 @@ export const usePatchMemorialReject = () => {
   return useMutation({
     mutationFn: postMemorialReject,
     onSuccess: (e) => {
-      console.log(e);
+// console.log(e);
     },
     onError: () => {},
   });

@@ -31,11 +31,11 @@ const createCharacter = async (inputData: InputPortageType): Promise<number> => 
         'Content-Type': 'application/json',
       },
     });
-    console.log(JSON.stringify(response.data));
+// console.log(JSON.stringify(response.data));
     return response.data.data.characterId;
   } catch (error: any) {
     if (error.response?.data) {
-      console.log(`캐릭터 등록 실패: ${JSON.stringify(error.response.data)}`);
+// console.log(`캐릭터 등록 실패: ${JSON.stringify(error.response.data)}`);
     }
     throw error;
   }
@@ -45,7 +45,7 @@ export const useCreateCharacter = () => {
   return useMutation({
     mutationFn: createCharacter,
     onSuccess: () => {
-      console.log('캐릭터가 성공적으로 등록되었습니다.');
+// console.log('캐릭터가 성공적으로 등록되었습니다.');
       // alert('캐릭터가 성공적으로 등록되었습니다.');
     },
     onError: () => {},

@@ -25,10 +25,10 @@ export const useMemorialBow = () => {
   return useMutation({
     mutationFn: memorialBow,
     onSuccess: (data: any) => {
-      console.log(data);
+// console.log(data);
     },
     onError: (error: any) => {
-      console.log(error);
+// console.log(error);
     },
   });
 };

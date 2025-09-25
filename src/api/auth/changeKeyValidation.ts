@@ -16,7 +16,7 @@ const changeKeyValidation = async ({ authorizationCode }: ChangeKeyValidation) =
   } catch (error: any) {
     console.error(error);
     if (error.response?.data) {
-      console.log(`인증 코드 검증 실패: ${JSON.stringify(error.response.data)}`);
+// console.log(`인증 코드 검증 실패: ${JSON.stringify(error.response.data)}`);
     }
     throw error;
   }

@@ -25,10 +25,8 @@ api.interceptors.response.use(
     const originalRequest = err.config;
 
     // console.log(err);
-
     // console.log('Error status:', err.response?.status);
     // console.log('Original request retry:', originalRequest._retry);
-
     // console.log(err.response?.status);
     // console.log(originalRequest._retry);
     if (err.response?.status === 401 && !originalRequest._retry) {

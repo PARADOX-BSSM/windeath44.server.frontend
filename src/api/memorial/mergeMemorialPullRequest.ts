@@ -61,7 +61,7 @@ export const useCheckMergeableMutation = () => {
   return useMutation({
     mutationFn: checkMergeable,
     onSuccess: (data) => {
-      console.log('Mergeable 체크 완료:', data);
+// console.log('Mergeable 체크 완료:', data);
     },
     onError: (error) => {
       console.error('Mergeable 체크 실패:', error);
@@ -74,7 +74,7 @@ export const useMergeMemorialPullRequestMutation = () => {
   return useMutation({
     mutationFn: mergeMemorialPullRequest,
     onSuccess: (data) => {
-      console.log('병합 성공:', data);
+// console.log('병합 성공:', data);
     },
     onError: (error) => {
       console.error('병합 실패:', error);
@@ -87,7 +87,7 @@ export const useResolveMemorialPullRequestMutation = () => {
   return useMutation({
     mutationFn: resolveMemorialPullRequest,
     onSuccess: (data) => {
-      console.log('충돌 해결 성공:', data);
+// console.log('충돌 해결 성공:', data);
     },
     onError: (error) => {
       console.error('충돌 해결 실패:', error);

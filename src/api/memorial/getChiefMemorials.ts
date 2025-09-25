@@ -10,10 +10,10 @@ export interface ChiefMemorialsResponse {
 
 // 현재 로그인한 사용자가 상주인 추모관 ID 목록 조회
 export const fetchMyChiefMemorials = async (): Promise<ChiefMemorialsResponse> => {
-  console.log('API 요청 URL:', `${memorial}/chiefs/my`);
+// console.log('API 요청 URL:', `${memorial}/chiefs/my`);
   try {
     const response = await api.get(`${memorial}/chiefs/my`, {});
-    console.log('API 성공 응답:', response.data);
+// console.log('API 성공 응답:', response.data);
     return response.data;
   } catch (error: any) {
     console.error('API 에러 상세:', error.response?.data || error.message);

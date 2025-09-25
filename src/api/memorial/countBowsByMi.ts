@@ -22,7 +22,7 @@ export const useMemorialGet = (setTotalBow: React.Dispatch<React.SetStateAction<
       // console.log(data);
     },
     onError: (err: Error) => {
-      console.log(err);
+// console.log(err);
     },
   });
 };

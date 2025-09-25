@@ -21,7 +21,7 @@ export type CharacterDataResponse = {
 };
 const getCharacter = async (characterId: number): Promise<CharacterDataResponse> => {
   const response = await api.get(`${anime}/characters/${characterId}`, {});
-  console.log(response.data);
+// console.log(response.data);
   return response.data;
 };
 
@@ -34,7 +34,7 @@ export const useGetCharacter = (
       setCharacterData(data.data);
     },
     onError: (err: Error) => {
-      console.log(err);
+// console.log(err);
     },
   });
 };

@@ -104,7 +104,7 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
 
   const moveTo = (idx: number | null) => {
     if (idx === 0) {
-      console.log(taskSearch?.('Search', stackProps));
+// console.log(taskSearch?.('Search', stackProps));
       push(taskSearch?.('Search', stackProps));
     }
     if (idx === 1) {

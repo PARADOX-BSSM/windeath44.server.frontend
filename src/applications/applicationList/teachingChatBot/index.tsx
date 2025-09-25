@@ -40,7 +40,7 @@ const TeachingChatBot = () => {
           setInputValue('');
           const random = randomQuestion();
           setQuestion(dummyQuestion[random]);
-          console.log(response);
+// console.log(response);
         },
       },
     );

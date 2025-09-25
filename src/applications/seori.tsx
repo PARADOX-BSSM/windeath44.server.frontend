@@ -34,7 +34,7 @@ export default function Seori() {
 
   // 설이 스프라이트 변경 useEffect
   useEffect(() => {
-    console.log(directionRef.current, stateRef.current);
+// console.log(directionRef.current, stateRef.current);
     const texturePath = `src/assets/seori/seori_${stateRef.current}_${directionRef.current}.png`;
     // setSpriteTexture(texturePath);
   }, [directionRef.current, stateRef.current])
@@ -151,7 +151,7 @@ export default function Seori() {
 
     // 드래그 시작 && 끝나면 실행되는 함수들
     const onDragStart = () => {
-      console.log("Started");
+// console.log("Started");
       isDraggingRef.current = true;
       setStateRef("holding");
       if (directionRef.current === "left") {
@@ -162,7 +162,7 @@ export default function Seori() {
       }
     };
     const onDragEnd = () => {
-      console.log("Ended");
+// console.log("Ended");
       isDraggingRef.current = false;
       setStateRef("falling");
     };
@@ -247,7 +247,7 @@ export default function Seori() {
       // 설이를 잡지 않고 위아래로 이동
       if (y > interval && !isDraggingRef.current) {
         setStateRef("falling");
-        console.log("아래로 이동 중");
+// console.log("아래로 이동 중");
         if (directionRef.current === "left") {
           shape.render.fillStyle = "#00FFAA";
         }
@@ -257,7 +257,7 @@ export default function Seori() {
       }
       else if (y < -interval && !isDraggingRef.current) {
         setStateRef("falling");
-        console.log("위로 이동 중");
+// console.log("위로 이동 중");
         if (directionRef.current === "left") {
           shape.render.fillStyle = "#AAAAFF";
         }

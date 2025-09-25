@@ -52,7 +52,7 @@ const MergeBtn = ({ text }: PropsType) => {
       return;
     }
 
-    console.log({ ...inputValue, ...contentIn });
+// console.log({ ...inputValue, ...contentIn });
 
     const isApply = currentStackTop?.name === 'MemorialApply';
     const isCommit = taskList.some((task) => task.name === '추모관 수정');
@@ -148,7 +148,7 @@ const MergeBtn = ({ text }: PropsType) => {
         {
           onSuccess: (commitResponse) => {
             if (commitResponse?.data === undefined || commitResponse.data === null) return;
-            console.log(commitResponse.data);
+// console.log(commitResponse.data);
             pullRequestMutation.mutate(
               {
                 memorialCommitId: parseInt(commitResponse.data),

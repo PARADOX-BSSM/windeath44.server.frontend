@@ -23,10 +23,10 @@ export const useCommentWrite = () => {
   return useMutation({
     mutationFn: commentWrite,
     onSuccess: (data: any) => {
-      console.log(data);
+// console.log(data);
     },
     onError: (error: any) => {
-      console.log(error);
+// console.log(error);
     },
   });
 };
