@@ -109,3 +109,15 @@ export const Shadow = styled.div`
   border-color: #fff;
   padding: 0.016rem 0.0625rem 0.0625rem 0.016rem;
 `;
+
+export const MessageText = styled.div`
+  color: #2e2e2e;
+  font-family: Galmuri11;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  text-align: center;
+  padding: 20px;
+  width: 100%;
+`;
