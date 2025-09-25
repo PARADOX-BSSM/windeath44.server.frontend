@@ -218,7 +218,11 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
               </_.TextContainer>
               <_.History
                 onClick={() => {
-                  push(taskSearch?.('memorailHistory', stackProps));
+                  taskTransform?.('', '추모관 기록', {
+                    memorialId: memorialId,
+                    characterName: characterData.name,
+                    lastModified: memorialData.updatedAt,
+                  });
                 }}
               >
                 기록

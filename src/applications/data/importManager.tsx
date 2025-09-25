@@ -68,11 +68,21 @@ const GameApp = lazy(() => import('@/applications/applicationList/game/index.tsx
 
 const MemorialChief = lazy(() => import('@/applications/applicationList/memorialChief/index.tsx'));
 
-const MemorialPRManager = lazy(() => import('@/applications/applicationList/memorialPRManager/index.tsx'));
+const MemorialPRManager = lazy(
+  () => import('@/applications/applicationList/memorialPRManager/index.tsx'),
+);
 
-const MemorialPRDetail = lazy(() => import('@/applications/applicationList/memorialPRDetail/index.tsx'));
+const MemorialPRDetail = lazy(
+  () => import('@/applications/applicationList/memorialPRDetail/index.tsx'),
+);
 
-const MemorialConflictResolve = lazy(() => import('@/applications/applicationList/memorialConflictResolve/index.tsx'));
+const MemorialConflictResolve = lazy(
+  () => import('@/applications/applicationList/memorialConflictResolve/index.tsx'),
+);
+
+const MemorialViewer = lazy(
+  () => import('@/applications/applicationList/memorialViewer/index.tsx'),
+);
 
 //Application Import 형식 예시
 /*
@@ -221,12 +231,15 @@ const useApps = (): TaskType[] => {
             push={undefined}
             pop={undefined}
             top={undefined}
+            memorialId={0}
+            characterName=""
+            lastModified=""
           />
         </Suspense>
       ),
       type: 'App',
       id: 2225,
-      name: 'memorailHistory',
+      name: '추모관 기록',
       layer: undefined,
       appSetup: {
         Image: 'default',
@@ -681,6 +694,32 @@ const useApps = (): TaskType[] => {
         minHeight: 600,
         setUpWidth: 1000,
         setUpHeight: 750,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <MemorialViewer
+            stack={[]}
+            push={undefined}
+            pop={undefined}
+            top={undefined}
+            characterId={0}
+            content=""
+          />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2245,
+      name: '추모관 뷰어',
+      layer: undefined,
+      appSetup: {
+        Image: 'default',
+        minWidth: 800,
+        minHeight: 600,
+        setUpWidth: 1100,
+        setUpHeight: 800,
       },
       visible: false,
     },

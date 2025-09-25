@@ -14,6 +14,8 @@ export interface MemorialPullRequestData {
       characterId: number;
       bowCount: number;
     };
+    content: string;
+    createdAt: string;
   };
   memorial: {
     memorialId: number;
@@ -30,7 +32,9 @@ export interface MemorialPullRequestsResponse {
 }
 
 // 특정 추도관의 풀 리퀘스트 목록 조회
-export const fetchMemorialPullRequests = async (memorialId: number): Promise<MemorialPullRequestsResponse> => {
+export const fetchMemorialPullRequests = async (
+  memorialId: number,
+): Promise<MemorialPullRequestsResponse> => {
   const response = await api.get(`${memorial}/pull-requests/${memorialId}`, {});
   return response.data;
 };

@@ -142,3 +142,24 @@ export const HistoryInnerBox = styled.div`
     gap: 1px;
     background: rgba(0, 0, 0, 0.20);
 `
+
+export const LoadingText = styled.div`
+    color: #666;
+    font-family: Galmuri11;
+    font-size: 16px;
+    text-align: center;
+    padding: 40px;
+    width: 100%;
+    background: #FFF;
+`
+
+export const EmptyMessage = styled.div`
+    color: #666;
+    font-family: Galmuri11;
+    font-size: 16px;
+    text-align: center;
+    padding: 40px;
+    width: 100%;
+    background: #FFF;
+    border: 1px solid #DDD;
+`
