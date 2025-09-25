@@ -146,16 +146,24 @@ const MyComputer = () => {
     <_.Container>
       <_.LeftContainer>
         <_.ProfileContainer>
-          <_.ProfileImg
-            src={Choten}
-            draggable="false"
-          />
           {isLoggedIn ? (
             isUserReady ? (
-              <_.ProfileName>{(userData as any).data.name}</_.ProfileName>
+              <>
+                <_.ProfileImg
+                  imgUrl={(userData as any).data.profile}
+                  draggable="false"
+                />
+                <_.ProfileName>{(userData as any).data.name}</_.ProfileName>
+              </>
             ) : null
           ) : (
-            <_.ProfileName>게스트</_.ProfileName>
+            <>
+              <_.ProfileImg
+                imgUrl=""
+                draggable="false"
+              />
+              <_.ProfileName>게스트</_.ProfileName>
+            </>
           )}
         </_.ProfileContainer>
         {renderMemorialBtn()}

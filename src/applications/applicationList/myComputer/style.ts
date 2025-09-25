@@ -30,9 +30,12 @@ export const ProfileContainer = styled.div`
   gap: 9px;
 `;
 
-export const ProfileImg = styled.img`
+export const ProfileImg = styled.div<{ imgUrl: string }>`
   width: 116px;
   height: 116px;
+  background: #fff;
+  background-image: url(${(props) => props.imgUrl});
+  background-size: cover;
 `;
 
 export const ProfileName = styled.div`
