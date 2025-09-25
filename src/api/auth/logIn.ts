@@ -14,6 +14,7 @@ const logIn = async ({ id, password }: authParams): Promise<string> => {
   try {
     const response: AxiosResponse = await api.post(`${auth}/login`, data, {
       headers: { 'Content-Type': 'application/json' },
+      withCredentials: true,
     });
 
     console.log(response.headers);
