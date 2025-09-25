@@ -36,15 +36,26 @@ api.interceptors.response.use(
 
       try {
         // Remove expired token before attempting reissue
+        deleteCookie('access_token');
+
+        console.log('리이슈 요청 시작');
         const res = await axios.post(`${auth}/reissue`, {}, { withCredentials: true });
+        console.log('리이슈 응답:', res.data);
+        console.log('응답 헤더:', res.headers);
+
         // If server returns a new accessToken, persist it to cookie
         const newToken = (res.data && (res.data.accessToken || res.data.token)) as
           | string
           | undefined;
+        console.log('새 토큰:', newToken);
+
         if (newToken) {
           setCookie('access_token', newToken, 1);
           originalRequest.headers = originalRequest.headers ?? {};
           originalRequest.headers.Authorization = `Bearer ${newToken}`;
+          console.log('새 토큰 설정 완료');
+        } else {
+          console.log('새 토큰을 받지 못함');
         }
         return api(originalRequest);
       } catch (refreshError) {
