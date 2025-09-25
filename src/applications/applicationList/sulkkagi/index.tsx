@@ -104,7 +104,7 @@ function drawStoneWithSvgBackground(
 }
 
 const BOARD_SIZE = 400;
-const BOARD_PADDING = 40;
+const BOARD_PADDING = 0;
 
 interface dataStructureProps {
   stack: any[];
