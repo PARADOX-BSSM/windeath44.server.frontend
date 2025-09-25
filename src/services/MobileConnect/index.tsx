@@ -1,12 +1,13 @@
 import * as _ from './style';
-import Error from '@/../public/assets/cursor/cursor_block.svg';
+import CursorBlock from '@/../public/assets/cursor/cursor_block.svg';
 
 export default function MobileConnect() {
   return (
     <_.Container>
       <_.ErrorImg
-        src={Error}
+        src={CursorBlock}
         alt="Error"
+        aria-hidden="true"
       />
       <_.ErrorSet>
         <_.DemandSet>

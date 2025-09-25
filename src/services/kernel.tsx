@@ -9,12 +9,13 @@ function Kernel() {
   const [isBooting, setIsBooting] = useState(() => {
     return sessionStorage.getItem(SESSION_KEY) !== 'true';
   });
-  const [isMobile, setIsMobile] = useState(false);
-
+  const [isMobile, setIsMobile] = useState<boolean>(() => {
+    if (typeof navigator === 'undefined') return false;
+    return /Mobi|Android|iPhone|iPad|iPod|Tablet/i.test(navigator.userAgent);
+  });
   useEffect(() => {
-    const ua = navigator.userAgent;
-    const mobileRegex = /Mobi|Android|iPhone|iPad|iPod|Tablet/i;
-    setIsMobile(mobileRegex.test(ua));
+    if (typeof navigator === 'undefined') return;
+    setIsMobile(/Mobi|Android|iPhone|iPad|iPod|Tablet/i.test(navigator.userAgent));
   }, []);
 
   useEffect(() => {
