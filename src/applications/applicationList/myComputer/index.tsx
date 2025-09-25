@@ -55,7 +55,7 @@ const MemorialItem = ({
       icon={myComputer}
       name={characterData?.name || `추모관 #${memorialId}`}
       onDoubleClick={() => {
-        taskTransform?.('', 'memorial', {
+        taskTransform?.('', '추모관 뷰어', {
           memorialId: memorialId,
           characterId: memorialData?.characterId || 0,
         });

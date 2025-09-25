@@ -84,7 +84,7 @@ const MemorialChief = ({ stack, push, pop, top }: dataStructureProps) => {
   const handleVisitMemorial = (memorialId: string) => {
     const details = memorialDetails[memorialId];
     if (details?.memorial) {
-      taskTransform?.('', 'memorial', {
+      taskTransform?.('', '추모관 뷰어', {
         memorialId: parseInt(memorialId),
         characterId: details.memorial.characterId,
       });

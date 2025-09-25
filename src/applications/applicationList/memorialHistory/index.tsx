@@ -141,7 +141,7 @@ const MemorailHistory = ({
                         description={`수정 요청이 ${pr.state === 'APPROVED' ? '승인' : '저장'}되었습니다.`}
                         profileUrl={userProfiles[pr.userId] || ''}
                         onClick={() => {
-                          taskTransform?.('', '추모관 뷰어', {
+                          taskTransform?.('', '추모관 수정 요청 뷰어', {
                             characterId: pr.memorialCommit.memorial.characterId,
                             content: `${pr.memorialCommit.content}`,
                           });

@@ -214,7 +214,7 @@ const useApps = (): TaskType[] => {
       ),
       type: 'App',
       id: 2224,
-      name: 'memorial',
+      name: '추모관 뷰어',
       layer: undefined,
       appSetup: {
         Image: 'default',
@@ -351,7 +351,7 @@ const useApps = (): TaskType[] => {
       ),
       type: 'App',
       id: 2230,
-      name: 'Bow',
+      name: '절하기',
       layer: undefined,
       appSetup: {
         Image: 'default',
@@ -714,7 +714,7 @@ const useApps = (): TaskType[] => {
       ),
       type: 'App',
       id: 2245,
-      name: '추모관 뷰어',
+      name: '추모관 수정 요청 뷰어',
       layer: undefined,
       appSetup: {
         Image: 'default',
