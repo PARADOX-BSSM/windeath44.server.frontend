@@ -27,6 +27,11 @@ const getMemorialByUserId = async ({
 };
 
 const getUserByList = async ({ userList }: userList): Promise<usersData> => {
+  // 빈 배열일 때 빈 응답 반환
+  if (!userList || userList.length === 0) {
+    return { message: '', data: [] };
+  }
+
   const response = await api.get(`${user}`, {
     params: { userIds: userList },
     paramsSerializer: (params) => {
@@ -47,26 +52,36 @@ export const useMemorialChiefBows = (
       const chiefIds = chiefsRes.data; // string[] (userId)
 
       // userId별 bow 정보 가져오기
+      // console.log('chiefIds 상세:', chiefIds);
       const bowResults: memorialUserIdResponse[] = await Promise.all(
-        chiefIds.map((userId) => getMemorialByUserId({ memorialId, userId: Number(userId) })),
+        chiefIds.map((userId) => {
+          // console.log('변환 전 userId:', userId, '문자열로 전달');
+          return getMemorialByUserId({ memorialId, userId: userId });
+        }),
       );
+      // console.log('bowResults:', bowResults);
       // 이름 가져오기
       const userList = chiefIds.map((id) => id);
-      console.log('userList 데이터!!!:', userList);
+      // console.log('userList 데이터!!!:', userList);
       const usersRes: usersData = await getUserByList({ userList });
-      console.log('users:', usersRes.data);
+      // console.log('users:', usersRes.data);
       // bowCount + name 합치기
-      const merged = bowResults.map((bow) => {
-        const user = usersRes.data.find((u) => u.userId === bow.data.userId);
-        return {
-          name: user ? user.name : 'Unknown',
-          bowCount: bow.data.bowCount,
-        };
-      });
+      // console.log('bowResults 상세:', JSON.stringify(bowResults, null, 2));
+      const merged = bowResults
+        .filter((bow) => bow?.data) // null/undefined 필터링
+        .map((bow) => {
+          const user = usersRes.data.find((u) => u.userId === bow.data.userId);
+          return {
+            name: user ? user.name : 'Unknown',
+            bowCount: bow.data.bowCount,
+          };
+        });
+      // console.log('merged 결과:', merged);
       return merged;
     },
 
     onSuccess: (data: BowData[]) => {
+      // console.log('setBowData 호출:', data);
       setBowData(data);
     },
 

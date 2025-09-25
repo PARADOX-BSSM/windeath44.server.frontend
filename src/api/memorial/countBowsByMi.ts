@@ -14,12 +14,12 @@ const memorialGet = async (memorialId: number): Promise<void> => {
   return response.data;
 };
 
-export const useMemorialGet = (setTotalBow: React.Dispatch<React.SetStateAction<BowData>>) => {
+export const useMemorialGet = (setTotalBow: React.Dispatch<React.SetStateAction<number | null>>) => {
   return useMutation<BowData, Error, number>({
     mutationFn: memorialGet,
     onSuccess: (data: BowData) => {
       setTotalBow(data.data);
-      console.log(data);
+      // console.log(data);
     },
     onError: (err: Error) => {
       console.log(err);

@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "apidog": {
+      "command": "npx",
+      "args": ["apidog-mcp-server", "--project-id", "890114", "--token", "APS-lQGGCo9I6swJJmMQ4GJtnIB2LJoay49F"]
+    }
+  }
+}

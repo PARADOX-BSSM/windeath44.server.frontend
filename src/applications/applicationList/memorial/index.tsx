@@ -33,6 +33,7 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
   const taskTransform = useAtomValue(taskTransformerAtom);
   const taskSearch = useAtomValue(taskSearchAtom);
   const setAlert = useAtomValue(alerterAtom);
+  const [, setInputValue] = useAtom(inputPortage);
   const [content, setContent] = useState<string>('');
   const [characterData, setCharacterData] = useState<CharacterData>({
     characterId: 0,
@@ -183,8 +184,7 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
     top: top,
   };
   const handleCommit = () => {
-    const [, useInputValue] = useAtom(inputPortage);
-    useInputValue({
+    setInputValue({
       name: characterData.name,
       deathReason: characterData.deathReason,
       date: characterData.deathOfDay,
@@ -195,8 +195,16 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
       profileImage: characterData.imageUrl,
       phrase: '',
     });
+
+    // taskTransform으로 캐릭터 정보와 추모관 데이터 전달
+    taskTransform?.('', '추모관 수정', {
+      memorialId: memorialId,
+      characterId: characterId,
+      characterData: characterData,
+      memorialData: memorialData,
+      animation: animation,
+    });
     taskTransform?.('', '미리보기');
-    push(taskSearch?.('MemorialCommit', stackProps));
   };
   return (
     <_.Main>
@@ -210,7 +218,11 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
               </_.TextContainer>
               <_.History
                 onClick={() => {
-                  push(taskSearch?.('memorailHistory', stackProps));
+                  taskTransform?.('', '추모관 기록', {
+                    memorialId: memorialId,
+                    characterName: characterData.name,
+                    lastModified: memorialData.updatedAt,
+                  });
                 }}
               >
                 기록

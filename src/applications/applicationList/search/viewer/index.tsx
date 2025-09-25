@@ -3,21 +3,25 @@ import MemorialWithIcon from '@/applications/components/memorialWithIcon';
 import myComputer from '@/assets/appIcons/my_computer.svg';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
 import { useAtom, useAtomValue } from 'jotai';
-import { useEffect } from 'react';
+// import { useEffect } from 'react';
 import { memorialIdAtom } from '@/atoms/memorialManager.ts';
 
 interface ViewerProps {
   characters: any[];
   memorials: any[];
+  stack?: any[];
+  push?: any;
+  pop?: any;
+  top?: any;
 }
 
-const Viewer = ({ characters, memorials }: ViewerProps) => {
+const Viewer = ({ characters, memorials, stack, push, pop, top }: ViewerProps) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
   const [memorialId, setMemorialId] = useAtom(memorialIdAtom);
 
-  useEffect(() => {
-    console.log(characters);
-  }, []);
+  // useEffect(() => {
+  //   console.log(characters);
+  // }, []);
 
   return (
     <_.view>
@@ -29,7 +33,7 @@ const Viewer = ({ characters, memorials }: ViewerProps) => {
                 memorials?.filter((memorial) => memorial.characterId === character.characterId) ??
                 [];
 
-              // console.log(memorials, character);
+              // console.log('Character:', character.name, 'Related memorials:', relatedMemorials);
 
               return (
                 <MemorialWithIcon
@@ -37,14 +41,21 @@ const Viewer = ({ characters, memorials }: ViewerProps) => {
                   icon={myComputer}
                   name={character.name}
                   onDoubleClick={() => {
-                    if (relatedMemorials.length > 0) {
-                      setMemorialId(relatedMemorials[0].memorialId);
-                      // memorialId = relatedMemorials[0].memorialId;
-                    }
                     const characterId = character.characterId;
+                    let targetMemorialId = memorialId;
+
+                    if (relatedMemorials.length > 0) {
+                      targetMemorialId = relatedMemorials[0].memorialId;
+                      setMemorialId(targetMemorialId);
+                    }
+
                     taskTransform?.('', 'memorial', {
-                      memorialId: memorialId,
+                      memorialId: targetMemorialId,
                       characterId: characterId,
+                      stack: stack,
+                      push: push,
+                      pop: pop,
+                      top: top,
                     });
                   }}
                 />

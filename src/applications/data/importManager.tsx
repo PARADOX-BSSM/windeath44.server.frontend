@@ -68,6 +68,24 @@ const AdminApp = lazy(() => import('@/applications/applicationList/adminApp/inde
 
 const GameApp = lazy(() => import('@/applications/applicationList/game/index.tsx'));
 
+const MemorialChief = lazy(() => import('@/applications/applicationList/memorialChief/index.tsx'));
+
+const MemorialPRManager = lazy(
+  () => import('@/applications/applicationList/memorialPRManager/index.tsx'),
+);
+
+const MemorialPRDetail = lazy(
+  () => import('@/applications/applicationList/memorialPRDetail/index.tsx'),
+);
+
+const MemorialConflictResolve = lazy(
+  () => import('@/applications/applicationList/memorialConflictResolve/index.tsx'),
+);
+
+const MemorialViewer = lazy(
+  () => import('@/applications/applicationList/memorialViewer/index.tsx'),
+);
+
 //Application Import 형식 예시
 /*
 {
@@ -215,12 +233,15 @@ const useApps = (): TaskType[] => {
             push={undefined}
             pop={undefined}
             top={undefined}
+            memorialId={0}
+            characterName=""
+            lastModified=""
           />
         </Suspense>
       ),
       type: 'App',
       id: 2225,
-      name: 'memorailHistory',
+      name: '추모관 기록',
       layer: undefined,
       appSetup: {
         Image: 'default',
@@ -244,7 +265,7 @@ const useApps = (): TaskType[] => {
       ),
       type: 'App',
       id: 2226,
-      name: 'MemorialCommit',
+      name: '추모관 수정',
       layer: undefined,
       appSetup: {
         Image: 'default',
@@ -276,6 +297,30 @@ const useApps = (): TaskType[] => {
         minHeight: 420,
         setUpWidth: 890,
         setUpHeight: 577,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <MemorialChief
+            stack={[]}
+            push={undefined}
+            pop={undefined}
+            top={undefined}
+          />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2228,
+      name: '상주 관리',
+      layer: undefined,
+      appSetup: {
+        Image: 'default',
+        minWidth: 600,
+        minHeight: 500,
+        setUpWidth: 900,
+        setUpHeight: 650,
       },
       visible: false,
     },
@@ -564,6 +609,118 @@ const useApps = (): TaskType[] => {
         minWidth: 750,
         minHeight: 750,
         setUpWidth: 800,
+        setUpHeight: 800,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <MemorialPRManager
+            stack={[]}
+            push={undefined}
+            pop={undefined}
+            top={undefined}
+            memorialId={0}
+            memorialName=""
+          />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2242,
+      name: 'memorialPRManager',
+      layer: undefined,
+      appSetup: {
+        Image: 'default',
+        minWidth: 600,
+        minHeight: 500,
+        setUpWidth: 900,
+        setUpHeight: 650,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <MemorialPRDetail
+            stack={[]}
+            push={undefined}
+            pop={undefined}
+            top={undefined}
+            prId={0}
+            commitData={{
+              memorialCommitId: 0,
+              userId: '',
+              memorialId: 0,
+              content: '',
+              createdAt: '',
+            }}
+            memorialName=""
+          />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2243,
+      name: 'memorialPRDetail',
+      layer: undefined,
+      appSetup: {
+        Image: 'default',
+        minWidth: 650,
+        minHeight: 550,
+        setUpWidth: 950,
+        setUpHeight: 700,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <MemorialConflictResolve
+            stack={[]}
+            push={undefined}
+            pop={undefined}
+            top={undefined}
+            prId={0}
+            conflict=""
+            memorialName=""
+          />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2244,
+      name: 'memorialConflictResolve',
+      layer: undefined,
+      appSetup: {
+        Image: 'default',
+        minWidth: 700,
+        minHeight: 600,
+        setUpWidth: 1000,
+        setUpHeight: 750,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <MemorialViewer
+            stack={[]}
+            push={undefined}
+            pop={undefined}
+            top={undefined}
+            characterId={0}
+            content=""
+          />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2245,
+      name: '추모관 뷰어',
+      layer: undefined,
+      appSetup: {
+        Image: 'default',
+        minWidth: 800,
+        minHeight: 600,
+        setUpWidth: 1100,
         setUpHeight: 800,
       },
       visible: false,

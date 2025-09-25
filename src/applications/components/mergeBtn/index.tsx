@@ -9,7 +9,7 @@ import { alerterAtom } from '@/atoms/alerter';
 import { useProcessManager } from '@/hooks/processManager';
 import { useAtom, useAtomValue } from 'jotai';
 import { usePostCommit, usePostPullRequest } from '@/api/memorial/userCommit.ts';
-import { memorialIdAtom, userIdAtom } from '@/atoms/memorialManager.ts';
+import { memorialIdAtom, userIdAtom, currentStackTopAtom } from '@/atoms/memorialManager.ts';
 import { useGetPrsQuery } from '@/api/memorial/cheifCommit.ts';
 
 interface PropsType {
@@ -27,10 +27,11 @@ const MergeBtn = ({ text }: PropsType) => {
   const pullRequestMutation = usePostPullRequest();
   const uploadImageMutation = useUploadImage();
   const applyMemorialMutation = useApplyMemorial();
-  const [, , removeTask] = useProcessManager();
+  const [taskList, , removeTask] = useProcessManager();
   const taskSearch = useAtomValue(taskSearchAtom);
   const setAlert = useAtomValue(alerterAtom);
   const taskTransform = useAtomValue(taskTransformerAtom);
+  const currentStackTop = useAtomValue(currentStackTopAtom);
 
   const handleSubmit = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -53,8 +54,8 @@ const MergeBtn = ({ text }: PropsType) => {
 
     console.log({ ...inputValue, ...contentIn });
 
-    const isApply = taskSearch?.('MemorialApply');
-    const isCommit = taskSearch?.('MemorialCommit');
+    const isApply = currentStackTop?.name === 'MemorialApply';
+    const isCommit = taskList.some((task) => task.name === '추모관 수정');
 
     if (isApply) {
       createCharacterMutation.mutate(
@@ -145,12 +146,12 @@ const MergeBtn = ({ text }: PropsType) => {
       commitMutation.mutate(
         { memorialId, content: contentIn.content, userId },
         {
-          onSuccess: () => {
-            if (data === undefined) return;
+          onSuccess: (commitResponse) => {
+            if (commitResponse?.data === undefined || commitResponse.data === null) return;
+            console.log(commitResponse.data);
             pullRequestMutation.mutate(
               {
-                memorialPullRequestId: data.memorialPullRequestId,
-                userId,
+                memorialCommitId: parseInt(commitResponse.data),
               },
               {
                 onError: () => {
@@ -182,7 +183,7 @@ const MergeBtn = ({ text }: PropsType) => {
             setContentIn({ characterId: '', content: '' });
             let task = taskSearch?.('미리보기');
             if (task) removeTask(task);
-            task = taskSearch?.('추모관');
+            task = taskSearch?.('추모관 수정');
             if (task) removeTask(task);
           },
           onError: () => {

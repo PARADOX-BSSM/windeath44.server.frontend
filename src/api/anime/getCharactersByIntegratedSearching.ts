@@ -9,12 +9,14 @@ export interface FetchIntegratedCharactersParams {
   deathReason?: string;
   cursorId?: number;
   size?: number;
+  memorialState?: string;
 }
 
 const sanitize = (p: FetchIntegratedCharactersParams) => {
   const out: Record<string, any> = {};
   if (p.name && p.name.trim() !== '') out.name = p.name.trim();
   if (p.deathReason && p.deathReason.trim() !== '') out.deathReason = p.deathReason.trim();
+  if (p.memorialState && p.memorialState.trim() !== '') out.memorialState = p.memorialState.trim();
   if (Array.isArray(p.animeId)) {
     const arr = p.animeId
       .map(String)
