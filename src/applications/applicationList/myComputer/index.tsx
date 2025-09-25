@@ -179,11 +179,11 @@ const MyComputer = () => {
                 <_.MessageText>로딩 중...</_.MessageText>
               ) : tracingError ? (
                 <_.MessageText>데이터를 불러오는 중 오류가 발생했습니다.</_.MessageText>
-              ) : memorialTracingData?.data?.length === 0 ? (
+              ) : memorialTracingData?.data?.data?.length === 0 ? (
                 <_.MessageText>방문한 추모관이 없습니다.</_.MessageText>
               ) : (
                 // memorialId로 고유한 추모관 목록 생성
-                Array.from(new Set(memorialTracingData?.data?.map((comment) => comment.memorialId)))
+                Array.from(new Set(memorialTracingData?.data?.data?.map((comment) => comment.memorialId)))
                   .slice(0, 3) // 최대 3개만 표시
                   .map((memorialId) => (
                     <MemorialItem
