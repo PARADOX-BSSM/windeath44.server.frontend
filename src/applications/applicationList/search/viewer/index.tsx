@@ -35,31 +35,35 @@ const Viewer = ({ characters, memorials, stack, push, pop, top }: ViewerProps) =
 
               // console.log('Character:', character.name, 'Related memorials:', relatedMemorials);
 
-              return (
-                <MemorialWithIcon
-                  key={character.characterId}
-                  icon={myComputer}
-                  name={character.name}
-                  onDoubleClick={() => {
-                    const characterId = character.characterId;
-                    let targetMemorialId = relatedMemorials[0].memorialId;
+              if (relatedMemorials.length > 0) {
+                return (
+                  <MemorialWithIcon
+                    key={character.characterId}
+                    icon={myComputer}
+                    name={character.name}
+                    onDoubleClick={() => {
+                      const characterId = character.characterId;
+                      let targetMemorialId = relatedMemorials[0].memorialId;
 
-                    // if (relatedMemorials.length > 0) {
-                    //   targetMemorialId = relatedMemorials[0].memorialId;
-                    //   setMemorialId(targetMemorialId);
-                    // }
+                      // if (relatedMemorials.length > 0) {
+                      //   targetMemorialId = relatedMemorials[0].memorialId;
+                      //   setMemorialId(targetMemorialId);
+                      // }
 
-                    taskTransform?.('', '추모관 뷰어', {
-                      memorialId: targetMemorialId,
-                      characterId: characterId,
-                      stack: stack,
-                      push: push,
-                      pop: pop,
-                      top: top,
-                    });
-                  }}
-                />
-              );
+                      taskTransform?.('', '추모관 뷰어', {
+                        memorialId: targetMemorialId,
+                        characterId: characterId,
+                        stack: stack,
+                        push: push,
+                        pop: pop,
+                        top: top,
+                      });
+                    }}
+                  />
+                );
+              } else {
+                return null;
+              }
             })}
           </_.inputs>
         </_.Shadow>
