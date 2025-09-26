@@ -12,6 +12,8 @@ interface PropsType {
   content: string;
   isReadonly?: boolean;
   isPerson?: boolean;
+  memorialId?: number;
+  characterId?: number;
 }
 
 const MemorialTextarea = ({
@@ -20,6 +22,8 @@ const MemorialTextarea = ({
   content,
   isReadonly = false,
   isPerson = false,
+  memorialId,
+  characterId,
 }: PropsType) => {
   const [contentIn, setContentIn] = useAtom(inputContent);
   // const [isClickOpen, setClickOpen] = useState<boolean>(false);
@@ -54,7 +58,7 @@ const MemorialTextarea = ({
           ></_.CommitArea>
         </_.CommitAreaContainer>
       </_.Container>
-      {isPerson ? <MergeBtn text={btnText} /> : <></>}
+      {isPerson && memorialId ? <MergeBtn text={btnText} memorialId={memorialId} characterId={characterId} /> : <></>}
     </>
   );
 };
