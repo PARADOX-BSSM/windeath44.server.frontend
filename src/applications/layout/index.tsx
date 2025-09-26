@@ -123,23 +123,26 @@ const Application = (props: ApplicationProps) => {
 
   const widthLimit = (params: DragParams) => {
     const [nearRight] = corner;
-    if ((window.width as unknown as number) >= props.appSetup.minWidth) {
+    const minWidth = (window.minWidth as number) || props.appSetup.minWidth;
+    if ((window.width as unknown as number) >= minWidth) {
       if (nearRight) {
         return Number(window.width) + params.offset[0] - beforeSizeParams[0];
       } else {
         return Number(window.width) - params.offset[0] + beforeSizeParams[0];
       }
     }
-    return props.appSetup.minWidth;
+    return minWidth;
   };
   const heightLimit = (params: DragParams) => {
-    if ((window.height as unknown as number) >= props.appSetup.minHeight) {
+    const minHeight = (window.minHeight as number) || props.appSetup.minHeight;
+    if ((window.height as unknown as number) >= minHeight) {
       return Number(window.height) + params.offset[1] - beforeSizeParams[1];
     }
-    return props.appSetup.minHeight;
+    return minHeight;
   };
   const leftLimit = (params: DragParams) => {
-    if ((window.width as unknown as number) >= props.appSetup.minWidth) {
+    const minWidth = (window.minWidth as number) || props.appSetup.minWidth;
+    if ((window.width as unknown as number) >= minWidth) {
       return Number(window.left) + params.offset[0] - beforeSizeParams[0];
     }
     return window.left;
