@@ -312,7 +312,7 @@ const useApps = (): TaskType[] => {
         </Suspense>
       ),
       type: 'App',
-      id: 2228,
+      id: 2500,
       name: '상주 관리',
       layer: undefined,
       appSetup: {
