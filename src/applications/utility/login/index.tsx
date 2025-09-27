@@ -76,7 +76,7 @@ const LogIn = ({ changeToSignUp, changeToEmailCheck }: Props) => {
       { id, password },
       {
         onSuccess: (token) => {
-// console.log('로그인 성공 토큰 :', token);
+          // console.log('로그인 성공 토큰 :', token);
           setIsLogIned('true');
           taskTransform?.('LogIn', '');
         },
@@ -155,8 +155,11 @@ const LogIn = ({ changeToSignUp, changeToEmailCheck }: Props) => {
         </_.tempInputs>
         <_.tempButtons>
           <MemorialBtn
-            name="확인"
-            onClick={checkLogIn}
+            name="손님으로 입장"
+            onClick={() => {
+              setIsLogIned('guest');
+              taskTransform?.('LogIn', '');
+            }}
             type="submit"
             width={buttonWidth}
             height={buttonHeight}
@@ -164,11 +167,8 @@ const LogIn = ({ changeToSignUp, changeToEmailCheck }: Props) => {
             active={true}
           />
           <MemorialBtn
-            name="취소"
-            onClick={() => {
-              setIsLogIned('guest');
-              taskTransform?.('LogIn', '');
-            }}
+            name="회원가입"
+            onClick={() => changeToSignUp()}
             type="submit"
             width={buttonWidth}
             height={buttonHeight}
@@ -185,8 +185,8 @@ const LogIn = ({ changeToSignUp, changeToEmailCheck }: Props) => {
             active={true}
           />
           <MemorialBtn
-            name="회원가입"
-            onClick={() => changeToSignUp()}
+            name="로그인"
+            onClick={checkLogIn}
             type="submit"
             width={buttonWidth}
             height={buttonHeight}
