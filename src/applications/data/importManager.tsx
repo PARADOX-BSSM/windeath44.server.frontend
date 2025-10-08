@@ -86,6 +86,12 @@ const MemorialViewer = lazy(
   () => import('@/applications/applicationList/memorialViewer/index.tsx'),
 );
 
+const Judgement = lazy(
+  () => import('@/applications/applicationList/judgement/index.tsx'),
+);
+
+
+
 //Application Import 형식 예시
 /*
 {
@@ -724,6 +730,21 @@ const useApps = (): TaskType[] => {
         setUpHeight: 800,
       },
       visible: false,
+    },
+    {
+        component: <Suspense fallback={null}>{<Judgement/>}</Suspense>,
+        type: "App",
+        id: 3001,
+        name: '재판',
+        layer: undefined,
+        appSetup:{
+          Image : 'default',
+          minWidth : 700,
+          minHeight : 700,
+          setUpWidth : 880,
+          setUpHeight : 630,
+        },
+        visible: true,
     },
   ];
 
