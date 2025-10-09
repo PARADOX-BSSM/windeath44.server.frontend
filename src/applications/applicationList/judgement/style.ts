@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 
 
 export const Container = styled.div`
-  display: flex;
+
   width: 100%;
   height: 100%;
   background-color: #ffd3fb;
@@ -10,32 +10,47 @@ export const Container = styled.div`
   box-sizing: border-box;
 `;
 
-/*export const MainWindow = styled.div`
-    width: 738px;
-    height: 420px;
-    border:2px red solid;
-    margin: auto;
-`;*/
 
 export const Top = styled.div`
     display: flex;
-    width: 798px;
+    width: 738px;
     height: 33px;
-    border:2px black solid;
-    margin:20px auto;
+
+    margin:20px 20px;
+    gap:20px;
 `;
 
 export const Top_Text = styled.div`
-    font-family: 'Galmuri11', sans-serif;
+    font-family: 'Galmuri11';
     margin:auto 0;
+    font-size:14px;
+    white-space: nowrap;
 `;
 
-export const input = styled.input`
-  width: 100%;
-  height: 100%;
-  background-color: #ffffff;
-  font-family: 'Galmuri11';
-  font-size: 16px;
-  border: none;
-  outline: none;
+export const Search_div = styled.div`
+   display:flex;
+   align-items:center;
+   gap:10px;
 `;
+
+
+
+export const Main_Display = styled.div`
+    margin-left:20px;
+    width : 738px;
+    height : 420px;
+    background-color : #ffffffff;
+
+`;
+
+
+export const Judgement_List = styled.div`
+   
+    width : 714px;
+    height : 420px;
+    background-color : #FFEBFD;
+    
+`;
+
+
+
