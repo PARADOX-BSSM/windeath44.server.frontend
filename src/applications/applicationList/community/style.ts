@@ -57,6 +57,14 @@ export const InputArea = styled.div`
     width: 100%;
     gap: 14px;
 `
+export const PostArea = styled.div`
+    display: flex;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    background-color: #FFEEFD;
+    overflow-y: scroll;
+`
 
 export const NavJudgement = styled.div`
     display: flex;

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import MemorialBtn from '@/applications/components/memorialBtn';
 import FilterBlock from '@/applications/components/filterBlock';
 import Inputs from '@/applications/components/inputs';
+import Posts from '@/applications/components/posts';
 
 const Community : React.FC = ()=>{
     const [isOpen, setIsOpen] = useState(false);
@@ -46,6 +47,12 @@ const Community : React.FC = ()=>{
                     <Inputs width='100%' fontSize='14px' flex value={serch} type='text' setValue={setSerch} placeHold="무엇이든 입력해보세요!" />
                     <MemorialBtn name='검색' type='menu' width='74px' height='100%' fontSize='14px' />
                 </_.InputArea>}
+                <_.PostArea>
+                    <Posts user={{name:"방태양", id:"noah_byte", profileImage:""}} 
+                    post={{postid: 1000, title:"아니 얘가 벌써 죽는다고?", content:"아니 이건 진짜 아니지. 살려내라.",
+                        datetime:"2025년 09월 14일 AM 8:47", heart:12, comment:20
+                    }}  />
+                </_.PostArea>
                 
             </_.Main>
             <_.Judgement>
