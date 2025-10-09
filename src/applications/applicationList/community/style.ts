@@ -52,6 +52,11 @@ export const sortInput = styled.div`
     font-size: 16px
 `
 
+export const InputArea = styled.div`
+    display: flex;
+    width: 100%;
+    gap: 14px;
+`
 
 export const NavJudgement = styled.div`
     display: flex;
