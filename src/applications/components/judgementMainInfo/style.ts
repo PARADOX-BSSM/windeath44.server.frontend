@@ -63,10 +63,17 @@ export const Like_Div = styled.div`
 `;
 
 
-export const Img_Div = styled.img`
+export const Img_Div = styled.div`
     width:80px;
     height:104px;
+    background-color:red;
     
+`;
+
+export const Main_Img = styled.img`
+    width:100%;
+    height:100%;
+    object-fit: cover;
 `;
 
 export const Rank_Div = styled.div`

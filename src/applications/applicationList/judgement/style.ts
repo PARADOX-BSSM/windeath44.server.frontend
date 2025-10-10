@@ -10,6 +10,9 @@ export const Container = styled.div`
   box-sizing: border-box;
 `;
 
+export const Scroll_Div = styled.div`
+    overflow-y: scroll;
+`;
 
 export const Top = styled.div`
     display: flex;
@@ -39,8 +42,9 @@ export const Main_Display = styled.div`
     margin-left:20px;
     width : 738px;
     height : 420px;
-    background-color : #ffffffff;
+    background-color : #FFEBFD;
 
+    overflow-y:scroll;
 `;
 
 
@@ -52,5 +56,8 @@ export const Judgement_List = styled.div`
     
 `;
 
-
-
+export const Obj_Div=styled.div`
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+`;

@@ -20,7 +20,9 @@ const MainInfo = ({rank,cName,aName,img,like,voteNum}:InfoProps)=>{
     if (rank <= 3){
         return(
         <_.MainBox>
-            <_.Img_Div src={img} alt="info image" />
+            <_.Img_Div><_.Main_Img src={img} alt="info image"/></_.Img_Div>
+            
+
 
             <_.NameSep>
                 <_.CNameSep>
@@ -49,8 +51,8 @@ const MainInfo = ({rank,cName,aName,img,like,voteNum}:InfoProps)=>{
     else{
         return(
         <_.MainBox>
-            <_.Img_Div src={img} alt="info image" />
-
+            <_.Img_Div><_.Main_Img src={img} alt="info image"/></_.Img_Div>
+            
             <_.NameSep>
                 <_.CNameSep>
                     <_.CName>{cName}</_.CName>

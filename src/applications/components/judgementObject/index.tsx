@@ -10,10 +10,12 @@ interface JudgementObjProps{
     img:string|undefined
     like:number
     vote:number
+    heaven_count:number | string
+    hell_count:number | string
 }
 
 
-const Judgement_Object = ({rank,cName,aName,img,like,vote}:JudgementObjProps) => {
+const Judgement_Object = ({rank,cName,aName,img,like,vote,heaven_count,hell_count}:JudgementObjProps) => {
     return(
         <_.Main_Box>
             <_.Left>
@@ -30,7 +32,12 @@ const Judgement_Object = ({rank,cName,aName,img,like,vote}:JudgementObjProps) =>
             </_.Left>
 
             <_.Right>
-                <SubInfo></SubInfo>
+                <SubInfo
+                    heaven_count={heaven_count}
+                    hell_count={hell_count}
+                >
+
+                </SubInfo>
             </_.Right>
         </_.Main_Box>
     )

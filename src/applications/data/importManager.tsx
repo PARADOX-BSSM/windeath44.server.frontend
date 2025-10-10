@@ -14,9 +14,11 @@ import chatbot from '@/assets/appIcons/ChatBot.svg';
 import game from '@/assets/appIcons/game.svg';
 import sulkkagi from '@/assets/sulkkagi/black_stone.svg';
 
+
 import Sulkkagi from '../applicationList/sulkkagi';
 import SulkkagiApproach from '../applicationList/sulkkagiApproach';
 import SulkkagiMenu from '../applicationList/sulkkagiMenu';
+
 
 // lazy를 이용한 어플리케이션 컴포넌트 로드
 const Terminal = lazy(() => import('@/applications/applicationList/terminal/index.tsx'));
@@ -738,7 +740,7 @@ const useApps = (): TaskType[] => {
         name: '재판',
         layer: undefined,
         appSetup:{
-          Image : 'default',
+          Image : 'defalut',
           minWidth : 700,
           minHeight : 700,
           setUpWidth : 800,
