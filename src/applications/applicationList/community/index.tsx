@@ -10,7 +10,7 @@ const Community : React.FC = ()=>{
     const [isOpen, setIsOpen] = useState(false);
     const [sort, setSort] = useState("최신순");
     const [active, setActive] = useState("humor");
-    const [serch, setSerch] = useState("");
+    const [search, setSearch] = useState("");
 
     const sortOp: string[] = ["최신순", "인기순"]
     const sortChange = (value: deathType) => {
@@ -27,7 +27,7 @@ const Community : React.FC = ()=>{
                         type = 'menu' active={true} width="74px" height="100%" fontSize = '14px' />
                         <MemorialBtn name="인기글" selected={active=="popular"} onClick={()=>setActive("popular")}
                         type = 'menu' active={true} width="74px" height="100%" fontSize = '14px' />
-                        <MemorialBtn name="검색" selected={active=="serch"} onClick={()=>setActive("serch")}
+                        <MemorialBtn name="검색" selected={active=="search"} onClick={()=>setActive("search")}
                         type = 'menu' active={true} width="74px" height="100%" fontSize = '14px' />
                         <MemorialBtn name="게시글 작성" selected={false} onClick={()=>{}}
                         type = 'menu' active={true} width="108px" height="100%" fontSize = '14px' />
@@ -43,8 +43,8 @@ const Community : React.FC = ()=>{
                         />
                     </_.sortInput>
                 </_.Header>
-                {active=="serch" && <_.InputArea>
-                    <Inputs width='100%' fontSize='14px' flex value={serch} type='text' setValue={setSerch} placeHold="무엇이든 입력해보세요!" />
+                {active=="search" && <_.InputArea>
+                    <Inputs width='100%' fontSize='14px' flex value={search} type='text' setValue={setSearch} placeHold="무엇이든 입력해보세요!" />
                     <MemorialBtn name='검색' type='menu' width='74px' height='100%' fontSize='14px' />
                 </_.InputArea>}
                 <_.PostArea>
