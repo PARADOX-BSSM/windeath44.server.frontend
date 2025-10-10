@@ -22,6 +22,11 @@ export const Main = styled.div`
 export const Judgement = styled.div`
     width: 132px;
     height: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
     background: #ffd3fb;
     border: none;
     font-family: 'Galmuri11', sans-serif;
@@ -33,6 +38,7 @@ export const Judgement = styled.div`
         1px 1px 0px 0px inset #ffffff,
         -2px -2px 0px 0px inset #dcafdd,
         2px 2px 0px 0px inset #ffbbf5;
+    
 `;
 export const Header = styled.div`
     display: flex;
@@ -72,7 +78,10 @@ export const NavJudgement = styled.div`
     align-items: center;
     gap: 8px;
 `
-export const JudgementImg = styled.image`
+export const JudgementImg = styled.img`
+    width: 100%;
+    height: 90px;
+    background-color: #fff;
 `
 export const JudgementText = styled.p`
     color: #2e2e2e;
@@ -81,5 +90,43 @@ export const JudgementText = styled.p`
     font-size: 14px;
     font-style: normal;
     font-weight: 400;
+    line-height: normal;
+`
+export const JudgementLankArea = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px
+`
+export const JudgementLankList = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    padding: 6px 4px;
+    align-items: flex-start;
+    align-self: stretch;
+    box-sizing: border-box;
+    background-color: #fff;
+`
+export const JudgementLank = styled.div`
+    display: flex;
+    flex-direction: row;
+    gap: 4px
+`
+export const JudgementName = styled.p`
+    color: #000;
+    font-family: Galmuri11;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+`
+export const JudgementLankNum = styled.p`
+    color: #FF8EF6;
+    font-family: Galmuri11;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 700;
     line-height: normal;
 `
