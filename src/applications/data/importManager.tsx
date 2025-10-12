@@ -92,6 +92,9 @@ const Community = lazy(
 const CommunityPost = lazy(
   ()=> import('@/applications/applicationList/communityPost/index.tsx'),
 );
+const CommunityPostWrite = lazy(
+  ()=>import('@/applications/applicationList/communityPostWrite/index.tsx')
+)
 //Application Import 형식 예시
 /*
 {
@@ -748,6 +751,20 @@ const useApps = (): TaskType[] => {
         component: <Suspense fallback={null}><CommunityPost /></Suspense>,
         type: "App",
         id: 2247,
+        name: '커뮤니티',
+        layer: undefined,
+        appSetup:{
+          Image : 'default',
+          minWidth : 700,
+          minHeight : 700,
+          setUpWidth : 800,
+          setUpHeight : 562,
+        },
+        visible: false,
+      },{
+        component: <Suspense fallback={null}><CommunityPostWrite /></Suspense>,
+        type: "App",
+        id: 2248,
         name: '커뮤니티',
         layer: undefined,
         appSetup:{
