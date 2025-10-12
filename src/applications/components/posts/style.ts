@@ -14,11 +14,11 @@ export const Main = styled.div`
     gap: 10px;
 `
 export const ProfileImg = styled.div<{ imgUrl: string }>`
-  width: 45px;
-  height: 45px;
-  background: #ffffff;
-  background-image: url(${(props) => props.imgUrl});
-  background-size: cover;
+    width: 45px;
+    height: 45px;
+    background: #ffffff;
+    background-image: url(${(props) => props.imgUrl});
+    background-size: cover;
 `;
 export const PostMain = styled.div`
     display: flex;
