@@ -3,7 +3,7 @@ import styled from '@emotion/styled'
 
 export const Main_Box = styled.div`
     width:136px;
-    height:101px;
+    height:86px;
     
     display:flex;
     flex-direction:column;
@@ -11,10 +11,6 @@ export const Main_Box = styled.div`
     justify-content:space-between;
 `;
 
-
-export const LinkSep=styled.div`
-    
-`;
 
 export const Link=styled.p`
     width:126px;

@@ -21,3 +21,11 @@ export const Right=styled.div`
     padding-right:14px;
 `;
 
+export const Link = styled.div`
+    width:126px;
+    height:15px;
+    
+    color:#7C547B;
+    font-size:14px;
+    font-family:DOSIyagiBoldface;
+`;

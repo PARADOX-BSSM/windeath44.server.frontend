@@ -1,7 +1,9 @@
-import { useAtom, useAtomValue } from 'jotai'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import * as _ from './style'
-import { taskTransformerAtom } from '@/atoms/taskTransformer'
-import Judgement from '@/applications/applicationList/judgement'
+import {taskTransformerAtom } from '@/atoms/taskTransformer'
+
+
+
 
 
 interface VoteProps{
@@ -12,6 +14,7 @@ interface VoteProps{
 const SubInfo = ({heaven_count,hell_count}:VoteProps) => {
 
     const taskTransform = useAtomValue(taskTransformerAtom)
+    
 
     return(
         <_.Main_Box>
@@ -28,12 +31,7 @@ const SubInfo = ({heaven_count,hell_count}:VoteProps) => {
                     </_.Vote_Div>
                 </_.Vote_Info>
                  
-                <_.Link onClick={()=>{
-                    taskTransform('재판','')
-                    console.log(123)
-                    }}>
-                    «« 재판장으로 가기
-                </_.Link>
+            
         
         </_.Main_Box>
     )

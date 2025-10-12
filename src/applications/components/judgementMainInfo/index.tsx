@@ -1,6 +1,6 @@
 import * as _ from './style'
 
-import heart from '@/assets/community/Heart.svg'
+import heart from '@/assets/judgement/Judgement_Heart.svg'
 import vote from '@/assets/community/Vote Yeah.svg'
 import star from '@/assets/judgement/star.svg'
 
