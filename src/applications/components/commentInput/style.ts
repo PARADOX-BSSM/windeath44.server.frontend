@@ -26,6 +26,7 @@ export const ProfileImg = styled.div<{ imgUrl: string }>`
   background-size: cover;
 `;
 export const PostMain = styled.div`
+    width: 100%;
     display: flex;
     padding: 0 7px;
     flex-direction: column;

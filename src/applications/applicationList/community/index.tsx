@@ -1,12 +1,40 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import * as _ from './style';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import MemorialBtn from '@/applications/components/memorialBtn';
 import FilterBlock from '@/applications/components/filterBlock';
 import Inputs from '@/applications/components/inputs';
 import Posts from '@/applications/components/posts';
+import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { currentStackTopAtom } from '@/atoms/memorialManager';
+import { useStack } from '@/hooks/dataStructure';
+
 
 const Community : React.FC = ()=>{
+    {/*const taskTransform = useAtomValue(taskTransformerAtom);
+    const taskSearch = useAtomValue(taskSearchAtom);
+    const [stack, push, pop, top] = useStack(window, setWindow, setUpHeight, setUpWidth);
+    const setCurrentStackTop = useSetAtom(currentStackTopAtom);
+
+    const stackProps = useMemo(() => ({
+        stack: stack,
+        push: push,
+        pop: pop,
+        top: top,
+    }), [stack, push, pop, top]);
+    
+    useEffect(() => {
+        const currentTop = top();
+        setCurrentStackTop(currentTop);
+    }, [stack, top, setCurrentStackTop]);
+
+    useEffect(() => {
+        if (taskSearch && stack.length === 0) {
+        push(taskSearch('Community', stackProps));
+        }
+    }, [taskSearch, push, stackProps, stack.length]);*/}
+
     const [isOpen, setIsOpen] = useState(false);
     const [sort, setSort] = useState("최신순");
     const [active, setActive] = useState("humor");
@@ -53,7 +81,7 @@ const Community : React.FC = ()=>{
                         datetime:"2025년 09월 14일 AM 8:47", heart:12, comment:20
                     }}  />
                 </_.PostArea>
-                
+
             </_.Main>
             <_.Judgement>
                 <_.NavJudgement>

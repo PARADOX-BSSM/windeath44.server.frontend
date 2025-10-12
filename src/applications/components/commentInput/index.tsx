@@ -2,13 +2,15 @@ import React from "react";
 import * as _ from './style';
 import ProfileImg from '@/assets/profile/choten.svg';
 import Emoticon from '@/assets/community/emoticon.svg';
+import MemorialBtn from "../memorialBtn";
 
 interface PostsProps {
     name: string;
     id: string;
     profileImage: string;
+    onClick?: (() => void) | ((e: React.MouseEvent<HTMLButtonElement>) => Promise<void> | void);
 }
-const Posts : React.FC<PostsProps> = ({ name, id, profileImage })=>{
+const Posts : React.FC<PostsProps> = ({ name, id, profileImage, onClick })=>{
     return(
         <_.Post>
             <_.Line></_.Line>
@@ -24,7 +26,14 @@ const Posts : React.FC<PostsProps> = ({ name, id, profileImage })=>{
                         <_.Icon src={Emoticon} />
                     </_.InputArea>
                     
-                    <_.SubmitBtn>게시</_.SubmitBtn>
+                    <MemorialBtn name="게시"
+                        selected = {false}
+                        onClick={onClick}
+                        type = 'submit'
+                        active={true}
+                        width='46px'
+                        height='100%'
+                        fontSize="11px" />
                 </_.CommentMain>
             </_.PostMain>
         </_.Post>

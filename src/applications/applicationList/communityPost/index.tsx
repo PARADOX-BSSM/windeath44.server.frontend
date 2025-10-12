@@ -23,7 +23,7 @@ const CommunityPost: React.FC = ()=>{
                     user={{name:"방태양", id:"noah_byte", profileImage:""}} 
                     post={{content:"아니 이건 진짜 아니지. 살려내라.",
                         heart:12, comment:20}}
-                    type=""
+                    first={true}
                     />
 
                 </_.PostArea>

@@ -5,7 +5,6 @@ export const Post = styled.div`
     padding: 12px 15px;
     justify-content: flex-start;
     gap: 14px;
-    border-bottom: 1px solid #ccc;
     background-color: #fff;
 `
 export const Main = styled.div`

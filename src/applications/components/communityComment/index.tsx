@@ -17,9 +17,9 @@ interface Post{
 interface PostsProps {
     user: User;
     post: Post;
-    type: String;
+    first: boolean;
 }
-const Posts : React.FC<PostsProps> = ({ user, post, type="" })=>{
+const Posts : React.FC<PostsProps> = ({ user, post, first=true })=>{
         const {name, id, profileImage=""} = user;
         const {content, comment=0, heart=0} = post;
     return(
@@ -32,10 +32,16 @@ const Posts : React.FC<PostsProps> = ({ user, post, type="" })=>{
                     <_.UserId>@{id}</_.UserId>
                 </_.PostInfo>
                 <_.PostContent>{content}</_.PostContent>
-                <_.PostInfo>
-                    <_.Icons><_.Icon src={Heart} alt="PostHeart" />{comment}</_.Icons>
-                    <_.Icons><_.Icon src={CommentIcon} alt="PostComment" />{heart}</_.Icons>
-                </_.PostInfo>
+                {first ?
+                    <_.PostInfo>
+                        <_.Icons><_.Icon src={Heart} alt="PostHeart" />{comment}</_.Icons>
+                        <_.Icons><_.Icon src={CommentIcon} alt="PostComment" />{heart}</_.Icons>
+                    </_.PostInfo> :
+                    <_.PostInfo>
+                        <_.Icons><_.Icon src={Heart} alt="PostHeart" />{comment}</_.Icons>
+                    </_.PostInfo>
+                }
+
             </_.PostMain>
         </_.Post>
     )
