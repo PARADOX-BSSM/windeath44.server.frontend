@@ -751,7 +751,7 @@ const useApps = (): TaskType[] => {
         component: <Suspense fallback={null}><CommunityPost /></Suspense>,
         type: "App",
         id: 2247,
-        name: '커뮤니티',
+        name: '게시글',
         layer: undefined,
         appSetup:{
           Image : 'default',
@@ -760,12 +760,12 @@ const useApps = (): TaskType[] => {
           setUpWidth : 800,
           setUpHeight : 562,
         },
-        visible: false,
+        visible: true,
       },{
         component: <Suspense fallback={null}><CommunityPostWrite /></Suspense>,
         type: "App",
         id: 2248,
-        name: '커뮤니티',
+        name: '게시글 작성',
         layer: undefined,
         appSetup:{
           Image : 'default',

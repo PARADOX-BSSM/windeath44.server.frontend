@@ -74,3 +74,58 @@ export const BtnArea = styled.div`
         -2px -2px 0px 0px inset #dcafdd,
         2px 2px 0px 0px inset #ffbbf5;
 `
+
+export const Header = styled.div`
+    display: flex;
+    height: 28px;
+    justify-content: flex-start;
+    align-items: center;
+    align-self: stretch;
+    gap: 20px;
+
+    color: #000;
+    text-align: center;
+    font-family: Galmuri11;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+`;
+export const BeforeBtn = styled.button`
+    border: none;
+    background: none;
+    outline: none;
+`
+export const Icon = styled.img`
+    width: 24px;
+    height: 24px;
+`
+export const PostArea = styled.div`
+    width: 100%;
+    height: 100%;
+    background-color: #FFEEFD;
+    overflow-y: scroll;
+`
+export const Post = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    flex: 1 0 0;
+    background-color: #fff;
+
+`
+export const PostText = styled.div``
+export const PostTitle = styled.h3``
+export const PostContent = styled.p``
+export const PostBtnArea = styled.div``
+export const PostBtn = styled.button`
+    background: none;
+    border: none;
+    color: #E774DD;
+    font-family: Galmuri11;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+`
