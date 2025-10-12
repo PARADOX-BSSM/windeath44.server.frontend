@@ -21,12 +21,15 @@ const JudgementApproach = ({
   const taskSearch = useAtomValue(taskSearchAtom);
   const setCurrentStackTop = useSetAtom(currentStackTopAtom);
 
-  const stackProps = useMemo(() => ({
-    stack: stack,
-    push: push,
-    pop: pop,
-    top: top,
-  }), [stack, push, pop, top]);
+  const stackProps = useMemo(
+    () => ({
+      stack: stack,
+      push: push,
+      pop: pop,
+      top: top,
+    }),
+    [stack, push, pop, top],
+  );
 
   useEffect(() => {
     // console.log("stack: ", stack);

@@ -14,11 +14,9 @@ import chatbot from '@/assets/appIcons/ChatBot.svg';
 import game from '@/assets/appIcons/game.svg';
 import sulkkagi from '@/assets/sulkkagi/black_stone.svg';
 
-
 import Sulkkagi from '../applicationList/sulkkagi';
 import SulkkagiApproach from '../applicationList/sulkkagiApproach';
 import SulkkagiMenu from '../applicationList/sulkkagiMenu';
-
 
 // lazy를 이용한 어플리케이션 컴포넌트 로드
 const Terminal = lazy(() => import('@/applications/applicationList/terminal/index.tsx'));
@@ -88,22 +86,15 @@ const MemorialViewer = lazy(
   () => import('@/applications/applicationList/memorialViewer/index.tsx'),
 );
 
-const Judgement = lazy(
-  () => import('@/applications/applicationList/judgement/index.tsx'),
-);
+const Judgement = lazy(() => import('@/applications/applicationList/judgement/index.tsx'));
 
 const JudgementApproach = lazy(
-  ()=>import('@/applications/applicationList/judgementApproach/index.tsx'),
+  () => import('@/applications/applicationList/judgementApproach/index.tsx'),
 );
 
-const Judgement_Vote = lazy(
-  ()=> import('@/applications/applicationList/vote/index.tsx'),
-);
+const Judgement_Vote = lazy(() => import('@/applications/applicationList/vote/index.tsx'));
 
-const JudgementChat = lazy(
-  ()=>import('@/applications/applicationList/judgementChat/index.tsx'),
-);
-
+const JudgementChat = lazy(() => import('@/applications/applicationList/judgementChat/index.tsx'));
 
 //Application Import 형식 예시
 /*
@@ -745,64 +736,64 @@ const useApps = (): TaskType[] => {
       visible: false,
     },
     {
-        component: <Suspense fallback={null}>{<Judgement/>}</Suspense>,
-        type: "App",
-        id: 3001,
-        name: '재판 목록',
-        layer: undefined,
-        appSetup:{
-          Image : 'defalut',
-          minWidth : 700,
-          minHeight : 700,
-          setUpWidth : 800,
-          setUpHeight : 562,
-        },
-        visible: false
+      component: <Suspense fallback={null}>{<Judgement />}</Suspense>,
+      type: 'App',
+      id: 3001,
+      name: '재판 목록',
+      layer: undefined,
+      appSetup: {
+        Image: 'defalut',
+        minWidth: 700,
+        minHeight: 700,
+        setUpWidth: 800,
+        setUpHeight: 562,
+      },
+      visible: false,
     },
     {
-        component: <Suspense fallback={null}>{<JudgementApproach/>}</Suspense>,
-        type: "App",
-        id: 3002,
-        name: '재판',
-        layer: undefined,
-        appSetup:{
-          Image : 'defalut',
-          minWidth : 700,
-          minHeight : 700,
-          setUpWidth : 800,
-          setUpHeight : 562,
-        },
-        visible: true,
+      component: <Suspense fallback={null}>{<JudgementApproach />}</Suspense>,
+      type: 'App',
+      id: 3002,
+      name: '재판',
+      layer: undefined,
+      appSetup: {
+        Image: 'defalut',
+        minWidth: 700,
+        minHeight: 700,
+        setUpWidth: 800,
+        setUpHeight: 562,
+      },
+      visible: true,
     },
     {
-        component: <Suspense fallback={null}>{<Judgement_Vote/>}</Suspense>,
-        type: "App",
-        id: 3003,
-        name: '투표',
-        layer: undefined,
-        appSetup:{
-          Image : 'defalut',
-          minWidth : 700,
-          minHeight : 700,
-          setUpWidth : 800,
-          setUpHeight : 562,
-        },
-        visible: true,
+      component: <Suspense fallback={null}>{<Judgement_Vote />}</Suspense>,
+      type: 'App',
+      id: 3003,
+      name: '투표',
+      layer: undefined,
+      appSetup: {
+        Image: 'defalut',
+        minWidth: 700,
+        minHeight: 700,
+        setUpWidth: 800,
+        setUpHeight: 562,
+      },
+      visible: true,
     },
     {
-        component: <Suspense fallback={null}>{<JudgementChat/>}</Suspense>,
-        type: "App",
-        id: 3004,
-        name: '재판 댓글',
-        layer: undefined,
-        appSetup:{
-          Image : 'defalut',
-          minWidth : 700,
-          minHeight : 700,
-          setUpWidth : 800,
-          setUpHeight : 562,
-        },
-        visible: true,
+      component: <Suspense fallback={null}>{<JudgementChat />}</Suspense>,
+      type: 'App',
+      id: 3004,
+      name: '재판 댓글',
+      layer: undefined,
+      appSetup: {
+        Image: 'defalut',
+        minWidth: 700,
+        minHeight: 700,
+        setUpWidth: 800,
+        setUpHeight: 562,
+      },
+      visible: true,
     },
   ];
 
