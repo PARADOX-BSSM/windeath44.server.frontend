@@ -39,8 +39,8 @@ const Posts : React.FC<PostsProps> = ({ user, post })=>{
                     </_.Content>
                     <_.Datetime>{datetime}</_.Datetime>
                     <_.PostInfo>
-                        <_.Icons><_.Icon src={Heart} alt="" />{comment}</_.Icons>
-                        <_.Icons><_.Icon src={CommentIcon} alt="" />{heart}</_.Icons>
+                        <_.Icons><_.Icon src={Heart} alt="PostHeart" />{comment}</_.Icons>
+                        <_.Icons><_.Icon src={CommentIcon} alt="PostComment" />{heart}</_.Icons>
                     </_.PostInfo>
                 </_.PostMain>
             </_.Main>

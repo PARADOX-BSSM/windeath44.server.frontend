@@ -89,6 +89,9 @@ const MemorialViewer = lazy(
 const Community = lazy(
   ()=> import('@/applications/applicationList/community/index.tsx'),
 );
+const CommunityPost = lazy(
+  ()=> import('@/applications/applicationList/communityPost/index.tsx'),
+);
 //Application Import 형식 예시
 /*
 {
@@ -728,9 +731,23 @@ const useApps = (): TaskType[] => {
       },
       visible: false,
     },{
-        component: <Suspense fallback={null}>{<Community />}</Suspense>,
+        component: <Suspense fallback={null}><Community /></Suspense>,
         type: "App",
         id: 2246,
+        name: '커뮤니티',
+        layer: undefined,
+        appSetup:{
+          Image : 'default',
+          minWidth : 700,
+          minHeight : 700,
+          setUpWidth : 800,
+          setUpHeight : 562,
+        },
+        visible: true,
+      },{
+        component: <Suspense fallback={null}><CommunityPost /></Suspense>,
+        type: "App",
+        id: 2247,
         name: '커뮤니티',
         layer: undefined,
         appSetup:{
