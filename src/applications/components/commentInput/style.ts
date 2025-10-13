@@ -69,6 +69,7 @@ export const InputArea = styled.div`
     background: #FFEBFD;
 `
 export const Input = styled.input`
+    width: 100%;
     background: none;
     border: none;
     outline: none;
