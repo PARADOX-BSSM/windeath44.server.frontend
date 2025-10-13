@@ -6,4 +6,10 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   assetsInclude: ['**/*.gif'],
   plugins: [react(), tsconfigPath()],
+  server: {
+    headers: {
+      'Cross-Origin-Embedder-Policy': 'credentialless',
+      'Cross-Origin-Opener-Policy': 'same-origin',
+    },
+  },
 });

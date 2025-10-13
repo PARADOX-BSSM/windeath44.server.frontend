@@ -13,6 +13,7 @@ import trashBin from '@/assets/appIcons/empty_bin.svg';
 import chatbot from '@/assets/appIcons/ChatBot.svg';
 import game from '@/assets/appIcons/game.svg';
 import sulkkagi from '@/assets/sulkkagi/black_stone.svg';
+import rhythmGame from '@/assets/appIcons/piano.svg';
 
 import Sulkkagi from '../applicationList/sulkkagi';
 import SulkkagiApproach from '../applicationList/sulkkagiApproach';
@@ -70,7 +71,7 @@ const GameApp = lazy(() => import('@/applications/applicationList/game/index.tsx
 
 const MemorialChief = lazy(() => import('@/applications/applicationList/memorialChief/index.tsx'));
 
-const RhythmGame = lazy(() => import('@/applications/applicationList/rhythmGame/index.tsx'));
+const RhythmGame = import('@/applications/applicationList/rhythmGame/index.tsx');
 
 const MemorialPRManager = lazy(
   () => import('@/applications/applicationList/memorialPRManager/index.tsx'),
@@ -617,16 +618,16 @@ const useApps = (): TaskType[] => {
     },
     {
       component: (
-        <Suspense fallback={null}>
+        <div>
           <RhythmGame />
-        </Suspense>
+        </div>
       ),
       type: 'App',
       id: 5001,
-      name: 'RhythmGame',
+      name: '리듬게임',
       layer: undefined,
       appSetup: {
-        Image: sulkkagi,
+        Image: rhythmGame,
         minWidth: 1600,
         minHeight: 900,
         setUpWidth: 1600,
