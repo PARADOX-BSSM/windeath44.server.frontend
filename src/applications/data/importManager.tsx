@@ -70,6 +70,8 @@ const GameApp = lazy(() => import('@/applications/applicationList/game/index.tsx
 
 const MemorialChief = lazy(() => import('@/applications/applicationList/memorialChief/index.tsx'));
 
+const RhythmGame = lazy(() => import('@/applications/applicationList/rhythmGame/index.tsx'));
+
 const MemorialPRManager = lazy(
   () => import('@/applications/applicationList/memorialPRManager/index.tsx'),
 );
@@ -610,6 +612,25 @@ const useApps = (): TaskType[] => {
         minHeight: 750,
         setUpWidth: 800,
         setUpHeight: 800,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <RhythmGame />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 5001,
+      name: 'RhythmGame',
+      layer: undefined,
+      appSetup: {
+        Image: sulkkagi,
+        minWidth: 1600,
+        minHeight: 900,
+        setUpWidth: 1600,
+        setUpHeight: 900,
       },
       visible: false,
     },
