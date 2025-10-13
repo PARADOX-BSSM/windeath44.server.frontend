@@ -155,6 +155,19 @@
       "fileLocation": "shoushitsu",
       "level": 8.0,
       "difficulty": "NIGHTMARE"
+    },
+    {
+      "id": 13,
+      "title": "갯나리 해저담",
+      "jpTitle": "ウミユリ海底譚",
+      "artist": "n-buna",
+      "jpArtist": "n-buna",
+      "category": "vocaloid",
+      "bpm": 120.0,
+      "eventName": "umiyurikaiteitan 3",
+      "fileLocation": "umiyuri_kaiteitan",
+      "level": 5.0,
+      "difficulty": "ADVERSITY"
     }
   ]
 }

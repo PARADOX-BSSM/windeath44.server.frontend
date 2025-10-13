@@ -18,6 +18,7 @@ import rhythmGame from '@/assets/appIcons/piano.svg';
 import Sulkkagi from '../applicationList/sulkkagi';
 import SulkkagiApproach from '../applicationList/sulkkagiApproach';
 import SulkkagiMenu from '../applicationList/sulkkagiMenu';
+import RhythmGame from '../applicationList/rhythmGame';
 
 // lazy를 이용한 어플리케이션 컴포넌트 로드
 const Terminal = lazy(() => import('@/applications/applicationList/terminal/index.tsx'));
@@ -70,8 +71,6 @@ const AdminApp = lazy(() => import('@/applications/applicationList/adminApp/inde
 const GameApp = lazy(() => import('@/applications/applicationList/game/index.tsx'));
 
 const MemorialChief = lazy(() => import('@/applications/applicationList/memorialChief/index.tsx'));
-
-const RhythmGame = import('@/applications/applicationList/rhythmGame/index.tsx');
 
 const MemorialPRManager = lazy(
   () => import('@/applications/applicationList/memorialPRManager/index.tsx'),
