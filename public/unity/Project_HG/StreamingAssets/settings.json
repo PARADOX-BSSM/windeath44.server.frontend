@@ -1,0 +1,13 @@
+{
+    "isFirstStart": false,
+    "sync": 0.0,
+    "speed": 4.0,
+    "effectOption": "None",
+    "isKR": false,
+    "KeyBinds": [
+        "<Keyboard>/s",
+        "<Keyboard>/d",
+        "<Keyboard>/l",
+        "<Keyboard>/semicolon"
+    ]
+}

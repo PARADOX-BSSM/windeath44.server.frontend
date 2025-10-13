@@ -1,0 +1,76 @@
+{
+    "results": [
+        {
+            "playerId": "1",
+            "musicId": 1,
+            "rate": 99.57199096679688,
+            "combo": 623,
+            "perfectPlus": 1042,
+            "perfect": 112,
+            "great": 13,
+            "good": 0,
+            "miss": 2,
+            "played_at": ""
+        },
+        {
+            "playerId": "1",
+            "musicId": 6,
+            "rate": 77.50959014892578,
+            "combo": 44,
+            "perfectPlus": 196,
+            "perfect": 79,
+            "great": 86,
+            "good": 84,
+            "miss": 26,
+            "played_at": ""
+        },
+        {
+            "playerId": "1",
+            "musicId": 5,
+            "rate": 58.354251861572269,
+            "combo": 33,
+            "perfectPlus": 129,
+            "perfect": 71,
+            "great": 115,
+            "good": 333,
+            "miss": 127,
+            "played_at": ""
+        },
+        {
+            "playerId": "1",
+            "musicId": 4,
+            "rate": 74.66899108886719,
+            "combo": 125,
+            "perfectPlus": 189,
+            "perfect": 175,
+            "great": 376,
+            "good": 287,
+            "miss": 13,
+            "played_at": ""
+        },
+        {
+            "playerId": "1",
+            "musicId": 5,
+            "rate": 34.22938537597656,
+            "combo": 0,
+            "perfectPlus": 123,
+            "perfect": 34,
+            "great": 55,
+            "good": 128,
+            "miss": 435,
+            "played_at": ""
+        },
+        {
+            "playerId": "1",
+            "musicId": 4,
+            "rate": 96.59361267089844,
+            "combo": 243,
+            "perfectPlus": 671,
+            "perfect": 262,
+            "great": 88,
+            "good": 15,
+            "miss": 4,
+            "played_at": ""
+        }
+    ]
+}
