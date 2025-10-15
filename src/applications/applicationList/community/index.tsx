@@ -2,6 +2,7 @@ import React from 'react';
 import * as _ from './style';
 import { useState } from 'react';
 import MemorialBtn from '@/applications/components/memorialBtn';
+import CommunityBtn from '@/applications/components/communityBtn';
 import FilterBlock from '@/applications/components/filterBlock';
 import Inputs from '@/applications/components/inputs';
 import Posts from '@/applications/components/posts';
@@ -46,16 +47,13 @@ const Community : React.FC = ()=>{
             <_.Main>
                 <_.Header>
                     <_.ButtonArea>
-                        <MemorialBtn name="유머글" selected={active==="humor"} onClick={()=>setActive("humor")}
-                        type = 'menu' active={true} width="74px" height="100%" fontSize = '14px' />
-                        <MemorialBtn name="인기글" selected={active=="popular"} onClick={()=>setActive("popular")}
-                        type = 'menu' active={true} width="74px" height="100%" fontSize = '14px' />
-                        <MemorialBtn name="검색" selected={active=="search"} onClick={()=>setActive("search")}
-                        type = 'menu' active={true} width="74px" height="100%" fontSize = '14px' />
-                        <MemorialBtn name="게시글 작성" selected={false} onClick={()=>{
+                        <CommunityBtn name="유머글" selected={active==="humor"} onClick={()=>setActive("humor")} type='menu' />
+                        <CommunityBtn name="인기글" selected={active=="popular"} onClick={()=>setActive("popular")}type = 'menu' />
+                        <CommunityBtn name="검색" selected={active=="search"} onClick={()=>setActive("search")} type = 'menu' />
+                        <CommunityBtn name="게시글 작성" selected={false} onClick={()=>{
                             if(taskTransform)
                                 taskTransform('', '게시글 작성'); }}
-                        type = 'menu' active={true} width="108px" height="100%" fontSize = '14px' />
+                        type = 'menu' />
                     </_.ButtonArea>
                     <_.sortInput>
                         <FilterBlock
@@ -71,6 +69,7 @@ const Community : React.FC = ()=>{
                 {active=="search" && <_.InputArea>
                     <Inputs width='100%' fontSize='14px' flex value={search} type='text' setValue={setSearch} placeHold="무엇이든 입력해보세요!" />
                     <MemorialBtn name='검색' type='menu' width='74px' height='100%' fontSize='14px' />
+                    {/*<CommunityBtn name="검색" onClick={()=>setActive("search")} type='menu' />*/}
                 </_.InputArea>}
                 <_.PostArea>
                     <Posts user={{name:"방태양", id:"noah_byte", profileImage:""}} 

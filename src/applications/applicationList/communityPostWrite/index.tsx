@@ -1,7 +1,7 @@
 import React from 'react';
 import * as _ from './style';
 import { useState } from 'react';
-import MemorialBtn from '@/applications/components/memorialBtn';
+import CommunityBtn from '@/applications/components/communityBtn';
 import ChevronIcon from '@/assets/community/chevron-left.svg';
 
 const CommunityPostWrite : React.FC = ()=>{
@@ -36,13 +36,10 @@ const CommunityPostWrite : React.FC = ()=>{
             }
             
             <_.BtnArea>
-                <MemorialBtn
-                    name="이미지 첨부" selected={true} type = 'submit' active={true}
-                    width='108px' height='32px' fontSize = '14px' />
-                    <MemorialBtn name="임시저장/불러오기" selected={loadPage} onClick={()=>{setLoadPage(!loadPage)}} type = 'menu' active={true}
-                    width='151px' height='32px' fontSize = '14px' />
-                    <MemorialBtn name="게시" selected={true} type = 'submit' active={true}
-                    width='60px' height='32px' fontSize = '14px' />
+                <CommunityBtn
+                    name="이미지 첨부" type = 'submit' />
+                <CommunityBtn name="임시저장/불러오기" selected={loadPage} onClick={()=>{setLoadPage(!loadPage)}} type = 'menu' />
+                <CommunityBtn name="게시" type = 'submit' />
             </_.BtnArea>
         </_.Container>
     );

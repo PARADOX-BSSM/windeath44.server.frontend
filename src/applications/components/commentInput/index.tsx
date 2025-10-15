@@ -3,6 +3,7 @@ import * as _ from './style';
 import ProfileImg from '@/assets/profile/choten.svg';
 import Emoticon from '@/assets/community/emoticon.svg';
 import MemorialBtn from "../memorialBtn";
+import CommunityBtn from "../communityBtn";
 
 interface PostsProps {
     name: string;
@@ -26,14 +27,7 @@ const Posts : React.FC<PostsProps> = ({ name, id, profileImage, onClick })=>{
                         <_.Icon src={Emoticon} />
                     </_.InputArea>
                     
-                    <MemorialBtn name="게시"
-                        selected = {false}
-                        onClick={onClick}
-                        type = 'submit'
-                        active={true}
-                        width='46px'
-                        height='100%'
-                        fontSize="11px" />
+                    <CommunityBtn name="게시" type='submit' onClick={onClick} />
                 </_.CommentMain>
             </_.PostMain>
         </_.Post>
