@@ -13,6 +13,20 @@ enum sortOption{
     Latest = "최신순",
     Popular = "인기순"
 }
+interface User {
+    name: string;
+    id: string;
+    profileImage: string;
+}
+interface Post{
+    title: string;
+    content: string;
+    postImage: string;
+    comment: number;
+    heart: number;
+    datetime: string;
+}
+
 const Community : React.FC = ()=>{
     const taskTransform = useAtomValue(taskTransformerAtom);
     
