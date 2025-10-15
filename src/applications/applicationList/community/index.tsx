@@ -9,17 +9,20 @@ import { useAtomValue } from 'jotai';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
 
 
-
+enum sortOption{
+    Latest = "최신순",
+    Popular = "인기순"
+}
 const Community : React.FC = ()=>{
     const taskTransform = useAtomValue(taskTransformerAtom);
     
     const [isOpen, setIsOpen] = useState(false);
-    const [sort, setSort] = useState("최신순");
+    const [sort, setSort] = useState(sortOption.Latest);
     const [active, setActive] = useState("humor");
     const [search, setSearch] = useState("");
 
-    const sortOp: string[] = ["최신순", "인기순"]
-    const sortChange = (value: deathType) => {
+    const sortOp: string[] = [sortOption.Latest, sortOption.Popular];
+    const sortChange = (value: any) => {
         setSort(value);
         setIsOpen(false);
     };
