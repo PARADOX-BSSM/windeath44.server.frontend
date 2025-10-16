@@ -104,14 +104,18 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
 
   const moveTo = (idx: number | null) => {
     if (idx === 0) {
-// console.log(taskSearch?.('Search', stackProps));
+      // console.log(taskSearch?.('Search', stackProps));
       push(taskSearch?.('Search', stackProps));
     }
     if (idx === 1) {
       push(taskSearch?.('상주 관리', stackProps));
     }
     if (idx === 2) {
-      if (setAlert) {
+      if (!document.cookie.includes('access_token') && setAlert) {
+        setAlert(Choten, <>게스트는 추모관 신청이 불가합니다.</>, () => {
+          taskTransform?.('경고', '');
+        });
+      } else if (setAlert) {
         setAlert(
           Choten,
           <>
