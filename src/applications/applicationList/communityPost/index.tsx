@@ -4,13 +4,33 @@ import Posts from '@/applications/components/posts';
 import Comment from '@/applications/components/communityComment';
 import CommentInput from '@/applications/components/commentInput';
 import chevron from '@/assets/community/chevron-left.svg';
+import { useAtomValue } from 'jotai';
+import { taskSearchAtom } from '@/atoms/taskTransformer';
 
-const CommunityPost: React.FC = ()=>{
+interface dataStructureProps{
+    stack: any[];
+    push: any;
+    pop: any;
+    top: any;
+}
+
+const CommunityPost = ({stack, push, pop, top}:dataStructureProps)=>{
+    const stackProps = {
+        stack: stack,
+        push: push,
+        pop: pop,
+        top: top,
+    }
+
+    const taskSearch = useAtomValue(taskSearchAtom);
+
     return(
         <_.Container>
             <_.Main>
                 <_.Header>
-                    <_.Icon src={chevron} />
+                    <_.BtnIcon onClick={()=>push(taskSearch?.('communityMain',stackProps))} >
+                        <_.Icon src={chevron} />
+                    </_.BtnIcon>
                     방태양님의 게시글
                 </_.Header>
                 <_.PostArea>

@@ -35,6 +35,11 @@ export const Header = styled.div`
     font-weight: 400;
     line-height: normal;
 `;
+export const BtnIcon = styled.button`
+    background: none;
+    outline: none;
+    border: none;
+`
 export const Icon = styled.img`
     width: 24px;
     height: 24px;

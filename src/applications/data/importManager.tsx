@@ -770,7 +770,7 @@ const useApps = (): TaskType[] => {
           setUpWidth : 800,
           setUpHeight : 562,
         },
-        visible: true,
+        visible: false,
       },{
         component: <Suspense fallback={null}><CommunityPost /></Suspense>,
         type: "App",
@@ -784,7 +784,7 @@ const useApps = (): TaskType[] => {
           setUpWidth : 800,
           setUpHeight : 562,
         },
-        visible: true,
+        visible: false,
       },{
         component: <Suspense fallback={null}><CommunityPostWrite /></Suspense>,
         type: "App",
@@ -798,7 +798,7 @@ const useApps = (): TaskType[] => {
           setUpWidth : 800,
           setUpHeight : 562,
         },
-        visible: true,
+        visible: false,
       }
   ];
 
