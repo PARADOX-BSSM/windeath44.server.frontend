@@ -2,7 +2,6 @@ import React from "react";
 import * as _ from './style';
 import ProfileImg from '@/assets/profile/choten.svg';
 import Emoticon from '@/assets/community/emoticon.svg';
-import MemorialBtn from "../memorialBtn";
 import CommunityBtn from "../communityBtn";
 
 interface PostsProps {

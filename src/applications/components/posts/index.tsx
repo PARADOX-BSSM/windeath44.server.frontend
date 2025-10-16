@@ -20,12 +20,13 @@ interface Post{
 interface PostsProps {
     user: User;
     post: Post;
+    onClick?: (() => void) | ((e: React.MouseEvent<HTMLDivElement>) => Promise<void> | void);
 }
-const Posts : React.FC<PostsProps> = ({ user, post })=>{
+const Posts : React.FC<PostsProps> = ({ user, post, onClick })=>{
         const {name, id, profileImage=""} = user;
         const {title, content, comment=0, heart=0, postImage="", datetime} = post;
     return(
-        <_.Post>
+        <_.Post onClick={onClick}>
             <_.Main>
                 <_.ProfileImg imgUrl={profileImage||ProfileImg} />
                 <_.PostMain>

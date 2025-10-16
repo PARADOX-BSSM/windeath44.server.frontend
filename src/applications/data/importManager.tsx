@@ -86,6 +86,9 @@ const MemorialViewer = lazy(
   () => import('@/applications/applicationList/memorialViewer/index.tsx'),
 );
 
+const CommunityApproach = lazy(
+  () => import('@/applications/applicationList/communityApproach/index.tsx'),
+);
 const Community = lazy(
   ()=> import('@/applications/applicationList/community/index.tsx'),
 );
@@ -734,7 +737,9 @@ const useApps = (): TaskType[] => {
       },
       visible: false,
     },{
-        component: <Suspense fallback={null}><Community /></Suspense>,
+        component: <Suspense fallback={null}>
+          <CommunityApproach />
+        </Suspense>,
         type: "App",
         id: 2246,
         name: '커뮤니티',
@@ -748,10 +753,29 @@ const useApps = (): TaskType[] => {
         },
         visible: true,
       },{
-        component: <Suspense fallback={null}><CommunityPost /></Suspense>,
+        component: <Suspense fallback={null}><Community
+          stack={[]}
+          push={undefined}
+          pop={undefined}
+          top={undefined}
+        /></Suspense>,
         type: "App",
         id: 2247,
-        name: '게시글',
+        name: 'communityMain',
+        layer: undefined,
+        appSetup:{
+          Image : 'default',
+          minWidth : 700,
+          minHeight : 700,
+          setUpWidth : 800,
+          setUpHeight : 562,
+        },
+        visible: true,
+      },{
+        component: <Suspense fallback={null}><CommunityPost /></Suspense>,
+        type: "App",
+        id: 2248,
+        name: 'communityPost',
         layer: undefined,
         appSetup:{
           Image : 'default',
@@ -764,7 +788,7 @@ const useApps = (): TaskType[] => {
       },{
         component: <Suspense fallback={null}><CommunityPostWrite /></Suspense>,
         type: "App",
-        id: 2248,
+        id: 2249,
         name: '게시글 작성',
         layer: undefined,
         appSetup:{
