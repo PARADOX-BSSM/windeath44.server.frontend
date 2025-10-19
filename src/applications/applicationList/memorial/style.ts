@@ -124,10 +124,10 @@ export const Quote = styled.h2`
   height: fit-content;
   align-self: stretch;
   color: #4a4a4a;
-  font-family: 'Gungsuh', serif;
+  font-family: 'Galmuri11', serif;
   font-size: 28px;
   font-style: italic;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.5;
   background-color: #f0f0f0;
   padding: 30px 40px;
