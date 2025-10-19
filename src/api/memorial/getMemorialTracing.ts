@@ -2,29 +2,28 @@ import { useQuery } from '@tanstack/react-query';
 import axiosInstance from '../axiosInstance';
 import { memorial } from '@/config';
 
-interface MemorialCommentResponse {
-  commentId: number;
+interface MemorialTracingData {
   memorialId: number;
-  userId: string;
-  content: string;
-  likes: number;
-  isLiked: boolean;
-  parentId: number;
-  createdAt: string;
+  viewedAt: string;
 }
 
 interface MemorialTracingResponse {
   message: string;
-  data: MemorialCommentResponse[];
+  data: {
+    hasNext: boolean;
+    data: MemorialTracingData[];
+  };
 }
 
 const getMemorialTracing = async (
   userId: string,
   size: number = 6,
+  cursor?: string
 ): Promise<MemorialTracingResponse> => {
   const response = await axiosInstance.get(`${memorial}/memorial-tracing/${userId}`, {
     params: {
       size,
+      ...(cursor && { cursor }),
     },
   });
   return response.data;

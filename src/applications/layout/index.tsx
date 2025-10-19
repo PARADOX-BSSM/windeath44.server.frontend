@@ -5,7 +5,7 @@ import Exit from '@/assets/headerButton/exit.svg';
 import Full from '@/assets/headerButton/full.svg';
 import Min from '@/assets/headerButton/min.svg';
 import Heart from '@/assets/headerButton/heart.svg';
-import { useAtom } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import {
   isLogInedAtom,
   focusAtom,
@@ -23,6 +23,8 @@ import {
 
 import React from 'react';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
+import { Event_Count, Open_Vote, Sep_window } from '../applicationList/vote/state_manage';
+import { taskTransformerAtom } from '@/atoms/taskTransformer';
 
 const Application = (props: ApplicationProps) => {
   // jotai 상태 사용
@@ -53,6 +55,9 @@ const Application = (props: ApplicationProps) => {
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false); // 전체화면 여부
   const [isMinimized, setIsMinimized] = useState<boolean>(false); // 최소화 여부
 
+  const set_sep_window = useSetAtom(Sep_window);
+  const open_vote = useAtomValue(Open_Vote);
+
   // 커서 위치 동기화 : props로 받은 커서 위치(props.cursorVec)를 로컬 상태(cursor)로 동기화
   useEffect(() => {
     setBeforeMoveParams(cursor);
@@ -63,6 +68,11 @@ const Application = (props: ApplicationProps) => {
   useEffect(() => {
     if (!isMinimized && focus !== props.name) {
       setFocus(props.name);
+    }
+    if (props.name === '재판' && open_vote === true) {
+      set_sep_window(true);
+    } else {
+      set_sep_window(false);
     }
   }, [window]);
 
@@ -123,23 +133,26 @@ const Application = (props: ApplicationProps) => {
 
   const widthLimit = (params: DragParams) => {
     const [nearRight] = corner;
-    if ((window.width as unknown as number) >= props.appSetup.minWidth) {
+    const minWidth = (window.minWidth as number) || props.appSetup.minWidth;
+    if ((window.width as unknown as number) >= minWidth) {
       if (nearRight) {
         return Number(window.width) + params.offset[0] - beforeSizeParams[0];
       } else {
         return Number(window.width) - params.offset[0] + beforeSizeParams[0];
       }
     }
-    return props.appSetup.minWidth;
+    return minWidth;
   };
   const heightLimit = (params: DragParams) => {
-    if ((window.height as unknown as number) >= props.appSetup.minHeight) {
+    const minHeight = (window.minHeight as number) || props.appSetup.minHeight;
+    if ((window.height as unknown as number) >= minHeight) {
       return Number(window.height) + params.offset[1] - beforeSizeParams[1];
     }
-    return props.appSetup.minHeight;
+    return minHeight;
   };
   const leftLimit = (params: DragParams) => {
-    if ((window.width as unknown as number) >= props.appSetup.minWidth) {
+    const minWidth = (window.minWidth as number) || props.appSetup.minWidth;
+    if ((window.width as unknown as number) >= minWidth) {
       return Number(window.left) + params.offset[0] - beforeSizeParams[0];
     }
     return window.left;
@@ -192,6 +205,15 @@ const Application = (props: ApplicationProps) => {
   });
 
   if (props.type === 'App') {
+    const setEvent = useSetAtom(Event_Count);
+
+    const open_vote = useAtomValue(Open_Vote);
+    const set_open_vote = useSetAtom(Open_Vote);
+
+    const sep_window = useAtomValue(Sep_window);
+
+    const taskTransform = useAtomValue(taskTransformerAtom);
+
     return (
       <_.Window
         style={window}
@@ -235,7 +257,16 @@ const Application = (props: ApplicationProps) => {
 
             <_.ExitButton
               onMouseDown={() => {
+                if (sep_window === true) {
+                  setEvent((prev) => prev + 1);
+                  set_sep_window(false);
+                  set_open_vote(false);
+                  return;
+                }
+
+                taskTransform('재판 댓글', '');
                 props.removeTask(props.removeCompnent);
+
                 if (!isLogIned) {
                   setIsLogIned('guest');
                   localStorage.setItem('isLogIned', isLogIned);

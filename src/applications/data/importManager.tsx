@@ -98,6 +98,17 @@ const CommunityPost = lazy(
 const CommunityPostWrite = lazy(
   ()=>import('@/applications/applicationList/communityPostWrite/index.tsx')
 )
+
+const Judgement = lazy(() => import('@/applications/applicationList/judgement/index.tsx'));
+
+const JudgementApproach = lazy(
+  () => import('@/applications/applicationList/judgementApproach/index.tsx'),
+);
+
+const Judgement_Vote = lazy(() => import('@/applications/applicationList/vote/index.tsx'));
+
+const JudgementChat = lazy(() => import('@/applications/applicationList/judgementChat/index.tsx'));
+
 //Application Import 형식 예시
 /*
 {
@@ -163,8 +174,8 @@ const useApps = (): TaskType[] => {
       layer: undefined,
       appSetup: {
         Image: search,
-        minWidth: 45,
-        minHeight: 40,
+        minWidth: 720,
+        minHeight: 450,
         setUpWidth: 950,
         setUpHeight: 500,
       },
@@ -182,8 +193,8 @@ const useApps = (): TaskType[] => {
       layer: undefined,
       appSetup: {
         Image: 'default',
-        minWidth: 55,
-        minHeight: 35,
+        minWidth: 600,
+        minHeight: 300,
         setUpWidth: 800,
         setUpHeight: 360,
       },
@@ -206,8 +217,8 @@ const useApps = (): TaskType[] => {
       layer: undefined,
       appSetup: {
         Image: 'default',
-        minWidth: 55,
-        minHeight: 35,
+        minWidth: 50 * 16,
+        minHeight: 30 * 16,
         setUpWidth: 55 * 16,
         setUpHeight: 35 * 16,
       },
@@ -230,8 +241,8 @@ const useApps = (): TaskType[] => {
       layer: undefined,
       appSetup: {
         Image: 'default',
-        minWidth: 70,
-        minHeight: 55,
+        minWidth: 580,
+        minHeight: 420,
         setUpWidth: 890,
         setUpHeight: 577,
       },
@@ -324,13 +335,13 @@ const useApps = (): TaskType[] => {
         </Suspense>
       ),
       type: 'App',
-      id: 2228,
+      id: 2500,
       name: '상주 관리',
       layer: undefined,
       appSetup: {
         Image: 'default',
         minWidth: 600,
-        minHeight: 500,
+        minHeight: 400,
         setUpWidth: 900,
         setUpHeight: 650,
       },
@@ -390,8 +401,8 @@ const useApps = (): TaskType[] => {
       layer: undefined,
       appSetup: {
         Image: setting,
-        minWidth: 50,
-        minHeight: 25,
+        minWidth: 690,
+        minHeight: 250,
         setUpWidth: 690,
         setUpHeight: 250,
       },
@@ -409,8 +420,8 @@ const useApps = (): TaskType[] => {
       layer: undefined,
       appSetup: {
         Image: 'default',
-        minWidth: 60,
-        minHeight: 55,
+        minWidth: 60 * 16,
+        minHeight: 55 * 16,
         setUpWidth: 60 * 16,
         setUpHeight: 55 * 16,
       },
@@ -428,8 +439,8 @@ const useApps = (): TaskType[] => {
       layer: undefined,
       appSetup: {
         Image: 'default',
-        minWidth: 60,
-        minHeight: 55,
+        minWidth: 960,
+        minHeight: 880,
         setUpWidth: 60 * 16,
         setUpHeight: 55 * 16,
       },
@@ -447,8 +458,8 @@ const useApps = (): TaskType[] => {
       layer: undefined,
       appSetup: {
         Image: myComputer,
-        minWidth: 60,
-        minHeight: 55,
+        minWidth: 700,
+        minHeight: 400,
         setUpWidth: 800,
         setUpHeight: 562,
       },
@@ -799,7 +810,66 @@ const useApps = (): TaskType[] => {
           setUpHeight : 562,
         },
         visible: false,
-      }
+      },{
+      component: <Suspense fallback={null}>{<Judgement />}</Suspense>,
+      type: 'App',
+      id: 3001,
+      name: '재판 목록',
+      layer: undefined,
+      appSetup: {
+        Image: 'defalut',
+        minWidth: 700,
+        minHeight: 700,
+        setUpWidth: 800,
+        setUpHeight: 562,
+      },
+      visible: false,
+    },
+    {
+      component: <Suspense fallback={null}>{<JudgementApproach />}</Suspense>,
+      type: 'App',
+      id: 3002,
+      name: '재판',
+      layer: undefined,
+      appSetup: {
+        Image: 'defalut',
+        minWidth: 700,
+        minHeight: 700,
+        setUpWidth: 800,
+        setUpHeight: 562,
+      },
+      visible: true,
+    },
+    {
+      component: <Suspense fallback={null}>{<Judgement_Vote />}</Suspense>,
+      type: 'App',
+      id: 3003,
+      name: '투표',
+      layer: undefined,
+      appSetup: {
+        Image: 'defalut',
+        minWidth: 700,
+        minHeight: 700,
+        setUpWidth: 800,
+        setUpHeight: 562,
+      },
+      visible: true,
+    },
+    {
+      component: <Suspense fallback={null}>{<JudgementChat />}</Suspense>,
+      type: 'App',
+      id: 3004,
+      name: '재판 댓글',
+      layer: undefined,
+      appSetup: {
+        Image: 'defalut',
+        minWidth: 700,
+        minHeight: 700,
+        setUpWidth: 800,
+        setUpHeight: 562,
+      },
+      visible: true,
+    },
   ];
 
   return baseApps;
