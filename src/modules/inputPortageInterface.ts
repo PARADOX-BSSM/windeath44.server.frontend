@@ -8,6 +8,7 @@ export interface InputPortageType {
   age: number;
   profileImage: string;
   phrase: string;
+  causeOfDeathDetails: string;
 }
 
 export interface InputContentType {
