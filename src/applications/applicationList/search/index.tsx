@@ -1,4 +1,4 @@
-import { memo, useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import * as _ from '@/applications/applicationList/search/style.ts';
 import Folder from '@/assets/search/folder.svg';
 import Search_task from '@/applications/applicationList/search/search_task';
@@ -12,6 +12,32 @@ import { memorial } from '@/config';
 type Character = { characterId: number; [k: string]: any };
 type AnimeItem = { animeId: number; [k: string]: any };
 
+// debounce hook with immediate initial value
+const useDebounce = (value: string, delay: number) => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+  const [isFirstRender, setIsFirstRender] = useState(true);
+
+  useEffect(() => {
+    // 첫 렌더링 시 즉시 값 설정 (초기 로딩)
+    if (isFirstRender) {
+      setDebouncedValue(value);
+      setIsFirstRender(false);
+      return;
+    }
+
+    // 이후부터는 debounce 적용
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay, isFirstRender]);
+
+  return debouncedValue;
+};
+
 const Search = () => {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [isColumn, setIsColumn] = useState(false);
@@ -21,13 +47,17 @@ const Search = () => {
   const [ani, setAni] = useState(''); // 애니 이름(검색어)
   const [name, setName] = useState(''); // 캐릭터 이름(검색어)
 
+  // debounced 검색어 (0.5초 지연)
+  const debouncedAni = useDebounce(ani, 500);
+  const debouncedName = useDebounce(name, 500);
+
   // 페이지네이션 (cursor 기반)
   const [cursorId, setCursorId] = useState<number | undefined>(undefined);
 
   // ------ 파라미터 정규화 ------
   const deathParam = useMemo(() => (fillDeath === '모두' ? undefined : fillDeath), [fillDeath]);
-  const nameParam = useMemo(() => (name.trim() ? name.trim() : undefined), [name]);
-  const aniParam = useMemo(() => (ani.trim() ? ani.trim() : undefined), [ani]);
+  const nameParam = useMemo(() => (debouncedName.trim() ? debouncedName.trim() : undefined), [debouncedName]);
+  const aniParam = useMemo(() => (debouncedAni.trim() ? debouncedAni.trim() : undefined), [debouncedAni]);
 
   // 새 검색 조건이 생기면 커서 리셋
   useEffect(() => {

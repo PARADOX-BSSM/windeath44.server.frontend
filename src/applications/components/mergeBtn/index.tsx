@@ -9,21 +9,22 @@ import { alerterAtom } from '@/atoms/alerter';
 import { useProcessManager } from '@/hooks/processManager';
 import { useAtom, useAtomValue } from 'jotai';
 import { usePostCommit, usePostPullRequest } from '@/api/memorial/userCommit.ts';
-import { memorialIdAtom, userIdAtom, currentStackTopAtom } from '@/atoms/memorialManager.ts';
+import { userIdAtom, currentStackTopAtom } from '@/atoms/memorialManager.ts';
 import { useGetPrsQuery } from '@/api/memorial/cheifCommit.ts';
 
 interface PropsType {
   text: string;
+  memorialId: number;
+  characterId?: number;
 }
 
-const MergeBtn = ({ text }: PropsType) => {
+const MergeBtn = ({ text, memorialId, characterId }: PropsType) => {
   const [inputValue, setInputValue] = useAtom(inputPortage);
   const [contentIn, setContentIn] = useAtom(inputContent);
   const [userId] = useAtom(userIdAtom);
-  const [memorialId] = useAtom(memorialIdAtom);
   const createCharacterMutation = useCreateCharacter();
   const commitMutation = usePostCommit();
-  const { data, isLoading, isError, error } = useGetPrsQuery({ memorialId });
+  const { data } = useGetPrsQuery({ memorialId });
   const pullRequestMutation = usePostPullRequest();
   const uploadImageMutation = useUploadImage();
   const applyMemorialMutation = useApplyMemorial();
