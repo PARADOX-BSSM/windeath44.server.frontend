@@ -8,7 +8,7 @@ export const useTaskTransformFunction = () => {
   const setTaskTransformerAtom = useSetAtom(taskTransformerAtom);
   const [, addTask, removeTask] = useProcessManager();
 
-  const taskSearch = useAtomValue(taskSearchAtom);
+  //const taskSearch = useAtomValue(taskSearchAtom);
 
   const Apps = useApps();
 
@@ -20,9 +20,8 @@ export const useTaskTransformFunction = () => {
     if (!ready) return;
 
     const taskTransform = (fromTask: string, toTask: string, props?: any) => {
-      console.log(taskSearch);
       const from = Apps.find(app => app.name === fromTask);
-      const to = Apps.find(app => app.name === toTask)
+      const to = Apps.find(app => app.name === toTask);
 
       if (to) addTask(to);
       if (from) removeTask(from);
