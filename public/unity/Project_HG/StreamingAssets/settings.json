@@ -1,9 +1,15 @@
 {
     "isFirstStart": false,
-    "sync": 0.0,
-    "speed": 4.0,
+    "speed": 3.799999952316284,
     "effectOption": "None",
-    "isKR": false,
+    "displayMode": 1,
+    "displayResolution": 2,
+    "frameLimit": 4,
+    "defaultLanguage": 0,
+    "songInfoLanguage": 0,
+    "judgementLineHeight": 0,
+    "sync": 0,
+    "fastSlowExp": 3,
     "KeyBinds": [
         "<Keyboard>/s",
         "<Keyboard>/d",
