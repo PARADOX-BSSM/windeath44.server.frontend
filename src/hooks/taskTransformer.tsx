@@ -17,7 +17,7 @@ export const useTaskTransformFunction = () => {
       (app) => app.appSetup && app.appSetup.setUpWidth! > 0 && app.appSetup.setUpHeight! > 0,
     );
 
-    //if (!ready) return;
+    if (!ready) return;
 
     const taskTransform = (fromTask: string, toTask: string, props?: any) => {
       const from = taskSearch?.(fromTask);
