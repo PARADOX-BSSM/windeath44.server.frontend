@@ -20,8 +20,8 @@ export const useTaskTransformFunction = () => {
     if (!ready) return;
 
     const taskTransform = (fromTask: string, toTask: string, props?: any) => {
-      const from = taskSearch?.(fromTask);
-      const to = taskSearch?.(toTask);
+      const from = taskSearch?.(fromTask, props);
+      const to = taskSearch?.(toTask, props);
 
       if (to) addTask(to);
       if (from) removeTask(from);
