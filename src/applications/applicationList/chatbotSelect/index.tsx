@@ -84,7 +84,9 @@ const ChatbotSelect = () => {
           disabled={selectedItem === null}
           onClick={() => {
             if (selectedItem !== null) {
-              taskTransform?.('분신사바', '분신사바 메인');
+              taskTransform?.('분신사바', '분신사바 메인', {
+                chatbotId: Number(selectedItem),
+              });
             }
           }}
           onMouseEnter={() => {

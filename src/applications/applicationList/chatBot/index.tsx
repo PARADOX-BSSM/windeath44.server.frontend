@@ -25,8 +25,11 @@ interface Contributor {
   alt: string;
 }
 
-const ChatBot = () => {
-  const character = '호시노 아이';
+interface ChatBotProps {
+  chatbotId?: number;
+}
+
+const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
   const [message, setMessage] = useState('');
   const doChatMutation = useDoChat();
   const setAlert = useAtomValue(alerterAtom);
@@ -49,17 +52,21 @@ const ChatBot = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const getChatBot = useGetChatBotQuery({ chatbot_id: 1 });
+  const getChatBot = useGetChatBotQuery({ chatbot_id: chatbotId });
+
+  // API에서 가져온 챗봇 정보
+  const character = getChatBot.data?.data?.name || '챗봇';
+  const characterImage = Hosino; // TODO: API에 이미지 URL이 추가되면 사용
 
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
   useEffect(() => {
-    const contributeData = getChatBot.data?.data.contributor;
+    const contributeData = getChatBot.data?.data?.contributor;
     // console.log(contributeData);
 
-    if (contributeData && Array.isArray(contributeData)) {
+    if (contributeData && Array.isArray(contributeData) && contributeData.length > 0) {
       const contributorList: Contributor[] = contributeData.map((name: string, index: number) => ({
         id: (index + 1).toString(),
         avatar: index % 2 === 0 ? Choten : Ame,
@@ -67,6 +74,8 @@ const ChatBot = () => {
       }));
 
       setContributors(contributorList);
+    } else {
+      setContributors([]);
     }
   }, [getChatBot.data]);
 
@@ -99,7 +108,7 @@ const ChatBot = () => {
     // API 호출
     doChatMutation.mutate(
       {
-        chatbotId: 1,
+        chatbotId: chatbotId,
         content: message.trim(),
         userId: 'pdh0128',
       },
@@ -107,7 +116,7 @@ const ChatBot = () => {
         onSuccess: (response) => {
           const tempData: Message = {
             id: Date.now().toString(),
-            avatar: Hosino,
+            avatar: characterImage,
             author: character,
             text: response.data.answer,
           };
@@ -145,7 +154,7 @@ const ChatBot = () => {
             <_.ProfileTop>
               <_.CharacterImageContainer>
                 <_.CharacterImage
-                  src={Hosino}
+                  src={characterImage}
                   alt={character}
                 />
               </_.CharacterImageContainer>
