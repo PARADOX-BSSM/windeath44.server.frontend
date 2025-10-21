@@ -217,7 +217,7 @@ const useApps = (): TaskType[] => {
       name: '추모관 뷰어',
       layer: undefined,
       appSetup: {
-        Image: 'default',
+        Image: search,
         minWidth: 580,
         minHeight: 420,
         setUpWidth: 890,
@@ -464,12 +464,12 @@ const useApps = (): TaskType[] => {
     {
       component: (
         <Suspense fallback={null}>
-          <TeachingChatBot />
+          <TeachingChatBot chatbotId={1} />
         </Suspense>
       ),
       type: 'App',
       id: 2235,
-      name: '챗봇 학습',
+      name: '빙의',
       layer: undefined,
       appSetup: {
         Image: setting,
