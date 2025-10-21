@@ -6,6 +6,10 @@ import { dummyQuestion } from './data';
 import { useAddWordSet } from '@/api/chatbot/addChatBotWordSet';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
 import { useGetChatBotQuery } from '@/api/chatbot/getChatBot';
+import { useAtomValue } from 'jotai';
+import { alerterAtom } from '@/atoms/alerter';
+import { taskTransformerAtom } from '@/atoms/taskTransformer';
+import BlackSeori from '@/assets/sulkkagi/black_stone.svg';
 
 interface TeachingChatBotProps {
   chatbotId?: number;
@@ -16,6 +20,8 @@ const TeachingChatBot = ({ chatbotId = 1 }: TeachingChatBotProps) => {
   const [question, setQuestion] = useState<string>('');
   const chatBotQuery = useGetChatBotQuery({ chatbot_id: chatbotId });
   const character = chatBotQuery.data?.data?.name || '호시노 아이';
+  const setAlert = useAtomValue(alerterAtom);
+  const taskTransform = useAtomValue(taskTransformerAtom);
 
   const addWordSetMutation = useAddWordSet();
   const randomQuestion = (): number => {
@@ -47,6 +53,9 @@ const TeachingChatBot = ({ chatbotId = 1 }: TeachingChatBotProps) => {
           const random = randomQuestion();
           setQuestion(dummyQuestion[random]);
           // console.log(response);
+          setAlert?.(BlackSeori, <>캐릭터의 대사 한마디에 당신의 생명을 불어넣었습니다.</>, () => {
+            taskTransform?.('경고', '');
+          });
         },
       },
     );
