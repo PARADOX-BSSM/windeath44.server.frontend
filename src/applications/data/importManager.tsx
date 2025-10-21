@@ -616,6 +616,7 @@ const useApps = (): TaskType[] => {
       visible: false,
     },
     {
+      //800:450
       component: (
         <div>
           <RhythmGame />
@@ -625,12 +626,14 @@ const useApps = (): TaskType[] => {
       id: 5001,
       name: '리듬게임',
       layer: undefined,
+      //1280x720
+      //1024 x 576
       appSetup: {
         Image: rhythmGame,
-        minWidth: 1600,
-        minHeight: 900,
-        setUpWidth: 1600,
-        setUpHeight: 900,
+        minWidth: 1024,
+        minHeight: 576,
+        setUpWidth: 1024,
+        setUpHeight: 576,
       },
       visible: false,
     },
