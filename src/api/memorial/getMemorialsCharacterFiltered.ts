@@ -1,7 +1,7 @@
 // api/memorial/useGetMemorialsCharacterFilteredQuery.ts
 import { useQuery } from '@tanstack/react-query';
-import api from '@/api/axiosInstance';
 import { memorial } from '@/config';
+import axios from 'axios';
 
 // 명세에 맞춘 orderBy 타입
 export type OrderBy =
@@ -37,7 +37,7 @@ export const fetchMemorials = async ({ orderBy, page, characters }: FetchMemoria
     (a, b) => a - b,
   );
 
-  const response = await api.post<MemorialsResponse>(`${memorial}/character-filtered`, {
+  const response = await axios.post<MemorialsResponse>(`${memorial}/character-filtered`, {
     orderBy,
     page,
     characters: uniqSorted,
