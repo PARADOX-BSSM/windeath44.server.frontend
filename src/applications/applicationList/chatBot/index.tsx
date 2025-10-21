@@ -11,6 +11,7 @@ import { useAtomValue } from 'jotai';
 import { alerterAtom } from '@/atoms/alerter';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
 import { useGetUserMutation } from '@/api/user/getUser';
+import { useGetCharacter, CharacterData } from '@/api/anime/getCharacter';
 
 interface Message {
   id: string;
@@ -48,6 +49,7 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
 
   const [contributors, setContributors] = useState<Contributor[]>([]);
   const [showAllContributors, setShowAllContributors] = useState(false);
+  const [characterData, setCharacterData] = useState<CharacterData>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -55,10 +57,11 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
 
   const getChatBot = useGetChatBotQuery({ chatbot_id: chatbotId });
   const { mutate: getUser, data: userData } = useGetUserMutation();
+  const getCharacterMutation = useGetCharacter(setCharacterData);
 
   // API에서 가져온 챗봇 정보
   const character = getChatBot.data?.data?.name || '챗봇';
-  const characterImage = Hosino; // TODO: API에 이미지 URL이 추가되면 사용
+  const characterImage = characterData?.imageUrl || Hosino;
 
   // 사용자 정보
   const userName = userData?.data?.name || '사용자';
@@ -72,6 +75,11 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
   useEffect(() => {
     getUser();
   }, [getUser]);
+
+  useEffect(() => {
+    // chatbotId와 characterId가 같으므로 chatbotId로 캐릭터 정보 가져오기
+    getCharacterMutation.mutate(chatbotId);
+  }, [chatbotId]);
 
   useEffect(() => {
     const contributeData = getChatBot.data?.data?.contributor;
