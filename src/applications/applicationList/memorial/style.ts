@@ -356,6 +356,11 @@ export const InputComment = styled.div`
   gap: 10px;
   align-self: stretch;
   background: #ffebfd;
+
+  & > form {
+    width: 100%;
+    display: flex;
+  }
 `;
 
 export const InputCommentText = styled.input`
