@@ -469,7 +469,7 @@ const useApps = (): TaskType[] => {
       ),
       type: 'App',
       id: 2235,
-      name: '챗봇 학습',
+      name: '빙의',
       layer: undefined,
       appSetup: {
         Image: setting,

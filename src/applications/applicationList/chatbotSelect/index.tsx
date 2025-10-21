@@ -68,7 +68,7 @@ const ChatbotSelect = () => {
           onClick={(e) => {
             e.stopPropagation();
             if (selectedItem !== null) {
-              taskTransform?.('분신사바', '챗봇 학습', {
+              taskTransform?.('분신사바', '빙의', {
                 chatbotId: Number(selectedItem),
               });
             }
@@ -80,7 +80,7 @@ const ChatbotSelect = () => {
             setCursorImage(CURSOR_IMAGES.default);
           }}
         >
-          학습
+          빙의
         </_.BottomContainerSubmit>
         <_.BottomContainerSubmit
           disabled={selectedItem === null}
