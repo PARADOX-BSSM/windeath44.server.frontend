@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import api from '@/api/axiosInstance';
 import { anime } from '@/config';
+import axios from 'axios';
 
 interface FetchCharactersParams {
   cursorId?: number;
@@ -8,7 +8,7 @@ interface FetchCharactersParams {
 }
 
 export const fetchCharacters = async ({ cursorId, size }: FetchCharactersParams) => {
-  const response = await api.get(`${anime}/characters`, {
+  const response = await axios.get(`${anime}/characters`, {
     params: { cursorId, size },
   });
   return response.data;

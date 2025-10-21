@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
-import api from '@/api/axiosInstance';
 import { anime } from '@/config';
 import qs from 'qs';
+import axios from 'axios';
 
 export interface FetchIntegratedCharactersParams {
   name?: string;
@@ -31,7 +31,7 @@ const sanitize = (p: FetchIntegratedCharactersParams) => {
 
 export const fetchIntegratedCharacters = async (params: FetchIntegratedCharactersParams) => {
   const clean = sanitize(params);
-  const res = await api.get(`${anime}/characters/search/integrated`, {
+  const res = await axios.get(`${anime}/characters/search/integrated`, {
     params: clean,
     paramsSerializer: (pp) => qs.stringify(pp, { arrayFormat: 'repeat', skipNulls: true }),
   });
