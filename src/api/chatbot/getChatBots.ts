@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
-import api from '@/api/axiosInstance';
 import { chatbot } from '@/config';
 import { ReactNode } from 'react';
+import axios from 'axios';
 
 interface ChatBot {
   description: ReactNode;
@@ -24,7 +24,7 @@ interface FetchChatBotsParams {
 }
 
 export const fetchChatBots = async ({ cursorId, size }: FetchChatBotsParams): Promise<ChatBotsResponse> => {
-  const response = await api.get(`${chatbot}`, {
+  const response = await axios.get(`${chatbot}`, {
     params: { cursorId, size },
   });
   return response.data;

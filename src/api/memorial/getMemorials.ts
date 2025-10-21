@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import api from '@/api/axiosInstance';
 import { memorial } from '@/config';
+import axios from 'axios';
 
 interface FetchMemorialsParams {
   orderBy: string;
@@ -8,7 +8,7 @@ interface FetchMemorialsParams {
 }
 
 export const fetchMemorials = async ({ orderBy, page }: FetchMemorialsParams) => {
-  const response = await api.get(`${memorial}`, {
+  const response = await axios.get(`${memorial}`, {
     params: { orderBy, page },
   });
   return response.data;

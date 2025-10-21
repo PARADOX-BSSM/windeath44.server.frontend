@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import api from '@/api/axiosInstance';
 import { user } from '@/config';
+import axios from 'axios';
 
 interface UserResponse {
   userId: string;
@@ -18,7 +18,7 @@ interface GetUsersResponse {
 // 여러 사용자 정보를 가져오는 함수
 const fetchUsers = async (userIds?: string[]): Promise<GetUsersResponse> => {
   if (!userIds || userIds.length === 0) {
-    const response = await api.get(`${user}`);
+    const response = await axios.get(`${user}`);
     return response.data;
   }
 
@@ -28,7 +28,7 @@ const fetchUsers = async (userIds?: string[]): Promise<GetUsersResponse> => {
     params.append('userIds', userId);
   });
 
-  const response = await api.get(`${user}?${params.toString()}`);
+  const response = await axios.get(`${user}?${params.toString()}`);
   return response.data;
 };
 
