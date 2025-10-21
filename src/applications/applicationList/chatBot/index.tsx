@@ -165,6 +165,11 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
 
   const displayedContributors = showAllContributors ? contributors : contributors.slice(0, 5);
 
+  // 캐릭터 정보를 불러오기 전까지 렌더링하지 않음
+  if (getChatBot.isLoading || !characterData) {
+    return null;
+  }
+
   return (
     <_.Container>
       <_.MainContent>

@@ -24,6 +24,11 @@ const ChatbotItem = ({ chatbot_id, name, description, isSelected, onClick }: Cha
     getCharacterMutation.mutate(chatbot_id);
   }, [chatbot_id]);
 
+  // 캐릭터 정보를 불러오기 전까지 렌더링하지 않음
+  if (!characterData) {
+    return null;
+  }
+
   const characterImage = characterData?.imageUrl || Hosino;
 
   return (
