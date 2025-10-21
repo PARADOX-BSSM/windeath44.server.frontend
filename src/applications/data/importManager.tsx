@@ -464,7 +464,7 @@ const useApps = (): TaskType[] => {
     {
       component: (
         <Suspense fallback={null}>
-          <TeachingChatBot />
+          <TeachingChatBot chatbotId={1} />
         </Suspense>
       ),
       type: 'App',

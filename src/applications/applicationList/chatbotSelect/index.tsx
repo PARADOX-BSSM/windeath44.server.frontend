@@ -68,7 +68,9 @@ const ChatbotSelect = () => {
           onClick={(e) => {
             e.stopPropagation();
             if (selectedItem !== null) {
-              taskTransform?.('분신사바', '챗봇 학습');
+              taskTransform?.('분신사바', '챗봇 학습', {
+                chatbotId: Number(selectedItem),
+              });
             }
           }}
           onMouseEnter={() => {
