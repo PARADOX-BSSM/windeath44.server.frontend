@@ -63,6 +63,7 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
   // 사용자 정보
   const userName = userData?.data?.name || '사용자';
   const userId = userData?.data?.userId || 'user';
+  const userImg = userData?.data?.profile || Ame;
 
   useEffect(() => {
     scrollToBottom();
@@ -94,7 +95,7 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
 
     const newMessage: Message = {
       id: Date.now().toString(),
-      avatar: Ame,
+      avatar: userImg,
       author: userName,
       handle: `@${userId}`,
       text: message.trim(),
