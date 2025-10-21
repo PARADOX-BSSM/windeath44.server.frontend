@@ -37,22 +37,6 @@ const MergeBtn = ({ text, memorialId, characterId }: PropsType) => {
   const handleSubmit = (e: React.MouseEvent) => {
     e.preventDefault();
 
-    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-    if (!dateRegex.test(inputValue.date)) {
-      setAlert?.(
-        Choten,
-        <>
-          날짜 형식이 올바르지 않습니다.
-          <br />
-          예) 2023-04-12
-        </>,
-        () => {
-          taskTransform?.('경고', '');
-        },
-      );
-      return;
-    }
-
 // console.log({ ...inputValue, ...contentIn });
 
     const isApply = currentStackTop?.name === 'MemorialApply';
@@ -120,6 +104,7 @@ const MergeBtn = ({ text, memorialId, characterId }: PropsType) => {
               age: 0,
               profileImage: '',
               phrase: '',
+              causeOfDeathDetails: '',
             });
             setContentIn({ characterId: '', content: '' });
             let task = taskSearch?.('미리보기');
@@ -180,6 +165,7 @@ const MergeBtn = ({ text, memorialId, characterId }: PropsType) => {
               age: 0,
               profileImage: '',
               phrase: '',
+              causeOfDeathDetails: '',
             });
             setContentIn({ characterId: '', content: '' });
             let task = taskSearch?.('미리보기');

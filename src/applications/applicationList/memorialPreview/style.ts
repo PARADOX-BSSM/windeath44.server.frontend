@@ -111,15 +111,37 @@ export const IndexWrapper = styled.div`
 `;
 
 export const Quote = styled.h2`
+  position: relative;
   height: fit-content;
   align-self: stretch;
-  color: #2e2e2e;
-  font-family: Galmuri11;
-  font-size: 24px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-  display: flex;
+  color: #4a4a4a;
+  font-family: 'Galmuri11', serif;
+  font-size: 28px;
+  font-style: italic;
+  font-weight: 500;
+  line-height: 1.5;
+  background-color: #f0f0f0;
+  padding: 30px 40px;
+  border-left: 5px solid #e774dd;
+  border-radius: 5px;
+  margin: 10px 0;
+
+  &::before {
+    content: '"';
+    position: absolute;
+    top: 10px;
+    left: 5px;
+    font-size: 40px;
+    color: #e774dd;
+  }
+
+  &::after {
+    content: '"';
+    position: absolute;
+    bottom: -10px;
+    font-size: 40px;
+    color: #e774dd;
+  }
 `;
 
 export const Index = styled.div`
@@ -168,7 +190,7 @@ export const PictureContainer = styled.div`
 export const Ribbon = styled.img`
   position: absolute;
   top: 0;
-  width: 100%;
+  width: 144px;
   z-index: 1;
 `;
 export const Picture = styled.div<{ imgUrl: string }>`
