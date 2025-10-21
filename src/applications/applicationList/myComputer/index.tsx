@@ -4,7 +4,8 @@ import myComputer from '@/assets/appIcons/my_computer.svg';
 import Choten from '@/assets/profile/choten.svg';
 import { taskTransformerAtom } from '@/atoms/taskTransformer.ts';
 import { alerterAtom } from '@/atoms/alerter';
-import { useAtomValue } from 'jotai';
+import { useAtomValue, useAtom } from 'jotai';
+import { isLogInedAtom } from '@/atoms/windowManager';
 import MemorialWithIcon from '@/applications/components/memorialWithIcon/index.tsx';
 import { useLogOut } from '@/api/auth/logout.ts';
 import { useGetUserMutation } from '@/api/user/getUser.ts';
@@ -69,15 +70,16 @@ const MyComputer = () => {
   const setAlert = useAtomValue(alerterAtom);
   const logOutMutation = useLogOut();
   const { mutate: getUser, data: userData, isPending, error } = useGetUserMutation();
-  const [loggedIn, setLoggedIn] = React.useState(localStorage.getItem('isLogIned') === 'true');
+  const [isLogIned, setIsLogIned] = useAtom(isLogInedAtom);
+  const loggedIn = isLogIned === 'true';
 
   // 최근 방문한 추모관 데이터 조회
-  const userId = userData?.data?.userId || '';
+  // const userId = userData?.data?.userId || '';
   const {
     data: memorialTracingData,
     isLoading: isTracingLoading,
     error: tracingError,
-  } = useGetMemorialTracingQuery(userId);
+  } = useGetMemorialTracingQuery();
 
   React.useEffect(() => {
     if (loggedIn) {
@@ -85,11 +87,11 @@ const MyComputer = () => {
         onError: () => {
           // 세션 만료 등으로 401 발생 시 로그인 상태 해제
           localStorage.setItem('isLogIned', 'false');
-          setLoggedIn(false);
+          setIsLogIned('false');
         },
       });
     }
-  }, [loggedIn, getUser]);
+  }, [loggedIn, getUser, setIsLogIned]);
 
   // React.useEffect(() => {
   //   console.log('userData:', userData);
@@ -107,7 +109,7 @@ const MyComputer = () => {
             localStorage.removeItem('access_token');
             localStorage.setItem('isLogIned', 'false');
             sessionStorage.setItem('hasBootedSession', 'false');
-            setLoggedIn(false);
+            setIsLogIned('false');
             // logOutMutation.mutate(undefined, {
             //   onSuccess: () => {
             //     location.reload();
@@ -183,7 +185,9 @@ const MyComputer = () => {
                 <_.MessageText>방문한 추모관이 없습니다.</_.MessageText>
               ) : (
                 // memorialId로 고유한 추모관 목록 생성
-                Array.from(new Set(memorialTracingData?.data?.data?.map((comment) => comment.memorialId)))
+                Array.from(
+                  new Set(memorialTracingData?.data?.data?.map((comment) => comment.memorialId)),
+                )
                   .slice(0, 3) // 최대 3개만 표시
                   .map((memorialId) => (
                     <MemorialItem

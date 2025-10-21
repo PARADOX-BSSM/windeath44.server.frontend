@@ -10,6 +10,8 @@ import { useGetChatBotQuery } from '@/api/chatbot/getChatBot';
 import { useAtomValue } from 'jotai';
 import { alerterAtom } from '@/atoms/alerter';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
+import { useGetUserMutation } from '@/api/user/getUser';
+import { useGetCharacter, CharacterData } from '@/api/anime/getCharacter';
 
 interface Message {
   id: string;
@@ -25,8 +27,11 @@ interface Contributor {
   alt: string;
 }
 
-const ChatBot = () => {
-  const character = '호시노 아이';
+interface ChatBotProps {
+  chatbotId?: number;
+}
+
+const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
   const [message, setMessage] = useState('');
   const doChatMutation = useDoChat();
   const setAlert = useAtomValue(alerterAtom);
@@ -44,22 +49,43 @@ const ChatBot = () => {
 
   const [contributors, setContributors] = useState<Contributor[]>([]);
   const [showAllContributors, setShowAllContributors] = useState(false);
+  const [characterData, setCharacterData] = useState<CharacterData>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const getChatBot = useGetChatBotQuery({ chatbot_id: 1 });
+  const getChatBot = useGetChatBotQuery({ chatbot_id: chatbotId });
+  const { mutate: getUser, data: userData } = useGetUserMutation();
+  const getCharacterMutation = useGetCharacter(setCharacterData);
+
+  // API에서 가져온 챗봇 정보
+  const character = getChatBot.data?.data?.name || '챗봇';
+  const characterImage = characterData?.imageUrl || Hosino;
+
+  // 사용자 정보
+  const userName = userData?.data?.name || '사용자';
+  const userId = userData?.data?.userId || 'user';
+  const userImg = userData?.data?.profile || Ame;
 
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
   useEffect(() => {
-    const contributeData = getChatBot.data?.data.contributor;
+    getUser();
+  }, [getUser]);
+
+  useEffect(() => {
+    // chatbotId와 characterId가 같으므로 chatbotId로 캐릭터 정보 가져오기
+    getCharacterMutation.mutate(chatbotId);
+  }, [chatbotId]);
+
+  useEffect(() => {
+    const contributeData = getChatBot.data?.data?.contributor;
     // console.log(contributeData);
 
-    if (contributeData && Array.isArray(contributeData)) {
+    if (contributeData && Array.isArray(contributeData) && contributeData.length > 0) {
       const contributorList: Contributor[] = contributeData.map((name: string, index: number) => ({
         id: (index + 1).toString(),
         avatar: index % 2 === 0 ? Choten : Ame,
@@ -67,6 +93,8 @@ const ChatBot = () => {
       }));
 
       setContributors(contributorList);
+    } else {
+      setContributors([]);
     }
   }, [getChatBot.data]);
 
@@ -75,9 +103,9 @@ const ChatBot = () => {
 
     const newMessage: Message = {
       id: Date.now().toString(),
-      avatar: Ame,
-      author: '사용자',
-      handle: '@user',
+      avatar: userImg,
+      author: userName,
+      handle: `@${userId}`,
       text: message.trim(),
     };
 
@@ -99,15 +127,15 @@ const ChatBot = () => {
     // API 호출
     doChatMutation.mutate(
       {
-        chatbotId: 1,
+        chatbotId: chatbotId,
         content: message.trim(),
-        userId: 'pdh0128',
+        userId: userId,
       },
       {
         onSuccess: (response) => {
           const tempData: Message = {
             id: Date.now().toString(),
-            avatar: Hosino,
+            avatar: characterImage,
             author: character,
             text: response.data.answer,
           };
@@ -137,6 +165,11 @@ const ChatBot = () => {
 
   const displayedContributors = showAllContributors ? contributors : contributors.slice(0, 5);
 
+  // 캐릭터 정보를 불러오기 전까지 렌더링하지 않음
+  if (getChatBot.isLoading || !characterData) {
+    return null;
+  }
+
   return (
     <_.Container>
       <_.MainContent>
@@ -145,7 +178,7 @@ const ChatBot = () => {
             <_.ProfileTop>
               <_.CharacterImageContainer>
                 <_.CharacterImage
-                  src={Hosino}
+                  src={characterImage}
                   alt={character}
                 />
               </_.CharacterImageContainer>
