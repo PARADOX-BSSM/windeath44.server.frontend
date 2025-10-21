@@ -24,6 +24,8 @@ export const TextBox = styled.div`
     flex-direction: column;
     align-items: flex-start;
     gap: 4px;
+    flex: 1;
+    min-width: 0;
 `
 export const NickNameContainer = styled.div`
     display: flex;
@@ -39,6 +41,12 @@ export const Content = styled.p`
     font-style: normal;
     font-weight: 400;
     line-height: normal;
+    word-wrap: break-word;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+    width: 100%;
+    margin: 0;
 `
 
 export const NickName = styled.p`
@@ -48,6 +56,7 @@ export const NickName = styled.p`
     font-style: normal;
     font-weight: 400;
     line-height: normal;
+    margin: 0;
 `
 
 export const UserId = styled.p`
@@ -57,4 +66,5 @@ export const UserId = styled.p`
     font-style: normal;
     font-weight: 400;
     line-height: normal;
+    margin: 0;
 `
