@@ -74,12 +74,12 @@ const MyComputer = () => {
   const loggedIn = isLogIned === 'true';
 
   // 최근 방문한 추모관 데이터 조회
-  const userId = userData?.data?.userId || '';
+  // const userId = userData?.data?.userId || '';
   const {
     data: memorialTracingData,
     isLoading: isTracingLoading,
     error: tracingError,
-  } = useGetMemorialTracingQuery(userId);
+  } = useGetMemorialTracingQuery();
 
   React.useEffect(() => {
     if (loggedIn) {
@@ -185,7 +185,9 @@ const MyComputer = () => {
                 <_.MessageText>방문한 추모관이 없습니다.</_.MessageText>
               ) : (
                 // memorialId로 고유한 추모관 목록 생성
-                Array.from(new Set(memorialTracingData?.data?.data?.map((comment) => comment.memorialId)))
+                Array.from(
+                  new Set(memorialTracingData?.data?.data?.map((comment) => comment.memorialId)),
+                )
                   .slice(0, 3) // 최대 3개만 표시
                   .map((memorialId) => (
                     <MemorialItem
