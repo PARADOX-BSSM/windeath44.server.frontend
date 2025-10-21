@@ -66,6 +66,10 @@ const MemorialPreview = () => {
                       <_.Value>{inputValue.deathReason}</_.Value>
                     </_.Row>
                     <_.Row>
+                      <_.Attribute>상세 사인</_.Attribute>
+                      <_.Value>{inputValue.causeOfDeathDetails}</_.Value>
+                    </_.Row>
+                    <_.Row>
                       <_.Attribute>애니메이션</_.Attribute>
                       <_.Value>{inputValue.anime}</_.Value>
                     </_.Row>

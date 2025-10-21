@@ -231,6 +231,28 @@ const MemorialApply = ({}: dataStructureProps) => {
                   <_.CharacterInformationRow>
                     <_.CharacterInformationRowAttribute>
                       <_.CharacterInformationRowAttributeText>
+                        상세 사인
+                      </_.CharacterInformationRowAttributeText>
+                    </_.CharacterInformationRowAttribute>
+                    <_.CharacterInformationRowValue>
+                      <_.CharacterInformationRowValueText>
+                        <_.CharacterInforInput
+                          type="text"
+                          placeholder="상세 사인을 입력하세요..."
+                          onChange={(e) => {
+                            setInputValue((prev) => ({
+                              ...prev,
+                              causeOfDeathDetails: e.target.value,
+                            }));
+                          }}
+                        ></_.CharacterInforInput>
+                      </_.CharacterInformationRowValueText>
+                    </_.CharacterInformationRowValue>
+                  </_.CharacterInformationRow>
+
+                  <_.CharacterInformationRow>
+                    <_.CharacterInformationRowAttribute>
+                      <_.CharacterInformationRowAttributeText>
                         애니메이션
                       </_.CharacterInformationRowAttributeText>
                     </_.CharacterInformationRowAttribute>
