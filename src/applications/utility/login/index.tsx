@@ -78,7 +78,7 @@ const LogIn = ({ changeToSignUp, changeToEmailCheck }: Props) => {
         onSuccess: () => {
           // console.log('로그인 성공 토큰 :', token);
           setIsLogIned('true');
-          taskTransform?.('LogIn', '');
+          taskTransform?.('로그인', '');
         },
         onError: (error) => {
           console.error('로그인 실패', error);
@@ -158,7 +158,7 @@ const LogIn = ({ changeToSignUp, changeToEmailCheck }: Props) => {
             name="손님으로 입장"
             onClick={() => {
               setIsLogIned('guest');
-              taskTransform?.('LogIn', '');
+              taskTransform?.('로그인', '');
             }}
             type="submit"
             width={buttonWidth}

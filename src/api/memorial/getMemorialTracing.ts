@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import axiosInstance from '../axiosInstance';
+import api from '../axiosInstance';
 import { memorial } from '@/config';
 
 interface MemorialTracingData {
@@ -16,11 +16,10 @@ interface MemorialTracingResponse {
 }
 
 const getMemorialTracing = async (
-  userId: string,
   size: number = 6,
-  cursor?: string
+  cursor?: string,
 ): Promise<MemorialTracingResponse> => {
-  const response = await axiosInstance.get(`${memorial}/memorial-tracing/${userId}`, {
+  const response = await api.get(`${memorial}/memorial-tracing`, {
     params: {
       size,
       ...(cursor && { cursor }),
@@ -29,10 +28,9 @@ const getMemorialTracing = async (
   return response.data;
 };
 
-export const useGetMemorialTracingQuery = (userId: string, size: number = 6) => {
+export const useGetMemorialTracingQuery = (size: number = 6) => {
   return useQuery({
-    queryKey: ['memorialTracing', userId, size],
-    queryFn: () => getMemorialTracing(userId, size),
-    enabled: !!userId,
+    queryKey: ['memorialTracing', size],
+    queryFn: () => getMemorialTracing(size),
   });
 };
