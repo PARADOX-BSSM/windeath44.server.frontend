@@ -217,7 +217,7 @@ const useApps = (): TaskType[] => {
       name: '추모관 뷰어',
       layer: undefined,
       appSetup: {
-        Image: 'default',
+        Image: search,
         minWidth: 580,
         minHeight: 420,
         setUpWidth: 890,
