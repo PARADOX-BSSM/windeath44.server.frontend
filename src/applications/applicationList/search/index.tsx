@@ -5,9 +5,7 @@ import Search_task from '@/applications/applicationList/search/search_task';
 import Viewer from '@/applications/applicationList/search/viewer';
 import { useGetIntegratedCharactersQuery } from '@/api/anime/getCharactersByIntegratedSearching';
 import { fetchAnimesPage } from '@/api/anime/getAnimes';
-import { useQuery } from '@tanstack/react-query';
-import api from '@/api/axiosInstance';
-import { memorial } from '@/config';
+import { useGetMemorialsCharacterFilteredQuery } from '@/api/memorial/getMemorialsCharacterFiltered';
 
 type Character = { characterId: number; [k: string]: any };
 type AnimeItem = { animeId: number; [k: string]: any };
@@ -56,8 +54,14 @@ const Search = () => {
 
   // ------ 파라미터 정규화 ------
   const deathParam = useMemo(() => (fillDeath === '모두' ? undefined : fillDeath), [fillDeath]);
-  const nameParam = useMemo(() => (debouncedName.trim() ? debouncedName.trim() : undefined), [debouncedName]);
-  const aniParam = useMemo(() => (debouncedAni.trim() ? debouncedAni.trim() : undefined), [debouncedAni]);
+  const nameParam = useMemo(
+    () => (debouncedName.trim() ? debouncedName.trim() : undefined),
+    [debouncedName],
+  );
+  const aniParam = useMemo(
+    () => (debouncedAni.trim() ? debouncedAni.trim() : undefined),
+    [debouncedAni],
+  );
 
   // 새 검색 조건이 생기면 커서 리셋
   useEffect(() => {
@@ -103,7 +107,11 @@ const Search = () => {
   }, [animesResp, aniParam]);
 
   // ------ 1) 통합 캐릭터 검색 (항상 실행: 비어 있으면 전체 결과) ------
-  const { data: integrated, isLoading: isIntegratedLoading, isError: isIntegratedError } = useGetIntegratedCharactersQuery({
+  const {
+    data: integrated,
+    isLoading: isIntegratedLoading,
+    isError: isIntegratedError,
+  } = useGetIntegratedCharactersQuery({
     name: nameParam, // 비어있으면 sanitize에서 제거 → 전체
     animeId: animeIdParam, // undefined면 제거 → 전체
     deathReason: deathParam, // undefined면 제거 → 전체
@@ -156,32 +164,18 @@ const Search = () => {
   // }, [characters]);
 
   // queryKey 안정화: 정렬된 복사본 사용
-  const characterKey = useMemo(
-    () => characterIds,
-    [characterIds],
-  );
+  const characterKey = useMemo(() => characterIds, [characterIds]);
 
   // ------ 2) 캐릭터 ID로 추모관 목록 조회 ------
   const {
     data: memorialsResp,
     isLoading: isMemorialLoading,
     isError: isMemorialError,
-  } = useQuery({
-    queryKey: ['memorials', 'recently-updated', 1, characterKey],
+  } = useGetMemorialsCharacterFilteredQuery({
+    orderBy: 'recently-updated',
+    page: 1,
+    characters: characterKey,
     enabled: characterKey.length > 0 && !isAnimesLoading && (!aniParam || animeIdParam !== undefined),
-    queryFn: async () => {
-      const resp = await api.post(
-        `${memorial}/character-filtered`,
-        { orderBy: 'recently-updated', page: 1, characters: characterKey },
-        { withCredentials: true },
-      );
-      return resp.data as {
-        message: string;
-        data: { memorialId: number; characterId: number }[];
-      };
-    },
-    staleTime: 30_000,
-    gcTime: 5 * 60_000,
   });
 
   const memorials = memorialsResp?.data ?? [];

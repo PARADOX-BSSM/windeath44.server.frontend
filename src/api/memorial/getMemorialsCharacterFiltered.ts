@@ -14,6 +14,7 @@ export interface FetchMemorialsParams {
   orderBy: OrderBy; // required
   page: number; // required
   characters: number[]; // required (빈 배열이면 서버가 빈 결과 반환할 가능성 ↑)
+  enabled?: boolean; // optional: 추가 enabled 조건
 }
 
 export interface MemorialItem {
@@ -49,6 +50,7 @@ export const useGetMemorialsCharacterFilteredQuery = ({
   orderBy,
   page,
   characters,
+  enabled = true,
 }: FetchMemorialsParams) => {
   const uniqSorted = Array.from(new Set(characters.filter((n) => Number.isInteger(n)))).sort(
     (a, b) => a - b,
@@ -57,7 +59,7 @@ export const useGetMemorialsCharacterFilteredQuery = ({
   return useQuery({
     queryKey: ['memorials', orderBy, page, uniqSorted], // 배열은 정렬된 복사본으로
     queryFn: () => fetchMemorials({ orderBy, page, characters: uniqSorted }),
-    enabled: uniqSorted.length > 0, // 빈 배열이면 호출 스킵(원하면 true로)                           // 페이지 전환 깜빡임 최소화
+    enabled: enabled && uniqSorted.length > 0, // 빈 배열이면 호출 스킵 + 추가 조건 체크
     staleTime: 30_000,
     gcTime: 5 * 60_000,
     // 사용처 단순화 원하면 아래 활성화:
