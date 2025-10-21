@@ -58,7 +58,7 @@ const MemorialTextarea = ({
           ></_.CommitArea>
         </_.CommitAreaContainer>
       </_.Container>
-      {isPerson && memorialId ? <MergeBtn text={btnText} memorialId={memorialId} characterId={characterId} /> : <></>}
+      {isPerson && btnText ? <MergeBtn text={btnText} memorialId={memorialId || 0} characterId={characterId} /> : <></>}
     </>
   );
 };

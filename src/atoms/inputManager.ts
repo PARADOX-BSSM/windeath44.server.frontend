@@ -11,6 +11,7 @@ export const inputPortage = atom<InputPortageType>({
   age: 0,
   profileImage: '',
   phrase: '',
+  causeOfDeathDetails: '',
 });
 
 export const inputContent = atom<InputContentType>({ characterId: '', content: '' });

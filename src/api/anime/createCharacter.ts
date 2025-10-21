@@ -12,6 +12,7 @@ interface createCharacterInterface {
   saying: string;
   age: number;
   deathOfDay: string;
+  causeOfDeathDetails?: string;
 }
 
 const createCharacter = async (inputData: InputPortageType): Promise<number> => {
@@ -23,6 +24,7 @@ const createCharacter = async (inputData: InputPortageType): Promise<number> => 
     saying: inputData.phrase,
     age: inputData.age,
     deathOfDay: inputData.date,
+    causeOfDeathDetails: inputData.causeOfDeathDetails,
   };
   // console.log(request);
   try {
