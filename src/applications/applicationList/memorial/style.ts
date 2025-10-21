@@ -199,7 +199,7 @@ export const PictureContainer = styled.div`
 export const Ribbon = styled.img`
   position: absolute;
   top: 0;
-  width: 100%;
+  width: 144px;
   z-index: 1;
 `;
 export const Picture = styled.div<{ imgUrl: string }>`
