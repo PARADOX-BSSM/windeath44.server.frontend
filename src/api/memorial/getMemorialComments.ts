@@ -41,12 +41,21 @@ const getMemorialComments = async ({
 };
 export const useGetMemorialComments = (
   setMemorialComment: React.Dispatch<React.SetStateAction<MemorialCommentsData[]>>,
+  setHasNext: React.Dispatch<React.SetStateAction<boolean>>,
+  isLoadMore: boolean = false,
 ) => {
   return useMutation<MemorialCommentsResponse, Error, commentData>({
     mutationFn: getMemorialComments,
     onSuccess: (data: MemorialCommentsResponse) => {
 // console.log('onSuccess data', data.data.data);
-      setMemorialComment(data.data.data);
+      if (isLoadMore) {
+        // 더보기: 기존 댓글에 추가
+        setMemorialComment((prev) => [...prev, ...data.data.data]);
+      } else {
+        // 초기 로드: 댓글 교체
+        setMemorialComment(data.data.data);
+      }
+      setHasNext(data.data.hasNext);
     },
     onError: (err: unknown) => {
       console.error('댓글 조회 실패', err);

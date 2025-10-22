@@ -389,6 +389,28 @@ export const CharCount = styled.span`
   margin-left: 8px;
 `;
 
+export const LoadMoreButton = styled.button`
+  display: flex;
+  width: 100%;
+  padding: 12px 16px;
+  justify-content: center;
+  align-items: center;
+  background: #fff;
+  border: none;
+  cursor: pointer;
+  color: var(--Stroke, #e774dd);
+  font-family: Galmuri11;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background: #f5f5f5;
+  }
+`;
+
 export const ArticleContainer = styled.div`
   display: flex;
   width: 100%;

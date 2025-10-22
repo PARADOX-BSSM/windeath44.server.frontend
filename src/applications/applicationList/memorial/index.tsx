@@ -65,7 +65,17 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
   const [animation, setAnimation] = useState<string>('');
   const mutationAnimation = useGetAnimation(setAnimation);
   const [memorialComment, setMemorialComment] = useState<MemorialCommentsData[]>([]);
-  const mutaionGetMemorialComments = useGetMemorialComments(setMemorialComment);
+  const [hasNextComment, setHasNextComment] = useState<boolean>(false);
+  const mutaionGetMemorialComments = useGetMemorialComments(
+    setMemorialComment,
+    setHasNextComment,
+    false,
+  );
+  const mutationLoadMoreComments = useGetMemorialComments(
+    setMemorialComment,
+    setHasNextComment,
+    true,
+  );
   const mutationCommentWrite = useCommentWrite();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -93,6 +103,30 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
                   },
                 );
               },
+            },
+          );
+        },
+      },
+    );
+  };
+
+  const handleLoadMore = () => {
+    if (memorialComment.length === 0) return;
+    const lastCommentId = memorialComment[memorialComment.length - 1].commentId;
+
+    mutationLoadMoreComments.mutate(
+      { memorialId, cursorId: lastCommentId },
+      {
+        onError: () => {
+          setAlert?.(
+            Choten,
+            <>
+              추모글을 가져오는 중 문제가 발생했습니다.
+              <br />
+              잠시 후 다시 시도해 주세요.
+            </>,
+            () => {
+              taskTransform?.('경고', '');
             },
           );
         },
@@ -327,6 +361,11 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
                       />
                     );
                   })}
+                  {hasNextComment && (
+                    <_.LoadMoreButton onClick={handleLoadMore}>
+                      더보기
+                    </_.LoadMoreButton>
+                  )}
                 </_.CommentMainInner>
               </_.CommentMain>
             </_.CommentContainer>
