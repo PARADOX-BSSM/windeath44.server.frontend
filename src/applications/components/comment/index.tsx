@@ -12,9 +12,12 @@ interface PropsType {
   commentId: number;
   parentId: number | null;
   currentUserId?: string;
+  likes: number;
+  isLiked: boolean;
   onReplySubmit?: (commentId: number, content: string) => void;
   onEditSubmit?: (commentId: number, content: string) => void;
   onDeleteSubmit?: (commentId: number) => void;
+  onLikeToggle?: (commentId: number, isLiked: boolean) => void;
 }
 
 const Comment = ({
@@ -24,9 +27,12 @@ const Comment = ({
   commentId,
   parentId,
   currentUserId,
+  likes,
+  isLiked,
   onReplySubmit,
   onEditSubmit,
   onDeleteSubmit,
+  onLikeToggle,
 }: PropsType) => {
   // console.log(idx);
   const imgUrl = idx % 2 === 0 ? ameImg : chotenImg;
@@ -97,15 +103,25 @@ const Comment = ({
             <>
               <_.Content>{content}</_.Content>
               <_.ActionButtonGroup>
-                {!parentId && (
-                  <_.ReplyButton
-                    onClick={() => setShowReplyForm(!showReplyForm)}
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  <_.LikeButton
+                    $isLiked={isLiked}
+                    onClick={() => onLikeToggle?.(commentId, isLiked)}
                     onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
                     onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
                   >
-                    답글 입력
-                  </_.ReplyButton>
-                )}
+                    {isLiked ? '♥' : '♡'} {likes}
+                  </_.LikeButton>
+                  {!parentId && (
+                    <_.ReplyButton
+                      onClick={() => setShowReplyForm(!showReplyForm)}
+                      onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                      onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+                    >
+                      답글 입력
+                    </_.ReplyButton>
+                  )}
+                </div>
                 {isOwner && (
                   <div style={{ display: 'flex', gap: '8px' }}>
                     <_.EditButton

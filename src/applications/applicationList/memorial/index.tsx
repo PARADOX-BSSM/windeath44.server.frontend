@@ -17,6 +17,7 @@ import {
 import { useCommentWrite } from '@/api/memorial/memorialCommentWrite.ts';
 import { useCommentUpdate } from '@/api/memorial/memorialCommentUpdate.ts';
 import { useCommentDelete } from '@/api/memorial/memorialCommentDelete.ts';
+import { useCommentLike } from '@/api/memorial/memorialCommentLike.ts';
 import { parseCustomContent } from '@/lib/customTag/parseCustomContent.tsx';
 import { useGetAnimation } from '@/api/anime/getAnimation.ts';
 import ribbon from '@/assets/memorial_ribbon.svg';
@@ -86,6 +87,7 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
   const mutationCommentWrite = useCommentWrite(setMemorialComment, currentUserId);
   const mutationCommentUpdate = useCommentUpdate(setMemorialComment);
   const mutationCommentDelete = useCommentDelete(setMemorialComment);
+  const mutationCommentLike = useCommentLike(setMemorialComment);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -217,6 +219,47 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
             Choten,
             <>
               댓글 삭제 중 문제가 발생했습니다.
+              <br />
+              잠시 후 다시 시도해 주세요.
+            </>,
+            () => {
+              taskTransform?.('경고', '');
+            },
+          );
+        },
+      },
+    );
+  };
+
+  const handleLikeToggle = (commentId: number, isLiked: boolean) => {
+    mutationCommentLike.mutate(
+      { commentId, isLiked },
+      {
+        onSuccess: () => {
+          mutaionGetMemorialComments.mutate(
+            { memorialId },
+            {
+              onError: () => {
+                setAlert?.(
+                  Choten,
+                  <>
+                    추모글을 가져오는 중 문제가 발생했습니다.
+                    <br />
+                    잠시 후 다시 시도해 주세요.
+                  </>,
+                  () => {
+                    taskTransform?.('경고', '');
+                  },
+                );
+              },
+            },
+          );
+        },
+        onError: () => {
+          setAlert?.(
+            Choten,
+            <>
+              좋아요 처리 중 문제가 발생했습니다.
               <br />
               잠시 후 다시 시도해 주세요.
             </>,
@@ -481,9 +524,12 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
                           commentId={comment.commentId}
                           parentId={comment.parentId}
                           currentUserId={currentUserId}
+                          likes={comment.likes}
+                          isLiked={comment.isLiked}
                           onReplySubmit={handleReplySubmit}
                           onEditSubmit={handleEditSubmit}
                           onDeleteSubmit={handleDeleteSubmit}
+                          onLikeToggle={handleLikeToggle}
                         />
                         {comment.children?.map((child, childIdx) => (
                           <Comment
@@ -494,9 +540,12 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
                             commentId={child.commentId}
                             parentId={child.parentId}
                             currentUserId={currentUserId}
+                            likes={child.likes}
+                            isLiked={child.isLiked}
                             onReplySubmit={handleReplySubmit}
                             onEditSubmit={handleEditSubmit}
                             onDeleteSubmit={handleDeleteSubmit}
+                            onLikeToggle={handleLikeToggle}
                           />
                         ))}
                       </Fragment>

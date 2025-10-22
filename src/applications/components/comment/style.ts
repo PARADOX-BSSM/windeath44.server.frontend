@@ -175,6 +175,26 @@ export const DeleteButton = styled.button`
   }
 `;
 
+export const LikeButton = styled.button<{ $isLiked: boolean }>`
+  background: none;
+  border: none;
+  color: ${(props) => (props.$isLiked ? 'var(--off, #fd51a7)' : 'var(--Stroke, #e774dd)')};
+  font-family: Galmuri11;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 400;
+  cursor: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
 export const EditForm = styled.form`
   display: flex;
   flex-direction: column;
