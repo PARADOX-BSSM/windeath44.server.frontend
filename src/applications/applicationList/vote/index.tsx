@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import * as _ from './style';
 import balance from '@/assets/judgement/balance.png';
+import balance_left from '@/assets/judgement/balance_left.png';
+import balance_right from '@/assets/judgement/balance_right.png';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { Event_Count, Event_Past, Open_Vote, Sep_window } from './state_manage';
 import MemorialBtn from '@/applications/components/memorialBtn';
@@ -55,23 +57,59 @@ const Judgement_Vote = ({
   return (
     <_.Container>
       <_.Main_Display>
-        <_.Balance src={balance} />
-        <_.Main_Vote_Live>
-          <_.Live_Div>
-            <_.Live_Back></_.Live_Back>
-            <_.Live_Text>{heaven_count}</_.Live_Text>
-          </_.Live_Div>
+        <_.Balance
+          src={
+            heaven_count >= hell_count
+              ? heaven_count == hell_count
+                ? balance
+                : balance_left
+              : balance_right
+          }
+        />
+        {heaven_count >= hell_count ? (
+          heaven_count == hell_count ? (
+            <_.Main_Vote_Live>
+              <_.Live_Div_Left marginTop={0}>
+                <_.Live_Back></_.Live_Back>
+                <_.Live_Text>{heaven_count}</_.Live_Text>
+              </_.Live_Div_Left>
 
-          <_.Live_Div>
-            <_.Live_Back></_.Live_Back>
-            <_.Live_Text>{hell_count}</_.Live_Text>
-          </_.Live_Div>
-        </_.Main_Vote_Live>
+              <_.Live_Div_Right marginTop={0}>
+                <_.Live_Back></_.Live_Back>
+                <_.Live_Text>{hell_count}</_.Live_Text>
+              </_.Live_Div_Right>
+            </_.Main_Vote_Live>
+          ) : (
+            <_.Main_Vote_Live>
+              <_.Live_Div_Left marginTop={48}>
+                <_.Live_Back></_.Live_Back>
+                <_.Live_Text>{heaven_count}</_.Live_Text>
+              </_.Live_Div_Left>
+
+              <_.Live_Div_Right marginTop={-50}>
+                <_.Live_Back></_.Live_Back>
+                <_.Live_Text>{hell_count}</_.Live_Text>
+              </_.Live_Div_Right>
+            </_.Main_Vote_Live>
+          )
+        ) : (
+          <_.Main_Vote_Live>
+            <_.Live_Div_Left marginTop={-50}>
+              <_.Live_Back></_.Live_Back>
+              <_.Live_Text>{heaven_count}</_.Live_Text>
+            </_.Live_Div_Left>
+
+            <_.Live_Div_Right marginTop={48}>
+              <_.Live_Back></_.Live_Back>
+              <_.Live_Text>{hell_count}</_.Live_Text>
+            </_.Live_Div_Right>
+          </_.Main_Vote_Live>
+        )}
 
         <_.Vote_Btn_Div>
           <MemorialBtn
-            width="128px"
-            height="68px"
+            width="98px"
+            height="48px"
             name="천국"
             type="menu"
             fontSize="26px"
@@ -83,8 +121,8 @@ const Judgement_Vote = ({
           />
 
           <MemorialBtn
-            width="128px"
-            height="68px"
+            width="98px"
+            height="48px"
             name="지옥"
             type="menu"
             fontSize="26px"

@@ -1,13 +1,14 @@
 import Inputs from '@/applications/components/inputs';
 import * as _ from './style';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import FilterBlock from '@/applications/components/filterBlock';
 import MemorialBtn from '@/applications/components/memorialBtn';
 import JudgementSort from '@/applications/components/judgementSort';
 import Judgement_Object from '@/applications/components/judgementObject';
 import hosino from '@/assets/character/hosino.svg';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer';
+import { select_chat } from '@/applications/components/judgementChatObj/state_manager';
 
 interface JudgementProps {
   stack: any[];
@@ -20,6 +21,7 @@ const sort = ['최신', '인기'];
 
 const Judgement_List = [
   {
+    id: 1,
     rank: 1,
     cName: '호시노 아이',
     aName: '최애의 아이',
@@ -31,6 +33,7 @@ const Judgement_List = [
     is_end: false,
   },
   {
+    id: 2,
     rank: 2,
     cName: '포트거스 D. 에이스',
     aName: '원피스',
@@ -42,6 +45,7 @@ const Judgement_List = [
     is_end: false,
   },
   {
+    id: 3,
     rank: 3,
     cName: '사토 카즈마',
     aName: '이 멋진 세계에 축복을',
@@ -53,6 +57,7 @@ const Judgement_List = [
     is_end: false,
   },
   {
+    id: 4,
     rank: 4,
     cName: '가나다라마바사',
     aName: 'hijklmnop',
@@ -64,17 +69,19 @@ const Judgement_List = [
     is_end: false,
   },
   {
+    id: 5,
     rank: 4,
     cName: '테스트',
     aName: 'hijklmnop',
     img: hosino,
     like: 2025,
     vote: 6666,
-    heaven_count: 9999,
-    hell_count: 10001,
+    heaven_count: 10000,
+    hell_count: 10000,
     is_end: false,
   },
   {
+    id: 6,
     rank: 5,
     cName: '가나다라마바사',
     aName: 'hijklmnop',
@@ -86,6 +93,7 @@ const Judgement_List = [
     is_end: true,
   },
   {
+    id: 7,
     rank: 1,
     cName: '가나다라마바사',
     aName: 'hijklmnop',
@@ -106,12 +114,18 @@ const Judgement = ({ stack, push, pop, top }: JudgementProps) => {
 
   const taskSearch = useAtomValue(taskSearchAtom);
 
+  const set_selected = useSetAtom(select_chat);
+
   const stackProps = {
     stack: stack,
     push: push,
     pop: pop,
     top: top,
   };
+
+  useEffect(() => {
+    set_selected(-1);
+  }, []);
 
   return (
     <_.Container>
@@ -161,6 +175,7 @@ const Judgement = ({ stack, push, pop, top }: JudgementProps) => {
               (item) => {
                 return (
                   <Judgement_Object
+                    judgement_id={item.id}
                     rank={item.rank}
                     cName={item.cName}
                     aName={item.aName}
@@ -185,6 +200,7 @@ const Judgement = ({ stack, push, pop, top }: JudgementProps) => {
             {Judgement_List.filter((item) => item.rank > 3 && item.is_end === false).map((item) => {
               return (
                 <Judgement_Object
+                  judgement_id={item.id}
                   rank={item.rank}
                   cName={item.cName}
                   aName={item.aName}
@@ -208,6 +224,7 @@ const Judgement = ({ stack, push, pop, top }: JudgementProps) => {
             {Judgement_List.filter((item) => item.is_end === true).map((item) => {
               return (
                 <Judgement_Object
+                  judgement_id={item.id}
                   rank={item.rank}
                   cName={item.cName}
                   aName={item.aName}

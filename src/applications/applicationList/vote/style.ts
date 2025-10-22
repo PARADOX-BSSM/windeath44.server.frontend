@@ -1,5 +1,13 @@
 import styled from '@emotion/styled';
 
+interface LeftButtonProps {
+  marginTop: number;
+}
+
+interface RightButtonProps {
+  marginTop: number;
+}
+
 export const Container = styled.div`
   width: 100%;
   height: 100%;
@@ -19,8 +27,8 @@ export const Main_Display = styled.div`
 `;
 
 export const Balance = styled.img`
-  width: 387px;
-  height: 353px;
+  width: 480px;
+  height: 480px;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -71,10 +79,12 @@ export const AName = styled.div`
 /*===============================================================================*/
 
 export const Main_Vote_Live = styled.div`
-  width: 374px;
-  height: 72px;
+  width: 459px;
+  height: 110px;
 
   display: flex;
+
+  padding-top: 100px;
 
   justify-content: space-between;
 
@@ -89,11 +99,22 @@ export const Main_Vote_Live = styled.div`
   padding-right: 5px;
 `;
 
-export const Live_Div = styled.div`
+export const Live_Div_Left = styled.div<LeftButtonProps>`
   width: 115px;
   height: 72px;
 
   position: relative;
+
+  margin-top: ${(props) => props.marginTop}px;
+`;
+
+export const Live_Div_Right = styled.div<RightButtonProps>`
+  width: 115px;
+  height: 72px;
+
+  position: relative;
+
+  margin-top: ${(props) => props.marginTop}px;
 `;
 
 export const Live_Back = styled.div`
@@ -119,10 +140,10 @@ export const Live_Text = styled.div`
 /*===============================================================================*/
 
 export const Vote_Btn_Div = styled.div`
-  width: 431px;
-  height: 68px;
+  width: 445px;
+  height: 30px;
 
-  padding-top: 290px;
+  padding-top: 390px;
   padding-right: 3px;
 
   display: flex;

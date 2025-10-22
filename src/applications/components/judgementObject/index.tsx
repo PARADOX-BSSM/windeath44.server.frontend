@@ -7,6 +7,7 @@ import { Sep_window } from '@/applications/applicationList/vote/state_manage';
 import { useEffect } from 'react';
 
 interface JudgementObjProps {
+  judgement_id: number;
   rank: number;
   cName: string;
   aName: string;
@@ -22,6 +23,7 @@ interface JudgementObjProps {
 }
 
 const Judgement_Object = ({
+  judgement_id,
   rank,
   cName,
   aName,
@@ -40,6 +42,8 @@ const Judgement_Object = ({
   const taskTransform = useAtomValue(taskTransformerAtom);
 
   const sep_window = useAtomValue(Sep_window);
+
+  const chatProps = { judgement_id: judgement_id };
 
   useEffect(() => {
     if (sep_window == false) {
@@ -82,7 +86,7 @@ const Judgement_Object = ({
         ></SubInfo>
         <_.Link
           onClick={() => {
-            taskTransform('', '재판 댓글');
+            taskTransform('', '재판 댓글', chatProps);
             push(taskSearch?.('투표', VoteProps));
           }}
         >
