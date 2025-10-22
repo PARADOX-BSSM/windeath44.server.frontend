@@ -9,11 +9,14 @@ import { isLogInedAtom } from '@/atoms/windowManager';
 import MemorialWithIcon from '@/applications/components/memorialWithIcon/index.tsx';
 import { useLogOut } from '@/api/auth/logout.ts';
 import { useGetUserMutation } from '@/api/user/getUser.ts';
-import { useGetMemorialTracingQuery } from '@/api/memorial/getMemorialTracing.ts';
+import {
+  useGetMemorialTracing,
+  type MemorialTracingData,
+} from '@/api/memorial/getMemorialTracing.ts';
 import { useQuery } from '@tanstack/react-query';
 import axiosInstance from '@/api/axiosInstance';
 import { memorial, anime } from '@/config';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 // 추모관 정보를 가져오는 커스텀 hook
 const useMemorialInfo = (memorialId: number) => {
@@ -73,15 +76,21 @@ const MyComputer = () => {
   const [isLogIned, setIsLogIned] = useAtom(isLogInedAtom);
   const loggedIn = isLogIned === 'true';
 
-  // 최근 방문한 추모관 데이터 조회
-  // const userId = userData?.data?.userId || '';
-  const {
-    data: memorialTracingData,
-    isLoading: isTracingLoading,
-    error: tracingError,
-  } = useGetMemorialTracingQuery();
+  // 최근 방문한 추모관 데이터 상태 관리
+  const [memorialTracingData, setMemorialTracingData] = useState<MemorialTracingData[]>([]);
+  const [hasNextTracing, setHasNextTracing] = useState<boolean>(false);
+  const mutationGetMemorialTracing = useGetMemorialTracing(
+    setMemorialTracingData,
+    setHasNextTracing,
+    false,
+  );
+  const mutationLoadMoreTracing = useGetMemorialTracing(
+    setMemorialTracingData,
+    setHasNextTracing,
+    true,
+  );
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (loggedIn) {
       getUser(undefined as unknown as void, {
         onError: () => {
@@ -90,8 +99,17 @@ const MyComputer = () => {
           setIsLogIned('false');
         },
       });
+      // 로그인 시 추모관 방문 기록 조회
+      mutationGetMemorialTracing.mutate({ size: 6 });
     }
   }, [loggedIn, getUser, setIsLogIned]);
+
+  const handleLoadMoreTracing = () => {
+    if (memorialTracingData.length === 0) return;
+    // 마지막 항목의 viewedAt을 cursor로 사용
+    const lastViewedAt = memorialTracingData[memorialTracingData.length - 1].viewedAt;
+    mutationLoadMoreTracing.mutate({ size: 6, cursor: lastViewedAt });
+  };
 
   // React.useEffect(() => {
   //   console.log('userData:', userData);
@@ -177,25 +195,35 @@ const MyComputer = () => {
             <_.Inputs>
               {!loggedIn ? (
                 <_.MessageText>로그인 후 이용할 수 있습니다.</_.MessageText>
-              ) : isTracingLoading ? (
+              ) : mutationGetMemorialTracing.isPending ? (
                 <_.MessageText>로딩 중...</_.MessageText>
-              ) : tracingError ? (
+              ) : mutationGetMemorialTracing.isError ? (
                 <_.MessageText>데이터를 불러오는 중 오류가 발생했습니다.</_.MessageText>
-              ) : memorialTracingData?.data?.data?.length === 0 ? (
+              ) : memorialTracingData.length === 0 ? (
                 <_.MessageText>방문한 추모관이 없습니다.</_.MessageText>
               ) : (
-                // memorialId로 고유한 추모관 목록 생성
-                Array.from(
-                  new Set(memorialTracingData?.data?.data?.map((comment) => comment.memorialId)),
-                )
-                  .slice(0, 3) // 최대 3개만 표시
-                  .map((memorialId) => (
-                    <MemorialItem
-                      key={memorialId}
-                      memorialId={memorialId}
-                      taskTransform={taskTransform}
+                <>
+                  {/* memorialId로 고유한 추모관 목록 생성 */}
+                  {Array.from(new Set(memorialTracingData.map((item) => item.memorialId))).map(
+                    (memorialId) => (
+                      <MemorialItem
+                        key={memorialId}
+                        memorialId={memorialId}
+                        taskTransform={taskTransform}
+                      />
+                    ),
+                  )}
+                  {hasNextTracing && (
+                    <MemorialBtn
+                      name="더보기"
+                      onClick={handleLoadMoreTracing}
+                      type="button"
+                      active={true}
+                      width="100%"
+                      fontSize="14px"
                     />
-                  ))
+                  )}
+                </>
               )}
             </_.Inputs>
           </_.Shadow>
