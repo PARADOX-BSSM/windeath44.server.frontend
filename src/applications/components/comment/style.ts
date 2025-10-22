@@ -38,6 +38,14 @@ export const NickNameContainer = styled.div`
     gap: 8px;
 `
 
+export const ContentRow = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    width: 100%;
+`
+
 export const Content = styled.p`
     color: var(--Black, #2E2E2E);
     font-family: Galmuri11;
@@ -49,7 +57,7 @@ export const Content = styled.p`
     word-break: break-word;
     overflow-wrap: break-word;
     white-space: pre-wrap;
-    width: 100%;
+    flex: 1;
     margin: 0;
 `
 

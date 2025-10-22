@@ -89,17 +89,17 @@ const Comment = ({
             </_.EditForm>
           ) : (
             <>
-              <_.Content>{content}</_.Content>
-              <_.ActionButtonGroup>
-                {!parentId && (
-                  <_.ReplyButton onClick={() => setShowReplyForm(!showReplyForm)}>
-                    답글 입력
-                  </_.ReplyButton>
-                )}
+              <_.ContentRow>
+                <_.Content>{content}</_.Content>
                 {isOwner && (
                   <_.EditButton onClick={() => setIsEditing(true)}>수정</_.EditButton>
                 )}
-              </_.ActionButtonGroup>
+              </_.ContentRow>
+              {!parentId && (
+                <_.ReplyButton onClick={() => setShowReplyForm(!showReplyForm)}>
+                  답글 입력
+                </_.ReplyButton>
+              )}
             </>
           )}
         </_.TextBox>
