@@ -158,6 +158,23 @@ export const EditButton = styled.button`
   }
 `;
 
+export const DeleteButton = styled.button`
+  background: none;
+  border: none;
+  color: var(--Stroke, #e774dd);
+  font-family: Galmuri11;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 400;
+  cursor: none;
+  padding: 0;
+  margin: 0;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
 export const EditForm = styled.form`
   display: flex;
   flex-direction: column;

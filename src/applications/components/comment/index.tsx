@@ -14,6 +14,7 @@ interface PropsType {
   currentUserId?: string;
   onReplySubmit?: (commentId: number, content: string) => void;
   onEditSubmit?: (commentId: number, content: string) => void;
+  onDeleteSubmit?: (commentId: number) => void;
 }
 
 const Comment = ({
@@ -25,6 +26,7 @@ const Comment = ({
   currentUserId,
   onReplySubmit,
   onEditSubmit,
+  onDeleteSubmit,
 }: PropsType) => {
   // console.log(idx);
   const imgUrl = idx % 2 === 0 ? ameImg : chotenImg;
@@ -105,13 +107,22 @@ const Comment = ({
                   </_.ReplyButton>
                 )}
                 {isOwner && (
-                  <_.EditButton
-                    onClick={() => setIsEditing(true)}
-                    onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
-                    onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
-                  >
-                    수정
-                  </_.EditButton>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <_.EditButton
+                      onClick={() => setIsEditing(true)}
+                      onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                      onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+                    >
+                      수정
+                    </_.EditButton>
+                    <_.DeleteButton
+                      onClick={() => onDeleteSubmit?.(commentId)}
+                      onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                      onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+                    >
+                      삭제
+                    </_.DeleteButton>
+                  </div>
                 )}
               </_.ActionButtonGroup>
             </>

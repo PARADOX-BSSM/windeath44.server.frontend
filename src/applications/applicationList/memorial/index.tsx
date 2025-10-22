@@ -16,6 +16,7 @@ import {
 } from '@/api/memorial/getMemorialComments.ts';
 import { useCommentWrite } from '@/api/memorial/memorialCommentWrite.ts';
 import { useCommentUpdate } from '@/api/memorial/memorialCommentUpdate.ts';
+import { useCommentDelete } from '@/api/memorial/memorialCommentDelete.ts';
 import { parseCustomContent } from '@/lib/customTag/parseCustomContent.tsx';
 import { useGetAnimation } from '@/api/anime/getAnimation.ts';
 import ribbon from '@/assets/memorial_ribbon.svg';
@@ -84,6 +85,7 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
 
   const mutationCommentWrite = useCommentWrite(setMemorialComment, currentUserId);
   const mutationCommentUpdate = useCommentUpdate(setMemorialComment);
+  const mutationCommentDelete = useCommentDelete(setMemorialComment);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -174,6 +176,47 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
             Choten,
             <>
               댓글 수정 중 문제가 발생했습니다.
+              <br />
+              잠시 후 다시 시도해 주세요.
+            </>,
+            () => {
+              taskTransform?.('경고', '');
+            },
+          );
+        },
+      },
+    );
+  };
+
+  const handleDeleteSubmit = (commentId: number) => {
+    mutationCommentDelete.mutate(
+      { commentId },
+      {
+        onSuccess: () => {
+          mutaionGetMemorialComments.mutate(
+            { memorialId },
+            {
+              onError: () => {
+                setAlert?.(
+                  Choten,
+                  <>
+                    추모글을 가져오는 중 문제가 발생했습니다.
+                    <br />
+                    잠시 후 다시 시도해 주세요.
+                  </>,
+                  () => {
+                    taskTransform?.('경고', '');
+                  },
+                );
+              },
+            },
+          );
+        },
+        onError: () => {
+          setAlert?.(
+            Choten,
+            <>
+              댓글 삭제 중 문제가 발생했습니다.
               <br />
               잠시 후 다시 시도해 주세요.
             </>,
@@ -440,6 +483,7 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
                           currentUserId={currentUserId}
                           onReplySubmit={handleReplySubmit}
                           onEditSubmit={handleEditSubmit}
+                          onDeleteSubmit={handleDeleteSubmit}
                         />
                         {comment.children?.map((child, childIdx) => (
                           <Comment
@@ -452,6 +496,7 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
                             currentUserId={currentUserId}
                             onReplySubmit={handleReplySubmit}
                             onEditSubmit={handleEditSubmit}
+                            onDeleteSubmit={handleDeleteSubmit}
                           />
                         ))}
                       </Fragment>
