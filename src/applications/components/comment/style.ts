@@ -39,14 +39,6 @@ export const NickNameContainer = styled.div`
   gap: 8px;
 `;
 
-export const ContentRow = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 12px;
-  width: 100%;
-`;
-
 export const Content = styled.p`
   color: var(--Black, #2e2e2e);
   font-family: Galmuri11;
@@ -58,7 +50,7 @@ export const Content = styled.p`
   word-break: break-word;
   overflow-wrap: break-word;
   white-space: pre-wrap;
-  flex: 1;
+  width: 100%;
   margin: 0;
 `;
 
@@ -145,6 +137,8 @@ export const ActionButtonGroup = styled.div`
   gap: 8px;
   align-items: center;
   padding-top: 4px;
+  justify-content: space-between;
+  width: 100%;
 `;
 
 export const EditButton = styled.button`

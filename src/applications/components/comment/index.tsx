@@ -93,8 +93,17 @@ const Comment = ({
             </_.EditForm>
           ) : (
             <>
-              <_.ContentRow>
-                <_.Content>{content}</_.Content>
+              <_.Content>{content}</_.Content>
+              <_.ActionButtonGroup>
+                {!parentId && (
+                  <_.ReplyButton
+                    onClick={() => setShowReplyForm(!showReplyForm)}
+                    onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                    onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+                  >
+                    답글 입력
+                  </_.ReplyButton>
+                )}
                 {isOwner && (
                   <_.EditButton
                     onClick={() => setIsEditing(true)}
@@ -104,16 +113,7 @@ const Comment = ({
                     수정
                   </_.EditButton>
                 )}
-              </_.ContentRow>
-              {!parentId && (
-                <_.ReplyButton
-                  onClick={() => setShowReplyForm(!showReplyForm)}
-                  onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
-                  onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
-                >
-                  답글 입력
-                </_.ReplyButton>
-              )}
+              </_.ActionButtonGroup>
             </>
           )}
         </_.TextBox>
