@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react';
 import Booting from '@/services/booting/index.tsx';
 import WindowManager from './windowManager/index.tsx';
 import MobileConnect from '@/services/MobileConnect';
+import Caution from '@/services/spoiler-caution';
 
 const SESSION_KEY = 'hasBootedSession';
+const SPOILER_CAUTION_KEY = 'hasWarnedSession';
 
 function Kernel() {
   const [isBooting, setIsBooting] = useState(() => {
@@ -12,6 +14,9 @@ function Kernel() {
   const [isMobile, setIsMobile] = useState<boolean>(() => {
     if (typeof navigator === 'undefined') return false;
     return /Mobi|Android|iPhone|iPad|iPod|Tablet/i.test(navigator.userAgent);
+  });
+  const [isCaution, setIsCaution] = useState(() => {
+    return sessionStorage.getItem(SPOILER_CAUTION_KEY) !== 'true';
   });
   useEffect(() => {
     if (typeof navigator === 'undefined') return;
@@ -35,11 +40,12 @@ function Kernel() {
   if (isMobile) {
     return <MobileConnect />;
   }
-
   if (isBooting) {
     return <Booting />;
   }
-
+  if (isCaution) {
+    return <Caution setIsCaution={setIsCaution} />;
+  }
   return (
     <div className="kernel">
       <WindowManager />
