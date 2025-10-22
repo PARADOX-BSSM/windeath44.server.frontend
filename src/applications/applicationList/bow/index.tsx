@@ -9,6 +9,7 @@ import { useAtomValue } from 'jotai';
 import { alerterAtom } from '@/atoms/alerter';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
 import Choten from '@/assets/profile/choten.svg';
+import { getCookie } from '@/api/auth/cookie.ts';
 
 interface bowProps {
   memorialId: number;
@@ -20,8 +21,9 @@ const Bow = ({ memorialId }: bowProps) => {
   const setAlert = useAtomValue(alerterAtom);
   const taskTransform = useAtomValue(taskTransformerAtom);
   const mutationMemorialBows = useMemorialBow();
+  const token = getCookie('access_token');
   const addBow = () => {
-    if (!document.cookie.includes('access_token') && setAlert) {
+    if (!token && setAlert) {
       setAlert(
         Choten,
         <>

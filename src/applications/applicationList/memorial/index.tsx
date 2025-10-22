@@ -20,6 +20,7 @@ import { useGetAnimation } from '@/api/anime/getAnimation.ts';
 import ribbon from '@/assets/memorial_ribbon.svg';
 import { inputPortage } from '@/atoms/inputManager.ts';
 import Choten from '@/assets/profile/choten.svg';
+import { getCookie } from '@/api/auth/cookie.ts';
 
 interface dataStructureProps {
   stack: any[];
@@ -67,6 +68,7 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
   const [memorialComment, setMemorialComment] = useState<MemorialCommentsData[]>([]);
   const mutaionGetMemorialComments = useGetMemorialComments(setMemorialComment);
   const mutationCommentWrite = useCommentWrite();
+  const token = getCookie('access_token');
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -184,7 +186,7 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
     top: top,
   };
   const handleCommit = () => {
-    if (!document.cookie.includes('access_token') && setAlert) {
+    if (!token && setAlert) {
       setAlert(
         Choten,
         <>
