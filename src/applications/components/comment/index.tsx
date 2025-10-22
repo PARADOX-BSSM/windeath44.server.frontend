@@ -104,22 +104,24 @@ const Comment = ({
               <_.Content>{content}</_.Content>
               <_.ActionButtonGroup>
                 <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                  <_.LikeButton
-                    $isLiked={isLiked}
-                    onClick={() => onLikeToggle?.(commentId, isLiked)}
-                    onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
-                    onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
-                  >
-                    {isLiked ? '♥' : '♡'} {likes}
-                  </_.LikeButton>
                   {!parentId && (
-                    <_.ReplyButton
-                      onClick={() => setShowReplyForm(!showReplyForm)}
-                      onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
-                      onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
-                    >
-                      답글 입력
-                    </_.ReplyButton>
+                    <>
+                      <_.LikeButton
+                        $isLiked={isLiked}
+                        onClick={() => onLikeToggle?.(commentId, isLiked)}
+                        onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                        onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+                      >
+                        {isLiked ? '♥' : '♡'} {likes}
+                      </_.LikeButton>
+                      <_.ReplyButton
+                        onClick={() => setShowReplyForm(!showReplyForm)}
+                        onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                        onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+                      >
+                        답글 입력
+                      </_.ReplyButton>
+                    </>
                   )}
                 </div>
                 {isOwner && (

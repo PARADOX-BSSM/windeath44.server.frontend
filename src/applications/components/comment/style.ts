@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 export const CommentDiv = styled.div<{ $isReply?: boolean }>`
   display: flex;
   padding: 12px 16px;
-  align-items: flex-start;
+  align-items: center;
   gap: 10px;
   align-self: stretch;
   background: #fff;
