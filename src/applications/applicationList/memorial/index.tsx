@@ -6,7 +6,7 @@ import { useAtom, useAtomValue } from 'jotai';
 import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer';
 import { alerterAtom } from '@/atoms/alerter';
 import { useMemorialGet } from '@/api/memorial/memorialGet.ts';
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { useGetCharacter } from '@/api/anime/getCharacter.ts';
 import type { CharacterData } from '@/api/anime/getCharacter';
 import type { memorialData } from '@/api/memorial/memorialGet';
@@ -381,15 +381,27 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
                   </_.InputComment>
                   {memorialComment.map((comment, idx) => {
                     return (
-                      <Comment
-                        key={comment.commentId}
-                        userid={comment.userId}
-                        content={comment.content ? comment.content : ''}
-                        idx={idx}
-                        commentId={comment.commentId}
-                        parentId={comment.parentId}
-                        onReplySubmit={handleReplySubmit}
-                      />
+                      <Fragment key={comment.commentId}>
+                        <Comment
+                          userid={comment.userId}
+                          content={comment.content ? comment.content : ''}
+                          idx={idx}
+                          commentId={comment.commentId}
+                          parentId={comment.parentId}
+                          onReplySubmit={handleReplySubmit}
+                        />
+                        {comment.children?.map((child, childIdx) => (
+                          <Comment
+                            key={child.commentId}
+                            userid={child.userId}
+                            content={child.content ? child.content : ''}
+                            idx={idx + childIdx + 1}
+                            commentId={child.commentId}
+                            parentId={child.parentId}
+                            onReplySubmit={handleReplySubmit}
+                          />
+                        ))}
+                      </Fragment>
                     );
                   })}
                   {hasNextComment && (

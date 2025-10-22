@@ -15,8 +15,9 @@ export type MemorialCommentsData = {
   content: string;
   likes: number;
   isLiked: boolean;
-  parentId: number;
+  parentId: number | null;
   createdAt: string;
+  children: MemorialCommentsData[];
 };
 type CommentMain = {
   hasNext: boolean;
