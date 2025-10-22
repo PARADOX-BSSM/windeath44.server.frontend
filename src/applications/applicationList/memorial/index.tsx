@@ -110,6 +110,34 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
     );
   };
 
+  const handleReplySubmit = (parentCommentId: number, replyContent: string) => {
+    mutationCommentWrite.mutate(
+      { memorialId, content: replyContent, parentCommentId },
+      {
+        onSuccess: () => {
+          mutaionGetMemorialComments.mutate(
+            { memorialId },
+            {
+              onError: () => {
+                setAlert?.(
+                  Choten,
+                  <>
+                    추모글을 가져오는 중 문제가 발생했습니다.
+                    <br />
+                    잠시 후 다시 시도해 주세요.
+                  </>,
+                  () => {
+                    taskTransform?.('경고', '');
+                  },
+                );
+              },
+            },
+          );
+        },
+      },
+    );
+  };
+
   const handleLoadMore = () => {
     if (memorialComment.length === 0) return;
     const lastCommentId = memorialComment[memorialComment.length - 1].commentId;
@@ -354,17 +382,18 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
                   {memorialComment.map((comment, idx) => {
                     return (
                       <Comment
-                        key={idx}
+                        key={comment.commentId}
                         userid={comment.userId}
                         content={comment.content ? comment.content : ''}
                         idx={idx}
+                        commentId={comment.commentId}
+                        parentId={comment.parentId}
+                        onReplySubmit={handleReplySubmit}
                       />
                     );
                   })}
                   {hasNextComment && (
-                    <_.LoadMoreButton onClick={handleLoadMore}>
-                      더보기
-                    </_.LoadMoreButton>
+                    <_.LoadMoreButton onClick={handleLoadMore}>더보기</_.LoadMoreButton>
                   )}
                 </_.CommentMainInner>
               </_.CommentMain>

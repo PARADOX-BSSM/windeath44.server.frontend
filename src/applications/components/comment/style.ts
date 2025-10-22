@@ -1,13 +1,17 @@
 import styled from '@emotion/styled';
 
 
-export const CommentDiv = styled.div`
+export const CommentDiv = styled.div<{ $isReply?: boolean }>`
     display: flex;
     padding: 12px 16px;
     align-items: flex-start;
     gap: 10px;
     align-self: stretch;
     background: #FFF;
+    ${props => props.$isReply && `
+        padding-left: 58px;
+        background: #f9f9f9;
+    `}
 `
 
 export const ProfileImg = styled.div<{ imgUrl : string }>`
@@ -67,4 +71,63 @@ export const UserId = styled.p`
     font-weight: 400;
     line-height: normal;
     margin: 0;
+`
+
+export const ReplyButton = styled.button`
+    background: none;
+    border: none;
+    color: var(--Stroke, #e774dd);
+    font-family: Galmuri11;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 400;
+    cursor: pointer;
+    padding: 4px 0 0 0;
+    margin: 0;
+
+    &:hover {
+        text-decoration: underline;
+    }
+`
+
+export const ReplyFormContainer = styled.div`
+    display: flex;
+    padding: 12px 16px;
+    padding-left: 58px;
+    align-items: center;
+    gap: 10px;
+    align-self: stretch;
+    background: #FFEBFD;
+`
+
+export const ReplyForm = styled.form`
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+`
+
+export const ReplyInput = styled.input`
+    font-family: Galmuri11;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    border: none;
+    background: none;
+    outline: none;
+    box-shadow: none;
+    padding: 0;
+    border-width: 0;
+    flex: 1;
+    &::placeholder {
+        color: var(--DarkPrimary, #dcafdd);
+    }
+`
+
+export const CharCount = styled.span`
+    font-family: Galmuri11;
+    font-size: 10px;
+    color: var(--DarkPrimary, #dcafdd);
+    white-space: nowrap;
 `
