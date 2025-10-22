@@ -58,10 +58,6 @@ const MemorialPreview = () => {
                       <_.Value>{inputValue.date}</_.Value>
                     </_.Row>
                     <_.Row>
-                      <_.Attribute>생존 기간</_.Attribute>
-                      <_.Value>{inputValue.lifeCycle}</_.Value>
-                    </_.Row>
-                    <_.Row>
                       <_.Attribute>사인</_.Attribute>
                       <_.Value>{inputValue.deathReason}</_.Value>
                     </_.Row>

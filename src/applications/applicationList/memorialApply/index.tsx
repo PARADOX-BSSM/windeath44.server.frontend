@@ -189,28 +189,6 @@ const MemorialApply = ({}: dataStructureProps) => {
                   <_.CharacterInformationRow>
                     <_.CharacterInformationRowAttribute>
                       <_.CharacterInformationRowAttributeText>
-                        생존 기간
-                      </_.CharacterInformationRowAttributeText>
-                    </_.CharacterInformationRowAttribute>
-                    <_.CharacterInformationRowValue>
-                      <_.CharacterInformationRowValueText>
-                        <_.CharacterInforInput
-                          type="number"
-                          placeholder="예) 1"
-                          onChange={(e) => {
-                            setInputValue((prev) => ({
-                              ...prev,
-                              lifeCycle: Number(e.target.value),
-                            }));
-                          }}
-                        ></_.CharacterInforInput>
-                      </_.CharacterInformationRowValueText>
-                    </_.CharacterInformationRowValue>
-                  </_.CharacterInformationRow>
-
-                  <_.CharacterInformationRow>
-                    <_.CharacterInformationRowAttribute>
-                      <_.CharacterInformationRowAttributeText>
                         사인
                       </_.CharacterInformationRowAttributeText>
                     </_.CharacterInformationRowAttribute>

@@ -486,10 +486,6 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
                       <_.Value>{characterData.deathOfDay}</_.Value>
                     </_.Row>
                     <_.Row>
-                      <_.Attribute>생존 기간</_.Attribute>
-                      <_.Value>{characterData.lifeTime}화</_.Value>
-                    </_.Row>
-                    <_.Row>
                       <_.Attribute>사인(死因)</_.Attribute>
                       <_.Value>{characterData?.deathReason}</_.Value>
                     </_.Row>
