@@ -78,11 +78,12 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
     setHasNextComment,
     true,
   );
-  const mutationCommentWrite = useCommentWrite();
-  const mutationCommentUpdate = useCommentUpdate();
   const { mutate: getUser, data: userData } = useGetUserMutation();
 
   const currentUserId = userData?.data?.userId;
+
+  const mutationCommentWrite = useCommentWrite(setMemorialComment, currentUserId);
+  const mutationCommentUpdate = useCommentUpdate(setMemorialComment);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
