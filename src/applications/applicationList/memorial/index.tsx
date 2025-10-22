@@ -24,6 +24,7 @@ import ribbon from '@/assets/memorial_ribbon.svg';
 import { inputPortage } from '@/atoms/inputManager.ts';
 import Choten from '@/assets/profile/choten.svg';
 import { useGetUserMutation } from '@/api/user/getUser';
+import { getCookie } from '@/api/auth/cookie.ts';
 
 interface dataStructureProps {
   stack: any[];
@@ -381,27 +382,41 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
     top: top,
   };
   const handleCommit = () => {
-    setInputValue({
-      name: characterData.name,
-      deathReason: characterData.deathReason,
-      date: characterData.deathOfDay,
-      lifeCycle: characterData.lifeTime,
-      anime: animation,
-      animeId: characterData.animeId,
-      age: characterData.age,
-      profileImage: characterData.imageUrl,
-      phrase: '',
-    });
+    if (!token && setAlert) {
+      setAlert(
+        Choten,
+        <>
+          게스트는 추모관 수정이 불가합니다.
+          <br />
+          로그인 후 사용 가능 합니다.
+        </>,
+        () => {
+          taskTransform?.('경고', '');
+        },
+      );
+    } else {
+      setInputValue({
+        name: characterData.name,
+        deathReason: characterData.deathReason,
+        date: characterData.deathOfDay,
+        lifeCycle: characterData.lifeTime,
+        anime: animation,
+        animeId: characterData.animeId,
+        age: characterData.age,
+        profileImage: characterData.imageUrl,
+        phrase: '',
+      });
 
-    // taskTransform으로 캐릭터 정보와 추모관 데이터 전달
-    taskTransform?.('', '미리보기');
-    taskTransform?.('', '추모관 수정', {
-      memorialId: memorialId,
-      characterId: characterId,
-      characterData: characterData,
-      memorialData: memorialData,
-      animation: animation,
-    });
+      // taskTransform으로 캐릭터 정보와 추모관 데이터 전달
+      taskTransform?.('', '미리보기');
+      taskTransform?.('', '추모관 수정', {
+        memorialId: memorialId,
+        characterId: characterId,
+        characterData: characterData,
+        memorialData: memorialData,
+        animation: animation,
+      });
+    }
   };
   return (
     <_.Main>

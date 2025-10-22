@@ -6,6 +6,7 @@ import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer.ts'
 import { versionAtom } from '@/atoms/version.ts';
 import { alerterAtom } from '@/atoms/alerter.ts';
 import Choten from '@/assets/profile/choten.svg';
+import { getCookie } from '@/api/auth/cookie.ts';
 // import { useProcessManager } from '@/hooks/processManager.tsx';
 
 interface dataStructureProps {
@@ -32,6 +33,7 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
   const taskSearch = useAtomValue(taskSearchAtom);
   const taskTransform = useAtomValue(taskTransformerAtom);
   const version = useAtomValue(versionAtom);
+  const token = getCookie('access_token');
   // const [, addTask, removeTask] = useProcessManager();
 
   const stackProps = {
@@ -111,7 +113,7 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
       push(taskSearch?.('상주 관리', stackProps));
     }
     if (idx === 2) {
-      if (!document.cookie.includes('access_token') && setAlert) {
+      if (!token && setAlert) {
         setAlert(Choten, <>게스트는 추모관 신청이 불가합니다.</>, () => {
           taskTransform?.('경고', '');
         });

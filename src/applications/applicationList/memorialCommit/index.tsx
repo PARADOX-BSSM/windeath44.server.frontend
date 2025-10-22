@@ -35,12 +35,12 @@ const MemorialCommit = ({
   const [inputValue] = useAtom(inputPortage);
   const [userId, setUserId] = useAtom(userIdAtom);
 
-// console.log(contentIn);
+  // console.log(contentIn);
 
   useEffect(() => {
     getUser(undefined, {
       onSuccess: (data) => {
-// console.log('성공:', data);
+        // console.log('성공:', data);
         setUserId(data.data.userId);
       },
       onError: (err) => {
