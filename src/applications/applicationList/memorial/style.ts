@@ -375,10 +375,18 @@ export const InputCommentText = styled.input`
   box-shadow: none;
   padding: 0;
   border-width: 0;
-  width: 100%;
+  flex: 1;
   &::placeholder {
     color: var(--DarkPrimary, #dcafdd);
   }
+`;
+
+export const CharCount = styled.span`
+  font-family: Galmuri11;
+  font-size: 10px;
+  color: var(--DarkPrimary, #dcafdd);
+  white-space: nowrap;
+  margin-left: 8px;
 `;
 
 export const ArticleContainer = styled.div`

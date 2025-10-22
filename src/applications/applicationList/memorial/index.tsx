@@ -312,7 +312,9 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
                         value={content}
                         onChange={(e) => setContent(e.target.value)}
                         placeholder="추모글을 입력하세요."
+                        maxLength={250}
                       ></_.InputCommentText>
+                      <_.CharCount>{content.length}/250</_.CharCount>
                     </form>
                   </_.InputComment>
                   {memorialComment.map((comment, idx) => {
