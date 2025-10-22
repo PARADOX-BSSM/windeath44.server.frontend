@@ -2,6 +2,7 @@ import * as _ from './style';
 import ameImg from '@/assets/profile/ame.svg';
 import chotenImg from '@/assets/profile/choten.svg';
 import { useState } from 'react';
+import { setCursorImage, CURSOR_IMAGES } from 'lib/setCursorImg';
 
 interface PropsType {
   // nickname: string;
@@ -81,7 +82,10 @@ const Comment = ({
               />
               <_.EditButtonGroup>
                 <_.CharCount>{editContent.length}/250</_.CharCount>
-                <_.EditCancelButton type="button" onClick={handleEditCancel}>
+                <_.EditCancelButton
+                  type="button"
+                  onClick={handleEditCancel}
+                >
                   취소
                 </_.EditCancelButton>
                 <_.EditSubmitButton type="submit">완료</_.EditSubmitButton>
@@ -92,11 +96,21 @@ const Comment = ({
               <_.ContentRow>
                 <_.Content>{content}</_.Content>
                 {isOwner && (
-                  <_.EditButton onClick={() => setIsEditing(true)}>수정</_.EditButton>
+                  <_.EditButton
+                    onClick={() => setIsEditing(true)}
+                    onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                    onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+                  >
+                    수정
+                  </_.EditButton>
                 )}
               </_.ContentRow>
               {!parentId && (
-                <_.ReplyButton onClick={() => setShowReplyForm(!showReplyForm)}>
+                <_.ReplyButton
+                  onClick={() => setShowReplyForm(!showReplyForm)}
+                  onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                  onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+                >
                   답글 입력
                 </_.ReplyButton>
               )}
