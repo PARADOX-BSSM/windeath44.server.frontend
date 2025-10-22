@@ -9,6 +9,7 @@ import { useAtomValue } from 'jotai';
 import { alerterAtom } from '@/atoms/alerter';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
 import Choten from '@/assets/profile/choten.svg';
+import { getCookie } from '@/api/auth/cookie.ts';
 
 interface bowProps {
   memorialId: number;
@@ -20,13 +21,28 @@ const Bow = ({ memorialId }: bowProps) => {
   const setAlert = useAtomValue(alerterAtom);
   const taskTransform = useAtomValue(taskTransformerAtom);
   const mutationMemorialBows = useMemorialBow();
+  const token = getCookie('access_token');
   const addBow = () => {
-    mutationMemorialBows.mutate(memorialId, {
-      onSuccess: () => {
-        // 서버 응답 성공 시에만 UI 숫자 증가
-        setTotalBow(prev => (prev ? prev + 1 : 1));
-      }
-    });
+    if (!token && setAlert) {
+      setAlert(
+        Choten,
+        <>
+          게스트는 절을 할 수 없습니다.
+          <br />
+          로그인 후 사용 가능 합니다.
+        </>,
+        () => {
+          taskTransform?.('경고', '');
+        },
+      );
+    } else {
+      mutationMemorialBows.mutate(memorialId, {
+        onSuccess: () => {
+          // 서버 응답 성공 시에만 UI 숫자 증가
+          setTotalBow((prev) => (prev ? prev + 1 : 1));
+        },
+      });
+    }
   };
   useEffect(() => {
     mutationMemorialGet.mutate(memorialId, {
