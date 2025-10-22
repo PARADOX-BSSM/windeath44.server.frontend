@@ -9,16 +9,31 @@ interface PropsType {
   content: string;
   idx: number;
   commentId: number;
-  parentId?: number;
+  parentId: number | null;
+  currentUserId?: string;
   onReplySubmit?: (commentId: number, content: string) => void;
+  onEditSubmit?: (commentId: number, content: string) => void;
 }
 
-const Comment = ({ userid, content, idx, commentId, parentId, onReplySubmit }: PropsType) => {
+const Comment = ({
+  userid,
+  content,
+  idx,
+  commentId,
+  parentId,
+  currentUserId,
+  onReplySubmit,
+  onEditSubmit,
+}: PropsType) => {
   // console.log(idx);
   const imgUrl = idx % 2 === 0 ? ameImg : chotenImg;
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [replyContent, setReplyContent] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
+  const [editContent, setEditContent] = useState(content);
   // console.log(imgUrl);
+
+  const isOwner = currentUserId === userid;
 
   const handleReplySubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -31,6 +46,21 @@ const Comment = ({ userid, content, idx, commentId, parentId, onReplySubmit }: P
     setShowReplyForm(false);
   };
 
+  const handleEditSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!editContent.trim()) return;
+
+    if (onEditSubmit) {
+      onEditSubmit(commentId, editContent);
+    }
+    setIsEditing(false);
+  };
+
+  const handleEditCancel = () => {
+    setEditContent(content);
+    setIsEditing(false);
+  };
+
   return (
     <>
       <_.CommentDiv $isReply={!!parentId}>
@@ -40,11 +70,37 @@ const Comment = ({ userid, content, idx, commentId, parentId, onReplySubmit }: P
             {/*<_.NickName>{nickname}</_.NickName>*/}
             <_.UserId>@{userid}</_.UserId>
           </_.NickNameContainer>
-          <_.Content>{content}</_.Content>
-          {!parentId && (
-            <_.ReplyButton onClick={() => setShowReplyForm(!showReplyForm)}>
-              답글 입력
-            </_.ReplyButton>
+          {isEditing ? (
+            <_.EditForm onSubmit={handleEditSubmit}>
+              <_.EditInput
+                type="text"
+                value={editContent}
+                onChange={(e) => setEditContent(e.target.value)}
+                maxLength={250}
+                autoFocus
+              />
+              <_.EditButtonGroup>
+                <_.CharCount>{editContent.length}/250</_.CharCount>
+                <_.EditCancelButton type="button" onClick={handleEditCancel}>
+                  취소
+                </_.EditCancelButton>
+                <_.EditSubmitButton type="submit">완료</_.EditSubmitButton>
+              </_.EditButtonGroup>
+            </_.EditForm>
+          ) : (
+            <>
+              <_.Content>{content}</_.Content>
+              <_.ActionButtonGroup>
+                {!parentId && (
+                  <_.ReplyButton onClick={() => setShowReplyForm(!showReplyForm)}>
+                    답글 입력
+                  </_.ReplyButton>
+                )}
+                {isOwner && (
+                  <_.EditButton onClick={() => setIsEditing(true)}>수정</_.EditButton>
+                )}
+              </_.ActionButtonGroup>
+            </>
           )}
         </_.TextBox>
       </_.CommentDiv>

@@ -131,3 +131,94 @@ export const CharCount = styled.span`
     color: var(--DarkPrimary, #dcafdd);
     white-space: nowrap;
 `
+
+export const ActionButtonGroup = styled.div`
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    padding-top: 4px;
+`
+
+export const EditButton = styled.button`
+    background: none;
+    border: none;
+    color: var(--Stroke, #e774dd);
+    font-family: Galmuri11;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 400;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+
+    &:hover {
+        text-decoration: underline;
+    }
+`
+
+export const EditForm = styled.form`
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+`
+
+export const EditInput = styled.input`
+    font-family: Galmuri11;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    border: 1px solid var(--DarkPrimary, #dcafdd);
+    background: #fff;
+    outline: none;
+    padding: 8px;
+    border-radius: 4px;
+    width: 100%;
+    box-sizing: border-box;
+
+    &:focus {
+        border-color: var(--Stroke, #e774dd);
+    }
+`
+
+export const EditButtonGroup = styled.div`
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: flex-end;
+`
+
+export const EditCancelButton = styled.button`
+    background: none;
+    border: 1px solid var(--DarkPrimary, #dcafdd);
+    color: var(--DarkPrimary, #dcafdd);
+    font-family: Galmuri11;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 400;
+    cursor: pointer;
+    padding: 4px 12px;
+    border-radius: 4px;
+
+    &:hover {
+        background: #f5f5f5;
+    }
+`
+
+export const EditSubmitButton = styled.button`
+    background: var(--Stroke, #e774dd);
+    border: none;
+    color: #fff;
+    font-family: Galmuri11;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 400;
+    cursor: pointer;
+    padding: 4px 12px;
+    border-radius: 4px;
+
+    &:hover {
+        background: var(--off, #fd51a7);
+    }
+`

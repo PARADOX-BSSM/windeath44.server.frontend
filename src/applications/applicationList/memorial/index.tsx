@@ -15,11 +15,13 @@ import {
   useGetMemorialComments,
 } from '@/api/memorial/getMemorialComments.ts';
 import { useCommentWrite } from '@/api/memorial/memorialCommentWrite.ts';
+import { useCommentUpdate } from '@/api/memorial/memorialCommentUpdate.ts';
 import { parseCustomContent } from '@/lib/customTag/parseCustomContent.tsx';
 import { useGetAnimation } from '@/api/anime/getAnimation.ts';
 import ribbon from '@/assets/memorial_ribbon.svg';
 import { inputPortage } from '@/atoms/inputManager.ts';
 import Choten from '@/assets/profile/choten.svg';
+import { useGetUserMutation } from '@/api/user/getUser';
 
 interface dataStructureProps {
   stack: any[];
@@ -77,6 +79,10 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
     true,
   );
   const mutationCommentWrite = useCommentWrite();
+  const mutationCommentUpdate = useCommentUpdate();
+  const { mutate: getUser, data: userData } = useGetUserMutation();
+
+  const currentUserId = userData?.data?.userId;
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -138,6 +144,47 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
     );
   };
 
+  const handleEditSubmit = (commentId: number, editContent: string) => {
+    mutationCommentUpdate.mutate(
+      { commentId, content: editContent },
+      {
+        onSuccess: () => {
+          mutaionGetMemorialComments.mutate(
+            { memorialId },
+            {
+              onError: () => {
+                setAlert?.(
+                  Choten,
+                  <>
+                    추모글을 가져오는 중 문제가 발생했습니다.
+                    <br />
+                    잠시 후 다시 시도해 주세요.
+                  </>,
+                  () => {
+                    taskTransform?.('경고', '');
+                  },
+                );
+              },
+            },
+          );
+        },
+        onError: () => {
+          setAlert?.(
+            Choten,
+            <>
+              댓글 수정 중 문제가 발생했습니다.
+              <br />
+              잠시 후 다시 시도해 주세요.
+            </>,
+            () => {
+              taskTransform?.('경고', '');
+            },
+          );
+        },
+      },
+    );
+  };
+
   const handleLoadMore = () => {
     if (memorialComment.length === 0) return;
     const lastCommentId = memorialComment[memorialComment.length - 1].commentId;
@@ -162,6 +209,7 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
     );
   };
   useEffect(() => {
+    getUser();
     mutationMemorialGet.mutate(memorialId, {
       onError: () => {
         setAlert?.(
@@ -388,7 +436,9 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
                           idx={idx}
                           commentId={comment.commentId}
                           parentId={comment.parentId}
+                          currentUserId={currentUserId}
                           onReplySubmit={handleReplySubmit}
+                          onEditSubmit={handleEditSubmit}
                         />
                         {comment.children?.map((child, childIdx) => (
                           <Comment
@@ -398,7 +448,9 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
                             idx={idx + childIdx + 1}
                             commentId={child.commentId}
                             parentId={child.parentId}
+                            currentUserId={currentUserId}
                             onReplySubmit={handleReplySubmit}
+                            onEditSubmit={handleEditSubmit}
                           />
                         ))}
                       </Fragment>
