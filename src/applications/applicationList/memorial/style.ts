@@ -356,6 +356,11 @@ export const InputComment = styled.div`
   gap: 10px;
   align-self: stretch;
   background: #ffebfd;
+
+  & > form {
+    width: 100%;
+    display: flex;
+  }
 `;
 
 export const InputCommentText = styled.input`
@@ -370,9 +375,39 @@ export const InputCommentText = styled.input`
   box-shadow: none;
   padding: 0;
   border-width: 0;
-  width: 100%;
+  flex: 1;
   &::placeholder {
     color: var(--DarkPrimary, #dcafdd);
+  }
+`;
+
+export const CharCount = styled.span`
+  font-family: Galmuri11;
+  font-size: 10px;
+  color: var(--DarkPrimary, #dcafdd);
+  white-space: nowrap;
+  margin-left: 8px;
+`;
+
+export const LoadMoreButton = styled.button`
+  display: flex;
+  width: 100%;
+  padding: 12px 16px;
+  justify-content: center;
+  align-items: center;
+  background: #fff;
+  border: none;
+  cursor: pointer;
+  color: var(--Stroke, #e774dd);
+  font-family: Galmuri11;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background: #f5f5f5;
   }
 `;
 

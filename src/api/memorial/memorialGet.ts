@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import React from 'react';
 import { memorial } from '@/config';
-import axios from 'axios';
+import api from '../axiosInstance';
 
 export type memorialData = {
   memorialId: number;
@@ -20,7 +20,7 @@ export type memorialDataResponse = {
   data: memorialData;
 };
 const memorialGet = async (id: number): Promise<memorialDataResponse> => {
-  const response = await axios.get(`${memorial}/${id}`, {});
+  const response = await api.get(`${memorial}/${id}`, {});
   return response.data;
 };
 

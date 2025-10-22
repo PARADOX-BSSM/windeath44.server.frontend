@@ -3,12 +3,16 @@ import Table from '@/assets/bow/table.svg';
 import Character from '@/assets/character/hosino.svg';
 import { useMemorialBow } from '@/api/memorial/memorialBow.ts';
 import { useEffect, useState } from 'react';
-import { useMemorialGet } from '@/api/memorial/countBowsByMi.ts';
+import { useMemorialGet as useMemorialGetBowCount } from '@/api/memorial/countBowsByMi.ts';
+import { useMemorialGet } from '@/api/memorial/memorialGet.ts';
+import { useGetCharacter, type CharacterData } from '@/api/anime/getCharacter.ts';
+import type { memorialData } from '@/api/memorial/memorialGet.ts';
 import Mourners from '@/applications/components/mourners';
 import { useAtomValue } from 'jotai';
 import { alerterAtom } from '@/atoms/alerter';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
 import Choten from '@/assets/profile/choten.svg';
+import { getCookie } from '@/api/auth/cookie.ts';
 
 interface bowProps {
   memorialId: number;
@@ -16,20 +20,40 @@ interface bowProps {
 
 const Bow = ({ memorialId }: bowProps) => {
   const [totalBow, setTotalBow] = useState<number | null>(null);
-  const mutationMemorialGet = useMemorialGet(setTotalBow);
+  const [memorialData, setMemorialData] = useState<memorialData>(null);
+  const [characterData, setCharacterData] = useState<CharacterData>(null);
+  const mutationMemorialGetBowCount = useMemorialGetBowCount(setTotalBow);
+  const mutationMemorialGet = useMemorialGet(setMemorialData);
+  const mutationGetCharacter = useGetCharacter(setCharacterData);
   const setAlert = useAtomValue(alerterAtom);
   const taskTransform = useAtomValue(taskTransformerAtom);
   const mutationMemorialBows = useMemorialBow();
+  const token = getCookie('access_token');
   const addBow = () => {
-    mutationMemorialBows.mutate(memorialId, {
-      onSuccess: () => {
-        // 서버 응답 성공 시에만 UI 숫자 증가
-        setTotalBow(prev => (prev ? prev + 1 : 1));
-      }
-    });
+    if (!token && setAlert) {
+      setAlert(
+        Choten,
+        <>
+          게스트는 절을 할 수 없습니다.
+          <br />
+          로그인 후 사용 가능 합니다.
+        </>,
+        () => {
+          taskTransform?.('경고', '');
+        },
+      );
+    } else {
+      mutationMemorialBows.mutate(memorialId, {
+        onSuccess: () => {
+          // 서버 응답 성공 시에만 UI 숫자 증가
+          setTotalBow((prev) => (prev ? prev + 1 : 1));
+        },
+      });
+    }
   };
   useEffect(() => {
-    mutationMemorialGet.mutate(memorialId, {
+    // Bow count 가져오기
+    mutationMemorialGetBowCount.mutate(memorialId, {
       onError: () => {
         setAlert?.(
           Choten,
@@ -44,8 +68,51 @@ const Bow = ({ memorialId }: bowProps) => {
         );
       },
     });
+
+    // Memorial 정보 가져오기
+    mutationMemorialGet.mutate(memorialId, {
+      onSuccess: (data) => {
+        // Memorial 정보에서 characterId를 얻어 캐릭터 정보 가져오기
+        if (data.data?.characterId) {
+          mutationGetCharacter.mutate(data.data.characterId, {
+            onError: () => {
+              setAlert?.(
+                Choten,
+                <>
+                  캐릭터 정보를 가져오는 중 문제가 발생했습니다.
+                  <br />
+                  잠시 후 다시 시도해 주세요.
+                </>,
+                () => {
+                  taskTransform?.('경고', '');
+                },
+              );
+            },
+          });
+        }
+      },
+      onError: () => {
+        setAlert?.(
+          Choten,
+          <>
+            추모관 정보를 가져오는 중 문제가 발생했습니다.
+            <br />
+            잠시 후 다시 시도해 주세요.
+          </>,
+          () => {
+            taskTransform?.('경고', '');
+          },
+        );
+      },
+    });
   }, [memorialId]); // memorialId만 의존성으로 사용
   // console.log(totalBow);
+
+  // 캐릭터 데이터가 로드되기 전에는 렌더링하지 않음
+  if (!characterData) {
+    return null;
+  }
+
   return (
     <_.main>
       <_.nbow>
@@ -54,7 +121,7 @@ const Bow = ({ memorialId }: bowProps) => {
       <_.place>
         <_.imgs>
           <_.character
-            src={Character}
+            src={characterData.imageUrl}
             alt={'캐릭터'}
           />
           <_.table

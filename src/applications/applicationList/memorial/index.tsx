@@ -6,7 +6,7 @@ import { useAtom, useAtomValue } from 'jotai';
 import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer';
 import { alerterAtom } from '@/atoms/alerter';
 import { useMemorialGet } from '@/api/memorial/memorialGet.ts';
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { useGetCharacter } from '@/api/anime/getCharacter.ts';
 import type { CharacterData } from '@/api/anime/getCharacter';
 import type { memorialData } from '@/api/memorial/memorialGet';
@@ -15,11 +15,16 @@ import {
   useGetMemorialComments,
 } from '@/api/memorial/getMemorialComments.ts';
 import { useCommentWrite } from '@/api/memorial/memorialCommentWrite.ts';
+import { useCommentUpdate } from '@/api/memorial/memorialCommentUpdate.ts';
+import { useCommentDelete } from '@/api/memorial/memorialCommentDelete.ts';
+import { useCommentLike } from '@/api/memorial/memorialCommentLike.ts';
 import { parseCustomContent } from '@/lib/customTag/parseCustomContent.tsx';
 import { useGetAnimation } from '@/api/anime/getAnimation.ts';
 import ribbon from '@/assets/memorial_ribbon.svg';
 import { inputPortage } from '@/atoms/inputManager.ts';
 import Choten from '@/assets/profile/choten.svg';
+import { useGetUserMutation } from '@/api/user/getUser';
+import { getCookie } from '@/api/auth/cookie.ts';
 
 interface dataStructureProps {
   stack: any[];
@@ -65,8 +70,25 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
   const [animation, setAnimation] = useState<string>('');
   const mutationAnimation = useGetAnimation(setAnimation);
   const [memorialComment, setMemorialComment] = useState<MemorialCommentsData[]>([]);
-  const mutaionGetMemorialComments = useGetMemorialComments(setMemorialComment);
-  const mutationCommentWrite = useCommentWrite();
+  const [hasNextComment, setHasNextComment] = useState<boolean>(false);
+  const mutaionGetMemorialComments = useGetMemorialComments(
+    setMemorialComment,
+    setHasNextComment,
+    false,
+  );
+  const mutationLoadMoreComments = useGetMemorialComments(
+    setMemorialComment,
+    setHasNextComment,
+    true,
+  );
+  const { mutate: getUser, data: userData } = useGetUserMutation();
+
+  const currentUserId = userData?.data?.userId;
+
+  const mutationCommentWrite = useCommentWrite(setMemorialComment, currentUserId);
+  const mutationCommentUpdate = useCommentUpdate(setMemorialComment);
+  const mutationCommentDelete = useCommentDelete(setMemorialComment);
+  const mutationCommentLike = useCommentLike(setMemorialComment);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -99,7 +121,183 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
       },
     );
   };
+
+  const handleReplySubmit = (parentCommentId: number, replyContent: string) => {
+    mutationCommentWrite.mutate(
+      { memorialId, content: replyContent, parentCommentId },
+      {
+        onSuccess: () => {
+          mutaionGetMemorialComments.mutate(
+            { memorialId },
+            {
+              onError: () => {
+                setAlert?.(
+                  Choten,
+                  <>
+                    추모글을 가져오는 중 문제가 발생했습니다.
+                    <br />
+                    잠시 후 다시 시도해 주세요.
+                  </>,
+                  () => {
+                    taskTransform?.('경고', '');
+                  },
+                );
+              },
+            },
+          );
+        },
+      },
+    );
+  };
+
+  const handleEditSubmit = (commentId: number, editContent: string) => {
+    mutationCommentUpdate.mutate(
+      { commentId, content: editContent },
+      {
+        onSuccess: () => {
+          mutaionGetMemorialComments.mutate(
+            { memorialId },
+            {
+              onError: () => {
+                setAlert?.(
+                  Choten,
+                  <>
+                    추모글을 가져오는 중 문제가 발생했습니다.
+                    <br />
+                    잠시 후 다시 시도해 주세요.
+                  </>,
+                  () => {
+                    taskTransform?.('경고', '');
+                  },
+                );
+              },
+            },
+          );
+        },
+        onError: () => {
+          setAlert?.(
+            Choten,
+            <>
+              댓글 수정 중 문제가 발생했습니다.
+              <br />
+              잠시 후 다시 시도해 주세요.
+            </>,
+            () => {
+              taskTransform?.('경고', '');
+            },
+          );
+        },
+      },
+    );
+  };
+
+  const handleDeleteSubmit = (commentId: number) => {
+    mutationCommentDelete.mutate(
+      { commentId },
+      {
+        onSuccess: () => {
+          mutaionGetMemorialComments.mutate(
+            { memorialId },
+            {
+              onError: () => {
+                setAlert?.(
+                  Choten,
+                  <>
+                    추모글을 가져오는 중 문제가 발생했습니다.
+                    <br />
+                    잠시 후 다시 시도해 주세요.
+                  </>,
+                  () => {
+                    taskTransform?.('경고', '');
+                  },
+                );
+              },
+            },
+          );
+        },
+        onError: () => {
+          setAlert?.(
+            Choten,
+            <>
+              댓글 삭제 중 문제가 발생했습니다.
+              <br />
+              잠시 후 다시 시도해 주세요.
+            </>,
+            () => {
+              taskTransform?.('경고', '');
+            },
+          );
+        },
+      },
+    );
+  };
+
+  const handleLikeToggle = (commentId: number, isLiked: boolean) => {
+    mutationCommentLike.mutate(
+      { commentId, isLiked },
+      {
+        onSuccess: () => {
+          mutaionGetMemorialComments.mutate(
+            { memorialId },
+            {
+              onError: () => {
+                setAlert?.(
+                  Choten,
+                  <>
+                    추모글을 가져오는 중 문제가 발생했습니다.
+                    <br />
+                    잠시 후 다시 시도해 주세요.
+                  </>,
+                  () => {
+                    taskTransform?.('경고', '');
+                  },
+                );
+              },
+            },
+          );
+        },
+        onError: () => {
+          setAlert?.(
+            Choten,
+            <>
+              좋아요 처리 중 문제가 발생했습니다.
+              <br />
+              잠시 후 다시 시도해 주세요.
+            </>,
+            () => {
+              taskTransform?.('경고', '');
+            },
+          );
+        },
+      },
+    );
+  };
+
+  const handleLoadMore = () => {
+    if (memorialComment.length === 0) return;
+    const lastCommentId = memorialComment[memorialComment.length - 1].commentId;
+
+    mutationLoadMoreComments.mutate(
+      { memorialId, cursorId: lastCommentId },
+      {
+        onError: () => {
+          setAlert?.(
+            Choten,
+            <>
+              추모글을 가져오는 중 문제가 발생했습니다.
+              <br />
+              잠시 후 다시 시도해 주세요.
+            </>,
+            () => {
+              taskTransform?.('경고', '');
+            },
+          );
+        },
+      },
+    );
+  };
   useEffect(() => {
+    getUser();
     mutationMemorialGet.mutate(memorialId, {
       onError: () => {
         setAlert?.(
@@ -184,27 +382,41 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
     top: top,
   };
   const handleCommit = () => {
-    setInputValue({
-      name: characterData.name,
-      deathReason: characterData.deathReason,
-      date: characterData.deathOfDay,
-      lifeCycle: characterData.lifeTime,
-      anime: animation,
-      animeId: characterData.animeId,
-      age: characterData.age,
-      profileImage: characterData.imageUrl,
-      phrase: '',
-    });
+    if (!token && setAlert) {
+      setAlert(
+        Choten,
+        <>
+          게스트는 추모관 수정이 불가합니다.
+          <br />
+          로그인 후 사용 가능 합니다.
+        </>,
+        () => {
+          taskTransform?.('경고', '');
+        },
+      );
+    } else {
+      setInputValue({
+        name: characterData.name,
+        deathReason: characterData.deathReason,
+        date: characterData.deathOfDay,
+        lifeCycle: characterData.lifeTime,
+        anime: animation,
+        animeId: characterData.animeId,
+        age: characterData.age,
+        profileImage: characterData.imageUrl,
+        phrase: '',
+      });
 
-    // taskTransform으로 캐릭터 정보와 추모관 데이터 전달
-    taskTransform?.('', '미리보기');
-    taskTransform?.('', '추모관 수정', {
-      memorialId: memorialId,
-      characterId: characterId,
-      characterData: characterData,
-      memorialData: memorialData,
-      animation: animation,
-    });
+      // taskTransform으로 캐릭터 정보와 추모관 데이터 전달
+      taskTransform?.('', '미리보기');
+      taskTransform?.('', '추모관 수정', {
+        memorialId: memorialId,
+        characterId: characterId,
+        characterData: characterData,
+        memorialData: memorialData,
+        animation: animation,
+      });
+    }
   };
   return (
     <_.Main>
@@ -274,10 +486,6 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
                       <_.Value>{characterData.deathOfDay}</_.Value>
                     </_.Row>
                     <_.Row>
-                      <_.Attribute>생존 기간</_.Attribute>
-                      <_.Value>{characterData.lifeTime}화</_.Value>
-                    </_.Row>
-                    <_.Row>
                       <_.Attribute>사인(死因)</_.Attribute>
                       <_.Value>{characterData?.deathReason}</_.Value>
                     </_.Row>
@@ -312,19 +520,51 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
                         value={content}
                         onChange={(e) => setContent(e.target.value)}
                         placeholder="추모글을 입력하세요."
+                        maxLength={250}
                       ></_.InputCommentText>
+                      <_.CharCount>{content.length}/250</_.CharCount>
                     </form>
                   </_.InputComment>
                   {memorialComment.map((comment, idx) => {
                     return (
-                      <Comment
-                        key={idx}
-                        userid={comment.userId}
-                        content={comment.content ? comment.content : ''}
-                        idx={idx}
-                      />
+                      <Fragment key={comment.commentId}>
+                        <Comment
+                          userid={comment.userId}
+                          content={comment.content ? comment.content : ''}
+                          idx={idx}
+                          commentId={comment.commentId}
+                          parentId={comment.parentId}
+                          currentUserId={currentUserId}
+                          likes={comment.likes}
+                          isLiked={comment.isLiked}
+                          onReplySubmit={handleReplySubmit}
+                          onEditSubmit={handleEditSubmit}
+                          onDeleteSubmit={handleDeleteSubmit}
+                          onLikeToggle={handleLikeToggle}
+                        />
+                        {comment.children?.map((child, childIdx) => (
+                          <Comment
+                            key={child.commentId}
+                            userid={child.userId}
+                            content={child.content ? child.content : ''}
+                            idx={idx + childIdx + 1}
+                            commentId={child.commentId}
+                            parentId={child.parentId}
+                            currentUserId={currentUserId}
+                            likes={child.likes}
+                            isLiked={child.isLiked}
+                            onReplySubmit={handleReplySubmit}
+                            onEditSubmit={handleEditSubmit}
+                            onDeleteSubmit={handleDeleteSubmit}
+                            onLikeToggle={handleLikeToggle}
+                          />
+                        ))}
+                      </Fragment>
                     );
                   })}
+                  {hasNextComment && (
+                    <_.LoadMoreButton onClick={handleLoadMore}>더보기</_.LoadMoreButton>
+                  )}
                 </_.CommentMainInner>
               </_.CommentMain>
             </_.CommentContainer>
