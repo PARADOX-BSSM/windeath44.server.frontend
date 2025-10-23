@@ -64,7 +64,7 @@ const SignUp = ({ changeToLogIn }: Props) => {
       setAlert?.(
         Choten,
         <>
-          이메일이 잘못되었습니다.
+          이메일 형식이 잘못되었습니다.
           <br />
           다시 입력해 주세요.
         </>,
@@ -216,6 +216,7 @@ const SignUp = ({ changeToLogIn }: Props) => {
             width={'80%'}
             fontSize="20px"
             flex={true}
+            placeHold={"아이디 (6~16자)"}
           />
           <_.set>
             <_.label>이메일 :</_.label>
@@ -225,6 +226,7 @@ const SignUp = ({ changeToLogIn }: Props) => {
                 setValue={setEmail}
                 type={'text'}
                 width={'100%'}
+                placeHold={"example@email.com"}
               />
               <MemorialBtn
                 name={click ? '코드 재전송' : '코드전송'}
@@ -264,6 +266,7 @@ const SignUp = ({ changeToLogIn }: Props) => {
             width={'80%'}
             fontSize="20px"
             flex={true}
+            placeHold={"비밀번호 (8~20자)"}
           />
           <Inputs
             label={'비밀번호 재입력:'}
