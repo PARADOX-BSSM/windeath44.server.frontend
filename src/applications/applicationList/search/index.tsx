@@ -6,6 +6,7 @@ import Viewer from '@/applications/applicationList/search/viewer';
 import { useGetIntegratedCharactersQuery } from '@/api/anime/getCharactersByIntegratedSearching';
 import { fetchAnimesPage } from '@/api/anime/getAnimes';
 import { useGetMemorialsCharacterFilteredQuery } from '@/api/memorial/getMemorialsCharacterFiltered';
+import MemorialBtn from '@/applications/components/memorialBtn';
 
 type Character = { characterId: number; [k: string]: any };
 type AnimeItem = { animeId: number; [k: string]: any };
@@ -175,7 +176,8 @@ const Search = () => {
     orderBy: 'recently-updated',
     page: 1,
     characters: characterKey,
-    enabled: characterKey.length > 0 && !isAnimesLoading && (!aniParam || animeIdParam !== undefined),
+    enabled:
+      characterKey.length > 0 && !isAnimesLoading && (!aniParam || animeIdParam !== undefined),
   });
 
   const memorials = memorialsResp?.data ?? [];
@@ -221,10 +223,51 @@ const Search = () => {
             setName={setName}
           />
 
-          <Viewer
-            characters={characters}
-            memorials={memorials}
-          />
+          <_.PagingContainer>
+            <Viewer
+              characters={characters}
+              memorials={memorials}
+            />
+            <_.Paging>
+              <MemorialBtn
+                name="1"
+                selected={true}
+                type="submit"
+                active={true}
+                width="32px"
+                height="32px"
+                fontSize="16px"
+              />
+              <MemorialBtn
+                name="2"
+                selected={true}
+                type="submit"
+                active={true}
+                width="32px"
+                height="32px"
+                fontSize="16px"
+              />
+              <MemorialBtn
+                name="3"
+                selected={true}
+                type="submit"
+                active={true}
+                width="32px"
+                height="32px"
+                fontSize="16px"
+              />
+              <_.PagingGap>...</_.PagingGap>
+              <MemorialBtn
+                name="36"
+                selected={true}
+                type="submit"
+                active={true}
+                width="32px"
+                height="32px"
+                fontSize="16px"
+              />
+            </_.Paging>
+          </_.PagingContainer>
         </_.search_task>
 
         <_.object>
