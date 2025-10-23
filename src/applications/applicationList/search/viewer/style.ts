@@ -2,21 +2,15 @@ import styled from '@emotion/styled';
 
 // *검색결과창
 export const view = styled.div`
-  box-sizing: border-box;
-  width: 100%;
-  height: 100%;
-  align-self: stretch;
+  flex: 1; /* fill */
   display: flex;
-  overflow-x: scroll;
-  -ms-overflow-style: none;
-  &::-webkit-scrollbar {
-    display: none;
-  }
+  width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
 `;
 
 export const inputs = styled.div`
   display: flex;
-  gap: 24px;
   background-color: var(--light-primary-color);
   margin: 1px 0 0 1px;
   width: 100%;
@@ -26,7 +20,6 @@ export const inputs = styled.div`
   overflow-x: hidden;
   flex-wrap: wrap;
   font-family: 'Galmuri11';
-  padding: 16px;
   outline: none;
   border-color: #dcafdd;
   border-style: solid;
@@ -36,6 +29,7 @@ export const inputs = styled.div`
 
 export const Shadow = styled.div`
   display: flex;
+  width: 100%;
   height: 100%;
   background-color: #000;
   border-width: 0 1px 1px 0;

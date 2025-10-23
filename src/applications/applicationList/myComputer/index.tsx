@@ -13,22 +13,11 @@ import {
   useGetMemorialTracing,
   type MemorialTracingData,
 } from '@/api/memorial/getMemorialTracing.ts';
+import { useGetMemorialsByIdsQuery, type MemorialData } from '@/api/memorial/getMemorialsByIds.ts';
 import { useQuery } from '@tanstack/react-query';
 import axiosInstance from '@/api/axiosInstance';
 import { memorial, anime } from '@/config';
-import React, { useEffect, useState } from 'react';
-
-// 추모관 정보를 가져오는 커스텀 hook
-const useMemorialInfo = (memorialId: number) => {
-  return useQuery({
-    queryKey: ['memorial', memorialId],
-    queryFn: async () => {
-      const response = await axiosInstance.get(`${memorial}/${memorialId}`);
-      return response.data.data;
-    },
-    enabled: !!memorialId,
-  });
-};
+import React, { useEffect, useState, useMemo } from 'react';
 
 // 캐릭터 정보를 가져오는 커스텀 hook
 const useCharacterInfo = (characterId: number) => {
@@ -44,24 +33,23 @@ const useCharacterInfo = (characterId: number) => {
 
 // 개별 추모관 아이템 컴포넌트
 const MemorialItem = ({
-  memorialId,
+  memorialData,
   taskTransform,
 }: {
-  memorialId: number;
+  memorialData: MemorialData;
   taskTransform: any;
 }) => {
-  const { data: memorialData } = useMemorialInfo(memorialId);
-  const { data: characterData } = useCharacterInfo(memorialData?.characterId);
+  const { data: characterData } = useCharacterInfo(memorialData.characterId);
 
   return (
     <MemorialWithIcon
-      key={memorialId}
+      key={memorialData.memorialId}
       icon={myComputer}
-      name={characterData?.name || `추모관 #${memorialId}`}
+      name={characterData?.name || `추모관 #${memorialData.memorialId}`}
       onDoubleClick={() => {
         taskTransform?.('', '추모관 뷰어', {
-          memorialId: memorialId,
-          characterId: memorialData?.characterId || 0,
+          memorialId: memorialData.memorialId,
+          characterId: memorialData.characterId,
         });
       }}
     />
@@ -88,6 +76,18 @@ const MyComputer = () => {
     setMemorialTracingData,
     setHasNextTracing,
     true,
+  );
+
+  // memorialTracingData에서 고유한 memorialId 목록 추출
+  const uniqueMemorialIds = useMemo(
+    () => Array.from(new Set(memorialTracingData.map((item) => item.memorialId))),
+    [memorialTracingData],
+  );
+
+  // 여러 추모관 정보를 한 번에 가져오기
+  const { data: memorialsData, isLoading: isMemorialsLoading } = useGetMemorialsByIdsQuery(
+    uniqueMemorialIds,
+    loggedIn && uniqueMemorialIds.length > 0,
   );
 
   useEffect(() => {
@@ -195,24 +195,22 @@ const MyComputer = () => {
             <_.Inputs>
               {!loggedIn ? (
                 <_.MessageText>로그인 후 이용할 수 있습니다.</_.MessageText>
-              ) : mutationGetMemorialTracing.isPending ? (
+              ) : mutationGetMemorialTracing.isPending || isMemorialsLoading ? (
                 <_.MessageText>로딩 중...</_.MessageText>
               ) : mutationGetMemorialTracing.isError ? (
                 <_.MessageText>데이터를 불러오는 중 오류가 발생했습니다.</_.MessageText>
               ) : memorialTracingData.length === 0 ? (
                 <_.MessageText>방문한 추모관이 없습니다.</_.MessageText>
-              ) : (
+              ) : memorialsData?.data && memorialsData.data.length > 0 ? (
                 <>
-                  {/* memorialId로 고유한 추모관 목록 생성 */}
-                  {Array.from(new Set(memorialTracingData.map((item) => item.memorialId))).map(
-                    (memorialId) => (
-                      <MemorialItem
-                        key={memorialId}
-                        memorialId={memorialId}
-                        taskTransform={taskTransform}
-                      />
-                    ),
-                  )}
+                  {/* 추모관 목록 렌더링 */}
+                  {memorialsData.data.map((memorial) => (
+                    <MemorialItem
+                      key={memorial.memorialId}
+                      memorialData={memorial}
+                      taskTransform={taskTransform}
+                    />
+                  ))}
                   {hasNextTracing && (
                     <MemorialBtn
                       name="더보기"
@@ -224,6 +222,8 @@ const MyComputer = () => {
                     />
                   )}
                 </>
+              ) : (
+                <_.MessageText>추모관 정보를 불러올 수 없습니다.</_.MessageText>
               )}
             </_.Inputs>
           </_.Shadow>

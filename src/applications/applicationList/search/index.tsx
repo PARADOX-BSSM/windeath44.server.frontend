@@ -3,9 +3,10 @@ import * as _ from '@/applications/applicationList/search/style.ts';
 import Folder from '@/assets/search/folder.svg';
 import Search_task from '@/applications/applicationList/search/search_task';
 import Viewer from '@/applications/applicationList/search/viewer';
-import { useGetIntegratedCharactersQuery } from '@/api/anime/getCharactersByIntegratedSearching';
+import { useGetIntegratedCharactersOffsetQuery } from '@/api/anime/getCharactersByIntegratedOffsetSearching';
 import { fetchAnimesPage } from '@/api/anime/getAnimes';
 import { useGetMemorialsCharacterFilteredQuery } from '@/api/memorial/getMemorialsCharacterFiltered';
+import MemorialBtn from '@/applications/components/memorialBtn';
 
 type Character = { characterId: number; [k: string]: any };
 type AnimeItem = { animeId: number; [k: string]: any };
@@ -49,8 +50,10 @@ const Search = () => {
   const debouncedAni = useDebounce(ani, 500);
   const debouncedName = useDebounce(name, 500);
 
-  // 페이지네이션 (cursor 기반)
-  const [cursorId, setCursorId] = useState<number | undefined>(undefined);
+  // 페이지네이션
+  // const [cursorId, setCursorId] = useState<number | undefined>(undefined);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [size, setSize] = useState(50);
 
   // ------ 파라미터 정규화 ------
   const deathParam = useMemo(() => (fillDeath === '모두' ? undefined : fillDeath), [fillDeath]);
@@ -64,9 +67,9 @@ const Search = () => {
   );
 
   // 새 검색 조건이 생기면 커서 리셋
-  useEffect(() => {
-    setCursorId(undefined);
-  }, [nameParam, deathParam, aniParam]);
+  // useEffect(() => {
+  //   setCursorId(undefined);
+  // }, [nameParam, deathParam, aniParam]);
 
   // ------ 애니 이름 -> 애니 ID 조회 (검색어 있을 때만) ------
   const [animesResp, setAnimesResp] = useState<any>(null);
@@ -83,7 +86,7 @@ const Search = () => {
       setIsAnimesLoading(true);
       setIsAnimesError(false);
       try {
-        const resp = await fetchAnimesPage({ size: 50, animeName: aniParam });
+        const resp = await fetchAnimesPage({ size: size, animeName: aniParam });
         if (!aborted) setAnimesResp(resp);
       } catch (e) {
         if (!aborted) setIsAnimesError(true);
@@ -92,6 +95,7 @@ const Search = () => {
       }
     };
     run();
+
     return () => {
       aborted = true;
     };
@@ -111,44 +115,31 @@ const Search = () => {
     data: integrated,
     isLoading: isIntegratedLoading,
     isError: isIntegratedError,
-  } = useGetIntegratedCharactersQuery({
+  } = useGetIntegratedCharactersOffsetQuery({
     name: nameParam, // 비어있으면 sanitize에서 제거 → 전체
     animeId: animeIdParam, // undefined면 제거 → 전체
     deathReason: deathParam, // undefined면 제거 → 전체
-    size: 100,
-    cursorId,
+    size: size,
+    page: pageNumber - 1,
     memorialState: 'MEMORIALIZING',
   });
 
   const normalized = useMemo(() => {
     const p = integrated as any;
 
-    // console.log('Normalizing integrated data:', p);
+    console.log('Normalizing integrated data:', p);
 
     let values = [];
 
-    // 다양한 응답 구조 처리
-    if (p?.data?.data && Array.isArray(p.data.data)) {
-      values = p.data.data; // { data: { data: [...] } }
-    } else if (p?.values && Array.isArray(p.values)) {
-      values = p.values; // { values: [...] }
-    } else if (p?.data?.values && Array.isArray(p.data.values)) {
-      values = p.data.values; // { data: { values: [...] } }
-    } else if (Array.isArray(p?.data)) {
-      values = p.data; // { data: [...] }
-    } else if (Array.isArray(p)) {
-      values = p; // [...]
+    if (p?.data?.values && Array.isArray(p?.data?.values)) {
+      values = p.data?.values;
     }
 
-    const next =
-      (typeof p?.nextCursorId === 'number' && p.nextCursorId) ??
-      (typeof p?.data?.nextCursorId === 'number' && p.data.nextCursorId) ??
-      (typeof p?.data?.data?.nextCursorId === 'number' && p.data.data.nextCursorId) ??
-      undefined;
+    const total = p?.data?.total;
 
-    // console.log('Normalized values:', values, 'nextCursorId:', next);
+    console.log('Normalized values:', values, 'total:', total);
 
-    return { values, nextCursorId: next };
+    return { values, total };
   }, [integrated]);
 
   const characters = normalized.values as Character[];
@@ -158,10 +149,6 @@ const Search = () => {
       characters.map((c) => c?.characterId).filter((id): id is number => typeof id === 'number'),
     [characters],
   );
-
-  // useEffect(() => {
-  //   console.log(characters);
-  // }, [characters]);
 
   // queryKey 안정화: 정렬된 복사본 사용
   const characterKey = useMemo(() => characterIds, [characterIds]);
@@ -173,12 +160,13 @@ const Search = () => {
     isError: isMemorialError,
   } = useGetMemorialsCharacterFilteredQuery({
     orderBy: 'recently-updated',
-    page: 1,
+    page: pageNumber,
     characters: characterKey,
-    enabled: characterKey.length > 0 && !isAnimesLoading && (!aniParam || animeIdParam !== undefined),
+    enabled:
+      characterKey.length > 0 && !isAnimesLoading && (!aniParam || animeIdParam !== undefined),
   });
 
-  const memorials = memorialsResp?.data ?? [];
+  const memorials = memorialsResp?.data?.values ?? [];
 
   // useEffect(() => {
   //   console.log('Search - Characters:', characters.length, 'Memorials:', memorials.length);
@@ -221,10 +209,63 @@ const Search = () => {
             setName={setName}
           />
 
-          <Viewer
-            characters={characters}
-            memorials={memorials}
-          />
+          <_.PagingContainer>
+            <Viewer
+              characters={characters}
+              memorials={memorials}
+            />
+            <_.Paging>
+              <MemorialBtn
+                name="1"
+                selected={pageNumber === 1}
+                type="menu"
+                onClick={() => {
+                  setPageNumber(1);
+                }}
+                active={true}
+                width="32px"
+                height="32px"
+                fontSize="16px"
+              />
+              <MemorialBtn
+                name="2"
+                selected={pageNumber === 2}
+                type="menu"
+                onClick={() => {
+                  setPageNumber(2);
+                }}
+                active={true}
+                width="32px"
+                height="32px"
+                fontSize="16px"
+              />
+              <MemorialBtn
+                name="3"
+                selected={pageNumber === 3}
+                type="menu"
+                onClick={() => {
+                  setPageNumber(3);
+                }}
+                active={true}
+                width="32px"
+                height="32px"
+                fontSize="16px"
+              />
+              <_.PagingGap>...</_.PagingGap>
+              <MemorialBtn
+                name="36"
+                selected={false}
+                type="menu"
+                onClick={() => {
+                  setPageNumber(36);
+                }}
+                active={true}
+                width="32px"
+                height="32px"
+                fontSize="16px"
+              />
+            </_.Paging>
+          </_.PagingContainer>
         </_.search_task>
 
         <_.object>
