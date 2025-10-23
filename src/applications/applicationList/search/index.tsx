@@ -3,7 +3,7 @@ import * as _ from '@/applications/applicationList/search/style.ts';
 import Folder from '@/assets/search/folder.svg';
 import Search_task from '@/applications/applicationList/search/search_task';
 import Viewer from '@/applications/applicationList/search/viewer';
-import { useGetIntegratedCharactersQuery } from '@/api/anime/getCharactersByIntegratedSearching';
+import { useGetIntegratedCharactersOffsetQuery } from '@/api/anime/getCharactersByIntegratedOffsetSearching';
 import { fetchAnimesPage } from '@/api/anime/getAnimes';
 import { useGetMemorialsCharacterFilteredQuery } from '@/api/memorial/getMemorialsCharacterFiltered';
 import MemorialBtn from '@/applications/components/memorialBtn';
@@ -50,10 +50,10 @@ const Search = () => {
   const debouncedAni = useDebounce(ani, 500);
   const debouncedName = useDebounce(name, 500);
 
-  // 페이지네이션 (cursor 기반)
-  const [cursorId, setCursorId] = useState<number | undefined>(undefined);
+  // 페이지네이션
+  // const [cursorId, setCursorId] = useState<number | undefined>(undefined);
   const [pageNumber, setPageNumber] = useState(1);
-  const [size, setSize] = useState(2);
+  const [size, setSize] = useState(50);
 
   // ------ 파라미터 정규화 ------
   const deathParam = useMemo(() => (fillDeath === '모두' ? undefined : fillDeath), [fillDeath]);
@@ -67,9 +67,9 @@ const Search = () => {
   );
 
   // 새 검색 조건이 생기면 커서 리셋
-  useEffect(() => {
-    setCursorId(undefined);
-  }, [nameParam, deathParam, aniParam]);
+  // useEffect(() => {
+  //   setCursorId(undefined);
+  // }, [nameParam, deathParam, aniParam]);
 
   // ------ 애니 이름 -> 애니 ID 조회 (검색어 있을 때만) ------
   const [animesResp, setAnimesResp] = useState<any>(null);
@@ -95,6 +95,7 @@ const Search = () => {
       }
     };
     run();
+
     return () => {
       aborted = true;
     };
@@ -114,32 +115,31 @@ const Search = () => {
     data: integrated,
     isLoading: isIntegratedLoading,
     isError: isIntegratedError,
-  } = useGetIntegratedCharactersQuery({
+  } = useGetIntegratedCharactersOffsetQuery({
     name: nameParam, // 비어있으면 sanitize에서 제거 → 전체
     animeId: animeIdParam, // undefined면 제거 → 전체
     deathReason: deathParam, // undefined면 제거 → 전체
     size: size,
-    cursorId,
+    page: pageNumber - 1,
     memorialState: 'MEMORIALIZING',
   });
 
   const normalized = useMemo(() => {
     const p = integrated as any;
 
-    // console.log('Normalizing integrated data:', p);
+    console.log('Normalizing integrated data:', p);
 
     let values = [];
 
-    if (p.data.data && Array.isArray(p.data.data)) {
-      values = p.data.data;
+    if (p?.data?.values && Array.isArray(p?.data?.values)) {
+      values = p.data?.values;
     }
 
-    const hasNext = p.data.hasNext;
-    const nextCursorId = p.data.data[p.data.data.length - 1]?.characterId;
+    const total = p?.data?.total;
 
-    console.log('Normalized values:', values, 'hasNext:', hasNext, 'nextCursorId:', nextCursorId);
+    console.log('Normalized values:', values, 'total:', total);
 
-    return { values, hasNext, nextCursorId };
+    return { values, total };
   }, [integrated]);
 
   const characters = normalized.values as Character[];
@@ -166,7 +166,7 @@ const Search = () => {
       characterKey.length > 0 && !isAnimesLoading && (!aniParam || animeIdParam !== undefined),
   });
 
-  const memorials = memorialsResp?.data ?? [];
+  const memorials = memorialsResp?.data?.values ?? [];
 
   // useEffect(() => {
   //   console.log('Search - Characters:', characters.length, 'Memorials:', memorials.length);
@@ -192,12 +192,6 @@ const Search = () => {
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
-
-  const handleNextPage = useCallback(() => {
-    if (normalized.hasNext && normalized.nextCursorId) {
-      setCursorId(normalized.nextCursorId);
-    }
-  }, [normalized.hasNext, normalized.nextCursorId]);
 
   return (
     <_.main>
