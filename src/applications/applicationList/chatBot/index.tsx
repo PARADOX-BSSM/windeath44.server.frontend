@@ -7,15 +7,13 @@ import Ame from '@/assets/profile/ame.svg';
 import Hosino from '@/assets/character/hosino.svg';
 import { useDoChat } from '@/api/chatbot/chat';
 import { useGetChatBotQuery } from '@/api/chatbot/getChatBot';
-import {
-  useGetChatbotHistory,
-  type ChatHistoryItem,
-} from '@/api/chatbot/getChatbotHistory';
+import { useGetChatbotHistory, type ChatHistoryItem } from '@/api/chatbot/getChatbotHistory';
 import { useAtomValue } from 'jotai';
 import { alerterAtom } from '@/atoms/alerter';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
 import { useGetUserMutation } from '@/api/user/getUser';
 import { useGetCharacter, CharacterData } from '@/api/anime/getCharacter';
+import seori from '@/assets/sulkkagi/black_stone.svg';
 
 interface Message {
   id: string;
@@ -58,11 +56,7 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
   const getChatBot = useGetChatBotQuery({ chatbot_id: chatbotId });
   const { mutate: getUser, data: userData } = useGetUserMutation();
   const getCharacterMutation = useGetCharacter(setCharacterData);
-  const mutationGetChatHistory = useGetChatbotHistory(
-    setChatHistory,
-    setHasNextHistory,
-    false,
-  );
+  const mutationGetChatHistory = useGetChatbotHistory(setChatHistory, setHasNextHistory, false);
 
   // API에서 가져온 챗봇 정보
   const character = getChatBot.data?.data?.name || '챗봇';
@@ -198,11 +192,23 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
           setMessages((prev) => [...prev, tempData]);
           setIsLoading(false);
         },
-        onError: () => {
+        onError: (error: any) => {
           setIsLoading(false);
-          setAlert?.(Choten, <>채팅 중 오류가 발생했습니다.</>, () => {
-            taskTransform?.('경고', '');
-          });
+
+          // 서버에서 온 에러 메시지 추출
+          const errorMessage = error?.response?.data?.message || '채팅 중 오류가 발생했습니다.';
+
+          setAlert?.(
+            seori,
+            <>
+              {errorMessage}
+              <br />
+              절하기를 통해 토큰을 모아보세요!
+            </>,
+            () => {
+              taskTransform?.('경고', '');
+            },
+          );
         },
       },
     );
