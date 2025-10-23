@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { keyframes } from '@emotion/react';
 import bgImg from '@/assets/Background.svg';
 export const Container = styled.div`
   margin: 0;
@@ -23,6 +24,27 @@ export const Main = styled.main`
   background-size: cover;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
+  position: relative;
+  cursor: pointer;
+`;
+export const CationImage = styled.img`
+  height: 100%;
+`;
+const blink = keyframes`
+  0% { opacity: 1; } 
+  75% { opacity: 1; }
+  76% { opacity: 0; } 
+  100% { opacity: 0; }
+`;
+export const ClickText = styled.div`
+  padding: 0 0 12% 20%;
+  font-family: Galmuri11;
+  font-size: 4.5vmin;
+  color: #fff;
+  position: absolute;
+  bottom: 0;
+  text-decoration: underline;
+  animation: ${blink} 2s steps(1, end) infinite;
 `;

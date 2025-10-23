@@ -86,7 +86,7 @@ export const DescriptionBox = styled.div`
   box-shadow: ${shadow};
 `;
 
-export const Description = styled.p`
+export const Description = styled.div`
   flex: 1 1 0;
   align-self: stretch;
   color: #2E2E2E;
