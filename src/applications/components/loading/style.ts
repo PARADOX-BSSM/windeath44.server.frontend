@@ -22,3 +22,26 @@ export const LoadingText = styled.div`
   font-family: Galmuri11;
   font-size: 1.2rem;
 `;
+
+export const LoadingOverlay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 9999;
+`;
+
+export const LoadingContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+`;
