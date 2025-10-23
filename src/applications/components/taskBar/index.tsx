@@ -24,6 +24,7 @@ const TaskBar = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
           if (task.type === 'Shell') {
             return (
               <_.Observer
+                key={task.name || 'observer'}
                 selected={startOption}
                 onClick={(e) => {
                   e.stopPropagation();

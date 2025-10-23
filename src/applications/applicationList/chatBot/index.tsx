@@ -7,11 +7,13 @@ import Ame from '@/assets/profile/ame.svg';
 import Hosino from '@/assets/character/hosino.svg';
 import { useDoChat } from '@/api/chatbot/chat';
 import { useGetChatBotQuery } from '@/api/chatbot/getChatBot';
+import { useGetChatbotHistory, type ChatHistoryItem } from '@/api/chatbot/getChatbotHistory';
 import { useAtomValue } from 'jotai';
 import { alerterAtom } from '@/atoms/alerter';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
 import { useGetUserMutation } from '@/api/user/getUser';
 import { useGetCharacter, CharacterData } from '@/api/anime/getCharacter';
+import seori from '@/assets/sulkkagi/black_stone.svg';
 
 interface Message {
   id: string;
@@ -37,15 +39,11 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
   const setAlert = useAtomValue(alerterAtom);
   const taskTransform = useAtomValue(taskTransformerAtom);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [messages, setMessages] = useState<Message[]>([
-    // {
-    //   id: '1',
-    //   avatar: Ame,
-    //   author: '로에나',
-    //   handle: '@roena0516',
-    //   text: '1화만에 죽은 소감이 어때?',
-    // },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
+
+  const [chatHistory, setChatHistory] = useState<ChatHistoryItem[]>([]);
+  const [hasNextHistory, setHasNextHistory] = useState<boolean>(false);
+  const [isHistoryLoaded, setIsHistoryLoaded] = useState<boolean>(false);
 
   const [contributors, setContributors] = useState<Contributor[]>([]);
   const [showAllContributors, setShowAllContributors] = useState(false);
@@ -58,6 +56,7 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
   const getChatBot = useGetChatBotQuery({ chatbot_id: chatbotId });
   const { mutate: getUser, data: userData } = useGetUserMutation();
   const getCharacterMutation = useGetCharacter(setCharacterData);
+  const mutationGetChatHistory = useGetChatbotHistory(setChatHistory, setHasNextHistory, false);
 
   // API에서 가져온 챗봇 정보
   const character = getChatBot.data?.data?.name || '챗봇';
@@ -79,7 +78,57 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
   useEffect(() => {
     // chatbotId와 characterId가 같으므로 chatbotId로 캐릭터 정보 가져오기
     getCharacterMutation.mutate(chatbotId);
+
+    // 채팅 기록 불러오기
+    mutationGetChatHistory.mutate(
+      { chatbotId, size: 20 },
+      {
+        onSuccess: () => {
+          setIsHistoryLoaded(true);
+        },
+        onError: () => {
+          console.error('채팅 기록을 불러오는 중 오류가 발생했습니다.');
+          setIsHistoryLoaded(true); // 에러가 나도 계속 진행
+        },
+      },
+    );
   }, [chatbotId]);
+
+  // 채팅 기록을 Message 형식으로 변환
+  useEffect(() => {
+    if (isHistoryLoaded && userData && characterData && getChatBot.data) {
+      if (chatHistory && chatHistory.length > 0) {
+        const historyMessages: Message[] = [];
+
+        // 역순으로 처리 (가장 오래된 것부터 표시)
+        const reversedHistory = [...chatHistory].reverse();
+
+        reversedHistory.forEach((item, index) => {
+          // User message (input_text)
+          historyMessages.push({
+            id: `history-${item._id}-user`,
+            avatar: userImg,
+            author: userName,
+            handle: `@${userId}`,
+            text: item.input_text,
+          });
+
+          // Assistant message (output_text)
+          historyMessages.push({
+            id: `history-${item._id}-assistant`,
+            avatar: characterImage,
+            author: character,
+            text: item.output_text,
+          });
+        });
+
+        setMessages(historyMessages);
+      } else {
+        // 히스토리가 없으면 빈 배열로 설정
+        setMessages([]);
+      }
+    }
+  }, [isHistoryLoaded, chatHistory]);
 
   useEffect(() => {
     const contributeData = getChatBot.data?.data?.contributor;
@@ -143,11 +192,23 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
           setMessages((prev) => [...prev, tempData]);
           setIsLoading(false);
         },
-        onError: () => {
+        onError: (error: any) => {
           setIsLoading(false);
-          setAlert?.(Choten, <>채팅 중 오류가 발생했습니다.</>, () => {
-            taskTransform?.('경고', '');
-          });
+
+          // 서버에서 온 에러 메시지 추출
+          const errorMessage = error?.response?.data?.message || '채팅 중 오류가 발생했습니다.';
+
+          setAlert?.(
+            seori,
+            <>
+              {errorMessage}
+              <br />
+              절하기를 통해 토큰을 모아보세요!
+            </>,
+            () => {
+              taskTransform?.('경고', '');
+            },
+          );
         },
       },
     );
