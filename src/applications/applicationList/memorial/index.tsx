@@ -48,6 +48,7 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
     name: '',
     lifeTime: 0,
     deathReason: '',
+    causeOfDeathDetails: '',
     imageUrl: '',
     bowCount: 0,
     age: 0,
@@ -494,6 +495,10 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
                     <_.Row>
                       <_.Attribute>사인(死因)</_.Attribute>
                       <_.Value>{characterData?.deathReason}</_.Value>
+                    </_.Row>
+                    <_.Row>
+                      <_.Attribute>상세 사인</_.Attribute>
+                      <_.Value>{characterData.causeOfDeathDetails}</_.Value>
                     </_.Row>
                     <_.Row>
                       <_.Attribute>애니메이션</_.Attribute>
