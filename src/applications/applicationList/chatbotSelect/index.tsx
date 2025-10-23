@@ -1,5 +1,6 @@
 import * as _ from './style.ts';
 import Inputs from '@/applications/components/inputs';
+import Loading from '@/applications/components/loading';
 import { useState, useMemo, useEffect } from 'react';
 import { taskTransformerAtom } from '@/atoms/taskTransformer.ts';
 import { useAtomValue } from 'jotai';
@@ -7,7 +8,6 @@ import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg.tsx';
 import { useGetChatBotsQuery } from '@/api/chatbot/getChatBots.ts';
 import { useGetCharacter, CharacterData } from '@/api/anime/getCharacter';
 import Hosino from '@/assets/character/hosino.svg';
-import LoadinguBig from '@/assets/loadingu_big.gif';
 
 interface ChatbotItemProps {
   chatbot_id: number;
@@ -40,7 +40,10 @@ const ChatbotItem = ({ chatbot_id, name, description, isSelected, onClick }: Cha
       onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
     >
       <_.TopContainerItemInfo>
-        <_.TopContainerItemImage src={characterImage} alt={`${name}의 사진`} />
+        <_.TopContainerItemImage
+          src={characterImage}
+          alt={`${name}의 사진`}
+        />
         <_.TopContainerItemText>
           <_.TopContainerItemTitle>{name}</_.TopContainerItemTitle>
           <_.TopContainerItemDesc>{description}</_.TopContainerItemDesc>
@@ -65,10 +68,7 @@ const ChatbotSelect = () => {
     <_.Container>
       <_.TopContainer>
         {chatBotsQuery.isLoading ? (
-          <_.LoadingContainer>
-            <_.LoadingImage src={LoadinguBig} alt="로딩중" />
-            <_.LoadingText>로딩중...</_.LoadingText>
-          </_.LoadingContainer>
+          <Loading />
         ) : chatBotsQuery.error ? (
           <div>Error loading chatbots</div>
         ) : (
