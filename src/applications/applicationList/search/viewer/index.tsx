@@ -5,6 +5,7 @@ import { taskTransformerAtom } from '@/atoms/taskTransformer';
 import { useAtom, useAtomValue } from 'jotai';
 // import { useEffect } from 'react';
 import { memorialIdAtom } from '@/atoms/memorialManager.ts';
+import MemorialObject from '@/applications/components/memorialObject';
 
 interface ViewerProps {
   characters: any[];
@@ -37,10 +38,11 @@ const Viewer = ({ characters, memorials, stack, push, pop, top }: ViewerProps) =
 
               if (relatedMemorials.length > 0) {
                 return (
-                  <MemorialWithIcon
+                  <MemorialObject
                     key={character.characterId}
-                    icon={myComputer}
+                    icon={character.imageUrl || ''}
                     name={character.name}
+                    animation={character.animeId}
                     onDoubleClick={() => {
                       const characterId = character.characterId;
                       let targetMemorialId = relatedMemorials[0].memorialId;

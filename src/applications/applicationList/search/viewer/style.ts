@@ -7,7 +7,6 @@ export const view = styled.div`
   height: 100%;
   align-self: stretch;
   display: flex;
-  overflow-x: scroll;
   -ms-overflow-style: none;
   &::-webkit-scrollbar {
     display: none;
@@ -16,7 +15,6 @@ export const view = styled.div`
 
 export const inputs = styled.div`
   display: flex;
-  gap: 24px;
   background-color: var(--light-primary-color);
   margin: 1px 0 0 1px;
   width: 100%;
@@ -26,7 +24,6 @@ export const inputs = styled.div`
   overflow-x: hidden;
   flex-wrap: wrap;
   font-family: 'Galmuri11';
-  padding: 16px;
   outline: none;
   border-color: #dcafdd;
   border-style: solid;
