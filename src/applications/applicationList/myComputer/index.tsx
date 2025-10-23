@@ -1,4 +1,5 @@
 import MemorialBtn from '@/applications/components/memorialBtn/index.tsx';
+import Loading from '@/applications/components/loading';
 import * as _ from './style.ts';
 import myComputer from '@/assets/appIcons/my_computer.svg';
 import Choten from '@/assets/profile/choten.svg';
@@ -159,7 +160,7 @@ const MyComputer = () => {
     !!(userData && (userData as any).data && (userData as any).data.name) && !isPending && !error;
 
   if (isLoggedIn && !isUserReady) {
-    return null;
+    return <Loading />;
   }
 
   return (
@@ -196,7 +197,7 @@ const MyComputer = () => {
               {!loggedIn ? (
                 <_.MessageText>로그인 후 이용할 수 있습니다.</_.MessageText>
               ) : mutationGetMemorialTracing.isPending || isMemorialsLoading ? (
-                <_.MessageText>로딩 중...</_.MessageText>
+                <Loading text="로딩 중..." imageSize="80px" />
               ) : mutationGetMemorialTracing.isError ? (
                 <_.MessageText>데이터를 불러오는 중 오류가 발생했습니다.</_.MessageText>
               ) : memorialTracingData.length === 0 ? (
