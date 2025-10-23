@@ -27,6 +27,7 @@ export const Main = styled.main`
   align-items: flex-start;
   justify-content: center;
   position: relative;
+  cursor: pointer;
 `;
 export const CationImage = styled.img`
   height: 100%;
