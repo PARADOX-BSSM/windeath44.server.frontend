@@ -33,7 +33,7 @@ const Search_task = ({ fillDeath, setFillDeath, ani, setAni, name, setName }: Se
       <_.styles>
         <_.search_main>
           <Inputs
-            width="100%"
+            width="250px"
             fontSize="16px"
             flex={false}
             label="이름"
@@ -42,7 +42,7 @@ const Search_task = ({ fillDeath, setFillDeath, ani, setAni, name, setName }: Se
             setValue={setName}
           />
           <Inputs
-            width="100%"
+            width="250px"
             fontSize="16px"
             flex={false}
             label="애니메이션"

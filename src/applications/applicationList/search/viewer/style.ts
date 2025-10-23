@@ -36,6 +36,7 @@ export const inputs = styled.div`
 
 export const Shadow = styled.div`
   display: flex;
+  width: 100%;
   height: 100%;
   background-color: #000;
   border-width: 0 1px 1px 0;
