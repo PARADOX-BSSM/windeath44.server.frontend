@@ -1,8 +1,8 @@
 import * as _ from './style.ts';
 import ame from '@/assets/profile/ame.svg';
 
-import heart from '@/assets/community/Community_Heart.svg';
-import empty_heart from '@/assets/community/Empty_Heart.svg';
+import heart from '@/assets/community/heart_fill.svg';
+import empty_heart from '@/assets/community/heart_line.svg';
 import chat_box from '@/assets/community/Chat.svg';
 import { useEffect, useRef, useState } from 'react';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
