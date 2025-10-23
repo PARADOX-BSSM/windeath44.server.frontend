@@ -293,7 +293,9 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
                   text={msg.text}
                 />
               ))}
-              {isLoading ? <_.LoadingMessage>답변을 기다리는 중입니다.</_.LoadingMessage> : ''}
+              {isLoading && (
+                <Loading text="답변을 기다리는 중입니다..." imageSize="100px" />
+              )}
               <div ref={messagesEndRef} />
             </_.ChatMessagesContainer>
           </_.ChatArea>

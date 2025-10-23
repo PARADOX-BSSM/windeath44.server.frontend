@@ -8,6 +8,7 @@ export const LoadingContainer = styled.div`
   justify-content: center;
   align-items: center;
   gap: 1rem;
+  background-color: #FDFDFD;
 `;
 
 export const LoadingImage = styled.img`
