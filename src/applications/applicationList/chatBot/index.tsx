@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
 import * as _ from './style';
 import ChatMessage from '@/applications/components/chatMessage';
+import Loading from '@/applications/components/loading';
 import Choten from '@/assets/profile/choten.svg';
 import Ame from '@/assets/profile/ame.svg';
 import Hosino from '@/assets/character/hosino.svg';
@@ -128,7 +129,7 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
         setMessages([]);
       }
     }
-  }, [isHistoryLoaded, chatHistory]);
+  }, [isHistoryLoaded, chatHistory, userData, characterData, getChatBot.data, userImg, userName, userId, characterImage, character]);
 
   useEffect(() => {
     const contributeData = getChatBot.data?.data?.contributor;
@@ -226,9 +227,9 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
 
   const displayedContributors = showAllContributors ? contributors : contributors.slice(0, 5);
 
-  // 캐릭터 정보를 불러오기 전까지 렌더링하지 않음
-  if (getChatBot.isLoading || !characterData) {
-    return null;
+  // 캐릭터 정보와 히스토리를 불러오기 전까지 로딩 컴포넌트 표시
+  if (getChatBot.isLoading || !characterData || !isHistoryLoaded) {
+    return <Loading />;
   }
 
   return (
