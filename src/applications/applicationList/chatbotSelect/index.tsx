@@ -7,6 +7,7 @@ import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg.tsx';
 import { useGetChatBotsQuery } from '@/api/chatbot/getChatBots.ts';
 import { useGetCharacter, CharacterData } from '@/api/anime/getCharacter';
 import Hosino from '@/assets/character/hosino.svg';
+import LoadinguBig from '@/assets/loadingu_big.gif';
 
 interface ChatbotItemProps {
   chatbot_id: number;
@@ -64,7 +65,10 @@ const ChatbotSelect = () => {
     <_.Container>
       <_.TopContainer>
         {chatBotsQuery.isLoading ? (
-          <div>Loading...</div>
+          <_.LoadingContainer>
+            <_.LoadingImage src={LoadinguBig} alt="로딩중" />
+            <_.LoadingText>로딩중...</_.LoadingText>
+          </_.LoadingContainer>
         ) : chatBotsQuery.error ? (
           <div>Error loading chatbots</div>
         ) : (
