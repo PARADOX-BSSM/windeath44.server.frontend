@@ -27,7 +27,7 @@ const Caution = ({ setIsCaution }: Props) => {
     <_.Container>
       <_.BackgroundDiv width={sideWidth}></_.BackgroundDiv>
       <_.Main onClick={handleContinue}>
-        <img src={CautionImage} />
+        <_.CationImage src={CautionImage} />
       </_.Main>
       <_.BackgroundDiv width={sideWidth}></_.BackgroundDiv>
     </_.Container>
