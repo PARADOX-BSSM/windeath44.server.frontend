@@ -94,3 +94,8 @@ export const SubmitActive = styled.button<{ width?: string; height?: string; fon
   border: none;
   cursor: none;
 `;
+
+export const HiddenBtn = styled.div<{ width?: string; height?: string }>`
+  width: ${({ width }) => width || '64px'};
+  height: ${({ height }) => height || '64px'};
+`;
