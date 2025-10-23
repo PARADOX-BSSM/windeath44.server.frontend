@@ -7,6 +7,7 @@ import { useGetIntegratedCharactersOffsetQuery } from '@/api/anime/getCharacters
 import { fetchAnimesPage } from '@/api/anime/getAnimes';
 import { useGetMemorialsCharacterFilteredQuery } from '@/api/memorial/getMemorialsCharacterFiltered';
 import MemorialBtn from '@/applications/components/memorialBtn';
+import { set } from '@/applications/utility/signUp/style';
 
 type Character = { characterId: number; [k: string]: any };
 type AnimeItem = { animeId: number; [k: string]: any };
@@ -53,7 +54,8 @@ const Search = () => {
   // 페이지네이션
   // const [cursorId, setCursorId] = useState<number | undefined>(undefined);
   const [pageNumber, setPageNumber] = useState(1);
-  const [size, setSize] = useState(50);
+  const [maxPage, setMaxPage] = useState(1);
+  const [size, setSize] = useState(5);
 
   // ------ 파라미터 정규화 ------
   const deathParam = useMemo(() => (fillDeath === '모두' ? undefined : fillDeath), [fillDeath]);
@@ -136,11 +138,12 @@ const Search = () => {
     }
 
     const total = p?.data?.total;
+    setMaxPage(total ? Math.ceil(total / size) : 1);
 
-    console.log('Normalized values:', values, 'total:', total);
+    console.log('Normalized values:', values, 'total:', total, 'maxPage:', maxPage);
 
     return { values, total };
-  }, [integrated]);
+  }, [integrated, pageNumber]);
 
   const characters = normalized.values as Character[];
 
@@ -160,7 +163,7 @@ const Search = () => {
     isError: isMemorialError,
   } = useGetMemorialsCharacterFilteredQuery({
     orderBy: 'recently-updated',
-    page: pageNumber,
+    page: 1,
     characters: characterKey,
     enabled:
       characterKey.length > 0 && !isAnimesLoading && (!aniParam || animeIdParam !== undefined),
@@ -180,18 +183,18 @@ const Search = () => {
   // }, [memorials, characters, isAnimesLoading, isMemorialLoading, isAnimesError, isMemorialError, isIntegratedLoading, isIntegratedError, nameParam, animeIdParam, deathParam, integrated, characterIds, characterKey, aniParam]);
 
   // 레이아웃 관찰
-  useEffect(() => {
-    const el = wrapperRef.current;
-    if (!el) return;
-    const ro = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        const next = entry.contentRect.height >= 412;
-        setIsColumn((prev) => (prev === next ? prev : next));
-      }
-    });
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
+  // useEffect(() => {
+  //   const el = wrapperRef.current;
+  //   if (!el) return;
+  //   const ro = new ResizeObserver((entries) => {
+  //     for (const entry of entries) {
+  //       const next = entry.contentRect.height >= 412;
+  //       setIsColumn((prev) => (prev === next ? prev : next));
+  //     }
+  //   });
+  //   ro.observe(el);
+  //   return () => ro.disconnect();
+  // }, []);
 
   return (
     <_.main>
@@ -211,16 +214,17 @@ const Search = () => {
 
           <_.PagingContainer>
             <Viewer
+              isMemorialLoading={isMemorialLoading}
               characters={characters}
               memorials={memorials}
             />
             <_.Paging>
               <MemorialBtn
-                name="1"
-                selected={pageNumber === 1}
-                type="menu"
+                name={`${pageNumber - 1}`}
+                selected={false}
+                type={pageNumber === 1 ? 'hidden' : 'menu'}
                 onClick={() => {
-                  setPageNumber(1);
+                  setPageNumber(pageNumber - 1);
                 }}
                 active={true}
                 width="32px"
@@ -228,11 +232,11 @@ const Search = () => {
                 fontSize="16px"
               />
               <MemorialBtn
-                name="2"
-                selected={pageNumber === 2}
+                name={`${pageNumber}`}
+                selected={true}
                 type="menu"
                 onClick={() => {
-                  setPageNumber(2);
+                  setPageNumber(pageNumber);
                 }}
                 active={true}
                 width="32px"
@@ -240,11 +244,11 @@ const Search = () => {
                 fontSize="16px"
               />
               <MemorialBtn
-                name="3"
-                selected={pageNumber === 3}
-                type="menu"
+                name={`${pageNumber + 1}`}
+                selected={false}
+                type={pageNumber === maxPage ? 'hidden' : 'menu'}
                 onClick={() => {
-                  setPageNumber(3);
+                  setPageNumber(pageNumber + 1);
                 }}
                 active={true}
                 width="32px"
@@ -253,11 +257,11 @@ const Search = () => {
               />
               <_.PagingGap>...</_.PagingGap>
               <MemorialBtn
-                name="36"
+                name={`${maxPage}`}
                 selected={false}
                 type="menu"
                 onClick={() => {
-                  setPageNumber(36);
+                  setPageNumber(maxPage);
                 }}
                 active={true}
                 width="32px"

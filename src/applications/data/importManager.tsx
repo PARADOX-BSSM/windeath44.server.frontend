@@ -173,7 +173,7 @@ const useApps = (): TaskType[] => {
         minWidth: 600,
         minHeight: 300,
         setUpWidth: 950,
-        setUpHeight: 425,
+        setUpHeight: 500,
       },
       visible: false,
     },
