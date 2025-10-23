@@ -1,6 +1,5 @@
 import * as _ from '@/applications/applicationList/bow/style.ts';
 import Table from '@/assets/bow/table.svg';
-import Character from '@/assets/character/hosino.svg';
 import { useMemorialBow } from '@/api/memorial/memorialBow.ts';
 import { useEffect, useState } from 'react';
 import { useMemorialGet as useMemorialGetBowCount } from '@/api/memorial/countBowsByMi.ts';
