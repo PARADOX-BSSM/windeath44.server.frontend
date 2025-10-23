@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 type Props = {
   setIsCaution: (isCaution: boolean) => void;
 };
-const SPOILER_CAUTION_KEY = 'hasWarnedSession';
+const SESSION_KEY = 'hasBootedSession';
 const Caution = ({ setIsCaution }: Props) => {
   const [sideWidth, setSideWidth] = useState<number>(0);
   useEffect(() => {
@@ -20,14 +20,15 @@ const Caution = ({ setIsCaution }: Props) => {
     return () => window.removeEventListener('resize', updateSideWidth);
   }, []);
   const handleContinue = () => {
-    sessionStorage.setItem(SPOILER_CAUTION_KEY, 'true');
+    sessionStorage.setItem(SESSION_KEY, 'true');
     setIsCaution(false);
   };
   return (
     <_.Container>
       <_.BackgroundDiv width={sideWidth}></_.BackgroundDiv>
       <_.Main onClick={handleContinue}>
-        <img src={CautionImage} />
+        <_.CationImage src={CautionImage} />
+        <_.ClickText>계속하려면 화면을 클릭하십시오.</_.ClickText>
       </_.Main>
       <_.BackgroundDiv width={sideWidth}></_.BackgroundDiv>
     </_.Container>

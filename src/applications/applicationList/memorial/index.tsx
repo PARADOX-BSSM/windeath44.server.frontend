@@ -40,6 +40,7 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
   const setAlert = useAtomValue(alerterAtom);
   const [, setInputValue] = useAtom(inputPortage);
   const [content, setContent] = useState<string>('');
+  const token = getCookie('access_token');
   const [characterData, setCharacterData] = useState<CharacterData>({
     characterId: 0,
     animeId: 0,
