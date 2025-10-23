@@ -33,11 +33,9 @@ export const search_task = styled.div<{ isColumn: boolean }>`
 export const PagingContainer = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
+  flex: 1; /* 부모의 남는 공간을 채움 (fill) */
   box-sizing: border-box;
+  overflow: hidden;
 `;
 
 export const Paging = styled.div`

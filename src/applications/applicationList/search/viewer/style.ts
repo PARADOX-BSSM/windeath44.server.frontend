@@ -2,15 +2,11 @@ import styled from '@emotion/styled';
 
 // *검색결과창
 export const view = styled.div`
-  box-sizing: border-box;
-  width: 100%;
-  height: 100%;
-  align-self: stretch;
+  flex: 1; /* fill */
   display: flex;
-  -ms-overflow-style: none;
-  &::-webkit-scrollbar {
-    display: none;
-  }
+  width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
 `;
 
 export const inputs = styled.div`

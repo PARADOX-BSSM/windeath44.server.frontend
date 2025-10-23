@@ -52,6 +52,8 @@ const Search = () => {
 
   // 페이지네이션 (cursor 기반)
   const [cursorId, setCursorId] = useState<number | undefined>(undefined);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [size, setSize] = useState(2);
 
   // ------ 파라미터 정규화 ------
   const deathParam = useMemo(() => (fillDeath === '모두' ? undefined : fillDeath), [fillDeath]);
@@ -84,7 +86,7 @@ const Search = () => {
       setIsAnimesLoading(true);
       setIsAnimesError(false);
       try {
-        const resp = await fetchAnimesPage({ size: 50, animeName: aniParam });
+        const resp = await fetchAnimesPage({ size: size, animeName: aniParam });
         if (!aborted) setAnimesResp(resp);
       } catch (e) {
         if (!aborted) setIsAnimesError(true);
@@ -116,7 +118,7 @@ const Search = () => {
     name: nameParam, // 비어있으면 sanitize에서 제거 → 전체
     animeId: animeIdParam, // undefined면 제거 → 전체
     deathReason: deathParam, // undefined면 제거 → 전체
-    size: 100,
+    size: size,
     cursorId,
     memorialState: 'MEMORIALIZING',
   });
@@ -128,28 +130,16 @@ const Search = () => {
 
     let values = [];
 
-    // 다양한 응답 구조 처리
-    if (p?.data?.data && Array.isArray(p.data.data)) {
-      values = p.data.data; // { data: { data: [...] } }
-    } else if (p?.values && Array.isArray(p.values)) {
-      values = p.values; // { values: [...] }
-    } else if (p?.data?.values && Array.isArray(p.data.values)) {
-      values = p.data.values; // { data: { values: [...] } }
-    } else if (Array.isArray(p?.data)) {
-      values = p.data; // { data: [...] }
-    } else if (Array.isArray(p)) {
-      values = p; // [...]
+    if (p.data.data && Array.isArray(p.data.data)) {
+      values = p.data.data;
     }
 
-    const next =
-      (typeof p?.nextCursorId === 'number' && p.nextCursorId) ??
-      (typeof p?.data?.nextCursorId === 'number' && p.data.nextCursorId) ??
-      (typeof p?.data?.data?.nextCursorId === 'number' && p.data.data.nextCursorId) ??
-      undefined;
+    const hasNext = p.data.hasNext;
+    const nextCursorId = p.data.data[p.data.data.length - 1]?.characterId;
 
-    // console.log('Normalized values:', values, 'nextCursorId:', next);
+    console.log('Normalized values:', values, 'hasNext:', hasNext, 'nextCursorId:', nextCursorId);
 
-    return { values, nextCursorId: next };
+    return { values, hasNext, nextCursorId };
   }, [integrated]);
 
   const characters = normalized.values as Character[];
@@ -159,10 +149,6 @@ const Search = () => {
       characters.map((c) => c?.characterId).filter((id): id is number => typeof id === 'number'),
     [characters],
   );
-
-  // useEffect(() => {
-  //   console.log(characters);
-  // }, [characters]);
 
   // queryKey 안정화: 정렬된 복사본 사용
   const characterKey = useMemo(() => characterIds, [characterIds]);
@@ -174,7 +160,7 @@ const Search = () => {
     isError: isMemorialError,
   } = useGetMemorialsCharacterFilteredQuery({
     orderBy: 'recently-updated',
-    page: 1,
+    page: pageNumber,
     characters: characterKey,
     enabled:
       characterKey.length > 0 && !isAnimesLoading && (!aniParam || animeIdParam !== undefined),
@@ -207,6 +193,12 @@ const Search = () => {
     return () => ro.disconnect();
   }, []);
 
+  const handleNextPage = useCallback(() => {
+    if (normalized.hasNext && normalized.nextCursorId) {
+      setCursorId(normalized.nextCursorId);
+    }
+  }, [normalized.hasNext, normalized.nextCursorId]);
+
   return (
     <_.main>
       <_.main_serve>
@@ -231,8 +223,11 @@ const Search = () => {
             <_.Paging>
               <MemorialBtn
                 name="1"
-                selected={true}
-                type="submit"
+                selected={pageNumber === 1}
+                type="menu"
+                onClick={() => {
+                  setPageNumber(1);
+                }}
                 active={true}
                 width="32px"
                 height="32px"
@@ -240,8 +235,11 @@ const Search = () => {
               />
               <MemorialBtn
                 name="2"
-                selected={true}
-                type="submit"
+                selected={pageNumber === 2}
+                type="menu"
+                onClick={() => {
+                  setPageNumber(2);
+                }}
                 active={true}
                 width="32px"
                 height="32px"
@@ -249,8 +247,11 @@ const Search = () => {
               />
               <MemorialBtn
                 name="3"
-                selected={true}
-                type="submit"
+                selected={pageNumber === 3}
+                type="menu"
+                onClick={() => {
+                  setPageNumber(3);
+                }}
                 active={true}
                 width="32px"
                 height="32px"
@@ -259,8 +260,11 @@ const Search = () => {
               <_.PagingGap>...</_.PagingGap>
               <MemorialBtn
                 name="36"
-                selected={true}
-                type="submit"
+                selected={false}
+                type="menu"
+                onClick={() => {
+                  setPageNumber(36);
+                }}
                 active={true}
                 width="32px"
                 height="32px"
