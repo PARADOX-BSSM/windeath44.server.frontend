@@ -1,5 +1,6 @@
 import IndexMenu from '@/applications/components/indexMenu';
 import Comment from '@/applications/components/comment';
+import Loading from '@/applications/components/loading';
 import * as _ from './style';
 import { index_data } from './data';
 import { useAtom, useAtomValue } from 'jotai';
@@ -47,6 +48,7 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
     name: '',
     lifeTime: 0,
     deathReason: '',
+    causeOfDeathDetails: '',
     imageUrl: '',
     bowCount: 0,
     age: 0,
@@ -349,13 +351,6 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
     });
   }, []);
 
-  if (!characterData) {
-    return <p>무언가 잘못되었습니다.</p>;
-  }
-  if (!memorialData) {
-    return <p>무언가 잘못되었습니다.</p>;
-  }
-
   useEffect(() => {
     if (characterData.animeId) {
       mutationAnimation.mutate(characterData.animeId, {
@@ -375,6 +370,17 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
       });
     }
   }, [characterData.animeId]);
+
+  // 데이터 로딩 중일 때 로딩 컴포넌트 표시
+  if (
+    mutationMemorialGet.isPending ||
+    mutationGetCharacter.isPending ||
+    mutaionGetMemorialComments.isPending ||
+    !characterData.characterId ||
+    !memorialData.memorialId
+  ) {
+    return <Loading />;
+  }
 
   const stackProps = {
     stack: stack,
@@ -489,6 +495,10 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
                     <_.Row>
                       <_.Attribute>사인(死因)</_.Attribute>
                       <_.Value>{characterData?.deathReason}</_.Value>
+                    </_.Row>
+                    <_.Row>
+                      <_.Attribute>상세 사인</_.Attribute>
+                      <_.Value>{characterData.causeOfDeathDetails}</_.Value>
                     </_.Row>
                     <_.Row>
                       <_.Attribute>애니메이션</_.Attribute>

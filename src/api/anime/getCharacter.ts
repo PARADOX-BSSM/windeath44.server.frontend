@@ -8,6 +8,7 @@ export type CharacterData = {
   name: string;
   lifeTime: number;
   deathReason: string;
+  causeOfDeathDetails?: string;
   imageUrl: string;
   bowCount: number;
   age: number;
