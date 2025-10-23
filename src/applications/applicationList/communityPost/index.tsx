@@ -5,7 +5,10 @@ import Comment from '@/applications/components/communityComment';
 import CommentInput from '@/applications/components/commentInput';
 import chevron from '@/assets/community/chevron-left.svg';
 import { useAtomValue } from 'jotai';
-import { taskSearchAtom } from '@/atoms/taskTransformer';
+import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer';
+import HommerBackground from '@/assets/community/homer_background.png';
+import Hommer from '@/assets/community/hommer.svg';
+
 
 interface dataStructureProps{
     stack: any[];
@@ -23,6 +26,7 @@ const CommunityPost = ({stack, push, pop, top}:dataStructureProps)=>{
     }
 
     const taskSearch = useAtomValue(taskSearchAtom);
+    const taskTransform = useAtomValue(taskTransformerAtom);
 
     return(
         <_.Container>
@@ -50,7 +54,12 @@ const CommunityPost = ({stack, push, pop, top}:dataStructureProps)=>{
             </_.Main>
             <_.Judgement>
                 <_.NavJudgement>
-                    <_.JudgementImg />
+                    <_.JudgementImgDiv background={HommerBackground} onClick={()=>{
+                        if(taskTransform)
+                            taskTransform('', '재판');
+                    }}>
+                        <_.JudgementImg src={Hommer} />
+                    </_.JudgementImgDiv>
                     <_.JudgementText>재판으로</_.JudgementText>
                 </_.NavJudgement>
 

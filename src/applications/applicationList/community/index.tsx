@@ -8,8 +8,8 @@ import Inputs from '@/applications/components/inputs';
 import Posts from '@/applications/components/posts';
 import { useAtomValue } from 'jotai';
 import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer';
-import { data } from '../chatbotSelect/data';
-
+import HommerBackground from '@/assets/community/homer_background.png';
+import Hommer from '@/assets/community/hommer.svg';
 
 enum sortOption{
     Latest = "최신순",
@@ -98,7 +98,12 @@ const Community = ({stack, push, pop, top}:dataStructureProps)=>{
             </_.Main>
             <_.Judgement>
                 <_.NavJudgement>
-                    <_.JudgementImg />
+                    <_.JudgementImgDiv background={HommerBackground} onClick={()=>{
+                        if(taskTransform)
+                            taskTransform('', '재판');
+                    }}>
+                        <_.JudgementImg src={Hommer} />
+                    </_.JudgementImgDiv>
                     <_.JudgementText>재판으로</_.JudgementText>
                 </_.NavJudgement>
 

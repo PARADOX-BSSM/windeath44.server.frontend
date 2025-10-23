@@ -80,10 +80,18 @@ export const NavJudgement = styled.div`
     align-items: center;
     gap: 8px;
 `
-export const JudgementImg = styled.img`
-    width: 100%;
+export const JudgementImgDiv = styled.div<{background: string}>`
+    width: 102px;
     height: 90px;
-    background-color: #fff;
+    background: url(${props => props.background});
+    background-size: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`
+export const JudgementImg = styled.img`
+    width: 69px;
+    height: 68px;
 `
 export const JudgementText = styled.p`
     color: #2e2e2e;
