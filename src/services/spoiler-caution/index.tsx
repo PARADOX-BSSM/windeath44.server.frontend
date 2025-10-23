@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 type Props = {
   setIsCaution: (isCaution: boolean) => void;
 };
-const SPOILER_CAUTION_KEY = 'hasWarnedSession';
+const SESSION_KEY = 'hasBootedSession';
 const Caution = ({ setIsCaution }: Props) => {
   const [sideWidth, setSideWidth] = useState<number>(0);
   useEffect(() => {
@@ -20,7 +20,7 @@ const Caution = ({ setIsCaution }: Props) => {
     return () => window.removeEventListener('resize', updateSideWidth);
   }, []);
   const handleContinue = () => {
-    sessionStorage.setItem(SPOILER_CAUTION_KEY, 'true');
+    sessionStorage.setItem(SESSION_KEY, 'true');
     setIsCaution(false);
   };
   return (

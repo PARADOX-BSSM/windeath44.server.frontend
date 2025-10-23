@@ -5,10 +5,9 @@ import MobileConnect from '@/services/MobileConnect';
 import Caution from '@/services/spoiler-caution';
 
 const SESSION_KEY = 'hasBootedSession';
-const SPOILER_CAUTION_KEY = 'hasWarnedSession';
 
 function Kernel() {
-  const [isBooting, setIsBooting] = useState(() => {
+  const [isBooting, setIsBooting] = useState<boolean>(() => {
     return sessionStorage.getItem(SESSION_KEY) !== 'true';
   });
   const [isMobile, setIsMobile] = useState<boolean>(() => {
@@ -16,7 +15,7 @@ function Kernel() {
     return /Mobi|Android|iPhone|iPad|iPod|Tablet/i.test(navigator.userAgent);
   });
   const [isCaution, setIsCaution] = useState(() => {
-    return sessionStorage.getItem(SPOILER_CAUTION_KEY) !== 'true';
+    return sessionStorage.getItem(SESSION_KEY) !== 'true';
   });
   useEffect(() => {
     if (typeof navigator === 'undefined') return;
@@ -30,9 +29,8 @@ function Kernel() {
   useEffect(() => {
     if (isBooting) {
       const id = window.setTimeout(() => {
-        sessionStorage.setItem(SESSION_KEY, 'true');
         setIsBooting(false);
-      }, 2700);
+      }, 3300);
       return () => clearTimeout(id);
     }
   }, [isBooting]);
