@@ -23,10 +23,18 @@ export const Main = styled.main`
   background-size: cover;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
+  position: relative;
 `;
 export const CationImage = styled.img`
-  //width: 100%;
   height: 100%;
+`;
+export const ClickText = styled.div`
+  padding: 0 0 12% 20%;
+  font-family: Galmuri11;
+  font-size: 4.5vmin;
+  color: white;
+  position: absolute;
+  bottom: 0;
 `;

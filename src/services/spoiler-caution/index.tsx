@@ -28,6 +28,7 @@ const Caution = ({ setIsCaution }: Props) => {
       <_.BackgroundDiv width={sideWidth}></_.BackgroundDiv>
       <_.Main onClick={handleContinue}>
         <_.CationImage src={CautionImage} />
+        <_.ClickText>계속하려면 화면을 클릭하십시오.</_.ClickText>
       </_.Main>
       <_.BackgroundDiv width={sideWidth}></_.BackgroundDiv>
     </_.Container>
