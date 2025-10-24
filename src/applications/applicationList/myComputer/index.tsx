@@ -96,7 +96,6 @@ const MyComputer = () => {
       getUser(undefined as unknown as void, {
         onError: () => {
           // 세션 만료 등으로 401 발생 시 로그인 상태 해제
-          localStorage.setItem('isLogIned', 'false');
           setIsLogIned('false');
         },
       });
@@ -126,9 +125,8 @@ const MyComputer = () => {
           taskTransform?.('', isLoggedIn ? '' : '로그인');
           if (isLoggedIn) {
             localStorage.removeItem('access_token');
-            localStorage.setItem('isLogIned', 'false');
-            sessionStorage.setItem('hasBootedSession', 'false');
             setIsLogIned('false');
+            sessionStorage.setItem('hasBootedSession', 'false');
             // logOutMutation.mutate(undefined, {
             //   onSuccess: () => {
             //     location.reload();
@@ -197,7 +195,10 @@ const MyComputer = () => {
               {!loggedIn ? (
                 <_.MessageText>로그인 후 이용할 수 있습니다.</_.MessageText>
               ) : mutationGetMemorialTracing.isPending || isMemorialsLoading ? (
-                <Loading text="로딩 중..." imageSize="80px" />
+                <Loading
+                  text="로딩 중..."
+                  imageSize="80px"
+                />
               ) : mutationGetMemorialTracing.isError ? (
                 <_.MessageText>데이터를 불러오는 중 오류가 발생했습니다.</_.MessageText>
               ) : memorialTracingData.length === 0 ? (

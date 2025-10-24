@@ -127,10 +127,6 @@ const LogIn = ({ changeToSignUp, changeToEmailCheck }: Props) => {
     );
   };
 
-  useEffect(() => {
-    localStorage.setItem('isLogIned', isLogIned);
-  }, [isLogIned]);
-
   const buttonWidth = '144px';
   const buttonHeight = '42px';
   const buttonFontSize = '20px';
@@ -157,7 +153,7 @@ const LogIn = ({ changeToSignUp, changeToEmailCheck }: Props) => {
           <MemorialBtn
             name="손님으로 입장"
             onClick={() => {
-              setIsLogIned('guest');
+              setIsLogIned('true');
               taskTransform?.('로그인', '');
             }}
             type="submit"
