@@ -36,9 +36,7 @@ const SignUp = ({ changeToLogIn }: Props) => {
       setAlert?.(
         Choten,
         <>
-          사용자 이름이 잘못되었습니다.
-          <br />
-          다시 입력해 주세요.
+          사용자 이름이 입력해 주세요.
         </>,
         () => {
           taskTransform?.('경고', '');
@@ -50,9 +48,7 @@ const SignUp = ({ changeToLogIn }: Props) => {
       setAlert?.(
         Choten,
         <>
-          아이디가 잘못되었습니다.
-          <br />
-          다시 입력해 주세요.
+          아이디를 입력해 주세요.
         </>,
         () => {
           taskTransform?.('경고', '');
@@ -60,7 +56,31 @@ const SignUp = ({ changeToLogIn }: Props) => {
       );
       return;
     }
-    if (email.length == 0 || !email.includes('@')) {
+    if (userId.length < 6 || userId.length > 16) {
+      setAlert?.(
+        Choten,
+        <>
+          아이디는 6~16자 이내로 입력해주세요.
+        </>,
+        () => {
+          taskTransform?.('경고', '');
+        },
+      );
+      return;
+    }
+    if (email.length == 0) {
+      setAlert?.(
+        Choten,
+        <>
+          이메일을 입력해 주세요.
+        </>,
+        () => {
+          taskTransform?.('경고', '');
+        },
+      );
+      return;
+    }
+    if (!email.includes('@') ) {
       setAlert?.(
         Choten,
         <>
@@ -92,7 +112,7 @@ const SignUp = ({ changeToLogIn }: Props) => {
       setAlert?.(
         Choten,
         <>
-          비밀번호가 8~20자리가 아닙니다.
+          비밀번호는 8~20자 이내로 입력해주세요.
           <br />
           다시 입력해 주세요.
         </>,
@@ -111,7 +131,7 @@ const SignUp = ({ changeToLogIn }: Props) => {
           });
         },
         onError: () => {
-          setAlert?.(Choten, <>회원가입 실패: 다시 시도해 주세요!!</>, () => {
+          setAlert?.(Choten, <>회원가입 실패: 다시 시도해 주세요 <br/> 문의 : paradox.windeath44@gmail.com </>, () => {
             taskTransform?.('경고', '');
           });
         },
