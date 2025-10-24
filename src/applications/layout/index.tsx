@@ -240,8 +240,7 @@ const Application = (props: ApplicationProps) => {
               onMouseDown={() => {
                 props.removeTask(props.removeCompnent);
                 if (!isLogIned) {
-                  setIsLogIned('guest');
-                  localStorage.setItem('isLogIned', isLogIned);
+                  setIsLogIned('true');
                 }
               }}
               isFocus={focus === props.name}
