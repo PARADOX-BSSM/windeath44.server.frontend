@@ -95,7 +95,7 @@ const WindowManager = () => {
         addTask(logIn);
       }, 200);
     }
-  }, [isLogIned]);
+  }, [isLogIned, hydrated]);
 
   let resizeObserver = new ResizeObserver((_entries) => {
     const container: HTMLElement = document.getElementById('cursorContainer') as HTMLElement;
