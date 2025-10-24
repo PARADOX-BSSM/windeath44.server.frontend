@@ -10,6 +10,7 @@ import { isLogInedAtom } from '@/atoms/windowManager';
 import MemorialWithIcon from '@/applications/components/memorialWithIcon/index.tsx';
 import { useLogOut } from '@/api/auth/logout.ts';
 import { useGetUserMutation } from '@/api/user/getUser.ts';
+import { deleteCookie } from '@/api/auth/cookie.ts';
 import {
   useGetMemorialTracing,
   type MemorialTracingData,
@@ -121,28 +122,33 @@ const MyComputer = () => {
       <MemorialBtn
         name={isLoggedIn ? '로그아웃' : '로그인'}
         onClick={() => {
-          // console.log(isLoggedIn);
           taskTransform?.('', isLoggedIn ? '' : '로그인');
           if (isLoggedIn) {
-            localStorage.removeItem('access_token');
-            setIsLogIned('false');
-            sessionStorage.setItem('hasBootedSession', 'false');
-            // logOutMutation.mutate(undefined, {
-            //   onSuccess: () => {
-            //     location.reload();
-            //   },
-            //   onError: (error) => {
-            //     console.error('로그아웃 실패', error);
-            //     setAlert?.(
-            //       Choten,
-            //       <>로그아웃 중 오류가 발생했습니다.</>,
-            //       () => {
-            //         taskTransform?.('경고', '');
-            //       }
-            //     );
-            //     location.reload(); // 에러가 발생해도 로그아웃 처리
-            //   },
-            // });
+            logOutMutation.mutate(undefined, {
+              onSuccess: () => {
+                localStorage.removeItem('access_token');
+                setIsLogIned('false');
+                sessionStorage.setItem('hasBootedSession', 'false');
+                location.reload();
+              },
+              onError: (error) => {
+                console.error('로그아웃 실패', error);
+                // 에러가 발생해도 로컬 상태는 정리
+                localStorage.removeItem('access_token');
+                deleteCookie('access_token');
+                deleteCookie('refresh_token');
+                setIsLogIned('false');
+                sessionStorage.setItem('hasBootedSession', 'false');
+                setAlert?.(
+                  Choten,
+                  <>로그아웃 중 오류가 발생했습니다.</>,
+                  () => {
+                    taskTransform?.('경고', '');
+                  }
+                );
+                location.reload();
+              },
+            });
           }
         }}
         type="submit"
