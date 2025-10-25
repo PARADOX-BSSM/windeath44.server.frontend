@@ -26,7 +26,18 @@ const EmailChack = ({ changeToLogIn, changeToAuth }: Props) => {
       setAlert?.(
         Choten,
         <>
-          이메일이 잘못되었습니다.
+          이메일을 입력해주세요.
+        </>,
+        () => {
+          taskTransform?.('경고', '');
+        },
+      );
+      return;
+    }if (!email.includes('@')){
+      setAlert?.(
+        Choten,
+        <>
+          이메일 형식이 잘못되었습니다.
           <br />
           다시 입력해 주세요.
         </>,
@@ -84,6 +95,7 @@ const EmailChack = ({ changeToLogIn, changeToAuth }: Props) => {
             setValue={setEmail}
             type={'text'}
             flex={true}
+            placeHold={"example@email.com"}
           />
         </_.tempInputsStyle>
         <_.tempButtonsStyle>
