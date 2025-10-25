@@ -165,6 +165,14 @@ const MyComputer = () => {
 
   // 프로필 저장
   const handleSaveProfile = async () => {
+    // 이름 유효성 검사
+    if (editName.trim() === '') {
+      setAlert?.(Choten, <>이름을 입력해주세요.</>, () => {
+        taskTransform?.('경고', '');
+      });
+      return;
+    }
+
     const nameChanged = editName !== userData?.data?.name;
     const profileChanged = editProfileImage !== originalProfileImage;
 
@@ -177,7 +185,7 @@ const MyComputer = () => {
     try {
       // 1. 이름이 변경되었으면 이름 변경 API 호출
       if (nameChanged) {
-        await updateNameMutation.mutateAsync({ name: editName });
+        await updateNameMutation.mutateAsync({ name: editName.trim() });
       }
 
       // 2. 프로필 이미지가 변경되었으면 프로필 변경 API 호출
