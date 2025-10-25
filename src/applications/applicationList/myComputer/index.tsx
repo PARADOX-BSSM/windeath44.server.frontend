@@ -139,13 +139,9 @@ const MyComputer = () => {
                 deleteCookie('refresh_token');
                 setIsLogIned('false');
                 sessionStorage.setItem('hasBootedSession', 'false');
-                setAlert?.(
-                  Choten,
-                  <>로그아웃 중 오류가 발생했습니다.</>,
-                  () => {
-                    taskTransform?.('경고', '');
-                  }
-                );
+                setAlert?.(Choten, <>로그아웃 중 오류가 발생했습니다.</>, () => {
+                  taskTransform?.('경고', '');
+                });
                 location.reload();
               },
             });
@@ -175,10 +171,10 @@ const MyComputer = () => {
             isUserReady ? (
               <>
                 <_.ProfileImg
-                  imgUrl={(userData as any).data.profile}
+                  imgUrl={userData.data.profile}
                   draggable="false"
                 />
-                <_.ProfileName>{(userData as any).data.name}</_.ProfileName>
+                <_.ProfileName>{userData.data.name}</_.ProfileName>
               </>
             ) : null
           ) : (
@@ -190,7 +186,15 @@ const MyComputer = () => {
               <_.ProfileName>게스트</_.ProfileName>
             </>
           )}
+          <MemorialBtn
+            name="프로필 수정"
+            type="submit"
+            active={true}
+            width="116px"
+            fontSize="18px"
+          ></MemorialBtn>
         </_.ProfileContainer>
+
         {renderMemorialBtn()}
       </_.LeftContainer>
       <_.Btn>
