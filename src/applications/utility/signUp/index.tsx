@@ -169,6 +169,12 @@ const SignUp = ({ changeToLogIn }: Props) => {
       );
       return;
     }
+    if(verity){
+      setAlert?.(Choten, <>이미 인증을 하셨습니다.</>, () => {
+        taskTransform?.('경고', '');
+      });
+      return;
+    }
     emailValidationMutation.mutate(
       { email },
       {
@@ -189,13 +195,19 @@ const SignUp = ({ changeToLogIn }: Props) => {
   };
   const verifyCode = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    if (check.length == 5) {
+   if(verity){
+      setAlert?.(Choten, <>이미 인증을 하셨습니다.</>, () => {
+        taskTransform?.('경고', '');
+      });
+      return;
+    }
+    else if (check.length == 5) {
       verifyEmailMutation.mutate(
         { email, check },
         {
           onSuccess: () => {
             // setClick(false);
-            setVerity(false);
+            setVerity(true);
             setAlert?.(Choten, <>인증이 완료되었습니다.</>, () => {
               taskTransform?.('경고', '');
             });
@@ -207,10 +219,12 @@ const SignUp = ({ changeToLogIn }: Props) => {
           },
         },
       );
-    } else {
+    }
+    else {
       setAlert?.(Choten, <>인증코드 5자리를 입력하지 않았습니다.</>, () => {
         taskTransform?.('경고', '');
       });
+      return;
     }
   };
   useEffect(() => {
