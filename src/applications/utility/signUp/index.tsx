@@ -142,6 +142,32 @@ const SignUp = ({ changeToLogIn }: Props) => {
 
   const sendEmail = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    if (email.length == 0) {
+      setAlert?.(
+        Choten,
+        <>
+          이메일을 입력해 주세요.
+        </>,
+        () => {
+          taskTransform?.('경고', '');
+        },
+      );
+      return;
+    }
+    if (!email.includes('@') ) {
+      setAlert?.(
+        Choten,
+        <>
+          이메일 형식이 잘못되었습니다.
+          <br />
+          다시 입력해 주세요.
+        </>,
+        () => {
+          taskTransform?.('경고', '');
+        },
+      );
+      return;
+    }
     emailValidationMutation.mutate(
       { email },
       {
