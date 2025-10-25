@@ -50,6 +50,7 @@ export const ProfileNameInput = styled.input`
   background: #fff;
   padding: 4px 8px;
   outline: none;
+  cursor: none;
   width: 116px;
   box-sizing: border-box;
 `;

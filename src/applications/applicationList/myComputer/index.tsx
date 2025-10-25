@@ -318,6 +318,8 @@ const MyComputer = () => {
             value={editName}
             onChange={(e) => setEditName(e.target.value)}
             placeholder="이름 입력"
+            onMouseEnter={() => setCursorImage(CURSOR_IMAGES.drag)}
+            onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
           />
         ) : (
           <_.ProfileName>{userData?.data.name}</_.ProfileName>
