@@ -8,6 +8,9 @@ import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg.tsx';
 import { useGetChatBotsQuery } from '@/api/chatbot/getChatBots.ts';
 import { useGetCharacter, CharacterData } from '@/api/anime/getCharacter';
 import Hosino from '@/assets/character/hosino.svg';
+import { alerterAtom } from '@/atoms/alerter.ts';
+import { getCookie } from '@/api/auth/cookie.ts';
+import Choten from '@/assets/profile/choten.svg';
 
 interface ChatbotItemProps {
   chatbot_id: number;
@@ -58,12 +61,27 @@ const ChatbotSelect = () => {
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const taskTransform = useAtomValue(taskTransformerAtom);
   const chatBotsQuery = useGetChatBotsQuery({ size: 10 });
-
+  const setAlert = useAtomValue(alerterAtom);
+  const token = getCookie('access_token');
   const flattenedChatBots = useMemo(() => {
     if (!chatBotsQuery.data?.data?.values) return [];
     return chatBotsQuery.data.data.values.flat();
   }, [chatBotsQuery.data]);
-
+if(!token && setAlert) {
+  return (
+    setAlert(
+      Choten,
+      <>
+        게스트는 분신사바 기능을 이용할 수 없습니다.
+        <br />
+        로그인 후 사용 가능 합니다.
+      </>,
+      () => {
+        taskTransform?.('경고', '');
+      },
+    )
+  )
+};
   return (
     <_.Container>
       <_.TopContainer>
