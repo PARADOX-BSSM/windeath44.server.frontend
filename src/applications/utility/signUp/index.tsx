@@ -22,6 +22,7 @@ const SignUp = ({ changeToLogIn }: Props) => {
   const [checkingPw, setCheckingPw] = useState<string>('');
   const [check, setCheck] = useState<string>('');
   const [click, setClick] = useState(false);
+  const[verity, setVerity] = useState<boolean>(false);
   const [timeLeft, setTimeLeft] = useState(180);
 
   const setAlert = useAtomValue(alerterAtom);
@@ -193,13 +194,14 @@ const SignUp = ({ changeToLogIn }: Props) => {
         { email, check },
         {
           onSuccess: () => {
-            setClick(false);
+            // setClick(false);
+            setVerity(false);
             setAlert?.(Choten, <>인증이 완료되었습니다.</>, () => {
               taskTransform?.('경고', '');
             });
           },
           onError: () => {
-            setAlert?.(Choten, <>인증 실패: 다시 입력해 주세요!</>, () => {
+            setAlert?.(Choten, <>인증 실패: 다시 입력해 주세요<br/> 이미 회원이시라면 인증이 불가합니다. </>, () => {
               taskTransform?.('경고', '');
             });
           },
@@ -275,7 +277,7 @@ const SignUp = ({ changeToLogIn }: Props) => {
                 placeHold={"example@email.com"}
               />
               <MemorialBtn
-                name={click ? '코드 재전송' : '코드전송'}
+                name={verity ? "인증완료" : click ? '코드 재전송' : '코드전송'}
                 onClick={sendEmail}
                 type="submit"
                 active={true}
