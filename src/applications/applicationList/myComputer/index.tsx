@@ -10,6 +10,7 @@ import { isLogInedAtom } from '@/atoms/windowManager';
 import MemorialWithIcon from '@/applications/components/memorialWithIcon/index.tsx';
 import { useLogOut } from '@/api/auth/logout.ts';
 import { useGetUserMutation } from '@/api/user/getUser.ts';
+import { useUpdateUserName } from '@/api/user/updateUserName.ts';
 import { useUpdateUserProfile } from '@/api/user/updateUserProfile.ts';
 import { deleteCookie } from '@/api/auth/cookie.ts';
 import {
@@ -66,6 +67,7 @@ const MyComputer = () => {
   const setAlert = useAtomValue(alerterAtom);
   const logOutMutation = useLogOut();
   const { mutate: getUser, data: userData, isPending, error } = useGetUserMutation();
+  const updateNameMutation = useUpdateUserName();
   const updateProfileMutation = useUpdateUserProfile();
   const [isLogIned, setIsLogIned] = useAtom(isLogInedAtom);
   const loggedIn = isLogIned === 'true';
@@ -162,42 +164,41 @@ const MyComputer = () => {
   };
 
   // 프로필 저장
-  const handleSaveProfile = () => {
-    const updateData: { name?: string; profile?: string } = {};
-
-    // 이름이 변경되었으면 포함
-    if (editName !== userData?.data?.name) {
-      updateData.name = editName;
-    }
-
-    // 프로필 이미지가 변경되었으면 포함
-    if (editProfileImage !== originalProfileImage) {
-      updateData.profile = editProfileImage;
-    }
+  const handleSaveProfile = async () => {
+    const nameChanged = editName !== userData?.data?.name;
+    const profileChanged = editProfileImage !== originalProfileImage;
 
     // 변경사항이 없으면 종료
-    if (Object.keys(updateData).length === 0) {
+    if (!nameChanged && !profileChanged) {
       setIsEditMode(false);
       return;
     }
 
-    updateProfileMutation.mutate(updateData, {
-      onSuccess: () => {
-        setAlert?.(Choten, <>프로필이 성공적으로 수정되었습니다.</>, () => {
-          taskTransform?.('경고', '');
-        });
-        setIsEditMode(false);
-        setOriginalProfileImage(editProfileImage);
-        // 사용자 정보 다시 불러오기
-        getUser(undefined as unknown as void);
-      },
-      onError: (error) => {
-        console.error('프로필 수정 실패', error);
-        setAlert?.(Choten, <>프로필 수정 중 오류가 발생했습니다.</>, () => {
-          taskTransform?.('경고', '');
-        });
-      },
-    });
+    try {
+      // 1. 이름이 변경되었으면 이름 변경 API 호출
+      if (nameChanged) {
+        await updateNameMutation.mutateAsync({ name: editName });
+      }
+
+      // 2. 프로필 이미지가 변경되었으면 프로필 변경 API 호출
+      if (profileChanged) {
+        await updateProfileMutation.mutateAsync({ profile: editProfileImage });
+      }
+
+      // 성공 시
+      setAlert?.(Choten, <>프로필이 성공적으로 수정되었습니다.</>, () => {
+        taskTransform?.('경고', '');
+      });
+      setIsEditMode(false);
+      setOriginalProfileImage(editProfileImage);
+      // 사용자 정보 다시 불러오기
+      getUser(undefined as unknown as void);
+    } catch (error) {
+      console.error('프로필 수정 실패', error);
+      setAlert?.(Choten, <>프로필 수정 중 오류가 발생했습니다.</>, () => {
+        taskTransform?.('경고', '');
+      });
+    }
   };
 
   // 이미지 파일 선택
