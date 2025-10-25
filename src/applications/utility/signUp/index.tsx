@@ -36,9 +36,7 @@ const SignUp = ({ changeToLogIn }: Props) => {
       setAlert?.(
         Choten,
         <>
-          사용자 이름이 잘못되었습니다.
-          <br />
-          다시 입력해 주세요.
+          사용자 이름이 입력해 주세요.
         </>,
         () => {
           taskTransform?.('경고', '');
@@ -50,9 +48,7 @@ const SignUp = ({ changeToLogIn }: Props) => {
       setAlert?.(
         Choten,
         <>
-          아이디가 잘못되었습니다.
-          <br />
-          다시 입력해 주세요.
+          아이디를 입력해 주세요.
         </>,
         () => {
           taskTransform?.('경고', '');
@@ -60,11 +56,35 @@ const SignUp = ({ changeToLogIn }: Props) => {
       );
       return;
     }
-    if (email.length == 0 || !email.includes('@')) {
+    if (userId.length < 6 || userId.length > 16) {
       setAlert?.(
         Choten,
         <>
-          이메일이 잘못되었습니다.
+          아이디는 6~16자 이내로 입력해주세요.
+        </>,
+        () => {
+          taskTransform?.('경고', '');
+        },
+      );
+      return;
+    }
+    if (email.length == 0) {
+      setAlert?.(
+        Choten,
+        <>
+          이메일을 입력해 주세요.
+        </>,
+        () => {
+          taskTransform?.('경고', '');
+        },
+      );
+      return;
+    }
+    if (!email.includes('@') ) {
+      setAlert?.(
+        Choten,
+        <>
+          이메일 형식이 잘못되었습니다.
           <br />
           다시 입력해 주세요.
         </>,
@@ -92,7 +112,7 @@ const SignUp = ({ changeToLogIn }: Props) => {
       setAlert?.(
         Choten,
         <>
-          비밀번호가 8~20자리가 아닙니다.
+          비밀번호는 8~20자 이내로 입력해주세요.
           <br />
           다시 입력해 주세요.
         </>,
@@ -111,7 +131,7 @@ const SignUp = ({ changeToLogIn }: Props) => {
           });
         },
         onError: () => {
-          setAlert?.(Choten, <>회원가입 실패: 다시 시도해 주세요!!</>, () => {
+          setAlert?.(Choten, <>회원가입 실패: 다시 시도해 주세요 <br/> 문의 : paradox.windeath44@gmail.com </>, () => {
             taskTransform?.('경고', '');
           });
         },
@@ -216,6 +236,7 @@ const SignUp = ({ changeToLogIn }: Props) => {
             width={'80%'}
             fontSize="20px"
             flex={true}
+            placeHold={"아이디 (6~16자)"}
           />
           <_.set>
             <_.label>이메일 :</_.label>
@@ -225,6 +246,7 @@ const SignUp = ({ changeToLogIn }: Props) => {
                 setValue={setEmail}
                 type={'text'}
                 width={'100%'}
+                placeHold={"example@email.com"}
               />
               <MemorialBtn
                 name={click ? '코드 재전송' : '코드전송'}
@@ -264,6 +286,7 @@ const SignUp = ({ changeToLogIn }: Props) => {
             width={'80%'}
             fontSize="20px"
             flex={true}
+            placeHold={"비밀번호 (8~20자)"}
           />
           <Inputs
             label={'비밀번호 재입력:'}
