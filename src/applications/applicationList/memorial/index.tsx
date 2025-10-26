@@ -385,9 +385,7 @@ const Memorial = ({
 
   // 창 제목 설정
   useEffect(() => {
-    console.log(setWindowName, characterData?.name);
     if (setWindowName && characterData?.name) {
-      console.log('setWindowName called');
       setWindowName?.(`추모관 뷰어 - ${characterData.name}`);
     }
   }, [characterData, setWindowName]);

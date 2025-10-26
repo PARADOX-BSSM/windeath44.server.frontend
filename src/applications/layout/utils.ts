@@ -30,6 +30,7 @@ export type DragParams = {
 
 export interface ApplicationProps {
   uid?: number;
+  instanceId?: string;
   name: string;
   type: 'App' | 'Shell';
   appSetup: {
