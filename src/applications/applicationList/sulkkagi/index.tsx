@@ -14,6 +14,8 @@ interface StoneBody extends Matter.Body {
   isSelected: boolean;
   isOut: boolean;
   isBig: boolean;
+  hasShield?: boolean; // 보호막 여부
+  shieldUntilTurn?: number; // 보호막이 유지되는 턴 (플레이어 번호)
 }
 
 // 전역 이미지 캐시
@@ -141,13 +143,19 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
   const [showResultModal, setShowResultModal] = useState(false);
   const [isAiTurn, setIsAiTurn] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
-  const [stoneCount, setStoneCount] = useState({ player1: 4, player2: 4 }); // 일반돌 3개 + 큰돌 1개
+  const [stoneCount, setStoneCount] = useState({ player1: 6, player2: 6 }); // 일반돌 5개 + 큰돌 1개
   const [notifications, setNotifications] = useState<
     { id: number; player: number; message: string; isNew: boolean }[]
   >([]);
   const notificationIdRef = useRef(0);
   const player1CountRef = useRef(0); // 하얀돌 추모관 등록 카운터
   const player2CountRef = useRef(0); // 까만돌 추모관 등록 카운터
+
+  // 보호막 관련 state
+  const [shieldCount, setShieldCount] = useState({ player1: 3, player2: 3 }); // 각 팀 3회씩
+  const [isShieldMode, setIsShieldMode] = useState(false); // 보호막 선택 모드
+  const [shieldedStones, setShieldedStones] = useState<Set<number>>(new Set()); // 보호막이 있는 돌들
+  const [turnCounter, setTurnCounter] = useState(0); // 턴 카운터
 
   // SVG 이미지 로딩 상태
   const [imagesLoaded, setImagesLoaded] = useState(false);
@@ -220,6 +228,11 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // 턴 시작 시 보호막 만료 체크
+  useEffect(() => {
+    checkShieldExpiry();
+  }, [currentPlayer]);
+
   // AI 턴 자동 실행
   useEffect(() => {
     if (
@@ -284,6 +297,21 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
           handleStoneOut(bodyA);
         } else if (bodyB.label === 'stone' && bodyA.label === 'wall') {
           handleStoneOut(bodyB);
+        }
+
+        // 돌과 돌의 충돌 확인 (보호막 처리)
+        if (bodyA.label === 'stone' && bodyB.label === 'stone') {
+          const stoneA = bodyA as StoneBody;
+          const stoneB = bodyB as StoneBody;
+
+          // 보호막이 있는 돌 확인
+          if (stoneA.hasShield && stoneA.player !== stoneB.player) {
+            // stoneA에 보호막이 있고, stoneB가 상대팀인 경우
+            handleShieldCollision(stoneA, stoneB);
+          } else if (stoneB.hasShield && stoneB.player !== stoneA.player) {
+            // stoneB에 보호막이 있고, stoneA가 상대팀인 경우
+            handleShieldCollision(stoneB, stoneA);
+          }
         }
       });
     });
@@ -529,6 +557,50 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
         ctx.arc(x, y, stoneRadius + 8 + extraRadius, 0, Math.PI * 2);
         ctx.stroke();
       }
+
+      // 보호막 효과 (파란색 쉴드)
+      const stoneBody = stone as StoneBody;
+      if (stoneBody.hasShield) {
+        const time = Date.now() * 0.003;
+        const pulse = Math.sin(time) * 0.3 + 0.7; // 0.4~1 사이값
+
+        // 외부 쉴드 링
+        ctx.save();
+        ctx.strokeStyle = `rgba(100, 200, 255, ${0.6 * pulse})`; // 파란색
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(x, y, stoneRadius + 10, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // 내부 쉴드 링
+        ctx.strokeStyle = `rgba(150, 220, 255, ${0.4 * pulse})`;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(x, y, stoneRadius + 6, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // 쉴드 아이콘 (육각형)
+        const shieldSize = 8;
+        const shieldX = x + stoneRadius - 5;
+        const shieldY = y - stoneRadius + 5;
+
+        ctx.fillStyle = 'rgba(100, 200, 255, 0.9)';
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        for (let i = 0; i < 6; i++) {
+          const angle = (Math.PI / 3) * i;
+          const px = shieldX + Math.cos(angle) * shieldSize;
+          const py = shieldY + Math.sin(angle) * shieldSize;
+          if (i === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        }
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.restore();
+      }
     });
 
     // 별도 Canvas에 화살표/게이지 그리기 (ref 값 기반)
@@ -542,6 +614,50 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
       addNotification(stone.player);
       // 돌을 보드 밖으로 완전히 이동 (안 보이게)
       Matter.Body.setPosition(stone, { x: -1000, y: -1000 });
+    }
+  };
+
+  // 보호막 충돌 처리 함수
+  const handleShieldCollision = (shieldedStone: StoneBody, attackingStone: StoneBody) => {
+    if (!shieldedStone.hasShield || !Matter) return;
+
+    // 보호막 제거
+    shieldedStone.hasShield = false;
+    shieldedStone.shieldUntilTurn = undefined;
+    setShieldedStones((prev) => {
+      const newSet = new Set(prev);
+      newSet.delete(shieldedStone.id);
+      return newSet;
+    });
+
+    // 알림 추가
+    const playerName =
+      gameMode === 'ai'
+        ? shieldedStone.player === 1
+          ? '컴퓨터'
+          : '플레이어'
+        : `${shieldedStone.player}P`;
+    addCustomNotification(shieldedStone.player, `${playerName}의 보호막이 깨졌습니다!`);
+
+    // 보호막이 있던 돌은 움직이지 않도록 속도 0으로 설정
+    Matter.Body.setVelocity(shieldedStone, { x: 0, y: 0 });
+    Matter.Body.setAngularVelocity(shieldedStone, 0);
+
+    // 공격한 돌을 강하게 반사 (충돌 방향의 반대로)
+    const dx = attackingStone.position.x - shieldedStone.position.x;
+    const dy = attackingStone.position.y - shieldedStone.position.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    if (distance > 0) {
+      const normalizedDx = dx / distance;
+      const normalizedDy = dy / distance;
+
+      // 강한 반사력 적용 (기존 속도의 1.5배)
+      const reflectPower = 0.05; // 반사 강도
+      Matter.Body.applyForce(attackingStone, attackingStone.position, {
+        x: normalizedDx * reflectPower,
+        y: normalizedDy * reflectPower,
+      });
     }
   };
 
@@ -560,6 +676,25 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
 
     const message = `${playerName}(${playerCount})이 추모관에 등록 당했습니다.`;
 
+    const newNotification = {
+      id: notificationIdRef.current++,
+      player,
+      message,
+      isNew: true,
+    };
+
+    setNotifications((prev) => [newNotification, ...prev]);
+
+    // 3초 후 isNew를 false로 변경하여 애니메이션 제거
+    setTimeout(() => {
+      setNotifications((prev) =>
+        prev.map((notif) => (notif.id === newNotification.id ? { ...notif, isNew: false } : notif)),
+      );
+    }, 3000);
+  };
+
+  // 커스텀 알림 추가 함수
+  const addCustomNotification = (player: number, message: string) => {
     const newNotification = {
       id: notificationIdRef.current++,
       player,
@@ -624,6 +759,51 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
     };
   };
 
+  // 보호막 적용 함수
+  const applyShield = (stoneId: number) => {
+    const stone = stonesRef.current.find((s: any) => s.id === stoneId) as StoneBody | undefined;
+    if (!stone) return;
+
+    stone.hasShield = true;
+    stone.shieldUntilTurn = currentPlayer; // 다음 내 턴까지 유지
+
+    // 보호막이 있는 돌 목록에 추가
+    setShieldedStones((prev) => new Set(prev).add(stoneId));
+
+    // 보호막 사용 횟수 감소
+    if (currentPlayer === 1) {
+      setShieldCount((prev) => ({ ...prev, player1: prev.player1 - 1 }));
+    } else {
+      setShieldCount((prev) => ({ ...prev, player2: prev.player2 - 1 }));
+    }
+
+    // 알림 추가
+    const playerName =
+      gameMode === 'ai' ? (currentPlayer === 1 ? '컴퓨터' : '플레이어') : `${currentPlayer}P`;
+    addCustomNotification(currentPlayer, `${playerName}가 보호막을 사용했습니다!`);
+
+    // 턴 넘기기 (보호막 사용 시 해당 턴 종료)
+    setCurrentPlayer((p) => (p === 1 ? 2 : 1));
+    setTurnCounter((prev) => prev + 1);
+  };
+
+  // 보호막 만료 체크 (턴 시작 시)
+  const checkShieldExpiry = () => {
+    stonesRef.current.forEach((stone: any) => {
+      const stoneBody = stone as StoneBody;
+      // 내 턴이 다시 돌아왔을 때 보호막 제거
+      if (stoneBody.hasShield && stoneBody.shieldUntilTurn === currentPlayer) {
+        stoneBody.hasShield = false;
+        stoneBody.shieldUntilTurn = undefined;
+        setShieldedStones((prev) => {
+          const newSet = new Set(prev);
+          newSet.delete(stoneBody.id);
+          return newSet;
+        });
+      }
+    });
+  };
+
   const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (isAnimating || gameState !== 'playing' || !engineRef.current) {
       return;
@@ -644,6 +824,18 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
       const stoneRadius = stone.isBig ? BIG_STONE_RADIUS : STONE_RADIUS;
       return distance <= stoneRadius && stone.player === currentPlayer;
     });
+
+    // 보호막 모드일 때
+    if (isShieldMode && clickedStone) {
+      const stoneBody = clickedStone as StoneBody;
+      // 이미 보호막이 있는 돌은 선택 불가
+      if (!stoneBody.hasShield && !stoneBody.isOut) {
+        applyShield(stoneBody.id);
+        setIsShieldMode(false); // 보호막 모드 종료
+        setCursorImage(CURSOR_IMAGES.default);
+      }
+      return;
+    }
 
     // 이전 선택 해제
     if (selectedStoneIdRef.current) {
@@ -1713,13 +1905,19 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
     setAimStart(null);
     setAimCurrent(null);
     setIsAnimating(false);
-    setStoneCount({ player1: 4, player2: 4 }); // 일반돌 3개 + 큰돌 1개
+    setStoneCount({ player1: 6, player2: 6 }); // 일반돌 5개 + 큰돌 1개
     setNotifications([]);
     setShowResultModal(false);
     setIsAiTurn(false);
     notificationIdRef.current = 0;
     player1CountRef.current = 0; // 하얀돌 카운터 초기화
     player2CountRef.current = 0; // 까만돌 카운터 초기화
+
+    // 보호막 관련 초기화
+    setShieldCount({ player1: 3, player2: 3 });
+    setIsShieldMode(false);
+    setShieldedStones(new Set());
+    setTurnCounter(0);
 
     selectedStoneIdRef.current = null;
     aimStartRef.current = null;
@@ -1759,10 +1957,16 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
           <_.PlayerStoneCount player={1}>
             <_.StoneIcon player={1} />
             {gameMode === 'ai' ? '컴퓨터' : '하얀설'} {stoneCount.player1}개
+            <div style={{ fontSize: '11px', marginTop: '2px', opacity: 0.8 }}>
+              🛡️ {shieldCount.player1}회
+            </div>
           </_.PlayerStoneCount>
           <_.PlayerStoneCount player={2}>
             <_.StoneIcon player={2} />
             {gameMode === 'ai' ? '플레이어' : '까만설'} {stoneCount.player2}개
+            <div style={{ fontSize: '11px', marginTop: '2px', opacity: 0.8 }}>
+              🛡️ {shieldCount.player2}회
+            </div>
           </_.PlayerStoneCount>
         </_.StoneCountContainer>
       </_.GameInfo>
@@ -1857,6 +2061,39 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
       </_.GameArea>
 
       <_.Controls>
+        {/* 보호막 버튼 - PVP 모드나 AI 모드에서 플레이어 턴일 때만 표시 */}
+        {(gameMode === 'pvp' || (gameMode === 'ai' && currentPlayer === 2)) &&
+          !isAnimating &&
+          gameState === 'playing' && (
+            <_.ResetButton
+              onClick={() => {
+                const currentShield =
+                  currentPlayer === 1 ? shieldCount.player1 : shieldCount.player2;
+                if (currentShield > 0 && !isShieldMode) {
+                  setIsShieldMode(true);
+                  setCursorImage(CURSOR_IMAGES.hand);
+                }
+              }}
+              onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+              onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+              disabled={
+                (currentPlayer === 1 && shieldCount.player1 === 0) ||
+                (currentPlayer === 2 && shieldCount.player2 === 0) ||
+                isShieldMode
+              }
+              style={{
+                opacity:
+                  (currentPlayer === 1 && shieldCount.player1 === 0) ||
+                  (currentPlayer === 2 && shieldCount.player2 === 0) ||
+                  isShieldMode
+                    ? 0.5
+                    : 1,
+                backgroundColor: isShieldMode ? '#64c8ff' : undefined,
+              }}
+            >
+              🛡️ 보호막 사용{isShieldMode ? ' (돌 선택)' : ''}
+            </_.ResetButton>
+          )}
         <_.ResetButton
           onClick={() => {
             pop(top);
