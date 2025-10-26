@@ -209,6 +209,8 @@ const useApps = (): TaskType[] => {
             push={undefined}
             pop={undefined}
             top={undefined}
+            memorialId={0}
+            characterId={0}
           />
         </Suspense>
       ),

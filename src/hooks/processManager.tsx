@@ -16,7 +16,11 @@ const useProcessManager: () => [
     );
   };
   const removeTask = (component: TaskType) => {
-    setTaskList((Task) => Task.filter((item) => item.name !== component.name));
+    setTaskList((Task) =>
+      Task.filter((item) =>
+        item.instanceId ? item.instanceId !== component.instanceId : item.name !== component.name,
+      ),
+    );
   };
   return [taskList, addTask, removeTask];
 };

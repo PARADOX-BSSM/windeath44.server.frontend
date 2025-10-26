@@ -36,6 +36,7 @@ interface dataStructureProps {
   memorialId: number;
   characterId: number;
   props?: ApplicationProps;
+  setWindowName?: (name: string) => void;
 }
 const Memorial = ({
   stack,
@@ -45,6 +46,7 @@ const Memorial = ({
   memorialId,
   characterId,
   props,
+  setWindowName,
 }: dataStructureProps) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
   const taskSearch = useAtomValue(taskSearchAtom);
@@ -381,11 +383,14 @@ const Memorial = ({
     }
   }, [characterData.animeId]);
 
+  // 창 제목 설정
   useEffect(() => {
-    if (props && characterData) {
-      props.name = `추모관 뷰어 - ${characterData.name}`;
+    console.log(setWindowName, characterData?.name);
+    if (setWindowName && characterData?.name) {
+      console.log('setWindowName called');
+      setWindowName?.(`추모관 뷰어 - ${characterData.name}`);
     }
-  }, [characterData]);
+  }, [characterData, setWindowName]);
 
   // 데이터 로딩 중일 때 로딩 컴포넌트 표시
   if (

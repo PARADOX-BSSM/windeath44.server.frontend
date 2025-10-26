@@ -170,7 +170,7 @@ const WindowManager = () => {
           {taskList.map((task: TaskType) => {
             return (
               <Application
-                key={task.name}
+                // key={task.name}
                 name={task.name}
                 uid={task.id}
                 type={task.type}

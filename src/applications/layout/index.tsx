@@ -30,6 +30,7 @@ const Application = (props: ApplicationProps) => {
   const [focus, setFocus] = useAtom(focusAtom); // 현재 포커스된 창 이름 (전역)
   const [tabDownInterrupt, setTabDownInterrupt] = useAtom(tabDownInterruptAtom); // 단축키 등으로 창 최소화 등 인터럽트 신호 (전역)
   const [isLogIned, setIsLogIned] = useAtom(isLogInedAtom); // 로그인 여부 (전역)
+  const [windowName, setWindowName] = useState<string>(props.name); // 현재 창 이름 (로컬)
 
   const setUpHeight = props.setUpHeight;
   const setUpWidth = props.setUpWidth;
@@ -206,7 +207,7 @@ const Application = (props: ApplicationProps) => {
               src={Heart}
               draggable="false"
             />
-            <_.Title>{props.name}</_.Title>
+            <_.Title>{windowName}</_.Title>
           </_.TitleContainer>
           <_.BtnContainer>
             <_.MinimizeButton
@@ -265,10 +266,18 @@ const Application = (props: ApplicationProps) => {
             const internal = original.props.children as React.ReactElement;
             const type = internal.type;
 
-            if (props.name === '추모관' || props.name === '추모관 뷰어') {
+            if (props.name === '추모관' || props.name.startsWith('추모관 뷰어')) {
               return (
                 <Suspense fallback={null}>
-                  {React.createElement(type, { window, setWindow, setUpHeight, setUpWidth, props })}
+                  {React.createElement(type, {
+                    ...internal.props,
+                    window,
+                    setWindow,
+                    setUpHeight,
+                    setUpWidth,
+                    props,
+                    setWindowName,
+                  })}
                 </Suspense>
               );
             } else {
