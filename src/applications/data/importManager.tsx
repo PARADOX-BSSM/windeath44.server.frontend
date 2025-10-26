@@ -1,4 +1,4 @@
-import { Suspense, lazy } from 'react';
+import { Suspense, lazy, useState } from 'react';
 import { TaskType } from '@/modules/typeModule.tsx';
 import { useAtom } from 'jotai';
 import { isLogInedAtom } from '@/atoms/windowManager.ts';
@@ -11,12 +11,14 @@ import setting from '@/assets/appIcons/setting.svg';
 import search from '@/assets/appIcons/search.svg';
 import trashBin from '@/assets/appIcons/empty_bin.svg';
 import chatbot from '@/assets/appIcons/ChatBot.svg';
+import chatbotRejection from '@/assets/appIcons/ChatBotRejection.svg';
 import game from '@/assets/appIcons/game.svg';
 import sulkkagi from '@/assets/sulkkagi/black_stone.svg';
 
 import Sulkkagi from '../applicationList/sulkkagi';
 import SulkkagiApproach from '../applicationList/sulkkagiApproach';
 import SulkkagiMenu from '../applicationList/sulkkagiMenu';
+import { getCookie } from '@/api/auth/cookie.ts';
 
 // lazy를 이용한 어플리케이션 컴포넌트 로드
 const Terminal = lazy(() => import('@/applications/applicationList/terminal/index.tsx'));
@@ -107,6 +109,8 @@ const MemorialViewer = lazy(
 const useApps = (): TaskType[] => {
   const [isLogIned, setIsLogIned] = useAtom(isLogInedAtom);
   const [taskList, addTask, removeTask] = useProcessManager();
+  const token = getCookie('access_token');
+  const [isNotGuest,SetIsNotGuest] = useState<string | null>(token)
 
   const { logIn, signUp, emailChack, auth, passwordChange } = getTaskCreators(
     setIsLogIned,
@@ -209,6 +213,8 @@ const useApps = (): TaskType[] => {
             push={undefined}
             pop={undefined}
             top={undefined}
+            memorialId={0}
+            characterId={0}
           />
         </Suspense>
       ),
@@ -491,7 +497,7 @@ const useApps = (): TaskType[] => {
       name: '분신사바',
       layer: undefined,
       appSetup: {
-        Image: chatbot,
+        Image: isNotGuest ? chatbot : chatbotRejection,
         minWidth: 340,
         minHeight: 500,
         setUpWidth: 800,
