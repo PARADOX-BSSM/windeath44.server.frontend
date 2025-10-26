@@ -3,6 +3,7 @@ import * as _ from './style';
 import ProfileImg from '@/assets/profile/choten.svg';
 import Heart from '@/assets/community/heart_line.svg';
 import CommentIcon from '@/assets/community/comment.svg';
+import KebabIcon from '@/assets/community/kebab_icon.svg';
 
 interface User {
     name: string;
@@ -20,9 +21,10 @@ interface Post{
 interface PostsProps {
     user: User;
     post: Post;
+    detail?: boolean;
     onClick?: (() => void) | ((e: React.MouseEvent<HTMLDivElement>) => Promise<void> | void);
 }
-const Posts : React.FC<PostsProps> = ({ user, post, onClick })=>{
+const Posts : React.FC<PostsProps> = ({ user, post, detail=false, onClick })=>{
         const {name, id, profileImage=""} = user;
         const {title, content, comment=0, heart=0, postImage="", datetime} = post;
     return(
@@ -40,13 +42,13 @@ const Posts : React.FC<PostsProps> = ({ user, post, onClick })=>{
                     </_.Content>
                     <_.Datetime>{datetime}</_.Datetime>
                     <_.PostInfo>
-                        <_.Icons><_.Icon src={Heart} alt="PostHeart" />{comment}</_.Icons>
-                        <_.Icons><_.Icon src={CommentIcon} alt="PostComment" />{heart}</_.Icons>
+                        <_.Icons><_.Icon src={Heart} alt="PostHeart" width="10px" height="10px" />{comment}</_.Icons>
+                        <_.Icons><_.Icon src={CommentIcon} alt="PostComment" width="10px" height="10px" />{heart}</_.Icons>
                     </_.PostInfo>
                 </_.PostMain>
             </_.Main>
-            
-            <_.PostImg imgUrl={postImage} />
+            {detail ? <_.Icon src={KebabIcon} alt="moreButton" width="20px" height="20px" /> :
+            <_.PostImg imgUrl={postImage} />}
         </_.Post>
     )
 }

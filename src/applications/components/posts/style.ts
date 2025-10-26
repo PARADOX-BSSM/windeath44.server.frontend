@@ -84,8 +84,8 @@ export const Icons = styled.div`
     font-weight: 400;
     line-height: normal;
 `
-export const Icon = styled.img`
-    width: 10px;
+export const Icon = styled.img<{width: string, height: string}>`
+    width: ${props=>props.width};
     height: 10px;
 `
 export const PostImg = styled.div<{imgUrl: string}>`
