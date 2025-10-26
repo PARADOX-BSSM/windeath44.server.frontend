@@ -758,7 +758,7 @@ const useApps = (): TaskType[] => {
         appSetup:{
           Image : 'default',
           minWidth : 700,
-          minHeight : 700,
+          minHeight : 562,
           setUpWidth : 800,
           setUpHeight : 562,
         },
@@ -777,7 +777,7 @@ const useApps = (): TaskType[] => {
         appSetup:{
           Image : 'default',
           minWidth : 700,
-          minHeight : 700,
+          minHeight : 562,
           setUpWidth : 800,
           setUpHeight : 562,
         },
@@ -791,7 +791,7 @@ const useApps = (): TaskType[] => {
         appSetup:{
           Image : 'default',
           minWidth : 700,
-          minHeight : 700,
+          minHeight : 562,
           setUpWidth : 800,
           setUpHeight : 562,
         },
@@ -805,7 +805,7 @@ const useApps = (): TaskType[] => {
         appSetup:{
           Image : 'default',
           minWidth : 700,
-          minHeight : 700,
+          minHeight : 562,
           setUpWidth : 800,
           setUpHeight : 562,
         },
@@ -819,7 +819,7 @@ const useApps = (): TaskType[] => {
       appSetup: {
         Image: 'defalut',
         minWidth: 700,
-        minHeight: 700,
+        minHeight: 562,
         setUpWidth: 800,
         setUpHeight: 562,
       },
@@ -834,7 +834,7 @@ const useApps = (): TaskType[] => {
       appSetup: {
         Image: 'defalut',
         minWidth: 700,
-        minHeight: 700,
+        minHeight: 562,
         setUpWidth: 800,
         setUpHeight: 562,
       },
@@ -849,7 +849,7 @@ const useApps = (): TaskType[] => {
       appSetup: {
         Image: 'defalut',
         minWidth: 700,
-        minHeight: 700,
+        minHeight: 562,
         setUpWidth: 800,
         setUpHeight: 562,
       },
@@ -864,7 +864,7 @@ const useApps = (): TaskType[] => {
       appSetup: {
         Image: 'defalut',
         minWidth: 700,
-        minHeight: 700,
+        minHeight: 562,
         setUpWidth: 800,
         setUpHeight: 562,
       },
