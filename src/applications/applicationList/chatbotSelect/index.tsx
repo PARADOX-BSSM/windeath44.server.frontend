@@ -2,12 +2,16 @@ import * as _ from './style.ts';
 import Inputs from '@/applications/components/inputs';
 import Loading from '@/applications/components/loading';
 import { useState, useMemo, useEffect } from 'react';
-import { taskTransformerAtom } from '@/atoms/taskTransformer.ts';
+import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer.ts';
 import { useAtomValue } from 'jotai';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg.tsx';
 import { useGetChatBotsQuery } from '@/api/chatbot/getChatBots.ts';
 import { useGetCharacter, CharacterData } from '@/api/anime/getCharacter';
 import Hosino from '@/assets/character/hosino.svg';
+import { alerterAtom } from '@/atoms/alerter.ts';
+import { getCookie } from '@/api/auth/cookie.ts';
+import Choten from '@/assets/profile/choten.svg';
+import { useProcessManager } from '@/hooks/processManager.tsx';
 
 interface ChatbotItemProps {
   chatbot_id: number;
@@ -57,13 +61,33 @@ const ChatbotSelect = () => {
   const [inputs, setInputs] = useState<string>('');
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const taskTransform = useAtomValue(taskTransformerAtom);
-  const chatBotsQuery = useGetChatBotsQuery({ size: 10 });
+  const [, , removeTask] = useProcessManager();
+  const taskSearch = useAtomValue(taskSearchAtom);
 
+  const chatBotsQuery = useGetChatBotsQuery({ size: 10 });
+  const setAlert = useAtomValue(alerterAtom);
+  const token = getCookie('access_token');
   const flattenedChatBots = useMemo(() => {
     if (!chatBotsQuery.data?.data?.values) return [];
     return chatBotsQuery.data.data.values.flat();
   }, [chatBotsQuery.data]);
-
+if(!token && setAlert) {
+  const task = taskSearch?.('분신사바');
+  if (task) removeTask(task);
+  return (
+    setAlert(
+      Choten,
+      <>
+        게스트는 분신사바 기능을 이용할 수 없습니다.
+        <br />
+        로그인 후 사용 가능 합니다.
+      </>,
+      () => {
+        taskTransform?.('경고', '로그인');
+      },
+    )
+  )
+};
   return (
     <_.Container>
       <_.TopContainer>
