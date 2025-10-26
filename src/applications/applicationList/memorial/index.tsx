@@ -26,6 +26,7 @@ import { inputPortage } from '@/atoms/inputManager.ts';
 import Choten from '@/assets/profile/choten.svg';
 import { useGetUserMutation } from '@/api/user/getUser';
 import { getCookie } from '@/api/auth/cookie.ts';
+import { ApplicationProps } from '@/applications/layout/utils';
 
 interface dataStructureProps {
   stack: any[];
@@ -34,8 +35,17 @@ interface dataStructureProps {
   top: any;
   memorialId: number;
   characterId: number;
+  props?: ApplicationProps;
 }
-const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStructureProps) => {
+const Memorial = ({
+  stack,
+  push,
+  pop,
+  top,
+  memorialId,
+  characterId,
+  props,
+}: dataStructureProps) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
   const taskSearch = useAtomValue(taskSearchAtom);
   const setAlert = useAtomValue(alerterAtom);
@@ -370,6 +380,12 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
       });
     }
   }, [characterData.animeId]);
+
+  useEffect(() => {
+    if (props && characterData) {
+      props.name = `추모관 뷰어 - ${characterData.name}`;
+    }
+  }, [characterData]);
 
   // 데이터 로딩 중일 때 로딩 컴포넌트 표시
   if (

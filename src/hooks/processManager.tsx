@@ -1,16 +1,24 @@
-import { TaskType } from '@/modules/typeModule.tsx'
-import { useAtom } from 'jotai'
-import { taskManagerAtom } from '@/atoms/processManager.ts'
+import { TaskType } from '@/modules/typeModule.tsx';
+import { useAtom } from 'jotai';
+import { taskManagerAtom } from '@/atoms/processManager.ts';
 
-const useProcessManager: () => [TaskType[], (component: TaskType) => void, (component: TaskType) => void] = () => {
-  const [taskList, setTaskList] = useAtom(taskManagerAtom)
+const useProcessManager: () => [
+  TaskType[],
+  (component: TaskType) => void,
+  (component: TaskType) => void,
+] = () => {
+  const [taskList, setTaskList] = useAtom(taskManagerAtom);
   const addTask = (component: TaskType) => {
-    setTaskList(Task => (!Task.some(item => item.name === component.name)) ? [...Task, component] : [...Task])
-  }
+    setTaskList((Task) =>
+      !Task.some((item) => item.name === component.name && item.name !== '추모관 뷰어')
+        ? [...Task, component]
+        : [...Task],
+    );
+  };
   const removeTask = (component: TaskType) => {
-    setTaskList(Task => Task.filter(item => item.name !== component.name))
-  }
-  return [taskList, addTask, removeTask]
-}
+    setTaskList((Task) => Task.filter((item) => item.name !== component.name));
+  };
+  return [taskList, addTask, removeTask];
+};
 
-export { useProcessManager }
+export { useProcessManager };

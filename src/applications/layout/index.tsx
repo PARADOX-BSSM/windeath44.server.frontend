@@ -265,10 +265,10 @@ const Application = (props: ApplicationProps) => {
             const internal = original.props.children as React.ReactElement;
             const type = internal.type;
 
-            if (props.name === '추모관') {
+            if (props.name === '추모관' || props.name === '추모관 뷰어') {
               return (
                 <Suspense fallback={null}>
-                  {React.createElement(type, { window, setWindow, setUpHeight, setUpWidth })}
+                  {React.createElement(type, { window, setWindow, setUpHeight, setUpWidth, props })}
                 </Suspense>
               );
             } else {

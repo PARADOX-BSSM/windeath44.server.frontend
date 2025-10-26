@@ -44,6 +44,7 @@ const MemorialViewer = ({ stack, push, pop, top, characterId, content }: dataStr
   const mutationAnimation = useGetAnimation(setAnimation);
 
   useEffect(() => {
+    console.log('characterId', characterId);
     if (characterId) {
       mutationGetCharacter.mutate(characterId);
       mutationAnimation.mutate(characterId);
