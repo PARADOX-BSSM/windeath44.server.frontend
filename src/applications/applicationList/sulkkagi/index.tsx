@@ -15,7 +15,7 @@ interface StoneBody extends Matter.Body {
   isOut: boolean;
   isBig: boolean;
   hasShield?: boolean; // 보호막 여부
-  shieldUntilTurn?: number; // 보호막이 유지되는 턴 (플레이어 번호)
+  shieldUntilTurnCounter?: number; // 보호막이 유지되는 턴 카운터
 }
 
 // 전역 이미지 캐시
@@ -621,9 +621,13 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
   const handleShieldCollision = (shieldedStone: StoneBody, attackingStone: StoneBody) => {
     if (!shieldedStone.hasShield || !Matter) return;
 
+    // 보호막이 있는 돌의 현재 위치 저장 (충돌 전 위치)
+    const originalPosition = { ...shieldedStone.position };
+    const originalAngle = shieldedStone.angle;
+
     // 보호막 제거
     shieldedStone.hasShield = false;
-    shieldedStone.shieldUntilTurn = undefined;
+    shieldedStone.shieldUntilTurnCounter = undefined;
     setShieldedStones((prev) => {
       const newSet = new Set(prev);
       newSet.delete(shieldedStone.id);
@@ -639,7 +643,14 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
         : `${shieldedStone.player}P`;
     addCustomNotification(shieldedStone.player, `${playerName}의 보호막이 깨졌습니다!`);
 
-    // 보호막이 있던 돌은 움직이지 않도록 속도 0으로 설정
+    // 보호막이 깨진 돌은 다시 동적 상태로 변경
+    Matter.Body.setStatic(shieldedStone, false);
+
+    // 원래 위치로 복원 (충돌로 인한 밀림 방지)
+    Matter.Body.setPosition(shieldedStone, originalPosition);
+    Matter.Body.setAngle(shieldedStone, originalAngle);
+
+    // 속도는 0으로 유지 (움직이지 않음)
     Matter.Body.setVelocity(shieldedStone, { x: 0, y: 0 });
     Matter.Body.setAngularVelocity(shieldedStone, 0);
 
@@ -652,11 +663,11 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
       const normalizedDx = dx / distance;
       const normalizedDy = dy / distance;
 
-      // 강한 반사력 적용 (기존 속도의 1.5배)
-      const reflectPower = 0.05; // 반사 강도
-      Matter.Body.applyForce(attackingStone, attackingStone.position, {
-        x: normalizedDx * reflectPower,
-        y: normalizedDy * reflectPower,
+      // 강한 반사력 적용
+      const reflectPower = 0.08; // 반사 강도를 더 높임
+      Matter.Body.setVelocity(attackingStone, {
+        x: normalizedDx * reflectPower * 200, // 속도를 직접 설정
+        y: normalizedDy * reflectPower * 200,
       });
     }
   };
@@ -762,10 +773,15 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
   // 보호막 적용 함수
   const applyShield = (stoneId: number) => {
     const stone = stonesRef.current.find((s: any) => s.id === stoneId) as StoneBody | undefined;
-    if (!stone) return;
+    if (!stone || !Matter) return;
 
     stone.hasShield = true;
-    stone.shieldUntilTurn = currentPlayer; // 다음 내 턴까지 유지
+    // 다음 내 턴이 끝날 때까지 유지 (현재 턴 + 3)
+    // 예: 턴10에 사용 → 턴11(상대) → 턴12(내 턴) → 턴13 시작 시 제거
+    stone.shieldUntilTurnCounter = turnCounter + 3;
+
+    // 보호막이 있는 동안 돌을 고정 (isStatic)
+    Matter.Body.setStatic(stone, true);
 
     // 보호막이 있는 돌 목록에 추가
     setShieldedStones((prev) => new Set(prev).add(stoneId));
@@ -789,12 +805,22 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
 
   // 보호막 만료 체크 (턴 시작 시)
   const checkShieldExpiry = () => {
+    if (!Matter) return;
+
     stonesRef.current.forEach((stone: any) => {
       const stoneBody = stone as StoneBody;
-      // 내 턴이 다시 돌아왔을 때 보호막 제거
-      if (stoneBody.hasShield && stoneBody.shieldUntilTurn === currentPlayer) {
+      // 턴 카운터가 만료 시점에 도달하면 보호막 제거
+      if (
+        stoneBody.hasShield &&
+        stoneBody.shieldUntilTurnCounter !== undefined &&
+        turnCounter >= stoneBody.shieldUntilTurnCounter
+      ) {
         stoneBody.hasShield = false;
-        stoneBody.shieldUntilTurn = undefined;
+        stoneBody.shieldUntilTurnCounter = undefined;
+
+        // 보호막 제거 시 다시 동적 상태로 변경
+        Matter.Body.setStatic(stoneBody, false);
+
         setShieldedStones((prev) => {
           const newSet = new Set(prev);
           newSet.delete(stoneBody.id);
