@@ -6,6 +6,16 @@ import { CURSOR_IMAGES, setCursorImage } from '@/lib/setCursorImg';
 import whiteStoneUrl from '@/assets/sulkkagi/white_stone.svg?url';
 import blackStoneUrl from '@/assets/sulkkagi/black_stone.svg?url';
 
+// Matter.js Body 타입 확장 (커스텀 속성 정의)
+interface StoneBody extends Matter.Body {
+  player: number;
+  id: number;
+  originalColor: string;
+  isSelected: boolean;
+  isOut: boolean;
+  isBig: boolean;
+}
+
 // 전역 이미지 캐시
 let globalStoneImages: {
   white: HTMLImageElement | null;
@@ -639,7 +649,7 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
     if (selectedStoneIdRef.current) {
       const previousStone = stonesRef.current.find(
         (stone: any) => stone.id === selectedStoneIdRef.current,
-      );
+      ) as StoneBody | undefined;
       if (previousStone) {
         previousStone.render.strokeStyle = 'transparent';
         previousStone.render.lineWidth = 0;
@@ -648,9 +658,10 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
     }
 
     if (clickedStone) {
+      const selectedStone = clickedStone as StoneBody;
       // 새로운 돌 선택 (state + ref 동기화)
-      setSelectedStoneId(clickedStone.id);
-      selectedStoneIdRef.current = clickedStone.id;
+      setSelectedStoneId(selectedStone.id);
+      selectedStoneIdRef.current = selectedStone.id;
 
       setAimStart(pos);
       aimStartRef.current = pos;
@@ -662,9 +673,9 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
       isDraggingRef.current = true;
 
       // 선택된 돌의 스타일 변경
-      clickedStone.render.strokeStyle = clickedStone.player === 1 ? '#FF6B35' : '#FFD700';
-      clickedStone.render.lineWidth = 4;
-      clickedStone.isSelected = true;
+      selectedStone.render.strokeStyle = selectedStone.player === 1 ? '#FF6B35' : '#FFD700';
+      selectedStone.render.lineWidth = 4;
+      selectedStone.isSelected = true;
 
       // 드래그 시작 효과
       setCursorImage(CURSOR_IMAGES.drag);
@@ -754,7 +765,7 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
     if (selectedStoneIdRef.current) {
       const previousStone = stonesRef.current.find(
         (stone: any) => stone.id === selectedStoneIdRef.current,
-      );
+      ) as StoneBody | undefined;
       if (previousStone) {
         previousStone.render.strokeStyle = 'transparent';
         previousStone.render.lineWidth = 0;
@@ -850,25 +861,19 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
     }
   };
 
-  // 강화된 AI 전략 계산 함수 (랜덤성 추가)
+  // 강화된 AI 전략 계산 함수 (상황에 맞는 돌 선택)
   const calculateEnhancedBestMove = (aiStones: any[], enemyStones: any[]) => {
-    // 첫 턴 체크 (아무도 아웃되지 않았고, 모든 돌이 초기 위치 근처에 있는 경우)
+    // 첫 턴 체크 개선 (아무도 아웃되지 않았고, 모든 돌이 초기 위치 근처에 있는 경우)
+    const totalStonesInGame = stonesRef.current.filter((stone: any) => !stone.isOut).length;
     const isFirstTurn =
-      stoneCount.player1 === 4 &&
-      stoneCount.player2 === 4 &&
+      totalStonesInGame === 12 && // 총 12개의 돌이 보드에 있어야 함 (각 팀 6개씩)
       aiStones.every((stone) => {
         const speed = Math.sqrt(stone.velocity.x ** 2 + stone.velocity.y ** 2);
         return speed < 0.1; // 돌이 거의 정지 상태
       });
 
-    // 첫 턴에는 큰돌보다 일반 돌을 우선적으로 선택 (70% 확률)
-    let availableStones = aiStones;
-    if (isFirstTurn && Math.random() < 0.7) {
-      const normalStones = aiStones.filter((stone) => !stone.isBig);
-      if (normalStones.length > 0) {
-        availableStones = normalStones;
-      }
-    }
+    // 모든 돌 사용 가능 (상황에 맞게 선택)
+    const availableStones = aiStones;
 
     // 모든 가능한 수를 평가하여 배열로 저장
     const allMoves: Array<{
@@ -883,10 +888,11 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
       // 1. 벽 위험도 평가
       const wallDanger = evaluateWallDanger(aiStone);
 
-      // 2. 방어 우선 상황 체크 (더 공격적으로 조정)
-      if (wallDanger > 0.85) {
+      // 2. 방어 우선 상황 체크 (돌이 하나만 남았을 때는 무조건 공격)
+      const isLastStone = aiStones.length === 1;
+      if (wallDanger > 0.85 && !isLastStone) {
         // 위험 임계값을 높여서 더 공격적으로
-        // 매우 위험한 상황에서만 도망가기
+        // 매우 위험한 상황에서만 도망가기 (단, 마지막 돌이 아닐 때만)
         const escapeMove = calculateEscapeMove(aiStone);
         if (escapeMove) {
           allMoves.push({
@@ -1063,7 +1069,17 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
     const stoneAdvantage = evaluateStoneAdvantage(aiStone, targetEnemy, distance);
     score += stoneAdvantage;
 
-    // 5. 자신의 안전성 확인 (강화됨)
+    // 5. 상황에 맞는 돌 타입 보너스
+    const stoneTypeBonus = evaluateStoneTypeBonus(
+      aiStone,
+      targetEnemy,
+      distance,
+      enemyWallDanger,
+      allEnemyStones,
+    );
+    score += stoneTypeBonus;
+
+    // 6. 자신의 안전성 확인 (강화됨)
     const selfKnockoutRisk = evaluateSelfKnockoutRisk(
       aiStone,
       normalizedDx,
@@ -1257,6 +1273,69 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
     }
 
     return 0;
+  };
+
+  // 상황에 맞는 돌 타입 보너스 평가 (큰 돌 vs 일반 돌)
+  const evaluateStoneTypeBonus = (
+    aiStone: any,
+    targetEnemy: any,
+    distance: number,
+    enemyWallDanger: number,
+    allEnemyStones: any[],
+  ) => {
+    const aiIsBig = aiStone.isBig;
+    const selfWallDanger = evaluateWallDanger(aiStone);
+    let bonus = 0;
+
+    if (aiIsBig) {
+      // 큰 돌이 유리한 상황
+      // 1. 적이 벽에 매우 가까워서 한 방에 밀어낼 수 있을 때
+      if (enemyWallDanger > 0.7) {
+        bonus += 80;
+      }
+
+      // 2. 거리가 멀어서 강한 힘이 필요할 때
+      if (distance > 150) {
+        bonus += 60;
+      }
+
+      // 3. 여러 적이 밀집해 있을 때 (연쇄 타격 가능)
+      let nearbyEnemies = 0;
+      for (const enemy of allEnemyStones) {
+        if (enemy.id === targetEnemy.id) continue;
+        const distToTarget = Math.sqrt(
+          (enemy.position.x - targetEnemy.position.x) ** 2 +
+            (enemy.position.y - targetEnemy.position.y) ** 2,
+        );
+        if (distToTarget < 60) nearbyEnemies++;
+      }
+      if (nearbyEnemies > 0) {
+        bonus += nearbyEnemies * 40;
+      }
+
+      // 4. 자신이 벽에 가까우면 페널티 (반동 위험)
+      if (selfWallDanger > 0.6) {
+        bonus -= 100;
+      }
+    } else {
+      // 일반 돌이 유리한 상황
+      // 1. 가까운 거리에서 정밀한 조작이 필요할 때
+      if (distance < 100) {
+        bonus += 40;
+      }
+
+      // 2. 자신이 벽에 가까울 때 (반동이 작음)
+      if (selfWallDanger > 0.5 && distance < 120) {
+        bonus += 60;
+      }
+
+      // 3. 적이 벽에서 멀어서 여러 번 쳐야 할 때
+      if (enemyWallDanger < 0.3) {
+        bonus += 30;
+      }
+    }
+
+    return bonus;
   };
 
   // 강화된 동적 힘 조절 (아웃 가능성 + 자신의 안전성 고려)
@@ -1702,7 +1781,7 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
               if (selectedStoneIdRef.current) {
                 const prev = stonesRef.current.find(
                   (stone: any) => stone.id === selectedStoneIdRef.current,
-                );
+                ) as StoneBody | undefined;
                 if (prev) {
                   prev.render.strokeStyle = 'transparent';
                   prev.render.lineWidth = 0;
