@@ -22,6 +22,7 @@ const SignUp = ({ changeToLogIn }: Props) => {
   const [checkingPw, setCheckingPw] = useState<string>('');
   const [check, setCheck] = useState<string>('');
   const [click, setClick] = useState(false);
+  const[verity, setVerity] = useState<boolean>(false);
   const [timeLeft, setTimeLeft] = useState(180);
 
   const setAlert = useAtomValue(alerterAtom);
@@ -142,6 +143,38 @@ const SignUp = ({ changeToLogIn }: Props) => {
 
   const sendEmail = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    if (email.length == 0) {
+      setAlert?.(
+        Choten,
+        <>
+          이메일을 입력해 주세요.
+        </>,
+        () => {
+          taskTransform?.('경고', '');
+        },
+      );
+      return;
+    }
+    if (!email.includes('@') ) {
+      setAlert?.(
+        Choten,
+        <>
+          이메일 형식이 잘못되었습니다.
+          <br />
+          다시 입력해 주세요.
+        </>,
+        () => {
+          taskTransform?.('경고', '');
+        },
+      );
+      return;
+    }
+    if(verity){
+      setAlert?.(Choten, <>이미 인증을 하셨습니다.</>, () => {
+        taskTransform?.('경고', '');
+      });
+      return;
+    }
     emailValidationMutation.mutate(
       { email },
       {
@@ -162,27 +195,36 @@ const SignUp = ({ changeToLogIn }: Props) => {
   };
   const verifyCode = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    if (check.length == 5) {
+   if(verity){
+      setAlert?.(Choten, <>이미 인증을 하셨습니다.</>, () => {
+        taskTransform?.('경고', '');
+      });
+      return;
+    }
+    else if (check.length == 5) {
       verifyEmailMutation.mutate(
         { email, check },
         {
           onSuccess: () => {
-            setClick(false);
+            // setClick(false);
+            setVerity(true);
             setAlert?.(Choten, <>인증이 완료되었습니다.</>, () => {
               taskTransform?.('경고', '');
             });
           },
           onError: () => {
-            setAlert?.(Choten, <>인증 실패: 다시 입력해 주세요!</>, () => {
+            setAlert?.(Choten, <>인증 실패: 다시 입력해 주세요<br/> 이미 회원이시라면 인증이 불가합니다. </>, () => {
               taskTransform?.('경고', '');
             });
           },
         },
       );
-    } else {
+    }
+    else {
       setAlert?.(Choten, <>인증코드 5자리를 입력하지 않았습니다.</>, () => {
         taskTransform?.('경고', '');
       });
+      return;
     }
   };
   useEffect(() => {
@@ -249,7 +291,7 @@ const SignUp = ({ changeToLogIn }: Props) => {
                 placeHold={"example@email.com"}
               />
               <MemorialBtn
-                name={click ? '코드 재전송' : '코드전송'}
+                name={verity ? "인증완료" : click ? '코드 재전송' : '코드전송'}
                 onClick={sendEmail}
                 type="submit"
                 active={true}
