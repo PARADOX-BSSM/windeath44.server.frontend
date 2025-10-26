@@ -30,6 +30,7 @@ const Application = (props: ApplicationProps) => {
   const [focus, setFocus] = useAtom(focusAtom); // 현재 포커스된 창 이름 (전역)
   const [tabDownInterrupt, setTabDownInterrupt] = useAtom(tabDownInterruptAtom); // 단축키 등으로 창 최소화 등 인터럽트 신호 (전역)
   const [isLogIned, setIsLogIned] = useAtom(isLogInedAtom); // 로그인 여부 (전역)
+  const [windowName, setWindowName] = useState<string>(props.name); // 현재 창 이름 (로컬)
 
   const setUpHeight = props.setUpHeight;
   const setUpWidth = props.setUpWidth;
@@ -61,8 +62,8 @@ const Application = (props: ApplicationProps) => {
 
   // UX 개선 : 현재 창의 상태가 바뀌면 focus를 현재 창으로 변경
   useEffect(() => {
-    if (!isMinimized && focus !== props.name) {
-      setFocus(props.name);
+    if (!isMinimized && focus !== (props.instanceId || props.name)) {
+      setFocus(props.instanceId || props.name);
     }
   }, [window]);
 
@@ -79,7 +80,7 @@ const Application = (props: ApplicationProps) => {
 
   // Tab 인터럽트 처리 : tabDownInterrupt가 내 창이면 최소화 후 인터럽트 상태 초기화
   useEffect(() => {
-    if (tabDownInterrupt === props.name) {
+    if (tabDownInterrupt === (props.instanceId || props.name)) {
       setIsMinimized(true);
       setTabDownInterrupt('empty');
     }
@@ -87,7 +88,7 @@ const Application = (props: ApplicationProps) => {
 
   // 포커스 관리 : 창이 최소화되지 않았고, 포커스가 내 창이 아니면 내 창으로 포커스 이동
   useEffect(() => {
-    if (props.type !== 'Shell' && focus === props.name) {
+    if (props.type !== 'Shell' && focus === (props.instanceId || props.name)) {
       setLayer(layer + 1);
       setIsMinimized(false);
       setWindow({
@@ -198,7 +199,7 @@ const Application = (props: ApplicationProps) => {
     return (
       <_.Window
         style={window}
-        onMouseDown={() => setFocus(props.name)}
+        onMouseDown={() => setFocus(props.instanceId || props.name)}
       >
         <_.WindowHeader {...moveManager()}>
           <_.TitleContainer>
@@ -206,12 +207,12 @@ const Application = (props: ApplicationProps) => {
               src={Heart}
               draggable="false"
             />
-            <_.Title>{props.name}</_.Title>
+            <_.Title>{windowName}</_.Title>
           </_.TitleContainer>
           <_.BtnContainer>
             <_.MinimizeButton
               onMouseDown={() => setIsMinimized(!isMinimized)}
-              isFocus={focus === props.name}
+              isFocus={focus === (props.instanceId || props.name)}
             >
               <img
                 src={Min}
@@ -224,7 +225,7 @@ const Application = (props: ApplicationProps) => {
             </_.MinimizeButton>
             <_.FullScreenButton
               onMouseDown={() => setIsFullScreen(!isFullScreen)}
-              isFocus={focus === props.name}
+              isFocus={focus === (props.instanceId || props.name)}
             >
               <img
                 src={Full}
@@ -243,7 +244,7 @@ const Application = (props: ApplicationProps) => {
                   setIsLogIned('true');
                 }
               }}
-              isFocus={focus === props.name}
+              isFocus={focus === (props.instanceId || props.name)}
             >
               <img
                 src={Exit}
@@ -265,10 +266,18 @@ const Application = (props: ApplicationProps) => {
             const internal = original.props.children as React.ReactElement;
             const type = internal.type;
 
-            if (props.name === '추모관') {
+            if (props.name === '추모관' || props.name.startsWith('추모관 뷰어')) {
               return (
                 <Suspense fallback={null}>
-                  {React.createElement(type, { window, setWindow, setUpHeight, setUpWidth })}
+                  {React.createElement(type, {
+                    ...internal.props,
+                    window,
+                    setWindow,
+                    setUpHeight,
+                    setUpWidth,
+                    props,
+                    setWindowName,
+                  })}
                 </Suspense>
               );
             } else {
