@@ -231,7 +231,8 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
   // 턴 시작 시 보호막 만료 체크
   useEffect(() => {
     checkShieldExpiry();
-  }, [currentPlayer]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPlayer, turnCounter]);
 
   // AI 턴 자동 실행
   useEffect(() => {
@@ -977,6 +978,7 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
       });
 
       setCurrentPlayer((p) => (p === 1 ? 2 : 1));
+      setTurnCounter((prev) => prev + 1);
     }
 
     // 선택 해제 시 렌더링 복구
