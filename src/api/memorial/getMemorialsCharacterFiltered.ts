@@ -61,7 +61,7 @@ export const useGetMemorialsCharacterFilteredQuery = ({
     queryFn: () => fetchMemorials({ orderBy, page, characters: uniqSorted }),
     // enabled: enabled && uniqSorted.length > 0, // 빈 배열이면 호출 스킵 + 추가 조건 체크
     enabled: true,
-    staleTime: 30_000,
+    staleTime: 0,
     gcTime: 5 * 60_000,
     // 사용처 단순화 원하면 아래 활성화:
     // select: (resp) => resp.data,

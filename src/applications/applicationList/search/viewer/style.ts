@@ -27,6 +27,12 @@ export const inputs = styled.div`
   box-sizing: border-box;
 `;
 
+export const List = styled.div`
+  background-color: #ffeefd;
+  width: 100%;
+  height: 100%;
+`;
+
 export const Shadow = styled.div`
   display: flex;
   width: 100%;

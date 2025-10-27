@@ -46,8 +46,9 @@ export const search_main = styled.div`
   padding: 48px 32px;
   display: flex;
   flex: 1;
-  justify-content: space-between;
+  justify-content: flex-start;
   flex-direction: column;
+  gap: 32px;
 `;
 
 export const black = styled.div`

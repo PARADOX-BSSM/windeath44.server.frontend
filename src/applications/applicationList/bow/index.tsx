@@ -1,6 +1,6 @@
 import * as _ from '@/applications/applicationList/bow/style.ts';
 import Table from '@/assets/bow/table.svg';
-import { useMemorialBow } from '@/api/memorial/memorialBow.ts';
+// import { useMemorialBow } from '@/api/memorial/memorialBow.ts';
 import { useEffect, useState } from 'react';
 import { useMemorialGet as useMemorialGetBowCount } from '@/api/memorial/countBowsByMi.ts';
 import { useMemorialGet } from '@/api/memorial/memorialGet.ts';
@@ -12,6 +12,7 @@ import { alerterAtom } from '@/atoms/alerter';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
 import Choten from '@/assets/profile/choten.svg';
 import { getCookie } from '@/api/auth/cookie.ts';
+import { useGetBowByUserId } from '@/api/memorial/memorialBow.ts';
 
 interface bowProps {
   memorialId: number;
@@ -26,7 +27,7 @@ const Bow = ({ memorialId }: bowProps) => {
   const mutationGetCharacter = useGetCharacter(setCharacterData);
   const setAlert = useAtomValue(alerterAtom);
   const taskTransform = useAtomValue(taskTransformerAtom);
-  const mutationMemorialBows = useMemorialBow();
+  const mutationMemorialBows = useGetBowByUserId();
   const token = getCookie('access_token');
   const addBow = () => {
     if (!token && setAlert) {

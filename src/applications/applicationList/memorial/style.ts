@@ -202,7 +202,7 @@ export const Ribbon = styled.img`
   width: 144px;
   z-index: 1;
 `;
-export const Picture = styled.div<{ imgUrl: string }>`
+export const Picture = styled.div<{ imgUrl?: string }>`
   display: flex;
   height: 200px;
   flex-direction: column;

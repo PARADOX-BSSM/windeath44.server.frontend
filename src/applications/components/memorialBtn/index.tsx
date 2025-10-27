@@ -22,7 +22,14 @@ const MemorialBtn = ({
   height,
   fontSize = '20px',
 }: PropsType) => {
-
+  if (type === 'hidden') {
+    return (
+      <_.HiddenBtn
+        width={width}
+        height={height}
+      />
+    );
+  }
   if (type === 'submit') {
     return !active ? (
       <_.SubmitDefault

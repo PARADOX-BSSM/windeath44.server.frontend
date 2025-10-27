@@ -29,12 +29,17 @@ const WindowManager = () => {
   const [startOption, setStartOption] = useAtom(startOptionAtom);
   const [backUpFocus, setBackUpFocus] = useAtom(backUpFocusAtom);
   const [isLogIned, setIsLogIned] = useAtom(isLogInedAtom);
+  const [hydrated, setHydrated] = useState(false);
 
   const [taskList, addTask, removeTask] = useProcessManager();
   const { logIn, signUp, emailChack, auth } = getTaskCreators(setIsLogIned, addTask, removeTask);
   const isDragging = useRef(false);
   const dragOffset = useRef([0, 0]);
   const clickTimeout = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
 
   // Drag 감지해서 Cursor 변경
   const bindDrag = useDrag(
@@ -63,9 +68,10 @@ const WindowManager = () => {
     }
   }, [focus]);
   useEffect(() => {
+    if (!hydrated) return; // hydration 전엔 아무것도 하지 않음
+
     //초기 기본 설정
-    // localStorage.setItem('isLogIned', isLogIned);
-    if (isLogIned === 'true' || isLogIned === 'guest') {
+    if (isLogIned === 'true') {
       removeTask(logIn);
       const discover: TaskType = {
         component: (
@@ -89,7 +95,7 @@ const WindowManager = () => {
         addTask(logIn);
       }, 200);
     }
-  }, [isLogIned]);
+  }, [isLogIned, hydrated]);
 
   let resizeObserver = new ResizeObserver((_entries) => {
     const container: HTMLElement = document.getElementById('cursorContainer') as HTMLElement;

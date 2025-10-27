@@ -49,7 +49,7 @@ export const useGetIntegratedCharactersOffsetQuery = (
     queryKey: ['integratedCharactersOffset', JSON.stringify(clean)],
     queryFn: () => fetchIntegratedCharactersOffset(clean),
     enabled: true, // ✅ 항상 실행 (비어 있으면 전체 결과)
-    staleTime: 30_000,
+    staleTime: 0,
     gcTime: 5 * 60_000,
     // keepPreviousData: true, // 페이징 중 깜빡임 줄이고 싶으면
   });
