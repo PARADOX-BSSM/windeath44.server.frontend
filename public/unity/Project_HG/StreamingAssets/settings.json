@@ -1,0 +1,19 @@
+{
+    "isFirstStart": false,
+    "speed": 3.799999952316284,
+    "effectOption": "None",
+    "displayMode": 1,
+    "displayResolution": 2,
+    "frameLimit": 4,
+    "defaultLanguage": 0,
+    "songInfoLanguage": 0,
+    "judgementLineHeight": 0,
+    "sync": 0,
+    "fastSlowExp": 3,
+    "KeyBinds": [
+        "<Keyboard>/s",
+        "<Keyboard>/d",
+        "<Keyboard>/l",
+        "<Keyboard>/semicolon"
+    ]
+}
