@@ -6,6 +6,18 @@ import { CURSOR_IMAGES, setCursorImage } from '@/lib/setCursorImg';
 import whiteStoneUrl from '@/assets/sulkkagi/white_stone.svg?url';
 import blackStoneUrl from '@/assets/sulkkagi/black_stone.svg?url';
 
+// Matter.js Body 타입 확장 (커스텀 속성 정의)
+interface StoneBody extends Matter.Body {
+  player: number;
+  id: number;
+  originalColor: string;
+  isSelected: boolean;
+  isOut: boolean;
+  isBig: boolean;
+  hasShield?: boolean; // 보호막 여부
+  shieldUntilTurnCounter?: number; // 보호막이 유지되는 턴 카운터
+}
+
 // 전역 이미지 캐시
 let globalStoneImages: {
   white: HTMLImageElement | null;
@@ -131,13 +143,19 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
   const [showResultModal, setShowResultModal] = useState(false);
   const [isAiTurn, setIsAiTurn] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
-  const [stoneCount, setStoneCount] = useState({ player1: 4, player2: 4 }); // 일반돌 3개 + 큰돌 1개
+  const [stoneCount, setStoneCount] = useState({ player1: 6, player2: 6 }); // 일반돌 5개 + 큰돌 1개
   const [notifications, setNotifications] = useState<
     { id: number; player: number; message: string; isNew: boolean }[]
   >([]);
   const notificationIdRef = useRef(0);
   const player1CountRef = useRef(0); // 하얀돌 추모관 등록 카운터
   const player2CountRef = useRef(0); // 까만돌 추모관 등록 카운터
+
+  // 보호막 관련 state
+  const [shieldCount, setShieldCount] = useState({ player1: 3, player2: 3 }); // 각 팀 3회씩
+  const [isShieldMode, setIsShieldMode] = useState(false); // 보호막 선택 모드
+  const [shieldedStones, setShieldedStones] = useState<Set<number>>(new Set()); // 보호막이 있는 돌들
+  const [turnCounter, setTurnCounter] = useState(0); // 턴 카운터
 
   // SVG 이미지 로딩 상태
   const [imagesLoaded, setImagesLoaded] = useState(false);
@@ -210,6 +228,12 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // 턴 시작 시 보호막 만료 체크
+  useEffect(() => {
+    checkShieldExpiry();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPlayer, turnCounter]);
+
   // AI 턴 자동 실행
   useEffect(() => {
     if (
@@ -274,6 +298,21 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
           handleStoneOut(bodyA);
         } else if (bodyB.label === 'stone' && bodyA.label === 'wall') {
           handleStoneOut(bodyB);
+        }
+
+        // 돌과 돌의 충돌 확인 (보호막 처리)
+        if (bodyA.label === 'stone' && bodyB.label === 'stone') {
+          const stoneA = bodyA as StoneBody;
+          const stoneB = bodyB as StoneBody;
+
+          // 보호막이 있는 돌 확인
+          if (stoneA.hasShield && stoneA.player !== stoneB.player) {
+            // stoneA에 보호막이 있고, stoneB가 상대팀인 경우
+            handleShieldCollision(stoneA, stoneB);
+          } else if (stoneB.hasShield && stoneB.player !== stoneA.player) {
+            // stoneB에 보호막이 있고, stoneA가 상대팀인 경우
+            handleShieldCollision(stoneB, stoneA);
+          }
         }
       });
     });
@@ -519,6 +558,50 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
         ctx.arc(x, y, stoneRadius + 8 + extraRadius, 0, Math.PI * 2);
         ctx.stroke();
       }
+
+      // 보호막 효과 (파란색 쉴드)
+      const stoneBody = stone as StoneBody;
+      if (stoneBody.hasShield) {
+        const time = Date.now() * 0.003;
+        const pulse = Math.sin(time) * 0.3 + 0.7; // 0.4~1 사이값
+
+        // 외부 쉴드 링
+        ctx.save();
+        ctx.strokeStyle = `rgba(100, 200, 255, ${0.6 * pulse})`; // 파란색
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(x, y, stoneRadius + 10, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // 내부 쉴드 링
+        ctx.strokeStyle = `rgba(150, 220, 255, ${0.4 * pulse})`;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(x, y, stoneRadius + 6, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // 쉴드 아이콘 (육각형)
+        const shieldSize = 8;
+        const shieldX = x + stoneRadius - 5;
+        const shieldY = y - stoneRadius + 5;
+
+        ctx.fillStyle = 'rgba(100, 200, 255, 0.9)';
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        for (let i = 0; i < 6; i++) {
+          const angle = (Math.PI / 3) * i;
+          const px = shieldX + Math.cos(angle) * shieldSize;
+          const py = shieldY + Math.sin(angle) * shieldSize;
+          if (i === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        }
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.restore();
+      }
     });
 
     // 별도 Canvas에 화살표/게이지 그리기 (ref 값 기반)
@@ -532,6 +615,61 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
       addNotification(stone.player);
       // 돌을 보드 밖으로 완전히 이동 (안 보이게)
       Matter.Body.setPosition(stone, { x: -1000, y: -1000 });
+    }
+  };
+
+  // 보호막 충돌 처리 함수
+  const handleShieldCollision = (shieldedStone: StoneBody, attackingStone: StoneBody) => {
+    if (!shieldedStone.hasShield || !Matter) return;
+
+    // 보호막이 있는 돌의 현재 위치 저장 (충돌 전 위치)
+    const originalPosition = { ...shieldedStone.position };
+    const originalAngle = shieldedStone.angle;
+
+    // 보호막 제거
+    shieldedStone.hasShield = false;
+    shieldedStone.shieldUntilTurnCounter = undefined;
+    setShieldedStones((prev) => {
+      const newSet = new Set(prev);
+      newSet.delete(shieldedStone.id);
+      return newSet;
+    });
+
+    // 알림 추가
+    const playerName =
+      gameMode === 'ai'
+        ? shieldedStone.player === 1
+          ? '컴퓨터'
+          : '플레이어'
+        : `${shieldedStone.player}P`;
+    addCustomNotification(shieldedStone.player, `${playerName}의 보호막이 깨졌습니다!`);
+
+    // 보호막이 깨진 돌은 다시 동적 상태로 변경
+    Matter.Body.setStatic(shieldedStone, false);
+
+    // 원래 위치로 복원 (충돌로 인한 밀림 방지)
+    Matter.Body.setPosition(shieldedStone, originalPosition);
+    Matter.Body.setAngle(shieldedStone, originalAngle);
+
+    // 속도는 0으로 유지 (움직이지 않음)
+    Matter.Body.setVelocity(shieldedStone, { x: 0, y: 0 });
+    Matter.Body.setAngularVelocity(shieldedStone, 0);
+
+    // 공격한 돌을 강하게 반사 (충돌 방향의 반대로)
+    const dx = attackingStone.position.x - shieldedStone.position.x;
+    const dy = attackingStone.position.y - shieldedStone.position.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    if (distance > 0) {
+      const normalizedDx = dx / distance;
+      const normalizedDy = dy / distance;
+
+      // 강한 반사력 적용
+      const reflectPower = 0.08; // 반사 강도를 더 높임
+      Matter.Body.setVelocity(attackingStone, {
+        x: normalizedDx * reflectPower * 200, // 속도를 직접 설정
+        y: normalizedDy * reflectPower * 200,
+      });
     }
   };
 
@@ -550,6 +688,25 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
 
     const message = `${playerName}(${playerCount})이 추모관에 등록 당했습니다.`;
 
+    const newNotification = {
+      id: notificationIdRef.current++,
+      player,
+      message,
+      isNew: true,
+    };
+
+    setNotifications((prev) => [newNotification, ...prev]);
+
+    // 3초 후 isNew를 false로 변경하여 애니메이션 제거
+    setTimeout(() => {
+      setNotifications((prev) =>
+        prev.map((notif) => (notif.id === newNotification.id ? { ...notif, isNew: false } : notif)),
+      );
+    }, 3000);
+  };
+
+  // 커스텀 알림 추가 함수
+  const addCustomNotification = (player: number, message: string) => {
     const newNotification = {
       id: notificationIdRef.current++,
       player,
@@ -614,6 +771,66 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
     };
   };
 
+  // 보호막 적용 함수
+  const applyShield = (stoneId: number) => {
+    const stone = stonesRef.current.find((s: any) => s.id === stoneId) as StoneBody | undefined;
+    if (!stone || !Matter) return;
+
+    stone.hasShield = true;
+    // 다음 내 턴이 끝날 때까지 유지 (현재 턴 + 3)
+    // 예: 턴10에 사용 → 턴11(상대) → 턴12(내 턴) → 턴13 시작 시 제거
+    stone.shieldUntilTurnCounter = turnCounter + 3;
+
+    // 보호막이 있는 동안 돌을 고정 (isStatic)
+    Matter.Body.setStatic(stone, true);
+
+    // 보호막이 있는 돌 목록에 추가
+    setShieldedStones((prev) => new Set(prev).add(stoneId));
+
+    // 보호막 사용 횟수 감소
+    if (currentPlayer === 1) {
+      setShieldCount((prev) => ({ ...prev, player1: prev.player1 - 1 }));
+    } else {
+      setShieldCount((prev) => ({ ...prev, player2: prev.player2 - 1 }));
+    }
+
+    // 알림 추가
+    const playerName =
+      gameMode === 'ai' ? (currentPlayer === 1 ? '컴퓨터' : '플레이어') : `${currentPlayer}P`;
+    addCustomNotification(currentPlayer, `${playerName}가 보호막을 사용했습니다!`);
+
+    // 턴 넘기기 (보호막 사용 시 해당 턴 종료)
+    setCurrentPlayer((p) => (p === 1 ? 2 : 1));
+    setTurnCounter((prev) => prev + 1);
+  };
+
+  // 보호막 만료 체크 (턴 시작 시)
+  const checkShieldExpiry = () => {
+    if (!Matter) return;
+
+    stonesRef.current.forEach((stone: any) => {
+      const stoneBody = stone as StoneBody;
+      // 턴 카운터가 만료 시점에 도달하면 보호막 제거
+      if (
+        stoneBody.hasShield &&
+        stoneBody.shieldUntilTurnCounter !== undefined &&
+        turnCounter >= stoneBody.shieldUntilTurnCounter
+      ) {
+        stoneBody.hasShield = false;
+        stoneBody.shieldUntilTurnCounter = undefined;
+
+        // 보호막 제거 시 다시 동적 상태로 변경
+        Matter.Body.setStatic(stoneBody, false);
+
+        setShieldedStones((prev) => {
+          const newSet = new Set(prev);
+          newSet.delete(stoneBody.id);
+          return newSet;
+        });
+      }
+    });
+  };
+
   const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (isAnimating || gameState !== 'playing' || !engineRef.current) {
       return;
@@ -635,11 +852,23 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
       return distance <= stoneRadius && stone.player === currentPlayer;
     });
 
+    // 보호막 모드일 때
+    if (isShieldMode && clickedStone) {
+      const stoneBody = clickedStone as StoneBody;
+      // 이미 보호막이 있는 돌은 선택 불가
+      if (!stoneBody.hasShield && !stoneBody.isOut) {
+        applyShield(stoneBody.id);
+        setIsShieldMode(false); // 보호막 모드 종료
+        setCursorImage(CURSOR_IMAGES.default);
+      }
+      return;
+    }
+
     // 이전 선택 해제
     if (selectedStoneIdRef.current) {
       const previousStone = stonesRef.current.find(
         (stone: any) => stone.id === selectedStoneIdRef.current,
-      );
+      ) as StoneBody | undefined;
       if (previousStone) {
         previousStone.render.strokeStyle = 'transparent';
         previousStone.render.lineWidth = 0;
@@ -648,9 +877,10 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
     }
 
     if (clickedStone) {
+      const selectedStone = clickedStone as StoneBody;
       // 새로운 돌 선택 (state + ref 동기화)
-      setSelectedStoneId(clickedStone.id);
-      selectedStoneIdRef.current = clickedStone.id;
+      setSelectedStoneId(selectedStone.id);
+      selectedStoneIdRef.current = selectedStone.id;
 
       setAimStart(pos);
       aimStartRef.current = pos;
@@ -662,9 +892,9 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
       isDraggingRef.current = true;
 
       // 선택된 돌의 스타일 변경
-      clickedStone.render.strokeStyle = clickedStone.player === 1 ? '#FF6B35' : '#FFD700';
-      clickedStone.render.lineWidth = 4;
-      clickedStone.isSelected = true;
+      selectedStone.render.strokeStyle = selectedStone.player === 1 ? '#FF6B35' : '#FFD700';
+      selectedStone.render.lineWidth = 4;
+      selectedStone.isSelected = true;
 
       // 드래그 시작 효과
       setCursorImage(CURSOR_IMAGES.drag);
@@ -748,13 +978,14 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
       });
 
       setCurrentPlayer((p) => (p === 1 ? 2 : 1));
+      setTurnCounter((prev) => prev + 1);
     }
 
     // 선택 해제 시 렌더링 복구
     if (selectedStoneIdRef.current) {
       const previousStone = stonesRef.current.find(
         (stone: any) => stone.id === selectedStoneIdRef.current,
-      );
+      ) as StoneBody | undefined;
       if (previousStone) {
         previousStone.render.strokeStyle = 'transparent';
         previousStone.render.lineWidth = 0;
@@ -850,25 +1081,19 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
     }
   };
 
-  // 강화된 AI 전략 계산 함수 (랜덤성 추가)
+  // 강화된 AI 전략 계산 함수 (상황에 맞는 돌 선택)
   const calculateEnhancedBestMove = (aiStones: any[], enemyStones: any[]) => {
-    // 첫 턴 체크 (아무도 아웃되지 않았고, 모든 돌이 초기 위치 근처에 있는 경우)
+    // 첫 턴 체크 개선 (아무도 아웃되지 않았고, 모든 돌이 초기 위치 근처에 있는 경우)
+    const totalStonesInGame = stonesRef.current.filter((stone: any) => !stone.isOut).length;
     const isFirstTurn =
-      stoneCount.player1 === 4 &&
-      stoneCount.player2 === 4 &&
+      totalStonesInGame === 12 && // 총 12개의 돌이 보드에 있어야 함 (각 팀 6개씩)
       aiStones.every((stone) => {
         const speed = Math.sqrt(stone.velocity.x ** 2 + stone.velocity.y ** 2);
         return speed < 0.1; // 돌이 거의 정지 상태
       });
 
-    // 첫 턴에는 큰돌보다 일반 돌을 우선적으로 선택 (70% 확률)
-    let availableStones = aiStones;
-    if (isFirstTurn && Math.random() < 0.7) {
-      const normalStones = aiStones.filter((stone) => !stone.isBig);
-      if (normalStones.length > 0) {
-        availableStones = normalStones;
-      }
-    }
+    // 모든 돌 사용 가능 (상황에 맞게 선택)
+    const availableStones = aiStones;
 
     // 모든 가능한 수를 평가하여 배열로 저장
     const allMoves: Array<{
@@ -883,10 +1108,11 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
       // 1. 벽 위험도 평가
       const wallDanger = evaluateWallDanger(aiStone);
 
-      // 2. 방어 우선 상황 체크 (더 공격적으로 조정)
-      if (wallDanger > 0.85) {
+      // 2. 방어 우선 상황 체크 (돌이 하나만 남았을 때는 무조건 공격)
+      const isLastStone = aiStones.length === 1;
+      if (wallDanger > 0.85 && !isLastStone) {
         // 위험 임계값을 높여서 더 공격적으로
-        // 매우 위험한 상황에서만 도망가기
+        // 매우 위험한 상황에서만 도망가기 (단, 마지막 돌이 아닐 때만)
         const escapeMove = calculateEscapeMove(aiStone);
         if (escapeMove) {
           allMoves.push({
@@ -1063,7 +1289,17 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
     const stoneAdvantage = evaluateStoneAdvantage(aiStone, targetEnemy, distance);
     score += stoneAdvantage;
 
-    // 5. 자신의 안전성 확인 (강화됨)
+    // 5. 상황에 맞는 돌 타입 보너스
+    const stoneTypeBonus = evaluateStoneTypeBonus(
+      aiStone,
+      targetEnemy,
+      distance,
+      enemyWallDanger,
+      allEnemyStones,
+    );
+    score += stoneTypeBonus;
+
+    // 6. 자신의 안전성 확인 (강화됨)
     const selfKnockoutRisk = evaluateSelfKnockoutRisk(
       aiStone,
       normalizedDx,
@@ -1257,6 +1493,69 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
     }
 
     return 0;
+  };
+
+  // 상황에 맞는 돌 타입 보너스 평가 (큰 돌 vs 일반 돌)
+  const evaluateStoneTypeBonus = (
+    aiStone: any,
+    targetEnemy: any,
+    distance: number,
+    enemyWallDanger: number,
+    allEnemyStones: any[],
+  ) => {
+    const aiIsBig = aiStone.isBig;
+    const selfWallDanger = evaluateWallDanger(aiStone);
+    let bonus = 0;
+
+    if (aiIsBig) {
+      // 큰 돌이 유리한 상황
+      // 1. 적이 벽에 매우 가까워서 한 방에 밀어낼 수 있을 때
+      if (enemyWallDanger > 0.7) {
+        bonus += 80;
+      }
+
+      // 2. 거리가 멀어서 강한 힘이 필요할 때
+      if (distance > 150) {
+        bonus += 60;
+      }
+
+      // 3. 여러 적이 밀집해 있을 때 (연쇄 타격 가능)
+      let nearbyEnemies = 0;
+      for (const enemy of allEnemyStones) {
+        if (enemy.id === targetEnemy.id) continue;
+        const distToTarget = Math.sqrt(
+          (enemy.position.x - targetEnemy.position.x) ** 2 +
+            (enemy.position.y - targetEnemy.position.y) ** 2,
+        );
+        if (distToTarget < 60) nearbyEnemies++;
+      }
+      if (nearbyEnemies > 0) {
+        bonus += nearbyEnemies * 40;
+      }
+
+      // 4. 자신이 벽에 가까우면 페널티 (반동 위험)
+      if (selfWallDanger > 0.6) {
+        bonus -= 100;
+      }
+    } else {
+      // 일반 돌이 유리한 상황
+      // 1. 가까운 거리에서 정밀한 조작이 필요할 때
+      if (distance < 100) {
+        bonus += 40;
+      }
+
+      // 2. 자신이 벽에 가까울 때 (반동이 작음)
+      if (selfWallDanger > 0.5 && distance < 120) {
+        bonus += 60;
+      }
+
+      // 3. 적이 벽에서 멀어서 여러 번 쳐야 할 때
+      if (enemyWallDanger < 0.3) {
+        bonus += 30;
+      }
+    }
+
+    return bonus;
   };
 
   // 강화된 동적 힘 조절 (아웃 가능성 + 자신의 안전성 고려)
@@ -1634,13 +1933,19 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
     setAimStart(null);
     setAimCurrent(null);
     setIsAnimating(false);
-    setStoneCount({ player1: 4, player2: 4 }); // 일반돌 3개 + 큰돌 1개
+    setStoneCount({ player1: 6, player2: 6 }); // 일반돌 5개 + 큰돌 1개
     setNotifications([]);
     setShowResultModal(false);
     setIsAiTurn(false);
     notificationIdRef.current = 0;
     player1CountRef.current = 0; // 하얀돌 카운터 초기화
     player2CountRef.current = 0; // 까만돌 카운터 초기화
+
+    // 보호막 관련 초기화
+    setShieldCount({ player1: 3, player2: 3 });
+    setIsShieldMode(false);
+    setShieldedStones(new Set());
+    setTurnCounter(0);
 
     selectedStoneIdRef.current = null;
     aimStartRef.current = null;
@@ -1680,10 +1985,16 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
           <_.PlayerStoneCount player={1}>
             <_.StoneIcon player={1} />
             {gameMode === 'ai' ? '컴퓨터' : '하얀설'} {stoneCount.player1}개
+            <div style={{ fontSize: '11px', marginTop: '2px', opacity: 0.8 }}>
+              🛡️ {shieldCount.player1}회
+            </div>
           </_.PlayerStoneCount>
           <_.PlayerStoneCount player={2}>
             <_.StoneIcon player={2} />
             {gameMode === 'ai' ? '플레이어' : '까만설'} {stoneCount.player2}개
+            <div style={{ fontSize: '11px', marginTop: '2px', opacity: 0.8 }}>
+              🛡️ {shieldCount.player2}회
+            </div>
           </_.PlayerStoneCount>
         </_.StoneCountContainer>
       </_.GameInfo>
@@ -1702,7 +2013,7 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
               if (selectedStoneIdRef.current) {
                 const prev = stonesRef.current.find(
                   (stone: any) => stone.id === selectedStoneIdRef.current,
-                );
+                ) as StoneBody | undefined;
                 if (prev) {
                   prev.render.strokeStyle = 'transparent';
                   prev.render.lineWidth = 0;
@@ -1776,6 +2087,42 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
           )}
         </_.NotificationArea>
       </_.GameArea>
+
+      {/* 보호막 버튼 - 바둑판 아래 중앙에 배치 */}
+      {(gameMode === 'pvp' || (gameMode === 'ai' && currentPlayer === 2)) &&
+        !isAnimating &&
+        gameState === 'playing' && (
+          <_.ShieldButtonContainer>
+            <_.ResetButton
+              onClick={() => {
+                const currentShield =
+                  currentPlayer === 1 ? shieldCount.player1 : shieldCount.player2;
+                if (currentShield > 0 && !isShieldMode) {
+                  setIsShieldMode(true);
+                  setCursorImage(CURSOR_IMAGES.hand);
+                }
+              }}
+              onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+              onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+              disabled={
+                (currentPlayer === 1 && shieldCount.player1 === 0) ||
+                (currentPlayer === 2 && shieldCount.player2 === 0) ||
+                isShieldMode
+              }
+              style={{
+                opacity:
+                  (currentPlayer === 1 && shieldCount.player1 === 0) ||
+                  (currentPlayer === 2 && shieldCount.player2 === 0) ||
+                  isShieldMode
+                    ? 0.5
+                    : 1,
+                backgroundColor: isShieldMode ? '#64c8ff' : undefined,
+              }}
+            >
+              🛡️ 보호막 사용{isShieldMode ? ' (돌 선택)' : ''}
+            </_.ResetButton>
+          </_.ShieldButtonContainer>
+        )}
 
       <_.Controls>
         <_.ResetButton
