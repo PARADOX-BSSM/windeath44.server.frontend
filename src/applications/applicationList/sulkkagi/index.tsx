@@ -2088,11 +2088,11 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
         </_.NotificationArea>
       </_.GameArea>
 
-      <_.Controls>
-        {/* 보호막 버튼 - PVP 모드나 AI 모드에서 플레이어 턴일 때만 표시 */}
-        {(gameMode === 'pvp' || (gameMode === 'ai' && currentPlayer === 2)) &&
-          !isAnimating &&
-          gameState === 'playing' && (
+      {/* 보호막 버튼 - 바둑판 아래 중앙에 배치 */}
+      {(gameMode === 'pvp' || (gameMode === 'ai' && currentPlayer === 2)) &&
+        !isAnimating &&
+        gameState === 'playing' && (
+          <_.ShieldButtonContainer>
             <_.ResetButton
               onClick={() => {
                 const currentShield =
@@ -2121,7 +2121,10 @@ const Sulkkagi = ({ stack, push, pop, top, gameMode = 'ai' }: dataStructureProps
             >
               🛡️ 보호막 사용{isShieldMode ? ' (돌 선택)' : ''}
             </_.ResetButton>
-          )}
+          </_.ShieldButtonContainer>
+        )}
+
+      <_.Controls>
         <_.ResetButton
           onClick={() => {
             pop(top);

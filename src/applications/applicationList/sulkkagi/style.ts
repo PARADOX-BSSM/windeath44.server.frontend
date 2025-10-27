@@ -146,6 +146,12 @@ export const Controls = styled.div`
   z-index: 10;
 `;
 
+export const ShieldButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+`;
+
 export const ResetButton = styled.button`
   display: flex;
   padding: 12px 24px;
