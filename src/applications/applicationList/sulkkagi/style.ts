@@ -13,6 +13,7 @@ export const Container = styled.div`
   height: 100%;
   box-sizing: border-box;
   font-family: Galmuri11;
+  position: relative;
 `;
 
 export const Title = styled.h1`
@@ -136,8 +137,19 @@ export const AnimatingIndicator = styled.div`
 `;
 
 export const Controls = styled.div`
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 10;
+`;
+
+export const ShieldButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
   margin-top: 16px;
-  text-align: center;
 `;
 
 export const ResetButton = styled.button`

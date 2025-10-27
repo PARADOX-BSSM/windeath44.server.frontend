@@ -575,9 +575,9 @@ const useApps = (): TaskType[] => {
       appSetup: {
         Image: sulkkagi,
         minWidth: 750,
-        minHeight: 750,
+        minHeight: 780,
         setUpWidth: 800,
-        setUpHeight: 800,
+        setUpHeight: 790,
       },
       visible: false,
     },
