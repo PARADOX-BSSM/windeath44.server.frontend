@@ -17,10 +17,13 @@ const GameFrame = styled.iframe`
 `;
 
 const RhythmGame = () => {
+  // Use R2 URL if configured (for production), fallback to local path (for development)
+  const gameUrl = import.meta.env.VITE_UNITY_GAME_URL || '/unity/Project_HG/index.html';
+
   return (
     <Container>
       <GameFrame
-        src="/unity/Project_HG/index.html"
+        src={gameUrl}
         title="Rhythm Game"
         allow="autoplay; fullscreen"
       />

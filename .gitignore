@@ -26,3 +26,9 @@ dist-ssr
 
 .claude/settings.local.json
 GEMINI.md
+
+# Unity WebGL Build Files (hosted on R2)
+public/unity/Project_HG/Build/*.br
+public/unity/Project_HG/Build/*.data
+public/unity/Project_HG/Build/*.wasm
+public/unity/Project_HG/Build/*.framework.js
