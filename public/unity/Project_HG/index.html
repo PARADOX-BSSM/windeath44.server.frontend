@@ -55,9 +55,9 @@
       var loaderUrl = buildUrl + "/Project_HG.loader.js";
       var config = {
         arguments: [],
-        dataUrl: buildUrl + "/Project_HG.data.unityweb",
-        frameworkUrl: buildUrl + "/Project_HG.framework.js.unityweb",
-        codeUrl: buildUrl + "/Project_HG.wasm.unityweb",
+        dataUrl: buildUrl + "/Project_HG.data.br",
+        frameworkUrl: buildUrl + "/Project_HG.framework.js.br",
+        codeUrl: buildUrl + "/Project_HG.wasm.br",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
         productName: "Project-HG",
@@ -106,7 +106,6 @@
         // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
         canvas.style.width = "100%";
         canvas.style.height = "100%";
-        canvas.style.objectFit = "contain";
       }
 
       document.querySelector("#unity-loading-bar").style.display = "block";
