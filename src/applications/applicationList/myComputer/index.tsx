@@ -252,23 +252,15 @@ const MyComputer = () => {
           if (isLoggedIn) {
             logOutMutation.mutate(undefined, {
               onSuccess: () => {
-                localStorage.removeItem('access_token');
                 setIsLogIned('false');
                 sessionStorage.setItem('hasBootedSession', 'false');
                 location.reload();
               },
               onError: (error) => {
                 console.error('로그아웃 실패', error);
-                // 에러가 발생해도 로컬 상태는 정리
-                localStorage.removeItem('access_token');
-                deleteCookie('access_token');
-                deleteCookie('refresh_token');
-                setIsLogIned('false');
-                sessionStorage.setItem('hasBootedSession', 'false');
                 setAlert?.(Choten, <>로그아웃 중 오류가 발생했습니다.</>, () => {
                   taskTransform?.('경고', '');
                 });
-                location.reload();
               },
             });
           }
