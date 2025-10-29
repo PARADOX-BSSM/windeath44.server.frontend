@@ -13,7 +13,7 @@ const logOut = async (): Promise<string> => {
   // console.log(response.headers);
   // Remove auth cookies locally; server should also invalidate refresh on logout
   deleteCookie('access_token');
-  deleteCookie('refreshToken');
+  // deleteCookie('refreshToken');
   return '성공';
 };
 
