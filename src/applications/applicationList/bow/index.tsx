@@ -1,18 +1,19 @@
 import * as _ from '@/applications/applicationList/bow/style.ts';
 import Table from '@/assets/bow/table.svg';
-import Character from '@/assets/character/hosino.svg';
-import { useMemorialBow } from '@/api/memorial/memorialBow.ts';
+// import { useMemorialBow } from '@/api/memorial/memorialBow.ts';
 import { useEffect, useState } from 'react';
 import { useMemorialGet as useMemorialGetBowCount } from '@/api/memorial/countBowsByMi.ts';
 import { useMemorialGet } from '@/api/memorial/memorialGet.ts';
 import { useGetCharacter, type CharacterData } from '@/api/anime/getCharacter.ts';
 import type { memorialData } from '@/api/memorial/memorialGet.ts';
 import Mourners from '@/applications/components/mourners';
-import { useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { alerterAtom } from '@/atoms/alerter';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
 import Choten from '@/assets/profile/choten.svg';
 import { getCookie } from '@/api/auth/cookie.ts';
+import { useGetBowByUserId } from '@/api/memorial/memorialBow.ts';
+import { useGetUserMutation } from '@/api/user/getUser.ts';
 
 interface bowProps {
   memorialId: number;
@@ -27,7 +28,9 @@ const Bow = ({ memorialId }: bowProps) => {
   const mutationGetCharacter = useGetCharacter(setCharacterData);
   const setAlert = useAtomValue(alerterAtom);
   const taskTransform = useAtomValue(taskTransformerAtom);
-  const mutationMemorialBows = useMemorialBow();
+  const mutationMemorialBows = useGetBowByUserId();
+  const { mutate: getUser, data: userData } = useGetUserMutation();
+  const userId = userData?.data?.userId || 'user';
   const token = getCookie('access_token');
   const addBow = () => {
     if (!token && setAlert) {
@@ -39,18 +42,37 @@ const Bow = ({ memorialId }: bowProps) => {
           로그인 후 사용 가능 합니다.
         </>,
         () => {
-          taskTransform?.('경고', '');
+          taskTransform?.('경고', '로그인');
         },
       );
     } else {
-      mutationMemorialBows.mutate(memorialId, {
-        onSuccess: () => {
-          // 서버 응답 성공 시에만 UI 숫자 증가
-          setTotalBow((prev) => (prev ? prev + 1 : 1));
+      mutationMemorialBows.mutate(
+        { memorialId, userId },
+        {
+          onSuccess: () => {
+            // 서버 응답 성공 시에만 UI 숫자 증가
+            setTotalBow((prev) => (prev ? prev + 1 : 1));
+          },
+          onError: () => {
+            (setAlert ?? userId)(
+              Choten,
+              <>
+                절을 하지 못했습니다.
+                <br />
+                절을 한 번 한 후 24시간이 지나야 다시 할 수 있습니다.
+              </>,
+              () => {
+                taskTransform?.('경고', '로그인');
+              },
+            );
+          },
         },
-      });
+      );
     }
   };
+  useEffect(() => {
+    getUser();
+  }, [getUser]);
   useEffect(() => {
     // Bow count 가져오기
     mutationMemorialGetBowCount.mutate(memorialId, {
