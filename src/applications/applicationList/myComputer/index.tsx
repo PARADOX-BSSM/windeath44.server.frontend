@@ -24,6 +24,8 @@ import { anime } from '@/config';
 import { useEffect, useState, useMemo, useRef } from 'react';
 import ImageCropper from '@/applications/components/imageCropper';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
+import MemorialChief from '@/applications/applicationList/memorialChief';
+import { InputsList } from './style.ts';
 
 // 캐릭터 정보를 가져오는 커스텀 hook
 const useCharacterInfo = (characterId: number) => {
@@ -417,15 +419,15 @@ const MyComputer = () => {
           </_.Shadow>
         </_.InnerItem>
         <_.InnerItem>
-          <_.Title>인벤토리</_.Title>
+          <_.Title>상주 추모관 목록</_.Title>
           <_.Shadow>
-            <_.Inputs>
+            <_.InputsList>
               {!loggedIn ? (
                 <_.MessageText>로그인 후 이용할 수 있습니다.</_.MessageText>
               ) : (
-                <_.MessageText>추후 추가될 기능입니다.</_.MessageText>
+                <MemorialChief/>
               )}
-            </_.Inputs>
+            </_.InputsList>
           </_.Shadow>
         </_.InnerItem>
       </_.Btn>

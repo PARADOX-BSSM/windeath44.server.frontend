@@ -130,8 +130,6 @@ const MemorialChief = ({ stack, push, pop, top }: dataStructureProps) => {
   // 로딩 상태 처리
   if (isLoading) {
     return (
-      <_.Container>
-        <_.InnerContainer>
           <_.ContentContainer>
             <_.Header>
               <_.InnerHeader>
@@ -142,17 +140,11 @@ const MemorialChief = ({ stack, push, pop, top }: dataStructureProps) => {
               </_.InnerHeader>
             </_.Header>
           </_.ContentContainer>
-        </_.InnerContainer>
-      </_.Container>
     );
   }
   return (
-    <_.Container>
-      <_.InnerContainer>
-        <_.ContentContainer>
 
           <_.MemorialListContainer>
-            <_.ListTitle>상주 추모관 목록</_.ListTitle>
             <_.MemorialListBox>
               <_.MemorialList>
                 {chiefMemorialIds.map((memorialId) => {
@@ -194,9 +186,6 @@ const MemorialChief = ({ stack, push, pop, top }: dataStructureProps) => {
               </_.MemorialList>
             </_.MemorialListBox>
           </_.MemorialListContainer>
-        </_.ContentContainer>
-      </_.InnerContainer>
-    </_.Container>
   );
 };
 
