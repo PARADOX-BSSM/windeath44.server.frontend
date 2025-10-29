@@ -7,12 +7,13 @@ import { useMemorialGet } from '@/api/memorial/memorialGet.ts';
 import { useGetCharacter, type CharacterData } from '@/api/anime/getCharacter.ts';
 import type { memorialData } from '@/api/memorial/memorialGet.ts';
 import Mourners from '@/applications/components/mourners';
-import { useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { alerterAtom } from '@/atoms/alerter';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
 import Choten from '@/assets/profile/choten.svg';
 import { getCookie } from '@/api/auth/cookie.ts';
 import { useGetBowByUserId } from '@/api/memorial/memorialBow.ts';
+import { useGetUserMutation } from '@/api/user/getUser.ts';
 
 interface bowProps {
   memorialId: number;
@@ -28,6 +29,8 @@ const Bow = ({ memorialId }: bowProps) => {
   const setAlert = useAtomValue(alerterAtom);
   const taskTransform = useAtomValue(taskTransformerAtom);
   const mutationMemorialBows = useGetBowByUserId();
+  const { mutate: getUser, data: userData } = useGetUserMutation();
+  const userId = userData?.data?.userId || 'user';
   const token = getCookie('access_token');
   const addBow = () => {
     if (!token && setAlert) {
@@ -39,18 +42,24 @@ const Bow = ({ memorialId }: bowProps) => {
           로그인 후 사용 가능 합니다.
         </>,
         () => {
-          taskTransform?.('경고', '');
+          taskTransform?.('경고', '로그인');
         },
       );
     } else {
-      mutationMemorialBows.mutate(memorialId, {
-        onSuccess: () => {
-          // 서버 응답 성공 시에만 UI 숫자 증가
-          setTotalBow((prev) => (prev ? prev + 1 : 1));
+      mutationMemorialBows.mutate(
+        { memorialId, userId },
+        {
+          onSuccess: () => {
+            // 서버 응답 성공 시에만 UI 숫자 증가
+            setTotalBow((prev) => (prev ? prev + 1 : 1));
+          },
         },
-      });
+      );
     }
   };
+  useEffect(() => {
+    getUser();
+  }, [getUser]);
   useEffect(() => {
     // Bow count 가져오기
     mutationMemorialGetBowCount.mutate(memorialId, {
