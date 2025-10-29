@@ -65,6 +65,7 @@ export const AuthorshipFrom = styled.p`
 
 export const CharacterNameInput = styled(TextareaAutosize)`
   display: flex;
+  cursor: none;
   width: 100%;
   color: #2e2e2e;
   font-family: Galmuri11;
@@ -143,7 +144,7 @@ export const CharacterInformation = styled.div`
   flex-direction: column;
   align-items: center;
   gap: -1px;
-  border: 1px solid var(--Stroke, #E774DD);
+  border: 1px solid var(--Stroke, #e774dd);
 `;
 
 export const CharacterInformationInner = styled.div`
@@ -216,10 +217,12 @@ export const CharacterInforInput = styled.input`
   border: none;
   background: transparent;
   outline: none;
+  cursor: none;
 `;
 
 export const PhraseContainer = styled.input`
   width: 80%;
+  cursor: none;
   height: 100%;
   color: #2e2e2e;
   text-align: center;

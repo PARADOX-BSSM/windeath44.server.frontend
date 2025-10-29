@@ -1,24 +1,20 @@
-import { AxiosError, AxiosResponse } from 'axios';
 import api from '@/api/axiosInstance';
 import { useMutation } from '@tanstack/react-query';
 import { auth } from '@/config';
-import { deleteCookie } from '@/api/auth/cookie';
+import { deleteCookie, getCookie } from '@/api/auth/cookie';
 
 const logOut = async (): Promise<string> => {
-  try {
-    const response: AxiosResponse = await api.post(`${auth}/logout`, {}, { withCredentials: true });
-// console.log(response.headers);
-    // Remove auth cookies locally; server should also invalidate refresh on logout
-    deleteCookie('access_token');
-    deleteCookie('refresh_token');
-    return '성공';
-  } catch (error) {
-    const axiosError = error as AxiosError;
-    if (axiosError.response?.headers) {
-// console.log(`로그아웃 실패: ${JSON.stringify(axiosError.response.headers)}`);
-    }
-    throw error;
-  }
+  const refreshToken = getCookie('refreshToken');
+  await api.post(`${auth}/logout`, {
+    headers: {
+      Cookie: refreshToken || '',
+    },
+  });
+  // console.log(response.headers);
+  // Remove auth cookies locally; server should also invalidate refresh on logout
+  deleteCookie('access_token');
+  // deleteCookie('refreshToken');
+  return '성공';
 };
 
 export const useLogOut = () => {

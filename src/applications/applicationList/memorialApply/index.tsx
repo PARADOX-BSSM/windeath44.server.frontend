@@ -115,6 +115,12 @@ const MemorialApply = ({}: dataStructureProps) => {
             <_.CharacterNameInput
               placeholder="이름을 입력해주세요..."
               onChange={(e) => setInputValue((prev) => ({ ...prev, name: e.target.value }))}
+              onMouseEnter={() => {
+                setCursorImage(CURSOR_IMAGES.drag);
+              }}
+              onMouseLeave={() => {
+                setCursorImage(CURSOR_IMAGES.default);
+              }}
             ></_.CharacterNameInput>
             <_.Status>문서 수정 중</_.Status>
           </_.HeaderTextContainer>
@@ -156,10 +162,17 @@ const MemorialApply = ({}: dataStructureProps) => {
                     <_.CharacterInformationRowValue>
                       <_.CharacterInformationRowValueText>
                         <_.CharacterInforInput
-                          type="text"
+                          type="number"
                           placeholder="예) 1"
+                          min="0"
                           onChange={(e) => {
                             setInputValue((prev) => ({ ...prev, age: Number(e.target.value) }));
+                          }}
+                          onMouseEnter={() => {
+                            setCursorImage(CURSOR_IMAGES.drag);
+                          }}
+                          onMouseLeave={() => {
+                            setCursorImage(CURSOR_IMAGES.default);
                           }}
                         ></_.CharacterInforInput>
                       </_.CharacterInformationRowValueText>
@@ -179,6 +192,12 @@ const MemorialApply = ({}: dataStructureProps) => {
                           placeholder="예) 2023-04-12"
                           onChange={(e) => {
                             setInputValue((prev) => ({ ...prev, date: e.target.value }));
+                          }}
+                          onMouseEnter={() => {
+                            setCursorImage(CURSOR_IMAGES.drag);
+                          }}
+                          onMouseLeave={() => {
+                            setCursorImage(CURSOR_IMAGES.default);
                           }}
                         ></_.CharacterInforInput>
                       </_.CharacterInformationRowValueText>
@@ -221,6 +240,12 @@ const MemorialApply = ({}: dataStructureProps) => {
                               ...prev,
                               causeOfDeathDetails: e.target.value,
                             }));
+                          }}
+                          onMouseEnter={() => {
+                            setCursorImage(CURSOR_IMAGES.drag);
+                          }}
+                          onMouseLeave={() => {
+                            setCursorImage(CURSOR_IMAGES.default);
                           }}
                         ></_.CharacterInforInput>
                       </_.CharacterInformationRowValueText>
@@ -272,9 +297,15 @@ const MemorialApply = ({}: dataStructureProps) => {
 
       <_.PhraseContainer
         type="text"
-        placeholder="고인의 명언을 입력하세요..."
+        placeholder="고인의 마지막 한마디를 입력하세요..."
         onChange={(e) => {
           setInputValue((prev) => ({ ...prev, phrase: e.target.value }));
+        }}
+        onMouseEnter={() => {
+          setCursorImage(CURSOR_IMAGES.drag);
+        }}
+        onMouseLeave={() => {
+          setCursorImage(CURSOR_IMAGES.default);
         }}
       ></_.PhraseContainer>
 
