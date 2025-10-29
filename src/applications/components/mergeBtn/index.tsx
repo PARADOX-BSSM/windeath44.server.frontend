@@ -72,7 +72,7 @@ const MergeBtn = ({ text, memorialId, characterId }: PropsType) => {
         return;
       }
 
-      if (!inputValue.deathReason || inputValue.deathReason === '모두') {
+      if (!inputValue.deathReason || inputValue.deathReason === '자살(自殺)') {
         setAlert?.(Choten, <>사인을 선택해주세요.</>, () => {
           taskTransform?.('경고', '');
         });
@@ -140,9 +140,9 @@ const MergeBtn = ({ text, memorialId, characterId }: PropsType) => {
                           causeOfDeathDetails: '',
                         });
                         setContentIn({ characterId: '', content: '' });
-                        let task = taskSearch?.('미리보기');
+                        let task = taskList.find((t) => t.name === '미리보기');
                         if (task) removeTask(task);
-                        task = taskSearch?.('추모관');
+                        task = taskList.find((t) => t.name === '추모관');
                         if (task) removeTask(task);
                       },
                       onError: () => {
@@ -233,9 +233,9 @@ const MergeBtn = ({ text, memorialId, characterId }: PropsType) => {
               causeOfDeathDetails: '',
             });
             setContentIn({ characterId: '', content: '' });
-            let task = taskSearch?.('미리보기');
+            let task = taskList.find((t) => t.name === '미리보기');
             if (task) removeTask(task);
-            task = taskSearch?.('추모관 수정');
+            task = taskList.find((t) => t.name === '추모관 수정');
             if (task) removeTask(task);
           },
           onError: () => {
