@@ -18,7 +18,7 @@ import { useAlerter } from '@/hooks/alerter.tsx';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg.tsx';
 import { useDrag } from 'react-use-gesture';
 import useApps from '@/applications/data/importManager.tsx';
-import { lastTaskListAtom } from '@/atoms/processManager.ts';
+import { lastTaskListAtom, windowPositionsAtom } from '@/atoms/processManager.ts';
 
 const Application = lazy(() => import('@/applications/layout/index.tsx'));
 
@@ -33,6 +33,7 @@ const WindowManager = () => {
   const [isLogIned, setIsLogIned] = useAtom(isLogInedAtom);
   const [hydrated, setHydrated] = useState(false);
   const [lastTaskList] = useAtom(lastTaskListAtom);
+  const [, setWindowPositions] = useAtom(windowPositionsAtom);
 
   const [taskList, addTask, removeTask] = useProcessManager();
   const { logIn, signUp, emailChack, auth } = getTaskCreators(setIsLogIned, addTask, removeTask);
@@ -95,21 +96,38 @@ const WindowManager = () => {
     // localStorage에서 마지막 태스크 리스트 복원
     if (lastTaskList && lastTaskList.length > 0) {
       console.log('[WindowManager] Restoring tasks:', lastTaskList);
+
+      // 위치 정보를 windowPositionsAtom에 먼저 복원
+      const positions: Record<string, { top: number; left: number; width: number; height: number }> = {};
+      lastTaskList.forEach((savedTask) => {
+        if (savedTask.position) {
+          positions[savedTask.name] = savedTask.position;
+          console.log('[WindowManager] Will restore position for', savedTask.name, ':', savedTask.position);
+        }
+      });
+
+      // setTimeout 전에 positions 설정하고 확인
+      setWindowPositions(positions);
+      console.log('[WindowManager] Set windowPositions to:', positions);
+
+      // 위치 설정 후 조금 기다렸다가 앱 추가
       setTimeout(() => {
+        console.log('[WindowManager] Now adding tasks...');
         lastTaskList.forEach((savedTask) => {
           const app = availableApps.find(
             (availableApp) => availableApp.id === savedTask.id && availableApp.name === savedTask.name
           );
-          console.log('[WindowManager] Looking for app:', savedTask, 'Found:', app ? 'YES' : 'NO');
+          console.log('[WindowManager] Looking for app:', savedTask.name, 'Found:', app ? 'YES' : 'NO');
           if (app) {
+            console.log('[WindowManager] Adding task:', savedTask.name);
             addTask(app);
           }
         });
-      }, 400); // Discover 추가 후에 실행
+      }, 500); // 위치 설정 후 여유있게 대기
     } else {
       console.log('[WindowManager] No tasks to restore');
     }
-  }, [hydrated, isLogIned, lastTaskList, availableApps, addTask]);
+  }, [hydrated, isLogIned, lastTaskList, availableApps, addTask, setWindowPositions]);
 
   useEffect(() => {
     if (!hydrated) return; // hydration 전엔 아무것도 하지 않음

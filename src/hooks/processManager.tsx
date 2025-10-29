@@ -1,6 +1,6 @@
 import { TaskType } from '@/modules/typeModule.tsx';
 import { useAtom } from 'jotai';
-import { taskManagerAtom, lastTaskListAtom, SavedTaskType } from '@/atoms/processManager.ts';
+import { taskManagerAtom, lastTaskListAtom, windowPositionsAtom, SavedTaskType } from '@/atoms/processManager.ts';
 import { useEffect, useRef } from 'react';
 
 const useProcessManager: () => [
@@ -10,6 +10,7 @@ const useProcessManager: () => [
 ] = () => {
   const [taskList, setTaskList] = useAtom(taskManagerAtom);
   const [, setLastTaskList] = useAtom(lastTaskListAtom);
+  const [windowPositions] = useAtom(windowPositionsAtom);
   const isInitialMount = useRef(true);
 
   // taskList가 변경될 때마다 localStorage에 저장 (단, 초기 마운트는 제외)
@@ -43,10 +44,11 @@ const useProcessManager: () => [
         type: task.type,
         id: task.id,
         name: task.name,
+        position: windowPositions[task.name], // 위치 정보도 함께 저장
       }));
     console.log('[ProcessManager] Saving tasks to localStorage:', savedTasks);
     setLastTaskList(savedTasks);
-  }, [taskList, setLastTaskList]);
+  }, [taskList, windowPositions, setLastTaskList]);
 
   const addTask = (component: TaskType) => {
     setTaskList((Task) =>
