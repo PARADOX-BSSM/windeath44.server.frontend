@@ -84,7 +84,10 @@ export const MemorialItem = styled.div`
   align-items: center;
   align-self: stretch;
   background: #FFF;
-  border: 1px solid #000;
+  //border: 0 0 1px 0 solid #000;
+  border-width: 0 0 1px 0;
+  border-style: solid;
+  border-color: #000;
 `;
 
 export const MemorialInfo = styled.div`
