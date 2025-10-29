@@ -37,27 +37,71 @@ const MergeBtn = ({ text, memorialId, characterId }: PropsType) => {
   const handleSubmit = (e: React.MouseEvent) => {
     e.preventDefault();
 
-// console.log({ ...inputValue, ...contentIn });
+    // console.log({ ...inputValue, ...contentIn });
 
     const isApply = currentStackTop?.name === 'MemorialApply';
     const isCommit = taskList.some((task) => task.name === '추모관 수정');
 
     if (isApply) {
-      createCharacterMutation.mutate(
-        { ...inputValue, ...contentIn },
+      uploadImageMutation.mutate(
         {
-          onSuccess: (characterId: number) => {
-            uploadImageMutation.mutate(
+          image: inputValue.profileImage,
+        },
+        {
+          onSuccess: (fileUrl: string) => {
+            createCharacterMutation.mutate(
+              { ...inputValue, ...contentIn, fileUrl },
               {
-                image: inputValue.profileImage,
-                characterId: characterId,
-              },
-              {
+                onSuccess: (characterId: number) => {
+                  applyMemorialMutation.mutate(
+                    {
+                      characterId: characterId,
+                      content: contentIn.content,
+                    },
+                    {
+                      onSuccess: () => {
+                        setAlert?.(Choten, <>추모관이 성공적으로 신청되었습니다.</>, () => {
+                          taskTransform?.('경고', '');
+                        });
+                        setInputValue({
+                          name: '',
+                          deathReason: '자연사(自然死)' as deathType,
+                          date: '',
+                          lifeCycle: 0,
+                          anime: '',
+                          animeId: '',
+                          age: 0,
+                          profileImage: '',
+                          phrase: '',
+                          causeOfDeathDetails: '',
+                        });
+                        setContentIn({ characterId: '', content: '' });
+                        let task = taskSearch?.('미리보기');
+                        if (task) removeTask(task);
+                        task = taskSearch?.('추모관');
+                        if (task) removeTask(task);
+                      },
+                      onError: () => {
+                        setAlert?.(
+                          Choten,
+                          <>
+                            추모관 신청 중 오류가 발생했습니다.
+                            <br />
+                            잠시 후 다시 시도해 주세요.
+                          </>,
+                          () => {
+                            taskTransform?.('경고', '');
+                          },
+                        );
+                      },
+                    },
+                  );
+                },
                 onError: () => {
                   setAlert?.(
                     Choten,
                     <>
-                      이미지 업로드 중 오류가 발생했습니다.
+                      캐릭터 등록 중 오류가 발생했습니다.
                       <br />
                       잠시 후 다시 시도해 주세요.
                     </>,
@@ -68,55 +112,12 @@ const MergeBtn = ({ text, memorialId, characterId }: PropsType) => {
                 },
               },
             );
-            applyMemorialMutation.mutate(
-              {
-                characterId: characterId,
-                content: contentIn.content,
-              },
-              {
-                onSuccess: () => {
-                  setAlert?.(Choten, <>추모관이 성공적으로 신청되었습니다.</>, () => {
-                    taskTransform?.('경고', '');
-                  });
-                },
-                onError: () => {
-                  setAlert?.(
-                    Choten,
-                    <>
-                      추모관 신청 중 오류가 발생했습니다.
-                      <br />
-                      잠시 후 다시 시도해 주세요.
-                    </>,
-                    () => {
-                      taskTransform?.('경고', '');
-                    },
-                  );
-                },
-              },
-            );
-            setInputValue({
-              name: '',
-              deathReason: '자연사(自然死)' as deathType,
-              date: '',
-              lifeCycle: 0,
-              anime: '',
-              animeId: '',
-              age: 0,
-              profileImage: '',
-              phrase: '',
-              causeOfDeathDetails: '',
-            });
-            setContentIn({ characterId: '', content: '' });
-            let task = taskSearch?.('미리보기');
-            if (task) removeTask(task);
-            task = taskSearch?.('추모관');
-            if (task) removeTask(task);
           },
           onError: () => {
             setAlert?.(
               Choten,
               <>
-                캐릭터 등록 중 오류가 발생했습니다.
+                이미지 업로드 중 오류가 발생했습니다.
                 <br />
                 잠시 후 다시 시도해 주세요.
               </>,
@@ -134,7 +135,7 @@ const MergeBtn = ({ text, memorialId, characterId }: PropsType) => {
         {
           onSuccess: (commitResponse) => {
             if (commitResponse?.data === undefined || commitResponse.data === null) return;
-// console.log(commitResponse.data);
+            // console.log(commitResponse.data);
             pullRequestMutation.mutate(
               {
                 memorialCommitId: parseInt(commitResponse.data),
