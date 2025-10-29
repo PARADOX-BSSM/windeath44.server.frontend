@@ -73,6 +73,7 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
     if (selectedIdx === 1) {
       setDescription(
         <>
+          추후 업데이트 될 기능입니다.
           <br />
           <br />
           <div style={{ fontSize: '1.375rem' }}>
@@ -108,7 +109,6 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
       push(taskSearch?.('Search', stackProps));
     }
     if (idx === 1 && setAlert) {
-//상주 였던 것
     }
     if (idx === 2) {
       if (!token && setAlert) {
