@@ -297,9 +297,15 @@ const MemorialApply = ({}: dataStructureProps) => {
 
       <_.PhraseContainer
         type="text"
-        placeholder="고인의 명언을 입력하세요..."
+        placeholder="고인의 마지막 한마디를 입력하세요..."
         onChange={(e) => {
           setInputValue((prev) => ({ ...prev, phrase: e.target.value }));
+        }}
+        onMouseEnter={() => {
+          setCursorImage(CURSOR_IMAGES.drag);
+        }}
+        onMouseLeave={() => {
+          setCursorImage(CURSOR_IMAGES.default);
         }}
       ></_.PhraseContainer>
 

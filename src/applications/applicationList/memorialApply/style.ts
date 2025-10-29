@@ -222,6 +222,7 @@ export const CharacterInforInput = styled.input`
 
 export const PhraseContainer = styled.input`
   width: 80%;
+  cursor: none;
   height: 100%;
   color: #2e2e2e;
   text-align: center;
