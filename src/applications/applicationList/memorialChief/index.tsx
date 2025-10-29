@@ -139,7 +139,6 @@ const MemorialChief = ({ stack, push, pop, top }: dataStructureProps) => {
                   <_.Title>상주 관리</_.Title>
                   <_.Subtitle>로딩 중...</_.Subtitle>
                 </_.LeftHeader>
-                <_.BackButton onClick={() => pop()}>돌아가기</_.BackButton>
               </_.InnerHeader>
             </_.Header>
           </_.ContentContainer>
@@ -147,33 +146,10 @@ const MemorialChief = ({ stack, push, pop, top }: dataStructureProps) => {
       </_.Container>
     );
   }
-
   return (
     <_.Container>
       <_.InnerContainer>
         <_.ContentContainer>
-          <_.Header>
-            <_.InnerHeader>
-              <_.LeftHeader>
-                <_.Title>상주 관리</_.Title>
-                <_.Subtitle>내가 상주인 추모관을 관리할 수 있습니다</_.Subtitle>
-              </_.LeftHeader>
-              <_.BackButton
-                onClick={() => {
-                  pop();
-                }}
-              >
-                돌아가기
-              </_.BackButton>
-            </_.InnerHeader>
-          </_.Header>
-
-          <_.StatsContainer>
-            <_.StatItem>
-              <_.StatNumber>{chiefMemorialIds.length}</_.StatNumber>
-              <_.StatLabel>총 상주 추모관</_.StatLabel>
-            </_.StatItem>
-          </_.StatsContainer>
 
           <_.MemorialListContainer>
             <_.ListTitle>상주 추모관 목록</_.ListTitle>
