@@ -12,6 +12,7 @@ import { usePostCommit, usePostPullRequest } from '@/api/memorial/userCommit.ts'
 import { userIdAtom, currentStackTopAtom } from '@/atoms/memorialManager.ts';
 import { useGetPrsQuery } from '@/api/memorial/cheifCommit.ts';
 import Loading from '@/applications/components/loading';
+import { CURSOR_IMAGES, setCursorImage } from '@/lib/setCursorImg';
 
 interface PropsType {
   text: string;
@@ -266,7 +267,17 @@ const MergeBtn = ({ text, memorialId, characterId }: PropsType) => {
 
   return (
     <>
-      <_.SubmitBtn onClick={handleSubmit}>{text}</_.SubmitBtn>
+      <_.SubmitBtn
+        onClick={handleSubmit}
+        onMouseEnter={() => {
+          setCursorImage(CURSOR_IMAGES.hand);
+        }}
+        onMouseLeave={() => {
+          setCursorImage(CURSOR_IMAGES.default);
+        }}
+      >
+        {text}
+      </_.SubmitBtn>
       {isLoading && (
         <Loading
           text="처리 중입니다..."
