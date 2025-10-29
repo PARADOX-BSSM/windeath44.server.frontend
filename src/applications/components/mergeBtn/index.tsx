@@ -11,6 +11,7 @@ import { useAtom, useAtomValue } from 'jotai';
 import { usePostCommit, usePostPullRequest } from '@/api/memorial/userCommit.ts';
 import { userIdAtom, currentStackTopAtom } from '@/atoms/memorialManager.ts';
 import { useGetPrsQuery } from '@/api/memorial/cheifCommit.ts';
+import Loading from '@/applications/components/loading';
 
 interface PropsType {
   text: string;
@@ -255,7 +256,26 @@ const MergeBtn = ({ text, memorialId, characterId }: PropsType) => {
       );
     }
   };
-  return <_.SubmitBtn onClick={handleSubmit}>{text}</_.SubmitBtn>;
+
+  const isLoading =
+    uploadImageMutation.isPending ||
+    createCharacterMutation.isPending ||
+    applyMemorialMutation.isPending ||
+    commitMutation.isPending ||
+    pullRequestMutation.isPending;
+
+  return (
+    <>
+      <_.SubmitBtn onClick={handleSubmit}>{text}</_.SubmitBtn>
+      {isLoading && (
+        <Loading
+          text="처리 중입니다..."
+          overlay={true}
+          color="white"
+        />
+      )}
+    </>
+  );
 };
 
 export default MergeBtn;
