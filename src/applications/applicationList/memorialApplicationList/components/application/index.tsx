@@ -10,6 +10,9 @@ interface PropsType {
   memorialApplicationId: number;
   isLiked: boolean;
   onLikeToggle?: (memorialApplicationId: number, isLiked: boolean) => void;
+  isAdmin?: boolean;
+  onApprove?: (memorialApplicationId: number) => void;
+  onReject?: (memorialApplicationId: number) => void;
 }
 
 const Application = ({
@@ -22,6 +25,9 @@ const Application = ({
   memorialApplicationId,
   isLiked,
   onLikeToggle,
+  isAdmin,
+  onApprove,
+  onReject,
 }: PropsType) => {
   const getStateText = (state: string) => {
     switch (state) {
@@ -57,7 +63,29 @@ const Application = ({
           </_.LikeButton>
         </_.ProfileTextContainer>
       </_.TextContainer>
-      <_.ViewBtn onClick={onClick}>신청 내용 보기</_.ViewBtn>
+      <_.ButtonContainer>
+        {isAdmin && state === 'PENDING' && (
+          <>
+            <_.ApproveBtn
+              onClick={(e) => {
+                e.stopPropagation();
+                onApprove?.(memorialApplicationId);
+              }}
+            >
+              승인
+            </_.ApproveBtn>
+            <_.RejectBtn
+              onClick={(e) => {
+                e.stopPropagation();
+                onReject?.(memorialApplicationId);
+              }}
+            >
+              거절
+            </_.RejectBtn>
+          </>
+        )}
+        <_.ViewBtn onClick={onClick}>신청 내용 보기</_.ViewBtn>
+      </_.ButtonContainer>
     </_.Container>
   );
 };

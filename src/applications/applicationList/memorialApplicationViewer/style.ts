@@ -121,19 +121,19 @@ export const BackButton = styled.button`
 `;
 
 export const ApproveButton = styled.button`
-  color: #fff;
+  color: var(--Stroke, #e774dd);
+  text-align: right;
   font-family: Galmuri11;
-  font-size: 16px;
+  font-size: 20px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
-  padding: 8px 16px;
-  background: #4caf50;
-  border: 2px solid #2e7d32;
+  background: none;
+  border: none;
   cursor: pointer;
 
   &:hover {
-    background: #45a049;
+    opacity: 0.7;
   }
 
   &:disabled {
@@ -143,19 +143,19 @@ export const ApproveButton = styled.button`
 `;
 
 export const RejectButton = styled.button`
-  color: #fff;
+  color: #999;
+  text-align: right;
   font-family: Galmuri11;
-  font-size: 16px;
+  font-size: 20px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
-  padding: 8px 16px;
-  background: #f44336;
-  border: 2px solid #c62828;
+  background: none;
+  border: none;
   cursor: pointer;
 
   &:hover {
-    background: #e53935;
+    opacity: 0.7;
   }
 
   &:disabled {

@@ -101,6 +101,12 @@ export const LikeButton = styled.button<{ $isLiked: boolean }>`
   }
 `;
 
+export const ButtonContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
 export const ViewBtn = styled.p`
   color: var(--Stroke, #e774dd);
   text-align: right;
@@ -114,4 +120,43 @@ export const ViewBtn = styled.p`
   justify-content: flex-end;
   align-items: center;
   gap: 10px;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.7;
+  }
+`;
+
+export const ApproveBtn = styled.button`
+  color: var(--Stroke, #e774dd);
+  font-family: Galmuri11;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.7;
+  }
+`;
+
+export const RejectBtn = styled.button`
+  color: #999;
+  font-family: Galmuri11;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.7;
+  }
 `;

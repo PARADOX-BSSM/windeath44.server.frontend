@@ -8,6 +8,11 @@ import { useEffect, useMemo, useState } from 'react';
 import { useGetMyMemorialApplicationsQuery } from '@/api/memorial/getMyMemorialApplications';
 import { useGetUsersQuery } from '@/api/user/getUsers';
 import { useMemorialApplicationLikeMutation } from '@/api/memorial/memorialApplicationLike';
+import { useGetUserMutation } from '@/api/user/getUser';
+import {
+  useMemorialApplicationApproveMutation,
+  useMemorialApplicationRejectMutation,
+} from '@/api/memorial/memorialApplicationApprove';
 
 interface dataStructureProps {
   stack: any[];
@@ -22,6 +27,16 @@ const MemorialApplicationList = ({ stack, push, pop, top }: dataStructureProps) 
   const [cursorId, setCursorId] = useState<number | undefined>(undefined);
   const [allApplications, setAllApplications] = useState<any[]>([]);
   const likeMutation = useMemorialApplicationLikeMutation();
+  const approveMutation = useMemorialApplicationApproveMutation();
+  const rejectMutation = useMemorialApplicationRejectMutation();
+  const { mutate: getUser, data: userData } = useGetUserMutation();
+
+  const isAdmin = userData?.data?.role === 'ADMIN';
+
+  // 유저 정보 조회
+  useEffect(() => {
+    getUser();
+  }, []);
 
   // 추모관 신청 목록 조회
   const {
@@ -108,6 +123,62 @@ const MemorialApplicationList = ({ stack, push, pop, top }: dataStructureProps) 
       const lastApplication = allApplications[allApplications.length - 1];
       setCursorId(lastApplication.memorialApplicationId);
     }
+  };
+
+  // 승인 핸들러
+  const handleApprove = (memorialApplicationId: number) => {
+    approveMutation.mutate(memorialApplicationId, {
+      onSuccess: () => {
+        setAlert?.(
+          Choten,
+          <>추모관 신청이 승인되었습니다.</>,
+          () => {
+            taskTransform?.('경고', '');
+          },
+        );
+      },
+      onError: () => {
+        setAlert?.(
+          Choten,
+          <>
+            승인 처리 중 오류가 발생했습니다.
+            <br />
+            잠시 후 다시 시도해주세요.
+          </>,
+          () => {
+            taskTransform?.('경고', '');
+          },
+        );
+      },
+    });
+  };
+
+  // 거절 핸들러
+  const handleReject = (memorialApplicationId: number) => {
+    rejectMutation.mutate(memorialApplicationId, {
+      onSuccess: () => {
+        setAlert?.(
+          Choten,
+          <>추모관 신청이 거절되었습니다.</>,
+          () => {
+            taskTransform?.('경고', '');
+          },
+        );
+      },
+      onError: () => {
+        setAlert?.(
+          Choten,
+          <>
+            거절 처리 중 오류가 발생했습니다.
+            <br />
+            잠시 후 다시 시도해주세요.
+          </>,
+          () => {
+            taskTransform?.('경고', '');
+          },
+        );
+      },
+    });
   };
 
   // 좋아요 토글 핸들러 (낙관적 업데이트)
@@ -197,6 +268,9 @@ const MemorialApplicationList = ({ stack, push, pop, top }: dataStructureProps) 
                           memorialApplicationId={app.memorialApplicationId}
                           isLiked={app.didUserLiked || false}
                           onLikeToggle={handleLikeToggle}
+                          isAdmin={isAdmin}
+                          onApprove={handleApprove}
+                          onReject={handleReject}
                           onClick={() => {
                             const stackProps = {
                               stack: stack,
