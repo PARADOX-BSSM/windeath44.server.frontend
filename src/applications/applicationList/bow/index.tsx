@@ -53,6 +53,19 @@ const Bow = ({ memorialId }: bowProps) => {
             // 서버 응답 성공 시에만 UI 숫자 증가
             setTotalBow((prev) => (prev ? prev + 1 : 1));
           },
+          onError: () => {
+            (setAlert ?? userId)(
+              Choten,
+              <>
+                절을 하지 못했습니다.
+                <br />
+                절을 한 번 한 후 24시간이 지나야 다시 할 수 있습니다.
+              </>,
+              () => {
+                taskTransform?.('경고', '로그인');
+              },
+            );
+          },
         },
       );
     }
