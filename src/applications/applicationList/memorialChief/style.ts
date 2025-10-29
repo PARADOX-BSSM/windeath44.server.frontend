@@ -77,6 +77,24 @@ export const MemorialList = styled.div`
   background: rgba(0, 0, 0, 0.20);
 `;
 
+export const MemorialNone = styled.div`
+  display: flex;
+  padding: 20px;
+  justify-content: space-between;
+  align-items: center;
+  align-self: stretch;
+  background: #FFF;
+`;
+export const MemorialNoneImg = styled.img`
+  display: flex;
+  padding: 20px;
+  width: 30%;
+  background: #FFF;
+`;
+export const MemorialNoneIMesssege = styled.div`
+ font-family: Galmuri11;
+  line-height: 160%;
+`;
 export const MemorialItem = styled.div`
   display: flex;
   padding: 20px;
@@ -84,7 +102,6 @@ export const MemorialItem = styled.div`
   align-items: center;
   align-self: stretch;
   background: #FFF;
-  //border: 0 0 1px 0 solid #000;
   border-width: 0 0 1px 0;
   border-style: solid;
   border-color: #000;

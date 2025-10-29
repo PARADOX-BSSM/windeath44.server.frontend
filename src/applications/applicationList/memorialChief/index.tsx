@@ -8,6 +8,8 @@ import { useGetMyChiefMemorialsQuery } from '@/api/memorial/getChiefMemorials';
 import { useMemorialGet, memorialData } from '@/api/memorial/memorialGet';
 import { useGetCharacter, CharacterData } from '@/api/anime/getCharacter';
 import { useState, useEffect, useCallback, useRef } from 'react';
+import Block from '@/../public/assets/cursor/cursor_block.svg';
+import { MemorialNoneIMesssege } from './style';
 
 interface dataStructureProps {
   stack: any[];
@@ -142,12 +144,22 @@ const MemorialChief = ({ stack, push, pop, top }: dataStructureProps) => {
           </_.ContentContainer>
     );
   }
+  console.log('d없어',chiefMemorialIds);
   return (
-
           <_.MemorialListContainer>
             <_.MemorialListBox>
               <_.MemorialList>
-                {chiefMemorialIds.map((memorialId) => {
+                {chiefMemorialIds.length === 0 ?
+                  <_.MemorialNone>
+                    <_.MemorialNoneImg src={Block} />
+                    <_.MemorialNoneIMesssege>
+                    상주인 추모관이 없습니다.
+                    <br/>
+                    새로운 추모관을 신청하거나, 해당 추모관에서 절을 많이 하면 상주가 될 수 있습니다.
+                    </_.MemorialNoneIMesssege>
+                  </_.MemorialNone>
+                  :
+                  chiefMemorialIds.map((memorialId) => {
                   const details = memorialDetails[memorialId];
                   const characterName = details?.character?.name || '로딩 중...';
                   return (
@@ -182,7 +194,8 @@ const MemorialChief = ({ stack, push, pop, top }: dataStructureProps) => {
                       </_.ButtonContainer>
                     </_.MemorialItem>
                   );
-                })}
+                })
+                }
               </_.MemorialList>
             </_.MemorialListBox>
           </_.MemorialListContainer>
