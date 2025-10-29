@@ -10,3 +10,10 @@
     font-weight: normal;
     font-display: swap;
 }
+@font-face {
+    font-family: 'DOSIyagiBoldface';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/DOSIyagiBoldface.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
