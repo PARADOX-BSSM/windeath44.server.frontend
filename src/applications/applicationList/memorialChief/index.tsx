@@ -102,13 +102,10 @@ const MemorialChief = ({ stack, push, pop, top }: dataStructureProps) => {
   const handleManagePullRequests = (memorialId: string) => {
     const details = memorialDetails[memorialId];
     if (details?.memorial && details?.character) {
-      push(
-        taskSearch?.('memorialPRManager', {
-          ...stackProps,
+        taskTransform?.('','추모관 수정 요청', {
           memorialId: parseInt(memorialId),
           memorialName: `${details.character.name}의 추모관`,
-        }),
-      );
+        });
     }
   };
 

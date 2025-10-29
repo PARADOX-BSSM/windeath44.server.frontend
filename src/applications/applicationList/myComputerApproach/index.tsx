@@ -8,6 +8,8 @@ interface MyComputerApproachProps {
   setWindow: React.Dispatch<React.SetStateAction<React.CSSProperties>>;
   setUpHeight: number;
   setUpWidth: number;
+  memorialId: number;
+  memorialName: string;
 }
 
 const MyComputerApproach = ({
@@ -15,6 +17,8 @@ const MyComputerApproach = ({
                             setWindow,
                             setUpHeight,
                             setUpWidth,
+                              memorialId,
+                              memorialName,
                           }: MyComputerApproachProps) => {
   const [stack, push, pop, top] = useStack(window, setWindow, setUpHeight, setUpWidth);
   const taskSearch = useAtomValue(taskSearchAtom);
@@ -31,7 +35,7 @@ const MyComputerApproach = ({
     // console.log("top: ", top());
   }, [stack]);
   useEffect(() => {
-    push(taskSearch?.('memorialPRManager', stackProps));
+    push(taskSearch?.('memorialPRManager', {...stackProps,memorialId,memorialName}));
   }, []);
   return <>{top()?.component}</>;
 };
