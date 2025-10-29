@@ -156,10 +156,17 @@ const MemorialApply = ({}: dataStructureProps) => {
                     <_.CharacterInformationRowValue>
                       <_.CharacterInformationRowValueText>
                         <_.CharacterInforInput
-                          type="text"
+                          type="number"
                           placeholder="예) 1"
+                          min="0"
                           onChange={(e) => {
                             setInputValue((prev) => ({ ...prev, age: Number(e.target.value) }));
+                          }}
+                          onMouseEnter={() => {
+                            setCursorImage(CURSOR_IMAGES.drag);
+                          }}
+                          onMouseLeave={() => {
+                            setCursorImage(CURSOR_IMAGES.default);
                           }}
                         ></_.CharacterInforInput>
                       </_.CharacterInformationRowValueText>
@@ -179,6 +186,12 @@ const MemorialApply = ({}: dataStructureProps) => {
                           placeholder="예) 2023-04-12"
                           onChange={(e) => {
                             setInputValue((prev) => ({ ...prev, date: e.target.value }));
+                          }}
+                          onMouseEnter={() => {
+                            setCursorImage(CURSOR_IMAGES.drag);
+                          }}
+                          onMouseLeave={() => {
+                            setCursorImage(CURSOR_IMAGES.default);
                           }}
                         ></_.CharacterInforInput>
                       </_.CharacterInformationRowValueText>
@@ -221,6 +234,12 @@ const MemorialApply = ({}: dataStructureProps) => {
                               ...prev,
                               causeOfDeathDetails: e.target.value,
                             }));
+                          }}
+                          onMouseEnter={() => {
+                            setCursorImage(CURSOR_IMAGES.drag);
+                          }}
+                          onMouseLeave={() => {
+                            setCursorImage(CURSOR_IMAGES.default);
                           }}
                         ></_.CharacterInforInput>
                       </_.CharacterInformationRowValueText>

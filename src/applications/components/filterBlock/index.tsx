@@ -2,6 +2,7 @@ import Option from '@/applications/components/option';
 import Up from '@/assets/search/point_up.svg';
 import Down from '@/assets/search/point_down.svg';
 import * as _ from './style';
+import { CURSOR_IMAGES, setCursorImage } from '@/lib/setCursorImg';
 
 interface FilterBlockProps {
   label: string;
@@ -20,7 +21,14 @@ const FilterBlock = ({ label, option, isOpen, onClick, list, onChange }: FilterB
         <_.white>
           <_.option>{option}</_.option>
           <_.button onClick={onClick}>
-            <_.Button>
+            <_.Button
+              onMouseEnter={() => {
+                setCursorImage(CURSOR_IMAGES.hand);
+              }}
+              onMouseLeave={() => {
+                setCursorImage(CURSOR_IMAGES.default);
+              }}
+            >
               <img
                 src={isOpen ? Up : Down}
                 alt={isOpen ? 'close' : 'open'}

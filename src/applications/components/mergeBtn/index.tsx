@@ -45,101 +45,65 @@ const MergeBtn = ({ text, memorialId, characterId }: PropsType) => {
     if (isApply) {
       // 필수 필드 validation
       if (!inputValue.profileImage) {
-        setAlert?.(
-          Choten,
-          <>캐릭터 이미지를 업로드해주세요.</>,
-          () => {
-            taskTransform?.('경고', '');
-          },
-        );
+        setAlert?.(Choten, <>캐릭터 이미지를 업로드해주세요.</>, () => {
+          taskTransform?.('경고', '');
+        });
         return;
       }
 
       if (!inputValue.name || inputValue.name.trim() === '') {
-        setAlert?.(
-          Choten,
-          <>캐릭터 이름을 입력해주세요.</>,
-          () => {
-            taskTransform?.('경고', '');
-          },
-        );
+        setAlert?.(Choten, <>캐릭터 이름을 입력해주세요.</>, () => {
+          taskTransform?.('경고', '');
+        });
         return;
       }
 
       if (!inputValue.age || inputValue.age === 0) {
-        setAlert?.(
-          Choten,
-          <>캐릭터 나이를 입력해주세요.</>,
-          () => {
-            taskTransform?.('경고', '');
-          },
-        );
+        setAlert?.(Choten, <>캐릭터 나이를 입력해주세요.</>, () => {
+          taskTransform?.('경고', '');
+        });
         return;
       }
 
       if (!inputValue.date || inputValue.date.trim() === '') {
-        setAlert?.(
-          Choten,
-          <>사망 날짜를 입력해주세요.</>,
-          () => {
-            taskTransform?.('경고', '');
-          },
-        );
+        setAlert?.(Choten, <>사망 날짜를 입력해주세요.</>, () => {
+          taskTransform?.('경고', '');
+        });
         return;
       }
 
       if (!inputValue.deathReason || inputValue.deathReason === '모두') {
-        setAlert?.(
-          Choten,
-          <>사인을 선택해주세요.</>,
-          () => {
-            taskTransform?.('경고', '');
-          },
-        );
+        setAlert?.(Choten, <>사인을 선택해주세요.</>, () => {
+          taskTransform?.('경고', '');
+        });
         return;
       }
 
       if (!inputValue.causeOfDeathDetails || inputValue.causeOfDeathDetails.trim() === '') {
-        setAlert?.(
-          Choten,
-          <>상세 사인을 입력해주세요.</>,
-          () => {
-            taskTransform?.('경고', '');
-          },
-        );
+        setAlert?.(Choten, <>상세 사인을 입력해주세요.</>, () => {
+          taskTransform?.('경고', '');
+        });
         return;
       }
 
       if (!inputValue.anime || inputValue.anime.trim() === '') {
-        setAlert?.(
-          Choten,
-          <>애니메이션을 선택해주세요.</>,
-          () => {
-            taskTransform?.('경고', '');
-          },
-        );
+        setAlert?.(Choten, <>애니메이션을 선택해주세요.</>, () => {
+          taskTransform?.('경고', '');
+        });
         return;
       }
 
       if (!inputValue.phrase || inputValue.phrase.trim() === '') {
-        setAlert?.(
-          Choten,
-          <>고인의 명언을 입력해주세요.</>,
-          () => {
-            taskTransform?.('경고', '');
-          },
-        );
+        setAlert?.(Choten, <>고인의 명언을 입력해주세요.</>, () => {
+          taskTransform?.('경고', '');
+        });
         return;
       }
 
       if (!contentIn.content || contentIn.content.trim() === '') {
-        setAlert?.(
-          Choten,
-          <>추모관 내용을 작성해주세요.</>,
-          () => {
-            taskTransform?.('경고', '');
-          },
-        );
+        setAlert?.(Choten, <>추모관 내용을 작성해주세요.</>, () => {
+          taskTransform?.('경고', '');
+        });
         return;
       }
 
