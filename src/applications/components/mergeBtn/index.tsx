@@ -43,6 +43,18 @@ const MergeBtn = ({ text, memorialId, characterId }: PropsType) => {
     const isCommit = taskList.some((task) => task.name === '추모관 수정');
 
     if (isApply) {
+      // 이미지 validation
+      if (!inputValue.profileImage) {
+        setAlert?.(
+          Choten,
+          <>캐릭터 이미지를 업로드해주세요.</>,
+          () => {
+            taskTransform?.('경고', '');
+          },
+        );
+        return;
+      }
+
       uploadImageMutation.mutate(
         {
           image: inputValue.profileImage,
