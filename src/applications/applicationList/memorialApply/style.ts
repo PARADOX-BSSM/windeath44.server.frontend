@@ -65,6 +65,7 @@ export const AuthorshipFrom = styled.p`
 
 export const CharacterNameInput = styled(TextareaAutosize)`
   display: flex;
+  cursor: none;
   width: 100%;
   color: #2e2e2e;
   font-family: Galmuri11;

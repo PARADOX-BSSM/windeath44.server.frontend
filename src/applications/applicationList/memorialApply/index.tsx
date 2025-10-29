@@ -115,6 +115,12 @@ const MemorialApply = ({}: dataStructureProps) => {
             <_.CharacterNameInput
               placeholder="이름을 입력해주세요..."
               onChange={(e) => setInputValue((prev) => ({ ...prev, name: e.target.value }))}
+              onMouseEnter={() => {
+                setCursorImage(CURSOR_IMAGES.drag);
+              }}
+              onMouseLeave={() => {
+                setCursorImage(CURSOR_IMAGES.default);
+              }}
             ></_.CharacterNameInput>
             <_.Status>문서 수정 중</_.Status>
           </_.HeaderTextContainer>
