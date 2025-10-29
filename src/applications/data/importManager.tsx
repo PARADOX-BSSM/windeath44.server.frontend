@@ -89,7 +89,9 @@ const MemorialConflictResolve = lazy(
 const MemorialViewer = lazy(
   () => import('@/applications/applicationList/memorialViewer/index.tsx'),
 );
-
+const MyComputerApproach = lazy(
+  () => import('@/applications/applicationList/myComputerApproach/index.tsx'),
+);
 //Application Import 형식 예시
 /*
 {
@@ -749,6 +751,25 @@ const useApps = (): TaskType[] => {
         minHeight: 600,
         setUpWidth: 1024,
         setUpHeight: 768,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <MyComputerApproach />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2247,
+      name: '추모관 수정 요청',
+      layer: undefined,
+      appSetup: {
+        Image: 'default',
+        minWidth: 600,
+        minHeight: 500,
+        setUpWidth: 900,
+        setUpHeight: 650,
       },
       visible: false,
     },
