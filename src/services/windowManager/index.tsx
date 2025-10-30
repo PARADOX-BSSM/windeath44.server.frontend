@@ -181,13 +181,33 @@ const WindowManager = () => {
     }
   }, [isLogIned, hydrated]);
 
+  useEffect(() => {
+    if (!hydrated || isLogIned !== 'true') return;
+
+    setTimeout(() => {
+      setNotification?.([
+        {
+          title: '테스트 알림',
+          content: '이것은 본문입니다. 과연 어떻게 표시될까요?',
+          is_image: false,
+        },
+        {
+          title: '공지사항 2',
+          content: '두 번째 내용',
+          is_image: false,
+        },
+        {
+          title: '공지사항 3',
+          content:
+            'https://cdn.discordapp.com/attachments/1282556505438162946/1433401530458837092/image.png?ex=69048eb4&is=69033d34&hm=3aecae6551784697aabc7dacbf0002f455801a026cc776dba9b36d0bf84592d1&',
+          is_image: true,
+        },
+      ]);
+    }, 500);
+  }, [isLogIned, setNotification, hydrated]);
+
   // 공지사항 자동 표시
   useEffect(() => {
-    setNotification?.([
-      { title: '테스트 알림', content: '이것은 본문입니다. 과연 어떻게 표시될까요?' },
-      { title: '공지사항 2', content: '두 번째 내용' },
-      { title: '공지사항 3', content: '두 번째 내용' },
-    ]);
     if (!hydrated || hasCheckedNotification.current || isLogIned !== 'true') return;
     if (!notificationsData?.data) return;
 

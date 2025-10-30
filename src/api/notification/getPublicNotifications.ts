@@ -7,6 +7,7 @@ export interface NotificationData {
   title: string;
   content: string;
   is_open: boolean;
+  is_image?: boolean; // 이미지 URL 여부
   end_date: string;
   created_at: string;
   updated_at: string;

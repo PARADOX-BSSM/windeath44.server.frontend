@@ -91,15 +91,16 @@ export const ItemDate = styled.span`
 export const DetailView = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  padding: 24px;
+  gap: 0;
+  padding: 0;
   width: 100%;
+  height: 100%;
 `;
 
 export const DetailHeader = styled.div`
   display: flex;
   align-items: center;
-  padding-bottom: 16px;
+  padding: 16px;
   border-bottom: 1px solid #e0e0e0;
 `;
 
@@ -127,6 +128,7 @@ export const DetailTitle = styled.h2`
   font-weight: 400;
   line-height: normal;
   text-align: left;
+  padding: 24px 24px 0 24px;
 `;
 
 export const DetailContent = styled.p`
@@ -138,6 +140,15 @@ export const DetailContent = styled.p`
   line-height: 1.5;
   text-align: left;
   white-space: pre-wrap;
+  padding: 24px;
+`;
+
+export const DetailImage = styled.img`
+  width: 100%;
+  height: auto;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
 `;
 
 export const DetailDate = styled.p`
@@ -148,6 +159,7 @@ export const DetailDate = styled.p`
   font-weight: 400;
   line-height: normal;
   text-align: left;
-  padding-top: 16px;
+  padding: 16px 24px 24px 24px;
+  margin-top: 16px;
   border-top: 1px solid #e0e0e0;
 `;

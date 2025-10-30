@@ -17,19 +17,20 @@ export const useNotification = () => {
   })[0];
 
   const setNotification = (
-    notifications: NotificationData[] | Array<{ title: string; content?: string }>,
+    notifications: NotificationData[] | Array<{ title: string; content?: string; is_image?: boolean }>,
   ) => {
     let finalNotifications: NotificationData[];
 
-    // { title, content } 객체 배열로 받은 경우
+    // { title, content, is_image } 객체 배열로 받은 경우
     if (notifications.length > 0 && 'title' in notifications[0] && !('notification_id' in notifications[0])) {
       const now = new Date().toISOString();
       finalNotifications = notifications.map((item, index) => ({
         notification_id: Date.now() + index,
         writer_id: 'system',
-        title: (item as { title: string; content?: string }).title,
-        content: (item as { title: string; content?: string }).content || '',
+        title: (item as { title: string; content?: string; is_image?: boolean }).title,
+        content: (item as { title: string; content?: string; is_image?: boolean }).content || '',
         is_open: true,
+        is_image: (item as { title: string; content?: string; is_image?: boolean }).is_image,
         end_date: now,
         created_at: now,
         updated_at: now,

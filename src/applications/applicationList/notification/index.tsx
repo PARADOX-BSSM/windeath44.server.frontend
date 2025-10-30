@@ -33,9 +33,15 @@ const Notification = () => {
               <_.DetailHeader>
                 <_.BackButton onClick={() => setSelectedNotification(null)}>← 목록으로</_.BackButton>
               </_.DetailHeader>
-              <_.DetailTitle>{selectedNotification.title}</_.DetailTitle>
-              <_.DetailContent>{selectedNotification.content}</_.DetailContent>
-              <_.DetailDate>작성일: {selectedNotification.created_at}</_.DetailDate>
+              {selectedNotification.is_image ? (
+                <_.DetailImage src={selectedNotification.content} alt={selectedNotification.title} />
+              ) : (
+                <>
+                  <_.DetailTitle>{selectedNotification.title}</_.DetailTitle>
+                  <_.DetailContent>{selectedNotification.content}</_.DetailContent>
+                  <_.DetailDate>작성일: {selectedNotification.created_at}</_.DetailDate>
+                </>
+              )}
             </_.DetailView>
           </_.ContentContainer>
         </_.InnerContainer>
