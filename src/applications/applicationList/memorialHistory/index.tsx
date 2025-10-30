@@ -6,7 +6,7 @@ import { useGetMemorialPullRequestsQuery } from '@/api/memorial/getMemorialPullR
 import { useGetUsersQuery } from '@/api/user/getUsers';
 import { alerterAtom } from '@/atoms/alerter';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
-import Choten from '@/assets/profile/choten.svg';
+import Seori from '@/assets/sulkkagi/black_stone.svg';
 import { useEffect, useMemo } from 'react';
 
 interface dataStructureProps {
@@ -72,7 +72,7 @@ const MemorailHistory = ({
   useEffect(() => {
     if (pullRequestsError) {
       setAlert?.(
-        Choten,
+        Seori,
         <>
           수정 기록을 가져오는 중 오류가 발생했습니다.
           <br />
@@ -88,7 +88,7 @@ const MemorailHistory = ({
   useEffect(() => {
     if (usersError) {
       setAlert?.(
-        Choten,
+        Seori,
         <>
           사용자 정보를 가져오는 중 오류가 발생했습니다.
           <br />

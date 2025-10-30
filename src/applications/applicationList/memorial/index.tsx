@@ -23,7 +23,7 @@ import { parseCustomContent } from '@/lib/customTag/parseCustomContent.tsx';
 import { useGetAnimation } from '@/api/anime/getAnimation.ts';
 import ribbon from '@/assets/memorial_ribbon.svg';
 import { inputPortage } from '@/atoms/inputManager.ts';
-import Choten from '@/assets/profile/choten.svg';
+import Seori from '@/assets/sulkkagi/black_stone.svg';
 import { useGetUserMutation } from '@/api/user/getUser';
 import { getCookie } from '@/api/auth/cookie.ts';
 import { ApplicationProps } from '@/applications/layout/utils';
@@ -119,7 +119,7 @@ const Memorial = ({
             {
               onError: () => {
                 setAlert?.(
-                  Choten,
+                  Seori,
                   <>
                     추모글을 가져오는 중 문제가 발생했습니다.
                     <br />
@@ -147,7 +147,7 @@ const Memorial = ({
             {
               onError: () => {
                 setAlert?.(
-                  Choten,
+                  Seori,
                   <>
                     추모글을 가져오는 중 문제가 발생했습니다.
                     <br />
@@ -175,7 +175,7 @@ const Memorial = ({
             {
               onError: () => {
                 setAlert?.(
-                  Choten,
+                  Seori,
                   <>
                     추모글을 가져오는 중 문제가 발생했습니다.
                     <br />
@@ -191,7 +191,7 @@ const Memorial = ({
         },
         onError: () => {
           setAlert?.(
-            Choten,
+            Seori,
             <>
               댓글 수정 중 문제가 발생했습니다.
               <br />
@@ -216,7 +216,7 @@ const Memorial = ({
             {
               onError: () => {
                 setAlert?.(
-                  Choten,
+                  Seori,
                   <>
                     추모글을 가져오는 중 문제가 발생했습니다.
                     <br />
@@ -232,7 +232,7 @@ const Memorial = ({
         },
         onError: () => {
           setAlert?.(
-            Choten,
+            Seori,
             <>
               댓글 삭제 중 문제가 발생했습니다.
               <br />
@@ -257,7 +257,7 @@ const Memorial = ({
             {
               onError: () => {
                 setAlert?.(
-                  Choten,
+                  Seori,
                   <>
                     추모글을 가져오는 중 문제가 발생했습니다.
                     <br />
@@ -273,7 +273,7 @@ const Memorial = ({
         },
         onError: () => {
           setAlert?.(
-            Choten,
+            Seori,
             <>
               좋아요 처리 중 문제가 발생했습니다.
               <br />
@@ -297,7 +297,7 @@ const Memorial = ({
       {
         onError: () => {
           setAlert?.(
-            Choten,
+            Seori,
             <>
               추모글을 가져오는 중 문제가 발생했습니다.
               <br />
@@ -316,7 +316,7 @@ const Memorial = ({
     mutationMemorialGet.mutate(memorialId, {
       onError: () => {
         setAlert?.(
-          Choten,
+          Seori,
           <>
             추모관 정보를 가져오는 중 문제가 발생했습니다.
             <br />
@@ -333,7 +333,7 @@ const Memorial = ({
       {
         onError: () => {
           setAlert?.(
-            Choten,
+            Seori,
             <>
               추모글을 가져오는 중 문제가 발생했습니다.
               <br />
@@ -349,7 +349,7 @@ const Memorial = ({
     mutationGetCharacter.mutate(characterId, {
       onError: () => {
         setAlert?.(
-          Choten,
+          Seori,
           <>
             캐릭터 정보를 가져오는 중 문제가 발생했습니다.
             <br />
@@ -368,7 +368,7 @@ const Memorial = ({
       mutationAnimation.mutate(characterData.animeId, {
         onError: () => {
           setAlert?.(
-            Choten,
+            Seori,
             <>
               애니메이션 정보를 가져오는 중 문제가 발생했습니다.
               <br />
@@ -410,7 +410,7 @@ const Memorial = ({
   const handleCommit = () => {
     if (!token && setAlert) {
       setAlert(
-        Choten,
+        Seori,
         <>
           게스트는 추모관 수정이 불가합니다.
           <br />

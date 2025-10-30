@@ -3,7 +3,7 @@ import Application from './components/application';
 import { useAtomValue } from 'jotai';
 import { alerterAtom } from '@/atoms/alerter';
 import { taskTransformerAtom, taskSearchAtom } from '@/atoms/taskTransformer';
-import Choten from '@/assets/profile/choten.svg';
+import Seori from '@/assets/sulkkagi/black_stone.svg';
 import { useEffect, useMemo, useState } from 'react';
 import { useGetMyMemorialApplicationsQuery } from '@/api/memorial/getMyMemorialApplications';
 import { useGetUsersQuery } from '@/api/user/getUsers';
@@ -92,7 +92,7 @@ const MemorialApplicationList = ({ stack, push, pop, top }: dataStructureProps) 
   useEffect(() => {
     if (applicationsError) {
       setAlert?.(
-        Choten,
+        Seori,
         <>
           신청 목록을 가져오는 중 오류가 발생했습니다.
           <br />
@@ -108,7 +108,7 @@ const MemorialApplicationList = ({ stack, push, pop, top }: dataStructureProps) 
   useEffect(() => {
     if (usersError) {
       setAlert?.(
-        Choten,
+        Seori,
         <>
           사용자 정보를 가져오는 중 오류가 발생했습니다.
           <br />
@@ -134,7 +134,7 @@ const MemorialApplicationList = ({ stack, push, pop, top }: dataStructureProps) 
     approveMutation.mutate(memorialApplicationId, {
       onSuccess: () => {
         setAlert?.(
-          Choten,
+          Seori,
           <>추모관 신청이 승인되었습니다.</>,
           () => {
             taskTransform?.('경고', '');
@@ -143,7 +143,7 @@ const MemorialApplicationList = ({ stack, push, pop, top }: dataStructureProps) 
       },
       onError: () => {
         setAlert?.(
-          Choten,
+          Seori,
           <>
             승인 처리 중 오류가 발생했습니다.
             <br />
@@ -162,7 +162,7 @@ const MemorialApplicationList = ({ stack, push, pop, top }: dataStructureProps) 
     rejectMutation.mutate(memorialApplicationId, {
       onSuccess: () => {
         setAlert?.(
-          Choten,
+          Seori,
           <>추모관 신청이 거절되었습니다.</>,
           () => {
             taskTransform?.('경고', '');
@@ -171,7 +171,7 @@ const MemorialApplicationList = ({ stack, push, pop, top }: dataStructureProps) 
       },
       onError: () => {
         setAlert?.(
-          Choten,
+          Seori,
           <>
             거절 처리 중 오류가 발생했습니다.
             <br />
@@ -218,7 +218,7 @@ const MemorialApplicationList = ({ stack, push, pop, top }: dataStructureProps) 
             ),
           );
           setAlert?.(
-            Choten,
+            Seori,
             <>
               좋아요 처리 중 오류가 발생했습니다.
               <br />

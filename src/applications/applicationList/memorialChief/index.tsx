@@ -2,7 +2,7 @@ import * as _ from './style';
 import { useAtomValue } from 'jotai';
 import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer';
 import { alerterAtom } from '@/atoms/alerter';
-import Choten from '@/assets/profile/choten.svg';
+import Seori from '@/assets/sulkkagi/black_stone.svg';
 import MemorialBtn from '@/applications/components/memorialBtn';
 import { useGetMyChiefMemorialsQuery } from '@/api/memorial/getChiefMemorials';
 import { useMemorialGet, memorialData } from '@/api/memorial/memorialGet';
@@ -114,7 +114,7 @@ const MemorialChief = ({ stack, push, pop, top }: dataStructureProps) => {
   useEffect(() => {
     if (error) {
       setAlert?.(
-        Choten,
+        Seori,
         <>
           상주 추모관 목록을 가져오는 중 오류가 발생했습니다.
           <br />
