@@ -17,34 +17,31 @@ export const useNotification = () => {
   })[0];
 
   const setNotification = (
-    notificationsOrTitle: NotificationData[] | string,
-    content?: string,
+    notifications: NotificationData[] | Array<{ title: string; content?: string }>,
   ) => {
-    let notifications: NotificationData[];
+    let finalNotifications: NotificationData[];
 
-    // title, content로 받은 경우
-    if (typeof notificationsOrTitle === 'string') {
+    // { title, content } 객체 배열로 받은 경우
+    if (notifications.length > 0 && 'title' in notifications[0] && !('notification_id' in notifications[0])) {
       const now = new Date().toISOString();
-      notifications = [
-        {
-          notification_id: Date.now(),
-          writer_id: 'system',
-          title: notificationsOrTitle,
-          content: content || '',
-          is_open: true,
-          end_date: now,
-          created_at: now,
-          updated_at: now,
-        },
-      ];
+      finalNotifications = notifications.map((item, index) => ({
+        notification_id: Date.now() + index,
+        writer_id: 'system',
+        title: (item as { title: string; content?: string }).title,
+        content: (item as { title: string; content?: string }).content || '',
+        is_open: true,
+        end_date: now,
+        created_at: now,
+        updated_at: now,
+      }));
     } else {
       // NotificationData[] 배열로 받은 경우
-      notifications = notificationsOrTitle;
+      finalNotifications = notifications as NotificationData[];
     }
 
-    if (notifications && notifications.length > 0) {
+    if (finalNotifications && finalNotifications.length > 0) {
       // atom에 공지사항 데이터 저장
-      setNotificationList(notifications);
+      setNotificationList(finalNotifications);
 
       // 공지사항 창 열기
       if (notificationApp) {

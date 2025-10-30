@@ -32,7 +32,7 @@ export const ContentContainer = styled.div`
   padding: 0;
   flex-direction: column;
   align-items: flex-start;
-  gap: 32px;
+  gap: 0;
   flex: 1 0 0;
   width: 100%;
 `;

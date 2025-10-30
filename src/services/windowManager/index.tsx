@@ -183,7 +183,11 @@ const WindowManager = () => {
 
   // 공지사항 자동 표시
   useEffect(() => {
-    setNotification('테스트 알림', '이것은 본문입니다. 과연 어떻게 표시될까요?');
+    setNotification?.([
+      { title: '테스트 알림', content: '이것은 본문입니다. 과연 어떻게 표시될까요?' },
+      { title: '공지사항 2', content: '두 번째 내용' },
+      { title: '공지사항 3', content: '두 번째 내용' },
+    ]);
     if (!hydrated || hasCheckedNotification.current || isLogIned !== 'true') return;
     if (!notificationsData?.data) return;
 
