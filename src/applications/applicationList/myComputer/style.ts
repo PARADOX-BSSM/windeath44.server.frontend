@@ -120,6 +120,21 @@ export const Inputs = styled.div`
   gap: 24px;
   flex-wrap: wrap;
 `;
+export const InputsList = styled.div`
+  margin: 0.0625rem 0 0 0.0625rem;
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  outline: none;
+  border-color: #dcafdd;
+  border-style: solid;
+  border-width: 0.1125rem;
+  box-sizing: border-box;
+  background-color: #ffffff;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex-wrap: wrap;
+`;
 
 export const Shadow = styled.div`
   width: 100%;

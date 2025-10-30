@@ -171,7 +171,6 @@ const MemorialPRManager = ({
                   <_.Title>수정 요청 관리</_.Title>
                   <_.Subtitle>로딩 중...</_.Subtitle>
                 </_.LeftHeader>
-                <_.BackButton onClick={() => pop()}>돌아가기</_.BackButton>
               </_.InnerHeader>
             </_.Header>
           </_.ContentContainer>
@@ -190,7 +189,6 @@ const MemorialPRManager = ({
                 <_.Title>수정 요청 관리</_.Title>
                 <_.Subtitle>{memorialName}의 수정 요청을 관리합니다</_.Subtitle>
               </_.LeftHeader>
-              <_.BackButton onClick={() => pop()}>돌아가기</_.BackButton>
             </_.InnerHeader>
           </_.Header>
 
@@ -227,7 +225,7 @@ const MemorialPRManager = ({
               <_.MemorialListBox>
                 <_.MemorialList>
                   {pullRequests.length === 0 ? (
-                    <_.EmptyMessage>아직 P수정 요청이 없습니다.</_.EmptyMessage>
+                    <_.EmptyMessage>아직 수정 요청이 없습니다.</_.EmptyMessage>
                   ) : (
                     pullRequests
                       .filter(

@@ -89,6 +89,9 @@ const MemorialConflictResolve = lazy(
 const MemorialViewer = lazy(
   () => import('@/applications/applicationList/memorialViewer/index.tsx'),
 );
+const MyComputerApproach = lazy(
+  () => import('@/applications/applicationList/myComputerApproach/index.tsx'),
+);
 
 const MemorialApplicationList = lazy(
   () => import('@/applications/applicationList/memorialApplicationList/index.tsx'),
@@ -771,6 +774,25 @@ const useApps = (): TaskType[] => {
     {
       component: (
         <Suspense fallback={null}>
+          <MyComputerApproach />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2247,
+      name: '추모관 수정 요청',
+      layer: undefined,
+      appSetup: {
+        Image: 'default',
+        minWidth: 600,
+        minHeight: 500,
+        setUpWidth: 900,
+        setUpHeight: 650,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
           <MemorialApplicationList
             stack={[]}
             push={undefined}
@@ -780,7 +802,7 @@ const useApps = (): TaskType[] => {
         </Suspense>
       ),
       type: 'App',
-      id: 2247,
+      id: 2248,
       name: '내 추모관 신청',
       layer: undefined,
       appSetup: {
@@ -804,7 +826,7 @@ const useApps = (): TaskType[] => {
         </Suspense>
       ),
       type: 'App',
-      id: 2248,
+      id: 2249,
       name: 'memorialApplicationListMain',
       layer: undefined,
       appSetup: {
@@ -828,7 +850,7 @@ const useApps = (): TaskType[] => {
         </Suspense>
       ),
       type: 'App',
-      id: 2249,
+      id: 2250,
       name: '추모관 신청 목록',
       layer: undefined,
       appSetup: {
@@ -853,7 +875,7 @@ const useApps = (): TaskType[] => {
         </Suspense>
       ),
       type: 'App',
-      id: 2250,
+      id: 2251,
       name: '추모관 신청 뷰어',
       layer: undefined,
       appSetup: {
