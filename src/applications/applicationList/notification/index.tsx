@@ -3,10 +3,13 @@ import { useGetPublicNotificationsQuery } from '@/api/notification/getPublicNoti
 import Loading from '@/applications/components/loading';
 import { useAtomValue } from 'jotai';
 import { notificationListAtom } from '@/atoms/notification';
+import { useState } from 'react';
+import type { NotificationData } from '@/api/notification/getPublicNotifications';
 
 const Notification = () => {
   const { data, isLoading } = useGetPublicNotificationsQuery();
   const atomNotifications = useAtomValue(notificationListAtom);
+  const [selectedNotification, setSelectedNotification] = useState<NotificationData | null>(null);
 
   // atom에 데이터가 있으면 우선 사용 (서버가 멈췄을 때 프론트에서 설정한 데이터)
   const notifications = atomNotifications.length > 0 ? atomNotifications : (data?.data || []);
@@ -20,15 +23,40 @@ const Notification = () => {
     return null;
   }
 
+  // 상세 내용 보기
+  if (selectedNotification) {
+    return (
+      <_.Container>
+        <_.InnerContainer>
+          <_.ContentContainer>
+            <_.DetailView>
+              <_.DetailHeader>
+                <_.BackButton onClick={() => setSelectedNotification(null)}>← 목록으로</_.BackButton>
+              </_.DetailHeader>
+              <_.DetailTitle>{selectedNotification.title}</_.DetailTitle>
+              <_.DetailContent>{selectedNotification.content}</_.DetailContent>
+              <_.DetailDate>작성일: {selectedNotification.created_at}</_.DetailDate>
+            </_.DetailView>
+          </_.ContentContainer>
+        </_.InnerContainer>
+      </_.Container>
+    );
+  }
+
+  // 리스트 보기
   return (
     <_.Container>
       <_.InnerContainer>
         <_.ContentContainer>
           {openNotifications.map((notification) => (
-            <_.NotificationItem key={notification.notification_id}>
-              <_.Title>{notification.title}</_.Title>
-              <_.Content>{notification.content}</_.Content>
-              <_.Date>작성일: {notification.created_at}</_.Date>
+            <_.NotificationItem
+              key={notification.notification_id}
+              onClick={() => setSelectedNotification(notification)}
+            >
+              <_.ItemHeader>
+                <_.ItemTitle>{notification.title}</_.ItemTitle>
+                <_.ItemDate>{notification.created_at}</_.ItemDate>
+              </_.ItemHeader>
             </_.NotificationItem>
           ))}
         </_.ContentContainer>

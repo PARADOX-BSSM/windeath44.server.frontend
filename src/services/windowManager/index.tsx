@@ -88,7 +88,7 @@ const WindowManager = () => {
       hasRestoredTasks: hasRestoredTasks.current,
       isLogIned,
       lastTaskListLength: lastTaskList?.length,
-      availableAppsLength: availableApps?.length
+      availableAppsLength: availableApps?.length,
     });
 
     if (!hydrated || hasRestoredTasks.current || isLogIned !== 'true') return;
@@ -106,11 +106,19 @@ const WindowManager = () => {
       console.log('[WindowManager] Restoring tasks:', lastTaskList);
 
       // 위치 정보를 windowPositionsAtom에 먼저 복원
-      const positions: Record<string, { top: number; left: number; width: number; height: number }> = {};
+      const positions: Record<
+        string,
+        { top: number; left: number; width: number; height: number }
+      > = {};
       lastTaskList.forEach((savedTask) => {
         if (savedTask.position) {
           positions[savedTask.name] = savedTask.position;
-          console.log('[WindowManager] Will restore position for', savedTask.name, ':', savedTask.position);
+          console.log(
+            '[WindowManager] Will restore position for',
+            savedTask.name,
+            ':',
+            savedTask.position,
+          );
         }
       });
 
@@ -123,9 +131,15 @@ const WindowManager = () => {
         console.log('[WindowManager] Now adding tasks...');
         lastTaskList.forEach((savedTask) => {
           const app = availableApps.find(
-            (availableApp) => availableApp.id === savedTask.id && availableApp.name === savedTask.name
+            (availableApp) =>
+              availableApp.id === savedTask.id && availableApp.name === savedTask.name,
           );
-          console.log('[WindowManager] Looking for app:', savedTask.name, 'Found:', app ? 'YES' : 'NO');
+          console.log(
+            '[WindowManager] Looking for app:',
+            savedTask.name,
+            'Found:',
+            app ? 'YES' : 'NO',
+          );
           if (app) {
             console.log('[WindowManager] Adding task:', savedTask.name);
             addTask(app);
@@ -169,6 +183,7 @@ const WindowManager = () => {
 
   // 공지사항 자동 표시
   useEffect(() => {
+    setNotification('테스트 알림', '이것은 본문입니다. 과연 어떻게 표시될까요?');
     if (!hydrated || hasCheckedNotification.current || isLogIned !== 'true') return;
     if (!notificationsData?.data) return;
 
@@ -184,7 +199,7 @@ const WindowManager = () => {
     if (setNotification) {
       setTimeout(() => {
         setNotification(openNotifications);
-      }, 1000); // 부팅 후 1초 뒤에 표시
+      }, 500); // 부팅 후 0.5초 뒤에 표시
     }
   }, [hydrated, isLogIned, notificationsData, setNotification]);
 

@@ -2,12 +2,12 @@ import styled from '@emotion/styled';
 
 export const Container = styled.div`
   display: flex;
-  padding: 12px;
+  padding: 8px;
   height: 100%;
   box-sizing: border-box;
   justify-content: center;
   align-items: flex-start;
-  gap: 12px;
+  gap: 8px;
   align-self: stretch;
   overflow: hidden;
   background: var(--LightPrimary, #ffd3fb);
@@ -29,7 +29,7 @@ export const InnerContainer = styled.div`
 
 export const ContentContainer = styled.div`
   display: flex;
-  padding: 27px 23px;
+  padding: 0;
   flex-direction: column;
   align-items: flex-start;
   gap: 32px;
@@ -37,18 +37,89 @@ export const ContentContainer = styled.div`
   width: 100%;
 `;
 
+// 리스트 아이템
 export const NotificationItem = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 12px;
   align-self: stretch;
-  padding: 20px;
-  border: 1px solid var(--Stroke, #e774dd);
+  padding: 16px 20px;
+  border-bottom: 1px solid #e0e0e0;
   background: #fff;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover {
+    background: #f9f9f9;
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
 `;
 
-export const Title = styled.h2`
+export const ItemHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 12px;
+`;
+
+export const ItemTitle = styled.h3`
+  color: var(--Black, #2e2e2e);
+  font-family: Galmuri11;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  text-align: left;
+  flex: 1;
+`;
+
+export const ItemDate = styled.span`
+  color: #999;
+  font-family: Galmuri11;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  white-space: nowrap;
+`;
+
+// 상세 뷰
+export const DetailView = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px;
+  width: 100%;
+`;
+
+export const DetailHeader = styled.div`
+  display: flex;
+  align-items: center;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e0e0e0;
+`;
+
+export const BackButton = styled.button`
+  color: var(--Stroke, #e774dd);
+  font-family: Galmuri11;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+export const DetailTitle = styled.h2`
   color: var(--Black, #2e2e2e);
   font-family: Galmuri11;
   font-size: 24px;
@@ -56,10 +127,9 @@ export const Title = styled.h2`
   font-weight: 400;
   line-height: normal;
   text-align: left;
-  align-self: stretch;
 `;
 
-export const Content = styled.p`
+export const DetailContent = styled.p`
   color: var(--Black, #2e2e2e);
   font-family: Galmuri11;
   font-size: 16px;
@@ -67,11 +137,10 @@ export const Content = styled.p`
   font-weight: 400;
   line-height: 1.5;
   text-align: left;
-  align-self: stretch;
   white-space: pre-wrap;
 `;
 
-export const Date = styled.p`
+export const DetailDate = styled.p`
   color: #999;
   font-family: Galmuri11;
   font-size: 12px;
@@ -79,4 +148,6 @@ export const Date = styled.p`
   font-weight: 400;
   line-height: normal;
   text-align: left;
+  padding-top: 16px;
+  border-top: 1px solid #e0e0e0;
 `;
