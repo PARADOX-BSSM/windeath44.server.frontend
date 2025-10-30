@@ -15,10 +15,12 @@ import { getTaskCreators } from './tasks';
 import { useTaskTransformFunction } from '@/hooks/taskTransformer.tsx';
 import { useTaskSearchFunction } from '@/hooks/taskSearch.tsx';
 import { useAlerter } from '@/hooks/alerter.tsx';
+import { useNotification } from '@/hooks/notification.tsx';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg.tsx';
 import { useDrag } from 'react-use-gesture';
 import useApps from '@/applications/data/importManager.tsx';
 import { lastTaskListAtom, windowPositionsAtom } from '@/atoms/processManager.ts';
+import { useGetPublicNotificationsQuery } from '@/api/notification/getPublicNotifications';
 
 const Application = lazy(() => import('@/applications/layout/index.tsx'));
 
@@ -42,6 +44,10 @@ const WindowManager = () => {
   const dragOffset = useRef([0, 0]);
   const clickTimeout = useRef<NodeJS.Timeout | null>(null);
   const hasRestoredTasks = useRef(false);
+  const hasCheckedNotification = useRef(false);
+
+  // 공지사항 조회
+  const { data: notificationsData } = useGetPublicNotificationsQuery();
 
   useEffect(() => {
     setHydrated(true);
@@ -159,6 +165,32 @@ const WindowManager = () => {
     }
   }, [isLogIned, hydrated]);
 
+  // 공지사항 자동 표시
+  useEffect(() => {
+    if (!hydrated || hasCheckedNotification.current || isLogIned !== 'true') return;
+    if (!availableApps || availableApps.length === 0) return;
+    if (!notificationsData?.data) return;
+
+    const openNotifications = notificationsData.data.filter((n) => n.is_open);
+    if (openNotifications.length === 0) {
+      hasCheckedNotification.current = true;
+      return;
+    }
+
+    hasCheckedNotification.current = true;
+
+    // 공지사항 앱 찾기
+    const notificationApp = availableApps.find(
+      (app) => app.id === 2251 && app.name === '공지사항'
+    );
+
+    if (notificationApp) {
+      setTimeout(() => {
+        addTask(notificationApp);
+      }, 1000); // 부팅 후 1초 뒤에 표시
+    }
+  }, [hydrated, isLogIned, availableApps, notificationsData, addTask]);
+
   let resizeObserver = new ResizeObserver((_entries) => {
     const container: HTMLElement = document.getElementById('cursorContainer') as HTMLElement;
     const cursor = document.getElementById('cursor');
@@ -219,6 +251,7 @@ const WindowManager = () => {
   useTaskTransformFunction();
   useTaskSearchFunction();
   useAlerter();
+  useNotification();
 
   return (
     <_.Desktop>
