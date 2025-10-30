@@ -2,7 +2,7 @@ import * as _ from './style';
 import Application from './components/application';
 import { useAtomValue } from 'jotai';
 import { alerterAtom } from '@/atoms/alerter';
-import { taskTransformerAtom } from '@/atoms/taskTransformer';
+import { taskTransformerAtom, taskSearchAtom } from '@/atoms/taskTransformer';
 import Choten from '@/assets/profile/choten.svg';
 import { useEffect, useMemo, useState } from 'react';
 import { useGetMyMemorialApplicationsQuery } from '@/api/memorial/getMyMemorialApplications';
@@ -24,6 +24,7 @@ interface dataStructureProps {
 const MemorialApplicationList = ({ stack, push, pop, top }: dataStructureProps) => {
   const setAlert = useAtomValue(alerterAtom);
   const taskTransform = useAtomValue(taskTransformerAtom);
+  const taskSearch = useAtomValue(taskSearchAtom);
   const [cursorId, setCursorId] = useState<number | undefined>(undefined);
   const [allApplications, setAllApplications] = useState<any[]>([]);
   const likeMutation = useMemorialApplicationLikeMutation();
