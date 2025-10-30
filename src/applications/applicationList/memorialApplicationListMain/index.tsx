@@ -57,14 +57,17 @@ const MemorialApplicationListMain = ({ stack, push, pop, top }: dataStructurePro
   useEffect(() => {
     if (applicationsData?.data?.values) {
       if (cursorId === undefined) {
-        // 첫 로드 시 기존 데이터 초기화
-        setAllApplications(applicationsData.data.values);
+        // 첫 로드 시 기존 데이터 초기화 및 정렬
+        const sorted = [...applicationsData.data.values].sort(
+          (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+        );
+        setAllApplications(sorted);
       } else {
-        // 더보기 시 기존 데이터에 추가
+        // 더보기 시 기존 데이터 뒤에 추가 (정렬하지 않음)
         setAllApplications((prev) => [...prev, ...applicationsData.data.values]);
       }
     }
-  }, [applicationsData, cursorId]);
+  }, [applicationsData]);
 
   // 고유한 사용자 ID 목록 추출
   const userIds = useMemo(() => {
@@ -265,12 +268,7 @@ const MemorialApplicationListMain = ({ stack, push, pop, top }: dataStructurePro
                   <_.EmptyMessage>대기 중인 신청이 없습니다.</_.EmptyMessage>
                 ) : (
                   <>
-                    {allApplications
-                      .sort(
-                        (a, b) =>
-                          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-                      )
-                      .map((app) => (
+                    {allApplications.map((app) => (
                         <Application
                           key={app.memorialApplicationId}
                           userId={app.userId}
