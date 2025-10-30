@@ -2,12 +2,11 @@ import IndexMenu from '@/applications/components/indexMenu';
 import Comment from '@/applications/components/comment';
 import Loading from '@/applications/components/loading';
 import * as _ from './style';
-import { index_data } from './data';
 import { useAtom, useAtomValue } from 'jotai';
 import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer';
 import { alerterAtom } from '@/atoms/alerter';
 import { useMemorialGet } from '@/api/memorial/memorialGet.ts';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useEffect, useState, useMemo } from 'react';
 import { useGetCharacter } from '@/api/anime/getCharacter.ts';
 import type { CharacterData } from '@/api/anime/getCharacter';
 import type { memorialData } from '@/api/memorial/memorialGet';
@@ -54,6 +53,7 @@ const Memorial = ({
   const [, setInputValue] = useAtom(inputPortage);
   const [content, setContent] = useState<string>('');
   const token = getCookie('access_token');
+  const [indexData, setIndexData] = useState<string[]>([]);
   const [characterData, setCharacterData] = useState<CharacterData>({
     characterId: 0,
     animeId: 0,
@@ -390,6 +390,14 @@ const Memorial = ({
     }
   }, [characterData, setWindowName]);
 
+  // content가 변경될 때마다 파싱하여 목차 업데이트
+  const parsedContent = useMemo(() => {
+    const tempIndexData: string[] = [];
+    const result = parseCustomContent(tempIndexData, memorialData.content);
+    setIndexData(tempIndexData);
+    return result;
+  }, [memorialData.content]);
+
   // 데이터 로딩 중일 때 로딩 컴포넌트 표시
   if (
     mutationMemorialGet.isPending ||
@@ -472,12 +480,13 @@ const Memorial = ({
                 <_.Quote>{characterData.saying}</_.Quote>
                 <_.Index>
                   <_.IndexTitle>목차</_.IndexTitle>
-                  {index_data.map((item, idx) => {
+                  {indexData.map((item, idx) => {
                     // console.log(idx);
                     return (
                       <IndexMenu
                         text={item}
                         idx={idx}
+                        key={`index-${idx}`}
                       ></IndexMenu>
                     );
                   })}
@@ -599,9 +608,7 @@ const Memorial = ({
               </_.CommentMain>
             </_.CommentContainer>
             <_.ArticleContainer>
-              <_.ArticleContent>
-                {parseCustomContent(index_data, memorialData.content)}
-              </_.ArticleContent>
+              <_.ArticleContent>{parsedContent}</_.ArticleContent>
             </_.ArticleContainer>
           </_.Section2>
         </_.InnerContainer>
