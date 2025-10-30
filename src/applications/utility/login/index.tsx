@@ -169,6 +169,15 @@ const LogIn = ({ changeToSignUp, changeToEmailCheck }: Props) => {
             active={true}
           />
           <MemorialBtn
+            name="아이디 찾기"
+            // onClick={() => changeToEmailCheck()}
+            type="submit"
+            width={buttonWidth}
+            height={buttonHeight}
+            fontSize={buttonFontSize}
+            active={true}
+          />
+          <MemorialBtn
             name="비밀번호 찾기"
             onClick={() => changeToEmailCheck()}
             type="submit"
