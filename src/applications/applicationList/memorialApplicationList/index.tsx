@@ -2,7 +2,7 @@ import * as _ from './style';
 import Application from './components/application';
 import { useAtomValue } from 'jotai';
 import { alerterAtom } from '@/atoms/alerter';
-import { taskTransformerAtom } from '@/atoms/taskTransformer';
+import { taskTransformerAtom, taskSearchAtom } from '@/atoms/taskTransformer';
 import Choten from '@/assets/profile/choten.svg';
 import { useEffect, useMemo, useState } from 'react';
 import { useGetMyMemorialApplicationsQuery } from '@/api/memorial/getMyMemorialApplications';
@@ -24,6 +24,7 @@ interface dataStructureProps {
 const MemorialApplicationList = ({ stack, push, pop, top }: dataStructureProps) => {
   const setAlert = useAtomValue(alerterAtom);
   const taskTransform = useAtomValue(taskTransformerAtom);
+  const taskSearch = useAtomValue(taskSearchAtom);
   const [cursorId, setCursorId] = useState<number | undefined>(undefined);
   const [allApplications, setAllApplications] = useState<any[]>([]);
   const likeMutation = useMemorialApplicationLikeMutation();
@@ -50,14 +51,17 @@ const MemorialApplicationList = ({ stack, push, pop, top }: dataStructureProps) 
   useEffect(() => {
     if (applicationsData?.data?.values) {
       if (cursorId === undefined) {
-        // 첫 로드 시 기존 데이터 초기화
-        setAllApplications(applicationsData.data.values);
+        // 첫 로드 시 기존 데이터 초기화 및 정렬
+        const sorted = [...applicationsData.data.values].sort(
+          (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+        );
+        setAllApplications(sorted);
       } else {
-        // 더보기 시 기존 데이터에 추가
+        // 더보기 시 기존 데이터 뒤에 추가 (정렬하지 않음)
         setAllApplications((prev) => [...prev, ...applicationsData.data.values]);
       }
     }
-  }, [applicationsData, cursorId]);
+  }, [applicationsData]);
 
   // 고유한 사용자 ID 목록 추출
   const userIds = useMemo(() => {
@@ -252,12 +256,7 @@ const MemorialApplicationList = ({ stack, push, pop, top }: dataStructureProps) 
                   <_.EmptyMessage>아직 신청한 추모관이 없습니다.</_.EmptyMessage>
                 ) : (
                   <>
-                    {allApplications
-                      .sort(
-                        (a, b) =>
-                          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-                      )
-                      .map((app) => (
+                    {allApplications.map((app) => (
                         <Application
                           key={app.memorialApplicationId}
                           userId={app.userId}
