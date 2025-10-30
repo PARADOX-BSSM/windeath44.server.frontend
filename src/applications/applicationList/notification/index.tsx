@@ -5,6 +5,7 @@ import { useAtomValue } from 'jotai';
 import { notificationListAtom } from '@/atoms/notification';
 import { useState } from 'react';
 import type { NotificationData } from '@/api/notification/getPublicNotifications';
+import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
 
 const Notification = () => {
   const { data, isLoading } = useGetPublicNotificationsQuery();
@@ -31,7 +32,13 @@ const Notification = () => {
           <_.ContentContainer>
             <_.DetailView>
               <_.DetailHeader>
-                <_.BackButton onClick={() => setSelectedNotification(null)}>← 목록으로</_.BackButton>
+                <_.BackButton
+                  onClick={() => setSelectedNotification(null)}
+                  onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                  onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+                >
+                  ← 목록으로
+                </_.BackButton>
               </_.DetailHeader>
               {selectedNotification.is_image ? (
                 <_.DetailImage src={selectedNotification.content} alt={selectedNotification.title} />
@@ -58,6 +65,8 @@ const Notification = () => {
             <_.NotificationItem
               key={notification.notification_id}
               onClick={() => setSelectedNotification(notification)}
+              onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+              onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
             >
               <_.ItemHeader>
                 <_.ItemTitle>{notification.title}</_.ItemTitle>

@@ -90,7 +90,7 @@ export const LikeButton = styled.button<{ $isLiked: boolean }>`
   line-height: normal;
   background: none;
   border: none;
-  cursor: pointer;
+  cursor: none;
   padding: 0;
   display: flex;
   align-items: center;
@@ -120,7 +120,7 @@ export const ViewBtn = styled.p`
   justify-content: flex-end;
   align-items: center;
   gap: 10px;
-  cursor: pointer;
+  cursor: none;
 
   &:hover {
     opacity: 0.7;
@@ -137,7 +137,7 @@ export const ApproveBtn = styled.button`
   padding: 8px 12px;
   background: none;
   border: none;
-  cursor: pointer;
+  cursor: none;
 
   &:hover {
     opacity: 0.7;
@@ -154,7 +154,7 @@ export const RejectBtn = styled.button`
   padding: 8px 12px;
   background: none;
   border: none;
-  cursor: pointer;
+  cursor: none;
 
   &:hover {
     opacity: 0.7;

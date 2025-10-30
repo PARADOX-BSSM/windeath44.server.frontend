@@ -46,7 +46,7 @@ export const NotificationItem = styled.div`
   padding: 16px 20px;
   border-bottom: 1px solid #e0e0e0;
   background: #fff;
-  cursor: pointer;
+  cursor: none;
   transition: background 0.2s;
 
   &:hover {
@@ -112,7 +112,7 @@ export const BackButton = styled.button`
   font-weight: 400;
   background: none;
   border: none;
-  cursor: pointer;
+  cursor: none;
   padding: 0;
 
   &:hover {
