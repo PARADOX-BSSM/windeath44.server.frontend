@@ -187,19 +187,9 @@ const WindowManager = () => {
     setTimeout(() => {
       setNotification?.([
         {
-          title: '테스트 알림',
-          content: '이것은 본문입니다. 과연 어떻게 표시될까요?',
-          is_image: false,
-        },
-        {
-          title: '공지사항 2',
-          content: '두 번째 내용',
-          is_image: false,
-        },
-        {
-          title: '공지사항 3',
+          title: '서버 점검 안내',
           content:
-            'https://cdn.discordapp.com/attachments/1282556505438162946/1433401530458837092/image.png?ex=69048eb4&is=69033d34&hm=3aecae6551784697aabc7dacbf0002f455801a026cc776dba9b36d0bf84592d1&',
+            'https://cdn.discordapp.com/attachments/1363488381392388187/1433441915302318091/1.png?ex=6904b450&is=690362d0&hm=939560d32ab1f2e47cb681a095ebaf8d6f22a0884e097f0bf4d0b82d2250df17&',
           is_image: true,
         },
       ]);

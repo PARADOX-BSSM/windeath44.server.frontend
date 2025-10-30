@@ -16,6 +16,10 @@ export const useNotification = () => {
     return app.name === '공지사항';
   })[0];
 
+  const notificationViewerApp = Apps.filter((app) => {
+    return app.name === '공지사항 뷰어';
+  })[0];
+
   const setNotification = (
     notifications: NotificationData[] | Array<{ title: string; content?: string; is_image?: boolean }>,
   ) => {
@@ -44,9 +48,14 @@ export const useNotification = () => {
       // atom에 공지사항 데이터 저장
       setNotificationList(finalNotifications);
 
-      // 공지사항 창 열기
+      // 공지사항 리스트 창 열기
       if (notificationApp) {
         addTask(notificationApp);
+      }
+
+      // 첫 번째 공지사항을 뷰어로도 열기
+      if (notificationViewerApp) {
+        addTask(notificationViewerApp);
       }
     }
   };

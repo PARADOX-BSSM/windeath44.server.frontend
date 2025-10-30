@@ -108,6 +108,10 @@ const MemorialApplicationViewer = lazy(
 
 const Notification = lazy(() => import('@/applications/applicationList/notification/index.tsx'));
 
+const NotificationViewer = lazy(
+  () => import('@/applications/applicationList/notificationViewer/index.tsx'),
+);
+
 //Application Import 형식 예시
 /*
 {
@@ -883,6 +887,25 @@ const useApps = (): TaskType[] => {
         minHeight: 400,
         setUpWidth: 800,
         setUpHeight: 600,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <NotificationViewer />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2252,
+      name: '공지사항 뷰어',
+      layer: undefined,
+      appSetup: {
+        Image: setting,
+        minWidth: 600,
+        minHeight: 400,
+        setUpWidth: 800,
+        setUpHeight: 480,
       },
       visible: false,
     },
