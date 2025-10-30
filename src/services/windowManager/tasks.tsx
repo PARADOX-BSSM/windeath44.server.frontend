@@ -33,6 +33,7 @@ export function getTaskCreators(
     removeTask(signUp);
     removeTask(emailChack);
     removeTask(passwordChange);
+    removeTask(findId);
   };
   const changeToEmailCheck = () => {
     addTask(emailChack);

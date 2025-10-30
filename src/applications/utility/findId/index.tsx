@@ -8,6 +8,7 @@ import MemorialBtn from '@/applications/components/memorialBtn';
 import { useAtomValue } from 'jotai';
 import { alerterAtom } from '@/atoms/alerter';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
+import { useSendUserId } from '@/api/auth/sendUserId.ts';
 
 interface Props {
   changeToLogIn: () => void;
@@ -15,7 +16,7 @@ interface Props {
 
 const FindId = ({ changeToLogIn }: Props) => {
   const [email, setEmail] = useState('');
-  // const mutationChangeKey = useChangeTemporaryKey();
+  const mutationSendUserId = useSendUserId();
   const setAlert = useAtomValue(alerterAtom);
   const taskTransform = useAtomValue(taskTransformerAtom);
 
@@ -46,27 +47,27 @@ const FindId = ({ changeToLogIn }: Props) => {
       return;
     }
     e.preventDefault();
-    // mutationChangeKey.mutate(
-    //   { email },
-    //   {
-    //     onSuccess: () => {
-    //       changeToAuth();
-    //     },
-    //     onError: () => {
-    //       setAlert?.(
-    //         Choten,
-    //         <>
-    //           이메일 전송에 실패했습니다.
-    //           <br />
-    //           다시 시도해 주세요.
-    //         </>,
-    //         () => {
-    //           taskTransform?.('경고', '');
-    //         },
-    //       );
-    //     },
-    //   },
-    // );
+    mutationSendUserId.mutate(
+      { email },
+      {
+        onSuccess: () => {
+          changeToLogIn();
+        },
+        onError: () => {
+          setAlert?.(
+            Choten,
+            <>
+              이메일 전송에 실패했습니다.
+              <br />
+              다시 시도해 주세요.
+            </>,
+            () => {
+              taskTransform?.('경고', '');
+            },
+          );
+        },
+      },
+    );
   };
 
   const buttonWidth = '144px';
