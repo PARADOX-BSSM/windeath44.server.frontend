@@ -1,6 +1,6 @@
 import * as _ from './style.ts';
 import { useEffect, useState, Suspense, lazy, useRef } from 'react';
-import { useAtom } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import {
   isLogInedAtom,
   focusAtom,
@@ -21,6 +21,7 @@ import { useDrag } from 'react-use-gesture';
 import useApps from '@/applications/data/importManager.tsx';
 import { lastTaskListAtom, windowPositionsAtom } from '@/atoms/processManager.ts';
 import { useGetPublicNotificationsQuery } from '@/api/notification/getPublicNotifications';
+import { notificationAtom } from '@/atoms/notification';
 
 const Application = lazy(() => import('@/applications/layout/index.tsx'));
 
@@ -36,6 +37,7 @@ const WindowManager = () => {
   const [hydrated, setHydrated] = useState(false);
   const [lastTaskList] = useAtom(lastTaskListAtom);
   const [, setWindowPositions] = useAtom(windowPositionsAtom);
+  const setNotification = useAtomValue(notificationAtom);
 
   const [taskList, addTask, removeTask] = useProcessManager();
   const { logIn, signUp, emailChack, auth } = getTaskCreators(setIsLogIned, addTask, removeTask);
@@ -168,7 +170,6 @@ const WindowManager = () => {
   // 공지사항 자동 표시
   useEffect(() => {
     if (!hydrated || hasCheckedNotification.current || isLogIned !== 'true') return;
-    if (!availableApps || availableApps.length === 0) return;
     if (!notificationsData?.data) return;
 
     const openNotifications = notificationsData.data.filter((n) => n.is_open);
@@ -179,17 +180,13 @@ const WindowManager = () => {
 
     hasCheckedNotification.current = true;
 
-    // 공지사항 앱 찾기
-    const notificationApp = availableApps.find(
-      (app) => app.id === 2251 && app.name === '공지사항'
-    );
-
-    if (notificationApp) {
+    // setNotification 사용하여 공지사항 표시
+    if (setNotification) {
       setTimeout(() => {
-        addTask(notificationApp);
+        setNotification(openNotifications);
       }, 1000); // 부팅 후 1초 뒤에 표시
     }
-  }, [hydrated, isLogIned, availableApps, notificationsData, addTask]);
+  }, [hydrated, isLogIned, notificationsData, setNotification]);
 
   let resizeObserver = new ResizeObserver((_entries) => {
     const container: HTMLElement = document.getElementById('cursorContainer') as HTMLElement;
