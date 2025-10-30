@@ -26,6 +26,8 @@ import Seori from '@/assets/sulkkagi/black_stone.svg';
 import { useGetUserMutation } from '@/api/user/getUser';
 import { getCookie } from '@/api/auth/cookie.ts';
 import { ApplicationProps } from '@/applications/layout/utils';
+import axios from 'axios';
+import { user as userEndpoint } from '@/config';
 
 interface dataStructureProps {
   stack: any[];
@@ -54,6 +56,7 @@ const Memorial = ({
   const [content, setContent] = useState<string>('');
   const token = getCookie('access_token');
   const [indexData, setIndexData] = useState<string[]>([]);
+  const [userDataMap, setUserDataMap] = useState<Record<string, { name: string; profile: string }>>({});
   const [characterData, setCharacterData] = useState<CharacterData>({
     characterId: 0,
     animeId: 0,
@@ -398,6 +401,50 @@ const Memorial = ({
     return result;
   }, [memorialData.content]);
 
+  // 사용자 정보 가져오기
+  useEffect(() => {
+    if (memorialComment.length === 0) return;
+
+    // 모든 userId 추출 (부모 + 자식 댓글)
+    const userIds = new Set<string>();
+    memorialComment.forEach((comment) => {
+      userIds.add(comment.userId);
+      comment.children?.forEach((child) => {
+        userIds.add(child.userId);
+      });
+    });
+
+    const userIdArray = Array.from(userIds);
+    if (userIdArray.length === 0) return;
+
+    // GET /users API 호출
+    axios
+      .get(userEndpoint, {
+        params: { userIds: userIdArray },
+        paramsSerializer: (params) => {
+          const searchParams = new URLSearchParams();
+          params.userIds.forEach((id: string) => {
+            searchParams.append('userIds', id);
+          });
+          return searchParams.toString();
+        },
+      })
+      .then((response) => {
+        const users = response.data.data;
+        const userMap: Record<string, { name: string; profile: string }> = {};
+        users.forEach((user: any) => {
+          userMap[user.userId] = {
+            name: user.name,
+            profile: user.profile,
+          };
+        });
+        setUserDataMap(userMap);
+      })
+      .catch((error) => {
+        console.error('사용자 정보 가져오기 실패:', error);
+      });
+  }, [memorialComment]);
+
   // 데이터 로딩 중일 때 로딩 컴포넌트 표시
   if (
     mutationMemorialGet.isPending ||
@@ -576,6 +623,8 @@ const Memorial = ({
                           currentUserId={currentUserId}
                           likes={comment.likes}
                           isLiked={comment.isLiked}
+                          userName={userDataMap[comment.userId]?.name}
+                          userProfile={userDataMap[comment.userId]?.profile}
                           onReplySubmit={handleReplySubmit}
                           onEditSubmit={handleEditSubmit}
                           onDeleteSubmit={handleDeleteSubmit}
@@ -592,6 +641,8 @@ const Memorial = ({
                             currentUserId={currentUserId}
                             likes={child.likes}
                             isLiked={child.isLiked}
+                            userName={userDataMap[child.userId]?.name}
+                            userProfile={userDataMap[child.userId]?.profile}
                             onReplySubmit={handleReplySubmit}
                             onEditSubmit={handleEditSubmit}
                             onDeleteSubmit={handleDeleteSubmit}
