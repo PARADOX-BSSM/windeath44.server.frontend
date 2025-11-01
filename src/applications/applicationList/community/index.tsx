@@ -1,6 +1,6 @@
 import React from 'react';
 import * as _ from './style';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import MemorialBtn from '@/applications/components/memorialBtn';
 import CommunityBtn from '@/applications/components/communityBtn';
 import FilterBlock from '@/applications/components/filterBlock';
@@ -10,6 +10,7 @@ import { useAtomValue } from 'jotai';
 import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer';
 import HommerBackground from '@/assets/community/homer_background.png';
 import Hommer from '@/assets/community/hommer.svg';
+import { usePostListSearch } from '@/api/community/postListSearch';
 
 enum sortOption{
     Latest = "최신순",
@@ -36,7 +37,12 @@ interface dataStructureProps{
 }
 
 const Community = ({stack, push, pop, top}:dataStructureProps)=>{
+    const postData = usePostListSearch();
 
+    useEffect(()=>{
+        postData.mutate({});
+    },[])
+    
     const stackProps = {
         stack: stack,
         push: push,

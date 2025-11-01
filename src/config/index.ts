@@ -7,3 +7,4 @@ export const memorialTracing = `${protocol}${server}/memorial-tracing`; //추모
 export const memorial_application = `${protocol}${server}/applications`; //추모관 신청
 export const anime = `${protocol}${server}/animes`; //에니메이션
 export const chatbot = `${protocol}${server}/chatbots`; //분신사바
+export const community = `${protocol}${server}/communities`; //커뮤니티
