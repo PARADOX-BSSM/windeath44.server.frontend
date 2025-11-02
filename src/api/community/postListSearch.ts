@@ -5,21 +5,16 @@ import api from '../axiosInstance';
 
 interface postListSearchInterface {
   title?: string;
-  is_blind?: boolean;
-  character_id?: number;
+  isBlind?: boolean;
+  characterId?: number;
   status?: string;
 }
 
-const postListSearch = async ({
-  title,
-  is_blind,
-  character_id,
-  status,
-}: postListSearchInterface) => {
+const postListSearch = async ({ title, isBlind, characterId, status }: postListSearchInterface) => {
   const data = JSON.stringify({
     title: title,
-    is_blind: is_blind,
-    character_id: character_id,
+    is_blind: isBlind,
+    character_id: characterId,
     status: status,
   });
   try {

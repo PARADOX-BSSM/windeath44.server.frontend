@@ -3,9 +3,12 @@ import * as _ from './style';
 import { useState } from 'react';
 import CommunityBtn from '@/applications/components/communityBtn';
 import ChevronIcon from '@/assets/community/chevron-left.svg';
+import { usePostCreate } from '@/api/community/postCreate';
 
 const CommunityPostWrite: React.FC = () => {
   const [loadPage, setLoadPage] = useState(false);
+  const [title, setTitle] = useState('');
+  const [body, setBody] = useState('');
   return (
     <_.Container>
       {!loadPage ? (
@@ -13,8 +16,14 @@ const CommunityPostWrite: React.FC = () => {
           <_.Title
             type="text"
             placeholder="제목을 입력해주세요"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
           />
-          <_.Content placeholder="자유롭게 글을 작성해 보세요."></_.Content>
+          <_.Content
+            placeholder="자유롭게 글을 작성해 보세요."
+            value={body}
+            onChange={(e) => setBody(e.target.value)}
+          ></_.Content>
         </>
       ) : (
         <>
@@ -22,7 +31,7 @@ const CommunityPostWrite: React.FC = () => {
             <_.BeforeBtn onClick={() => setLoadPage(false)}>
               <_.Icon src={ChevronIcon} />
             </_.BeforeBtn>
-            방태양님의 게시글
+            임시저장 불러오기
           </_.Header>
           <_.PostArea>
             {
@@ -49,14 +58,13 @@ const CommunityPostWrite: React.FC = () => {
         <CommunityBtn
           name="임시저장/불러오기"
           selected={loadPage}
-          onClick={() => {
-            setLoadPage(!loadPage);
-          }}
+          onClick={() => setLoadPage(!loadPage)}
           type="menu"
         />
         <CommunityBtn
           name="게시"
           type="submit"
+          onClick={() => {}}
         />
       </_.BtnArea>
     </_.Container>

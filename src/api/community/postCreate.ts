@@ -5,7 +5,7 @@ import api from '../axiosInstance';
 
 interface postCreateInterface {
   user_id: string;
-  character_id?: number;
+  characterId?: number;
   title: string;
   body: string;
   status: string;
@@ -14,7 +14,7 @@ interface postCreateInterface {
 
 const postCreate = async ({
   user_id,
-  character_id,
+  characterId,
   title,
   body,
   status,
@@ -22,7 +22,7 @@ const postCreate = async ({
 }: postCreateInterface) => {
   const data = JSON.stringify({
     user_id: user_id,
-    character_id: character_id,
+    characterId: characterId,
     title: title,
     body: body,
     status: status,
