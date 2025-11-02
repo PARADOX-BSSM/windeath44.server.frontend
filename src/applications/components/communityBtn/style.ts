@@ -50,7 +50,7 @@ export const SelectedBtn = styled.button`
 
 export const SubmitActive = styled.button`
   width: auto;
-  display: flex;  
+  display: flex;
   height: 32px;
   padding: 6px 16px;
   justify-content: center;
