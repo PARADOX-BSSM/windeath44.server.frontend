@@ -24,7 +24,7 @@ const Game: React.FC = () => {
               key={index}
               onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
               onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
-              onClick={() => taskTransform?.('아케이드', '설까기')}
+              onClick={() => taskTransform?.('아케이드', item.name)}
             >
               <_.GameIcon
                 src={item.icon}

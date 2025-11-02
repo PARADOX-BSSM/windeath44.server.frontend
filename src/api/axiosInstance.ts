@@ -10,8 +10,7 @@ api.interceptors.request.use((config) => {
   // Read access token from cookie and attach as Authorization header for protected endpoints
   const token = getCookie('access_token');
   const url = config.url ?? '';
-  const isAuthEndpoint =
-    url.includes('/login') || url.includes('/reissue') || url.includes('/logout');
+  const isAuthEndpoint = url.includes('/login') || url.includes('/reissue');
   if (token && !isAuthEndpoint) {
     config.headers = config.headers ?? {};
     (config.headers as any).Authorization = `Bearer ${token}`;

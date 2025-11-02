@@ -2,12 +2,11 @@ import IndexMenu from '@/applications/components/indexMenu';
 import Comment from '@/applications/components/comment';
 import Loading from '@/applications/components/loading';
 import * as _ from './style';
-import { index_data } from './data';
 import { useAtom, useAtomValue } from 'jotai';
 import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer';
 import { alerterAtom } from '@/atoms/alerter';
 import { useMemorialGet } from '@/api/memorial/memorialGet.ts';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useEffect, useState, useMemo } from 'react';
 import { useGetCharacter } from '@/api/anime/getCharacter.ts';
 import type { CharacterData } from '@/api/anime/getCharacter';
 import type { memorialData } from '@/api/memorial/memorialGet';
@@ -23,9 +22,10 @@ import { parseCustomContent } from '@/lib/customTag/parseCustomContent.tsx';
 import { useGetAnimation } from '@/api/anime/getAnimation.ts';
 import ribbon from '@/assets/memorial_ribbon.svg';
 import { inputPortage } from '@/atoms/inputManager.ts';
-import Choten from '@/assets/profile/choten.svg';
+import Seori from '@/assets/sulkkagi/black_stone.svg';
 import { useGetUserMutation } from '@/api/user/getUser';
 import { getCookie } from '@/api/auth/cookie.ts';
+import { ApplicationProps } from '@/applications/layout/utils';
 
 interface dataStructureProps {
   stack: any[];
@@ -34,14 +34,26 @@ interface dataStructureProps {
   top: any;
   memorialId: number;
   characterId: number;
+  props?: ApplicationProps;
+  setWindowName?: (name: string) => void;
 }
-const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStructureProps) => {
+const Memorial = ({
+  stack,
+  push,
+  pop,
+  top,
+  memorialId,
+  characterId,
+  props,
+  setWindowName,
+}: dataStructureProps) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
   const taskSearch = useAtomValue(taskSearchAtom);
   const setAlert = useAtomValue(alerterAtom);
   const [, setInputValue] = useAtom(inputPortage);
   const [content, setContent] = useState<string>('');
   const token = getCookie('access_token');
+  const [indexData, setIndexData] = useState<string[]>([]);
   const [characterData, setCharacterData] = useState<CharacterData>({
     characterId: 0,
     animeId: 0,
@@ -107,7 +119,7 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
             {
               onError: () => {
                 setAlert?.(
-                  Choten,
+                  Seori,
                   <>
                     추모글을 가져오는 중 문제가 발생했습니다.
                     <br />
@@ -135,7 +147,7 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
             {
               onError: () => {
                 setAlert?.(
-                  Choten,
+                  Seori,
                   <>
                     추모글을 가져오는 중 문제가 발생했습니다.
                     <br />
@@ -163,7 +175,7 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
             {
               onError: () => {
                 setAlert?.(
-                  Choten,
+                  Seori,
                   <>
                     추모글을 가져오는 중 문제가 발생했습니다.
                     <br />
@@ -179,7 +191,7 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
         },
         onError: () => {
           setAlert?.(
-            Choten,
+            Seori,
             <>
               댓글 수정 중 문제가 발생했습니다.
               <br />
@@ -204,7 +216,7 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
             {
               onError: () => {
                 setAlert?.(
-                  Choten,
+                  Seori,
                   <>
                     추모글을 가져오는 중 문제가 발생했습니다.
                     <br />
@@ -220,7 +232,7 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
         },
         onError: () => {
           setAlert?.(
-            Choten,
+            Seori,
             <>
               댓글 삭제 중 문제가 발생했습니다.
               <br />
@@ -245,7 +257,7 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
             {
               onError: () => {
                 setAlert?.(
-                  Choten,
+                  Seori,
                   <>
                     추모글을 가져오는 중 문제가 발생했습니다.
                     <br />
@@ -261,7 +273,7 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
         },
         onError: () => {
           setAlert?.(
-            Choten,
+            Seori,
             <>
               좋아요 처리 중 문제가 발생했습니다.
               <br />
@@ -285,7 +297,7 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
       {
         onError: () => {
           setAlert?.(
-            Choten,
+            Seori,
             <>
               추모글을 가져오는 중 문제가 발생했습니다.
               <br />
@@ -304,7 +316,7 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
     mutationMemorialGet.mutate(memorialId, {
       onError: () => {
         setAlert?.(
-          Choten,
+          Seori,
           <>
             추모관 정보를 가져오는 중 문제가 발생했습니다.
             <br />
@@ -321,7 +333,7 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
       {
         onError: () => {
           setAlert?.(
-            Choten,
+            Seori,
             <>
               추모글을 가져오는 중 문제가 발생했습니다.
               <br />
@@ -337,7 +349,7 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
     mutationGetCharacter.mutate(characterId, {
       onError: () => {
         setAlert?.(
-          Choten,
+          Seori,
           <>
             캐릭터 정보를 가져오는 중 문제가 발생했습니다.
             <br />
@@ -356,7 +368,7 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
       mutationAnimation.mutate(characterData.animeId, {
         onError: () => {
           setAlert?.(
-            Choten,
+            Seori,
             <>
               애니메이션 정보를 가져오는 중 문제가 발생했습니다.
               <br />
@@ -370,6 +382,21 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
       });
     }
   }, [characterData.animeId]);
+
+  // 창 제목 설정
+  useEffect(() => {
+    if (setWindowName && characterData?.name) {
+      setWindowName?.(`추모관 뷰어 - ${characterData.name}`);
+    }
+  }, [characterData, setWindowName]);
+
+  // content가 변경될 때마다 파싱하여 목차 업데이트
+  const parsedContent = useMemo(() => {
+    const tempIndexData: string[] = [];
+    const result = parseCustomContent(tempIndexData, memorialData.content);
+    setIndexData(tempIndexData);
+    return result;
+  }, [memorialData.content]);
 
   // 데이터 로딩 중일 때 로딩 컴포넌트 표시
   if (
@@ -391,7 +418,7 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
   const handleCommit = () => {
     if (!token && setAlert) {
       setAlert(
-        Choten,
+        Seori,
         <>
           게스트는 추모관 수정이 불가합니다.
           <br />
@@ -453,12 +480,13 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
                 <_.Quote>{characterData.saying}</_.Quote>
                 <_.Index>
                   <_.IndexTitle>목차</_.IndexTitle>
-                  {index_data.map((item, idx) => {
+                  {indexData.map((item, idx) => {
                     // console.log(idx);
                     return (
                       <IndexMenu
                         text={item}
                         idx={idx}
+                        key={`index-${idx}`}
                       ></IndexMenu>
                     );
                   })}
@@ -580,9 +608,7 @@ const Memorial = ({ stack, push, pop, top, memorialId, characterId }: dataStruct
               </_.CommentMain>
             </_.CommentContainer>
             <_.ArticleContainer>
-              <_.ArticleContent>
-                {parseCustomContent(index_data, memorialData.content)}
-              </_.ArticleContent>
+              <_.ArticleContent>{parsedContent}</_.ArticleContent>
             </_.ArticleContainer>
           </_.Section2>
         </_.InnerContainer>

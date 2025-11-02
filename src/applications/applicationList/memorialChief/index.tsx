@@ -2,12 +2,14 @@ import * as _ from './style';
 import { useAtomValue } from 'jotai';
 import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer';
 import { alerterAtom } from '@/atoms/alerter';
-import Choten from '@/assets/profile/choten.svg';
+import Seori from '@/assets/sulkkagi/black_stone.svg';
 import MemorialBtn from '@/applications/components/memorialBtn';
 import { useGetMyChiefMemorialsQuery } from '@/api/memorial/getChiefMemorials';
 import { useMemorialGet, memorialData } from '@/api/memorial/memorialGet';
 import { useGetCharacter, CharacterData } from '@/api/anime/getCharacter';
 import { useState, useEffect, useCallback, useRef } from 'react';
+import Block from '@/../public/assets/cursor/cursor_block.svg';
+import { MemorialNoneIMesssege } from './style';
 
 interface dataStructureProps {
   stack: any[];
@@ -100,13 +102,10 @@ const MemorialChief = ({ stack, push, pop, top }: dataStructureProps) => {
   const handleManagePullRequests = (memorialId: string) => {
     const details = memorialDetails[memorialId];
     if (details?.memorial && details?.character) {
-      push(
-        taskSearch?.('memorialPRManager', {
-          ...stackProps,
+        taskTransform?.('','추모관 수정 요청', {
           memorialId: parseInt(memorialId),
           memorialName: `${details.character.name}의 추모관`,
-        }),
-      );
+        });
     }
   };
 
@@ -114,7 +113,7 @@ const MemorialChief = ({ stack, push, pop, top }: dataStructureProps) => {
   useEffect(() => {
     if (error) {
       setAlert?.(
-        Choten,
+        Seori,
         <>
           상주 추모관 목록을 가져오는 중 오류가 발생했습니다.
           <br />
@@ -130,8 +129,6 @@ const MemorialChief = ({ stack, push, pop, top }: dataStructureProps) => {
   // 로딩 상태 처리
   if (isLoading) {
     return (
-      <_.Container>
-        <_.InnerContainer>
           <_.ContentContainer>
             <_.Header>
               <_.InnerHeader>
@@ -139,47 +136,27 @@ const MemorialChief = ({ stack, push, pop, top }: dataStructureProps) => {
                   <_.Title>상주 관리</_.Title>
                   <_.Subtitle>로딩 중...</_.Subtitle>
                 </_.LeftHeader>
-                <_.BackButton onClick={() => pop()}>돌아가기</_.BackButton>
               </_.InnerHeader>
             </_.Header>
           </_.ContentContainer>
-        </_.InnerContainer>
-      </_.Container>
     );
   }
-
+  console.log('d없어',chiefMemorialIds);
   return (
-    <_.Container>
-      <_.InnerContainer>
-        <_.ContentContainer>
-          <_.Header>
-            <_.InnerHeader>
-              <_.LeftHeader>
-                <_.Title>상주 관리</_.Title>
-                <_.Subtitle>내가 상주인 추모관을 관리할 수 있습니다</_.Subtitle>
-              </_.LeftHeader>
-              <_.BackButton
-                onClick={() => {
-                  pop();
-                }}
-              >
-                돌아가기
-              </_.BackButton>
-            </_.InnerHeader>
-          </_.Header>
-
-          <_.StatsContainer>
-            <_.StatItem>
-              <_.StatNumber>{chiefMemorialIds.length}</_.StatNumber>
-              <_.StatLabel>총 상주 추모관</_.StatLabel>
-            </_.StatItem>
-          </_.StatsContainer>
-
           <_.MemorialListContainer>
-            <_.ListTitle>상주 추모관 목록</_.ListTitle>
             <_.MemorialListBox>
               <_.MemorialList>
-                {chiefMemorialIds.map((memorialId) => {
+                {chiefMemorialIds.length === 0 ?
+                  <_.MemorialNone>
+                    <_.MemorialNoneImg src={Block} />
+                    <_.MemorialNoneIMesssege>
+                    상주인 추모관이 없습니다.
+                    <br/>
+                    새로운 추모관을 신청하거나, 해당 추모관에서 절을 많이 하면 상주가 될 수 있습니다.
+                    </_.MemorialNoneIMesssege>
+                  </_.MemorialNone>
+                  :
+                  chiefMemorialIds.map((memorialId) => {
                   const details = memorialDetails[memorialId];
                   const characterName = details?.character?.name || '로딩 중...';
                   return (
@@ -214,13 +191,11 @@ const MemorialChief = ({ stack, push, pop, top }: dataStructureProps) => {
                       </_.ButtonContainer>
                     </_.MemorialItem>
                   );
-                })}
+                })
+                }
               </_.MemorialList>
             </_.MemorialListBox>
           </_.MemorialListContainer>
-        </_.ContentContainer>
-      </_.InnerContainer>
-    </_.Container>
   );
 };
 

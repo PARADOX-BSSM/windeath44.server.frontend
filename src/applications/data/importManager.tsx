@@ -70,6 +70,8 @@ const AdminApp = lazy(() => import('@/applications/applicationList/adminApp/inde
 
 const GameApp = lazy(() => import('@/applications/applicationList/game/index.tsx'));
 
+const RhythmGame = lazy(() => import('@/applications/applicationList/rhythmGame/index.tsx'));
+
 const MemorialChief = lazy(() => import('@/applications/applicationList/memorialChief/index.tsx'));
 
 const MemorialPRManager = lazy(
@@ -86,6 +88,25 @@ const MemorialConflictResolve = lazy(
 
 const MemorialViewer = lazy(
   () => import('@/applications/applicationList/memorialViewer/index.tsx'),
+);
+const MyComputerApproach = lazy(
+  () => import('@/applications/applicationList/myComputerApproach/index.tsx'),
+);
+
+const MemorialApplicationList = lazy(
+  () => import('@/applications/applicationList/memorialApplicationList/index.tsx'),
+);
+
+const MemorialApplicationListMain = lazy(
+  () => import('@/applications/applicationList/memorialApplicationListMain/index.tsx'),
+);
+
+const MemorialApplicationListApproach = lazy(
+  () => import('@/applications/applicationList/memorialApplicationListApproach/index.tsx'),
+);
+
+const MemorialApplicationViewer = lazy(
+  () => import('@/applications/applicationList/memorialApplicationViewer/index.tsx'),
 );
 
 //Application Import 형식 예시
@@ -110,7 +131,7 @@ const useApps = (): TaskType[] => {
   const [isLogIned, setIsLogIned] = useAtom(isLogInedAtom);
   const [taskList, addTask, removeTask] = useProcessManager();
   const token = getCookie('access_token');
-  const [isNotGuest,SetIsNotGuest] = useState<string | null>(token)
+  const [isNotGuest, SetIsNotGuest] = useState<string | null>(token);
 
   const { logIn, signUp, emailChack, auth, passwordChange } = getTaskCreators(
     setIsLogIned,
@@ -213,6 +234,8 @@ const useApps = (): TaskType[] => {
             push={undefined}
             pop={undefined}
             top={undefined}
+            memorialId={0}
+            characterId={0}
           />
         </Suspense>
       ),
@@ -573,9 +596,9 @@ const useApps = (): TaskType[] => {
       appSetup: {
         Image: sulkkagi,
         minWidth: 750,
-        minHeight: 750,
+        minHeight: 780,
         setUpWidth: 800,
-        setUpHeight: 800,
+        setUpHeight: 790,
       },
       visible: false,
     },
@@ -722,6 +745,141 @@ const useApps = (): TaskType[] => {
       layer: undefined,
       appSetup: {
         Image: 'default',
+        minWidth: 800,
+        minHeight: 600,
+        setUpWidth: 1100,
+        setUpHeight: 800,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <RhythmGame />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2246,
+      name: '리듬게임',
+      layer: undefined,
+      appSetup: {
+        Image: game,
+        minWidth: 800,
+        minHeight: 600,
+        setUpWidth: 1024,
+        setUpHeight: 768,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <MyComputerApproach />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2247,
+      name: '추모관 수정 요청',
+      layer: undefined,
+      appSetup: {
+        Image: 'default',
+        minWidth: 600,
+        minHeight: 500,
+        setUpWidth: 900,
+        setUpHeight: 650,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <MemorialApplicationList
+            stack={[]}
+            push={undefined}
+            pop={undefined}
+            top={undefined}
+          />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2248,
+      name: '내 추모관 신청',
+      layer: undefined,
+      appSetup: {
+        Image: search,
+        minWidth: 580,
+        minHeight: 420,
+        setUpWidth: 890,
+        setUpHeight: 577,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <MemorialApplicationListMain
+            stack={[]}
+            push={undefined}
+            pop={undefined}
+            top={undefined}
+          />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2249,
+      name: 'memorialApplicationListMain',
+      layer: undefined,
+      appSetup: {
+        Image: search,
+        minWidth: 580,
+        minHeight: 420,
+        setUpWidth: 890,
+        setUpHeight: 577,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <MemorialApplicationListApproach
+            window={{}}
+            setWindow={() => {}}
+            setUpHeight={577}
+            setUpWidth={890}
+          />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2250,
+      name: '추모관 신청 목록',
+      layer: undefined,
+      appSetup: {
+        Image: search,
+        minWidth: 580,
+        minHeight: 420,
+        setUpWidth: 890,
+        setUpHeight: 577,
+      },
+      visible: true,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <MemorialApplicationViewer
+            stack={[]}
+            push={undefined}
+            pop={undefined}
+            top={undefined}
+            memorialApplicationId={0}
+          />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2251,
+      name: '추모관 신청 뷰어',
+      layer: undefined,
+      appSetup: {
+        Image: search,
         minWidth: 800,
         minHeight: 600,
         setUpWidth: 1100,

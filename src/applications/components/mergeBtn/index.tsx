@@ -11,6 +11,8 @@ import { useAtom, useAtomValue } from 'jotai';
 import { usePostCommit, usePostPullRequest } from '@/api/memorial/userCommit.ts';
 import { userIdAtom, currentStackTopAtom } from '@/atoms/memorialManager.ts';
 import { useGetPrsQuery } from '@/api/memorial/cheifCommit.ts';
+import Loading from '@/applications/components/loading';
+import { CURSOR_IMAGES, setCursorImage } from '@/lib/setCursorImg';
 
 interface PropsType {
   text: string;
@@ -37,27 +39,135 @@ const MergeBtn = ({ text, memorialId, characterId }: PropsType) => {
   const handleSubmit = (e: React.MouseEvent) => {
     e.preventDefault();
 
-// console.log({ ...inputValue, ...contentIn });
+    // console.log({ ...inputValue, ...contentIn });
 
     const isApply = currentStackTop?.name === 'MemorialApply';
     const isCommit = taskList.some((task) => task.name === '추모관 수정');
 
     if (isApply) {
-      createCharacterMutation.mutate(
-        { ...inputValue, ...contentIn },
+      // 필수 필드 validation
+      if (!inputValue.profileImage) {
+        setAlert?.(Choten, <>캐릭터 이미지를 업로드해주세요.</>, () => {
+          taskTransform?.('경고', '');
+        });
+        return;
+      }
+
+      if (!inputValue.name || inputValue.name.trim() === '') {
+        setAlert?.(Choten, <>캐릭터 이름을 입력해주세요.</>, () => {
+          taskTransform?.('경고', '');
+        });
+        return;
+      }
+
+      if (!inputValue.age || inputValue.age === 0) {
+        setAlert?.(Choten, <>캐릭터 나이를 입력해주세요.</>, () => {
+          taskTransform?.('경고', '');
+        });
+        return;
+      }
+
+      if (!inputValue.date || inputValue.date.trim() === '') {
+        setAlert?.(Choten, <>사망 날짜를 입력해주세요.</>, () => {
+          taskTransform?.('경고', '');
+        });
+        return;
+      }
+
+      if (!inputValue.deathReason || inputValue.deathReason === '자살(自殺)') {
+        setAlert?.(Choten, <>사인을 선택해주세요.</>, () => {
+          taskTransform?.('경고', '');
+        });
+        return;
+      }
+
+      if (!inputValue.causeOfDeathDetails || inputValue.causeOfDeathDetails.trim() === '') {
+        setAlert?.(Choten, <>상세 사인을 입력해주세요.</>, () => {
+          taskTransform?.('경고', '');
+        });
+        return;
+      }
+
+      if (!inputValue.anime || inputValue.anime.trim() === '') {
+        setAlert?.(Choten, <>애니메이션을 선택해주세요.</>, () => {
+          taskTransform?.('경고', '');
+        });
+        return;
+      }
+
+      if (!inputValue.phrase || inputValue.phrase.trim() === '') {
+        setAlert?.(Choten, <>고인의 명언을 입력해주세요.</>, () => {
+          taskTransform?.('경고', '');
+        });
+        return;
+      }
+
+      if (!contentIn.content || contentIn.content.trim() === '') {
+        setAlert?.(Choten, <>추모관 내용을 작성해주세요.</>, () => {
+          taskTransform?.('경고', '');
+        });
+        return;
+      }
+
+      uploadImageMutation.mutate(
         {
-          onSuccess: (characterId: number) => {
-            uploadImageMutation.mutate(
+          image: inputValue.profileImage,
+        },
+        {
+          onSuccess: (fileUrl: string) => {
+            createCharacterMutation.mutate(
+              { ...inputValue, ...contentIn, fileUrl },
               {
-                image: inputValue.profileImage,
-                characterId: characterId,
-              },
-              {
+                onSuccess: (characterId: number) => {
+                  applyMemorialMutation.mutate(
+                    {
+                      characterId: characterId,
+                      content: contentIn.content,
+                    },
+                    {
+                      onSuccess: () => {
+                        setAlert?.(Choten, <>추모관이 성공적으로 신청되었습니다.</>, () => {
+                          taskTransform?.('경고', '');
+                        });
+                        setInputValue({
+                          name: '',
+                          deathReason: '자연사(自然死)' as deathType,
+                          date: '',
+                          lifeCycle: 0,
+                          anime: '',
+                          animeId: '',
+                          age: 0,
+                          profileImage: '',
+                          phrase: '',
+                          causeOfDeathDetails: '',
+                        });
+                        setContentIn({ characterId: '', content: '' });
+                        let task = taskList.find((t) => t.name === '미리보기');
+                        if (task) removeTask(task);
+                        task = taskList.find((t) => t.name === '추모관');
+                        if (task) removeTask(task);
+                      },
+                      onError: () => {
+                        setAlert?.(
+                          Choten,
+                          <>
+                            추모관 신청 중 오류가 발생했습니다.
+                            <br />
+                            잠시 후 다시 시도해 주세요.
+                          </>,
+                          () => {
+                            taskTransform?.('경고', '');
+                          },
+                        );
+                      },
+                    },
+                  );
+                },
                 onError: () => {
                   setAlert?.(
                     Choten,
                     <>
-                      이미지 업로드 중 오류가 발생했습니다.
+                      캐릭터 등록 중 오류가 발생했습니다.
                       <br />
                       잠시 후 다시 시도해 주세요.
                     </>,
@@ -68,55 +178,12 @@ const MergeBtn = ({ text, memorialId, characterId }: PropsType) => {
                 },
               },
             );
-            applyMemorialMutation.mutate(
-              {
-                characterId: characterId,
-                content: contentIn.content,
-              },
-              {
-                onSuccess: () => {
-                  setAlert?.(Choten, <>추모관이 성공적으로 신청되었습니다.</>, () => {
-                    taskTransform?.('경고', '');
-                  });
-                },
-                onError: () => {
-                  setAlert?.(
-                    Choten,
-                    <>
-                      추모관 신청 중 오류가 발생했습니다.
-                      <br />
-                      잠시 후 다시 시도해 주세요.
-                    </>,
-                    () => {
-                      taskTransform?.('경고', '');
-                    },
-                  );
-                },
-              },
-            );
-            setInputValue({
-              name: '',
-              deathReason: '자연사(自然死)' as deathType,
-              date: '',
-              lifeCycle: 0,
-              anime: '',
-              animeId: '',
-              age: 0,
-              profileImage: '',
-              phrase: '',
-              causeOfDeathDetails: '',
-            });
-            setContentIn({ characterId: '', content: '' });
-            let task = taskSearch?.('미리보기');
-            if (task) removeTask(task);
-            task = taskSearch?.('추모관');
-            if (task) removeTask(task);
           },
           onError: () => {
             setAlert?.(
               Choten,
               <>
-                캐릭터 등록 중 오류가 발생했습니다.
+                이미지 업로드 중 오류가 발생했습니다.
                 <br />
                 잠시 후 다시 시도해 주세요.
               </>,
@@ -134,7 +201,7 @@ const MergeBtn = ({ text, memorialId, characterId }: PropsType) => {
         {
           onSuccess: (commitResponse) => {
             if (commitResponse?.data === undefined || commitResponse.data === null) return;
-// console.log(commitResponse.data);
+            // console.log(commitResponse.data);
             pullRequestMutation.mutate(
               {
                 memorialCommitId: parseInt(commitResponse.data),
@@ -168,9 +235,9 @@ const MergeBtn = ({ text, memorialId, characterId }: PropsType) => {
               causeOfDeathDetails: '',
             });
             setContentIn({ characterId: '', content: '' });
-            let task = taskSearch?.('미리보기');
+            let task = taskList.find((t) => t.name === '미리보기');
             if (task) removeTask(task);
-            task = taskSearch?.('추모관 수정');
+            task = taskList.find((t) => t.name === '추모관 수정');
             if (task) removeTask(task);
           },
           onError: () => {
@@ -190,7 +257,36 @@ const MergeBtn = ({ text, memorialId, characterId }: PropsType) => {
       );
     }
   };
-  return <_.SubmitBtn onClick={handleSubmit}>{text}</_.SubmitBtn>;
+
+  const isLoading =
+    uploadImageMutation.isPending ||
+    createCharacterMutation.isPending ||
+    applyMemorialMutation.isPending ||
+    commitMutation.isPending ||
+    pullRequestMutation.isPending;
+
+  return (
+    <>
+      <_.SubmitBtn
+        onClick={handleSubmit}
+        onMouseEnter={() => {
+          setCursorImage(CURSOR_IMAGES.hand);
+        }}
+        onMouseLeave={() => {
+          setCursorImage(CURSOR_IMAGES.default);
+        }}
+      >
+        {text}
+      </_.SubmitBtn>
+      {isLoading && (
+        <Loading
+          text="처리 중입니다..."
+          overlay={true}
+          color="white"
+        />
+      )}
+    </>
+  );
 };
 
 export default MergeBtn;
