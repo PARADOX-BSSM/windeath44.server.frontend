@@ -53,7 +53,7 @@ const Bow = ({ memorialId }: bowProps) => {
           (setAlert ?? userId)(
             Choten,
             <>
-              절을 하지 못했습니다.
+              절하기를 실패했습니다.
               <br />
               절을 한 번 한 후 24시간이 지나야 다시 할 수 있습니다.
             </>,
@@ -68,7 +68,7 @@ const Bow = ({ memorialId }: bowProps) => {
           (setAlert ?? userId)(
             Choten,
             <>
-              절을 하기를 성공하였습니다.
+              절하기를 성공하였습니다.
               <br />
               절을 한 번 한 후 24시간이 지나야 다시 할 수 있습니다.
             </>,
@@ -77,8 +77,6 @@ const Bow = ({ memorialId }: bowProps) => {
             },
           );
           setTotalBow((prev) => (prev ? prev + 1 : 1));
-
-          console.log('절 함');
         },
       });
     }
