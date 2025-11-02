@@ -17,6 +17,7 @@ import {
   useMemorialApplicationApproveMutation,
   useMemorialApplicationRejectMutation,
 } from '@/api/memorial/memorialApplicationApprove';
+import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
 
 interface dataStructureProps {
   stack: any[];
@@ -246,15 +247,28 @@ const MemorialApplicationViewer = ({
                   <_.ApproveButton
                     onClick={handleApprove}
                     disabled={approveMutation.isPending}
+                    onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                    onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
                   >
                     {approveMutation.isPending ? '처리 중...' : '승인'}
                   </_.ApproveButton>
-                  <_.RejectButton onClick={handleReject} disabled={rejectMutation.isPending}>
+                  <_.RejectButton
+                    onClick={handleReject}
+                    disabled={rejectMutation.isPending}
+                    onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                    onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+                  >
                     {rejectMutation.isPending ? '처리 중...' : '거절'}
                   </_.RejectButton>
                 </>
               )}
-              <_.BackButton onClick={() => pop()}>돌아가기</_.BackButton>
+              <_.BackButton
+                onClick={() => pop()}
+                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+              >
+                돌아가기
+              </_.BackButton>
             </_.Header>
             <_.ContentContainer>
               <_.ProfileContainer>

@@ -32,6 +32,8 @@ const useProcessManager: () => [
       '이메일 인증',
       '인증코드 입력',
       '비밀번호 재설정',
+      '공지사항',
+      '공지사항 뷰어',
     ];
 
     const savedTasks: SavedTaskType[] = taskList

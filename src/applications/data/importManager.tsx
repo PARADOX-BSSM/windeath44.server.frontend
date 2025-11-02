@@ -109,6 +109,28 @@ const MemorialApplicationViewer = lazy(
   () => import('@/applications/applicationList/memorialApplicationViewer/index.tsx'),
 );
 
+const MemorialApplicationList = lazy(
+  () => import('@/applications/applicationList/memorialApplicationList/index.tsx'),
+);
+
+const MemorialApplicationListMain = lazy(
+  () => import('@/applications/applicationList/memorialApplicationListMain/index.tsx'),
+);
+
+const MemorialApplicationListApproach = lazy(
+  () => import('@/applications/applicationList/memorialApplicationListApproach/index.tsx'),
+);
+
+const MemorialApplicationViewer = lazy(
+  () => import('@/applications/applicationList/memorialApplicationViewer/index.tsx'),
+);
+
+const Notification = lazy(() => import('@/applications/applicationList/notification/index.tsx'));
+
+const NotificationViewer = lazy(
+  () => import('@/applications/applicationList/notificationViewer/index.tsx'),
+);
+
 //Application Import 형식 예시
 /*
 {
