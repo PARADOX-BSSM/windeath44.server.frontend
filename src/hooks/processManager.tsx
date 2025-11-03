@@ -70,7 +70,7 @@ export const useProcessManager = (): [
     setLastTaskList(savedTasks);
   }, [globalTaskList, virtualTaskList, windowPositions, virtualWindowPositions, desktopIndex, setLastTaskList]);
 
-  const addTask = (task: TaskType, position?: Position) => {
+  const addTask = (task: TaskType) => {
     if (task.type === 'Shell') {
       setGlobalTaskList(prev => prev.some(t => t.name === task.name) ? prev : [...prev, task]);
     } else {

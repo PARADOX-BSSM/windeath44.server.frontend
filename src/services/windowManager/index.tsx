@@ -36,7 +36,6 @@ const WindowManager = () => {
   const [isLogIned, setIsLogIned] = useAtom(isLogInedAtom);
   const [hydrated, setHydrated] = useState(false);
   const [lastTaskList] = useAtom(lastTaskListAtom);
-  const [, setWindowPosition] = useAtom(windowPositionsAtom);
   const setNotification = useAtomValue(notificationAtom);
 
   const [taskList, addTask, removeTask, setVirtualWindowPosition] = useProcessManager();
