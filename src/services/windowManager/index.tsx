@@ -36,10 +36,10 @@ const WindowManager = () => {
   const [isLogIned, setIsLogIned] = useAtom(isLogInedAtom);
   const [hydrated, setHydrated] = useState(false);
   const [lastTaskList] = useAtom(lastTaskListAtom);
-  const [, setWindowPositions] = useAtom(windowPositionsAtom);
+  const [, setWindowPosition] = useAtom(windowPositionsAtom);
   const setNotification = useAtomValue(notificationAtom);
 
-  const [taskList, addTask, removeTask] = useProcessManager();
+  const [taskList, addTask, removeTask, setVirtualWindowPosition] = useProcessManager();
   const { logIn, signUp, emailChack, auth } = getTaskCreators(setIsLogIned, addTask, removeTask);
   const availableApps = useApps();
   const isDragging = useRef(false);
@@ -123,7 +123,7 @@ const WindowManager = () => {
       });
 
       // setTimeout 전에 positions 설정하고 확인
-      setWindowPositions(positions);
+      setVirtualWindowPosition(positions);
       console.log('[WindowManager] Set windowPositions to:', positions);
 
       // 위치 설정 후 조금 기다렸다가 앱 추가
@@ -149,7 +149,7 @@ const WindowManager = () => {
     } else {
       console.log('[WindowManager] No tasks to restore');
     }
-  }, [hydrated, isLogIned, lastTaskList, availableApps, addTask, setWindowPositions]);
+  }, [hydrated, isLogIned, lastTaskList, availableApps, addTask, setVirtualWindowPosition]);
 
   useEffect(() => {
     if (!hydrated) return; // hydration 전엔 아무것도 하지 않음

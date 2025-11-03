@@ -23,6 +23,7 @@ import {
 
 import React from 'react';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
+import { useProcessManager } from '@/hooks/processManager.tsx';
 
 const Application = (props: ApplicationProps) => {
   // jotai 상태 사용
@@ -31,6 +32,7 @@ const Application = (props: ApplicationProps) => {
   const [tabDownInterrupt, setTabDownInterrupt] = useAtom(tabDownInterruptAtom); // 단축키 등으로 창 최소화 등 인터럽트 신호 (전역)
   const [isLogIned, setIsLogIned] = useAtom(isLogInedAtom); // 로그인 여부 (전역)
   const [windowPositions, setWindowPositions] = useAtom(windowPositionsAtom); // 창 위치 저장 (전역)
+  const [,,,setVirtualWindowPositions] = useProcessManager();
   const [windowName, setWindowName] = useState<string>(props.name); // 현재 창 이름 (로컬)
 
   const setUpHeight = props.setUpHeight;
@@ -116,10 +118,7 @@ const Application = (props: ApplicationProps) => {
       };
 
       console.log('[Application] Saving position for', props.name, position);
-      setWindowPositions((prev) => ({
-        ...prev,
-        [props.name]: position,
-      }));
+      setVirtualWindowPositions({[props.name]: position });
     }
   }, [window.top, window.left, window.width, window.height, isFullScreen, isMinimized, hasEnabledSave, props.instanceId, props.type, props.name, setWindowPositions]);
 
