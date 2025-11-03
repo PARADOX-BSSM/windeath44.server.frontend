@@ -21,12 +21,18 @@ export const useNotification = () => {
   })[0];
 
   const setNotification = (
-    notifications: NotificationData[] | Array<{ title: string; content?: string; is_image?: boolean }>,
+    notifications:
+      | NotificationData[]
+      | Array<{ title: string; content?: string; is_image?: boolean }>,
   ) => {
     let finalNotifications: NotificationData[];
 
     // { title, content, is_image } 객체 배열로 받은 경우
-    if (notifications.length > 0 && 'title' in notifications[0] && !('notification_id' in notifications[0])) {
+    if (
+      notifications.length > 0 &&
+      'title' in notifications[0] &&
+      !('notification_id' in notifications[0])
+    ) {
       const now = new Date().toISOString();
       finalNotifications = notifications.map((item, index) => ({
         notification_id: Date.now() + index,
@@ -53,10 +59,10 @@ export const useNotification = () => {
         addTask(notificationApp);
       }
 
-      // 첫 번째 공지사항을 뷰어로도 열기
-      if (notificationViewerApp) {
-        addTask(notificationViewerApp);
-      }
+      // 긴급 공지사항(만약 무조건 띄워야 하는 공지가 있다면 이거 주석 해제하고 사용할 것)
+      // if (notificationViewerApp) {
+      //   addTask(notificationViewerApp);
+      // }
     }
   };
 

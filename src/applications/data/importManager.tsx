@@ -109,22 +109,6 @@ const MemorialApplicationViewer = lazy(
   () => import('@/applications/applicationList/memorialApplicationViewer/index.tsx'),
 );
 
-const MemorialApplicationList = lazy(
-  () => import('@/applications/applicationList/memorialApplicationList/index.tsx'),
-);
-
-const MemorialApplicationListMain = lazy(
-  () => import('@/applications/applicationList/memorialApplicationListMain/index.tsx'),
-);
-
-const MemorialApplicationListApproach = lazy(
-  () => import('@/applications/applicationList/memorialApplicationListApproach/index.tsx'),
-);
-
-const MemorialApplicationViewer = lazy(
-  () => import('@/applications/applicationList/memorialApplicationViewer/index.tsx'),
-);
-
 const Notification = lazy(() => import('@/applications/applicationList/notification/index.tsx'));
 
 const NotificationViewer = lazy(
@@ -906,6 +890,44 @@ const useApps = (): TaskType[] => {
         minHeight: 600,
         setUpWidth: 1100,
         setUpHeight: 800,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <Notification />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2252,
+      name: '공지사항',
+      layer: undefined,
+      appSetup: {
+        Image: setting,
+        minWidth: 600,
+        minHeight: 400,
+        setUpWidth: 800,
+        setUpHeight: 600,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <NotificationViewer />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2253,
+      name: '공지사항 뷰어',
+      layer: undefined,
+      appSetup: {
+        Image: setting,
+        minWidth: 600,
+        minHeight: 400,
+        setUpWidth: 800,
+        setUpHeight: 480,
       },
       visible: false,
     },
