@@ -48,9 +48,7 @@ const LogIn = ({ changeToSignUp, changeToEmailCheck }: Props) => {
       setAlert?.(
         Choten,
         <>
-          아이디가 잘못되었습니다.
-          <br />
-          다시 입력해 주세요.
+          아이디를 입력하지 않았습니다.
         </>,
         () => {
           taskTransform?.('경고', '');
@@ -62,9 +60,7 @@ const LogIn = ({ changeToSignUp, changeToEmailCheck }: Props) => {
       setAlert?.(
         Choten,
         <>
-          비밀번호가 잘못되었습니다.
-          <br />
-          다시 입력해 주세요.
+          비밀번호를 입력하지 않았습니다.
         </>,
         () => {
           taskTransform?.('경고', '');
@@ -75,10 +71,11 @@ const LogIn = ({ changeToSignUp, changeToEmailCheck }: Props) => {
     logInMutation.mutate(
       { id, password },
       {
-        onSuccess: (token) => {
+        onSuccess: () => {
           // console.log('로그인 성공 토큰 :', token);
           setIsLogIned('true');
-          taskTransform?.('LogIn', '');
+          taskTransform?.('로그인', '');
+          window.location.reload();
         },
         onError: (error) => {
           console.error('로그인 실패', error);
@@ -127,10 +124,6 @@ const LogIn = ({ changeToSignUp, changeToEmailCheck }: Props) => {
     );
   };
 
-  useEffect(() => {
-    localStorage.setItem('isLogIned', isLogIned);
-  }, [isLogIned]);
-
   const buttonWidth = '144px';
   const buttonHeight = '42px';
   const buttonFontSize = '20px';
@@ -157,8 +150,8 @@ const LogIn = ({ changeToSignUp, changeToEmailCheck }: Props) => {
           <MemorialBtn
             name="손님으로 입장"
             onClick={() => {
-              setIsLogIned('guest');
-              taskTransform?.('LogIn', '');
+              setIsLogIned('true');
+              taskTransform?.('로그인', '');
             }}
             type="submit"
             width={buttonWidth}

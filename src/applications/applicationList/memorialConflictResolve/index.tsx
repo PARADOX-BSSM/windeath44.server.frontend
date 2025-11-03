@@ -2,7 +2,7 @@ import * as _ from './style';
 import { useAtomValue } from 'jotai';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
 import { alerterAtom } from '@/atoms/alerter';
-import Choten from '@/assets/profile/choten.svg';
+import Seori from '@/assets/sulkkagi/black_stone.svg';
 import MemorialBtn from '@/applications/components/memorialBtn';
 import { useResolveMemorialPullRequestMutation } from '@/api/memorial/mergeMemorialPullRequest';
 import { useState, useRef, useEffect } from 'react';
@@ -36,7 +36,7 @@ const MemorialConflictResolve = ({
   // 충돌 해결 처리 함수
   const handleResolveConflict = async () => {
     if (!editedConflict.trim()) {
-      setAlert?.(Choten, <>해결된 내용을 입력해주세요.</>, () => {
+      setAlert?.(Seori, <>해결된 내용을 입력해주세요.</>, () => {
         taskTransform?.('경고', '');
       });
       return;
@@ -51,7 +51,7 @@ const MemorialConflictResolve = ({
 
       // 성공 시 알림과 함께 이전 태스크로 돌아가기
       setAlert?.(
-        Choten,
+        Seori,
         <>
           충돌이 성공적으로 해결되었습니다!
           <br />
@@ -64,7 +64,7 @@ const MemorialConflictResolve = ({
       );
     } catch (error: any) {
       setAlert?.(
-        Choten,
+        Seori,
         <>
           충돌 해결 중 오류가 발생했습니다.
           <br />

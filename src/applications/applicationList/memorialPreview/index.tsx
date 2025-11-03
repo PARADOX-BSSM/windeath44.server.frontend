@@ -1,14 +1,23 @@
 import IndexMenu from '@/applications/components/indexMenu';
 import * as _ from './style';
-import { index_data } from './data';
 import { useAtom } from 'jotai';
 import { inputContent, inputPortage } from '@/atoms/inputManager';
 import { parseCustomContent } from '@/lib/customTag/parseCustomContent';
 import ribbon from '@/assets/memorial_ribbon.svg';
+import { useMemo, useState } from 'react';
 
 const MemorialPreview = () => {
   const [inputValue] = useAtom(inputPortage);
   const [contentIn] = useAtom(inputContent);
+  const [indexData, setIndexData] = useState<string[]>([]);
+
+  // content가 변경될 때마다 파싱하여 목차 업데이트
+  const parsedContent = useMemo(() => {
+    const tempIndexData: string[] = [];
+    const result = parseCustomContent(tempIndexData, contentIn.content);
+    setIndexData(tempIndexData);
+    return result;
+  }, [contentIn.content]);
 
   return (
     <_.Main>
@@ -27,12 +36,13 @@ const MemorialPreview = () => {
                 <_.Quote>{inputValue.phrase}</_.Quote>
                 <_.Index>
                   <_.IndexTitle>목차</_.IndexTitle>
-                  {index_data.map((item, idx) => {
+                  {indexData.map((item, idx) => {
                     // console.log(idx);
                     return (
                       <IndexMenu
                         text={item}
                         idx={idx}
+                        key={`index-${idx}`}
                       ></IndexMenu>
                     );
                   })}
@@ -58,12 +68,12 @@ const MemorialPreview = () => {
                       <_.Value>{inputValue.date}</_.Value>
                     </_.Row>
                     <_.Row>
-                      <_.Attribute>생존 기간</_.Attribute>
-                      <_.Value>{inputValue.lifeCycle}</_.Value>
-                    </_.Row>
-                    <_.Row>
                       <_.Attribute>사인</_.Attribute>
                       <_.Value>{inputValue.deathReason}</_.Value>
+                    </_.Row>
+                    <_.Row>
+                      <_.Attribute>상세 사인</_.Attribute>
+                      <_.Value>{inputValue.causeOfDeathDetails}</_.Value>
                     </_.Row>
                     <_.Row>
                       <_.Attribute>애니메이션</_.Attribute>
@@ -78,7 +88,7 @@ const MemorialPreview = () => {
           <_.Section2>
             <_.ArticleContainer>
               <_.ArticleContent>
-                {parseCustomContent(index_data, contentIn.content)}
+                {parsedContent}
               </_.ArticleContent>
             </_.ArticleContainer>
           </_.Section2>

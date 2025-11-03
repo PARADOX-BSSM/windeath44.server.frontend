@@ -5,7 +5,6 @@ import api from '@/api/axiosInstance';
 
 interface uploadImageType {
   image: string; // base64 형식
-  characterId: number;
 }
 
 // base64를 Blob으로 변환하는 유틸 함수
@@ -21,23 +20,18 @@ const dataURLtoBlob = (dataurl: string) => {
   return new Blob([u8arr], { type: mime });
 };
 
-const uploadImage = async ({ image, characterId }: uploadImageType): Promise<string> => {
+const uploadImage = async ({ image }: uploadImageType): Promise<string> => {
   const formData = new FormData();
   const blobImage = dataURLtoBlob(image);
 
   formData.append('image', blobImage);
-  formData.append('characterId', characterId.toString());
 
   try {
-    const response: AxiosResponse = await api.patch(
-      `${anime}/characters/image/${characterId}`,
-      formData,
-      {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      },
-    );
-    // console.log(response);
-    return '성공했어요~!~!~!';
+    const response: AxiosResponse = await api.post(`${anime}/characters/image`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    console.log(response);
+    return response.data.data.fileUrl;
   } catch (error: any) {
     console.error('이미지 업로드 오류:', error);
     throw error;
@@ -48,7 +42,7 @@ export const useUploadImage = () => {
   return useMutation({
     mutationFn: uploadImage,
     onSuccess: () => {
-// console.log('이미지가 성공적으로 등록되었습니다.');
+      // console.log('이미지가 성공적으로 등록되었습니다.');
       // alert('이미지가 성공적으로 등록되었습니다.');
     },
     onError: () => {},

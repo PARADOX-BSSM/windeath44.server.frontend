@@ -12,12 +12,12 @@ import {
   layerAtom,
   tabDownInterruptAtom,
 } from '@/atoms/windowManager.ts';
+import { windowPositionsAtom } from '@/atoms/processManager.ts';
 import {
   getCorner,
   widthCondition,
   heightCondition,
   leftCondition,
-  DragParams,
   ApplicationProps,
 } from './utils';
 
@@ -32,10 +32,13 @@ const Application = (props: ApplicationProps) => {
   const [focus, setFocus] = useAtom(focusAtom); // 현재 포커스된 창 이름 (전역)
   const [tabDownInterrupt, setTabDownInterrupt] = useAtom(tabDownInterruptAtom); // 단축키 등으로 창 최소화 등 인터럽트 신호 (전역)
   const [isLogIned, setIsLogIned] = useAtom(isLogInedAtom); // 로그인 여부 (전역)
+  const [windowPositions, setWindowPositions] = useAtom(windowPositionsAtom); // 창 위치 저장 (전역)
+  const [windowName, setWindowName] = useState<string>(props.name); // 현재 창 이름 (로컬)
 
   const setUpHeight = props.setUpHeight;
   const setUpWidth = props.setUpWidth;
 
+  // 초기값은 항상 기본값 사용
   const windowProps: React.CSSProperties = {
     position: 'absolute',
     height: props.setUpHeight,
@@ -54,6 +57,7 @@ const Application = (props: ApplicationProps) => {
   const [isFirst, setIsFirst] = useState<boolean>(true); // 리사이즈 첫 진입 여부
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false); // 전체화면 여부
   const [isMinimized, setIsMinimized] = useState<boolean>(false); // 최소화 여부
+  const [hasEnabledSave, setHasEnabledSave] = useState<boolean>(false); // 저장 활성화 여부
 
   const set_sep_window = useSetAtom(Sep_window);
   const open_vote = useAtomValue(Open_Vote);
@@ -64,11 +68,39 @@ const Application = (props: ApplicationProps) => {
     setCursor(props.cursorVec);
   }, [props.cursorVec]);
 
-  // UX 개선 : 현재 창의 상태가 바뀌면 focus를 현재 창으로 변경
+  // 마운트 후 위치 복원 (초기 렌더링 후 짧은 딜레이)
   useEffect(() => {
-    if (!isMinimized && focus !== props.name) {
-      setFocus(props.name);
+    const savedPos = windowPositions[props.name];
+    if (savedPos) {
+      console.log('[Application] Will restore position for', props.name, 'after delay');
+      const timer = setTimeout(() => {
+        console.log('[Application] Restoring position for', props.name, savedPos);
+        setWindow((prev) => ({
+          ...prev,
+          height: savedPos.height,
+          width: savedPos.width,
+          top: savedPos.top,
+          left: savedPos.left,
+        }));
+        // 복원 후 조금 더 기다렸다가 저장 활성화
+        setTimeout(() => {
+          console.log('[Application] Enabling save for', props.name);
+          setHasEnabledSave(true);
+        }, 100);
+      }, 100); // 초기 렌더링 후 복원
+      return () => clearTimeout(timer);
+    } else {
+      // 저장된 위치가 없으면 바로 저장 활성화
+      const timer = setTimeout(() => {
+        console.log('[Application] No saved position, enabling save for', props.name);
+        setHasEnabledSave(true);
+      }, 200);
+      return () => clearTimeout(timer);
     }
+  }, [props.name, windowPositions]);
+
+  //재판 화면에서 닫기 버튼을 누르면 뒤로 돌아가야하는데 재판 화면인지 아닌지 판단해야함
+  useEffect(() => {
     if (props.name === '재판' && open_vote === true) {
       set_sep_window(true);
     } else {
@@ -76,20 +108,69 @@ const Application = (props: ApplicationProps) => {
     }
   }, [window]);
 
+  // 창의 위치/크기 저장 : window state가 변경될 때마다 localStorage에 저장
+  useEffect(() => {
+    // 저장이 활성화되지 않았으면 무시
+    if (!hasEnabledSave) {
+      return;
+    }
+
+    // 전체화면, 최소화, instanceId가 있는 동적 창은 저장하지 않음
+    if (isFullScreen || isMinimized || props.instanceId || props.type !== 'App') {
+      return;
+    }
+
+    // 유효한 위치 정보가 있을 때만 저장
+    if (window.top !== undefined && window.left !== undefined && window.width && window.height) {
+      const position = {
+        top: Number(window.top),
+        left: Number(window.left),
+        width: Number(window.width),
+        height: Number(window.height),
+      };
+
+      console.log('[Application] Saving position for', props.name, position);
+      setWindowPositions((prev) => ({
+        ...prev,
+        [props.name]: position,
+      }));
+    }
+  }, [
+    window.top,
+    window.left,
+    window.width,
+    window.height,
+    isFullScreen,
+    isMinimized,
+    hasEnabledSave,
+    props.instanceId,
+    props.type,
+    props.name,
+    setWindowPositions,
+  ]);
+
+  // UX 개선 : 현재 창이 클릭되면 focus를 현재 창으로 변경 (마운트 시에만)
+  useEffect(() => {
+    if (!isMinimized && focus !== (props.instanceId || props.name)) {
+      // 초기 마운트 시에만 포커스 설정 (window 의존성 제거로 무한 루프 방지)
+      setFocus(props.instanceId || props.name);
+    }
+  }, []); // 빈 배열: 마운트 시에만 실행
+
   // 최소화 처리 : 최소화 시 창을 숨기고, 포커스를 "Discover"로 이동
   useEffect(() => {
     if (isMinimized) {
-      setWindow({
-        ...window,
+      setWindow((prev) => ({
+        ...prev,
         display: 'none',
-      });
+      }));
       setFocus('Discover');
     }
   }, [isMinimized]);
 
   // Tab 인터럽트 처리 : tabDownInterrupt가 내 창이면 최소화 후 인터럽트 상태 초기화
   useEffect(() => {
-    if (tabDownInterrupt === props.name) {
+    if (tabDownInterrupt === (props.instanceId || props.name)) {
       setIsMinimized(true);
       setTabDownInterrupt('empty');
     }
@@ -97,14 +178,14 @@ const Application = (props: ApplicationProps) => {
 
   // 포커스 관리 : 창이 최소화되지 않았고, 포커스가 내 창이 아니면 내 창으로 포커스 이동
   useEffect(() => {
-    if (props.type !== 'Shell' && focus === props.name) {
+    if (props.type !== 'Shell' && focus === (props.instanceId || props.name)) {
       setLayer(layer + 1);
       setIsMinimized(false);
-      setWindow({
-        ...window,
+      setWindow((prev) => ({
+        ...prev,
         display: undefined,
         zIndex: layer,
-      });
+      }));
     }
   }, [focus]);
 
@@ -113,15 +194,17 @@ const Application = (props: ApplicationProps) => {
     if (isFullScreen) {
       const container = document.getElementById('cursorContainer') as HTMLElement;
       const bounds = container.getBoundingClientRect();
-      setBackupWindow(window);
-      setWindow({
-        ...window,
-        height: `calc(100vh - ${48 / 16}rem - 1.3rem)`,
-        width: `calc(${bounds.width}px - 1.3rem)`,
-        top: bounds.top,
-        left: bounds.left,
-        zIndex: layer - 1,
-        filter: undefined,
+      setWindow((prev) => {
+        setBackupWindow(prev); // 현재 상태를 백업
+        return {
+          ...prev,
+          height: `calc(100vh - ${48 / 16}rem - 1.3rem)`,
+          width: `calc(${bounds.width}px - 1.3rem)`,
+          top: bounds.top,
+          left: bounds.left,
+          zIndex: layer - 1,
+          filter: undefined,
+        };
       });
     } else if (!isFullScreen) {
       setWindow(backupWindow);
@@ -131,45 +214,56 @@ const Application = (props: ApplicationProps) => {
   // 유틸 함수 사용
   const corner = getCorner(props.cursorVec, window);
 
-  const widthLimit = (params: DragParams) => {
-    const [nearRight] = corner;
-    const minWidth = (window.minWidth as number) || props.appSetup.minWidth;
-    if ((window.width as unknown as number) >= minWidth) {
-      if (nearRight) {
-        return Number(window.width) + params.offset[0] - beforeSizeParams[0];
-      } else {
-        return Number(window.width) - params.offset[0] + beforeSizeParams[0];
-      }
-    }
-    return minWidth;
-  };
-  const heightLimit = (params: DragParams) => {
-    const minHeight = (window.minHeight as number) || props.appSetup.minHeight;
-    if ((window.height as unknown as number) >= minHeight) {
-      return Number(window.height) + params.offset[1] - beforeSizeParams[1];
-    }
-    return minHeight;
-  };
-  const leftLimit = (params: DragParams) => {
-    const minWidth = (window.minWidth as number) || props.appSetup.minWidth;
-    if ((window.width as unknown as number) >= minWidth) {
-      return Number(window.left) + params.offset[0] - beforeSizeParams[0];
-    }
-    return window.left;
-  };
-
   const sizeManager = useDrag((params) => {
     if (
       isFirst &&
       !isFullScreen &&
       (heightCondition(corner) || widthCondition(corner) || leftCondition(corner))
     ) {
-      setWindow({
-        ...window,
-        height: heightCondition(corner) ? heightLimit(params) : window.height,
-        width: widthCondition(corner) ? widthLimit(params) : window.width,
-        left: leftCondition(corner) ? leftLimit(params) : window.left,
-        zIndex: layer - 1,
+      setWindow((prev) => {
+        const [nearRight] = corner;
+
+        // widthLimit 로직
+        const minWidth = (prev.minWidth as number) || props.appSetup.minWidth;
+        let newWidth = prev.width;
+        if (widthCondition(corner)) {
+          if ((prev.width as unknown as number) >= minWidth) {
+            if (nearRight) {
+              newWidth = Number(prev.width) + params.offset[0] - beforeSizeParams[0];
+            } else {
+              newWidth = Number(prev.width) - params.offset[0] + beforeSizeParams[0];
+            }
+          } else {
+            newWidth = minWidth;
+          }
+        }
+
+        // heightLimit 로직
+        const minHeight = (prev.minHeight as number) || props.appSetup.minHeight;
+        let newHeight = prev.height;
+        if (heightCondition(corner)) {
+          if ((prev.height as unknown as number) >= minHeight) {
+            newHeight = Number(prev.height) + params.offset[1] - beforeSizeParams[1];
+          } else {
+            newHeight = minHeight;
+          }
+        }
+
+        // leftLimit 로직
+        let newLeft = prev.left;
+        if (leftCondition(corner)) {
+          if ((prev.width as unknown as number) >= minWidth) {
+            newLeft = Number(prev.left) + params.offset[0] - beforeSizeParams[0];
+          }
+        }
+
+        return {
+          ...prev,
+          height: newHeight,
+          width: newWidth,
+          left: newLeft,
+          zIndex: layer - 1,
+        };
       });
     } else {
       setIsFirst(false);
@@ -179,27 +273,29 @@ const Application = (props: ApplicationProps) => {
 
   const moveManager = useDrag(() => {
     if (!isFullScreen) {
-      let x = cursor[0];
-      let y = cursor[1];
+      setWindow((prev) => {
+        let x = cursor[0];
+        let y = cursor[1];
 
-      // 새로운 위치 계산
-      let newLeft = Number(window.left) + (x - beforeMoveParams[0]);
-      let newTop = Number(window.top) + (y - beforeMoveParams[1]);
+        // 새로운 위치 계산
+        let newLeft = Number(prev.left) + (x - beforeMoveParams[0]);
+        let newTop = Number(prev.top) + (y - beforeMoveParams[1]);
 
-      // 화면 경계 제한 (헤더가 최소 30px 이상 보이도록)
-      const minTop = 0; // 상단 경계
-      const maxTop = globalThis.innerHeight - 90; // 하단 경계 (헤더 높이 30px 고려)
-      const minLeft = -Number(window.width) + 100; // 좌측 경계 (100px 정도는 보이도록)
-      const maxLeft = globalThis.innerWidth - 100; // 우측 경계
-      // 경계 내로 제한
-      newTop = Math.max(minTop, Math.min(maxTop, newTop));
-      newLeft = Math.max(minLeft, Math.min(maxLeft, newLeft));
+        // 화면 경계 제한 (헤더가 최소 30px 이상 보이도록)
+        const minTop = 0; // 상단 경계
+        const maxTop = globalThis.innerHeight - 90; // 하단 경계 (헤더 높이 30px 고려)
+        const minLeft = -Number(prev.width) + 100; // 좌측 경계 (100px 정도는 보이도록)
+        const maxLeft = globalThis.innerWidth - 100; // 우측 경계
+        // 경계 내로 제한
+        newTop = Math.max(minTop, Math.min(maxTop, newTop));
+        newLeft = Math.max(minLeft, Math.min(maxLeft, newLeft));
 
-      setWindow({
-        ...window,
-        left: newLeft,
-        top: newTop,
-        zIndex: layer - 1,
+        return {
+          ...prev,
+          left: newLeft,
+          top: newTop,
+          zIndex: layer - 1,
+        };
       });
     }
   });
@@ -217,7 +313,7 @@ const Application = (props: ApplicationProps) => {
     return (
       <_.Window
         style={window}
-        onMouseDown={() => setFocus(props.name)}
+        onMouseDown={() => setFocus(props.instanceId || props.name)}
       >
         <_.WindowHeader {...moveManager()}>
           <_.TitleContainer>
@@ -225,12 +321,12 @@ const Application = (props: ApplicationProps) => {
               src={Heart}
               draggable="false"
             />
-            <_.Title>{props.name}</_.Title>
+            <_.Title>{windowName}</_.Title>
           </_.TitleContainer>
           <_.BtnContainer>
             <_.MinimizeButton
               onMouseDown={() => setIsMinimized(!isMinimized)}
-              isFocus={focus === props.name}
+              isFocus={focus === (props.instanceId || props.name)}
             >
               <img
                 src={Min}
@@ -243,7 +339,7 @@ const Application = (props: ApplicationProps) => {
             </_.MinimizeButton>
             <_.FullScreenButton
               onMouseDown={() => setIsFullScreen(!isFullScreen)}
-              isFocus={focus === props.name}
+              isFocus={focus === (props.instanceId || props.name)}
             >
               <img
                 src={Full}
@@ -268,11 +364,10 @@ const Application = (props: ApplicationProps) => {
                 props.removeTask(props.removeCompnent);
 
                 if (!isLogIned) {
-                  setIsLogIned('guest');
-                  localStorage.setItem('isLogIned', isLogIned);
+                  setIsLogIned('true');
                 }
               }}
-              isFocus={focus === props.name}
+              isFocus={focus === (props.instanceId || props.name)}
             >
               <img
                 src={Exit}
@@ -294,10 +389,18 @@ const Application = (props: ApplicationProps) => {
             const internal = original.props.children as React.ReactElement;
             const type = internal.type;
 
-            if (props.name === '추모관') {
+            if (props.name === '추모관' || props.name.startsWith('추모관 뷰어')) {
               return (
                 <Suspense fallback={null}>
-                  {React.createElement(type, { window, setWindow, setUpHeight, setUpWidth })}
+                  {React.createElement(type, {
+                    ...internal.props,
+                    window,
+                    setWindow,
+                    setUpHeight,
+                    setUpWidth,
+                    props,
+                    setWindowName,
+                  })}
                 </Suspense>
               );
             } else {

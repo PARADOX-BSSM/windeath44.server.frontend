@@ -23,7 +23,6 @@ export const LeftContainer = styled.div`
 
 export const ProfileContainer = styled.div`
   width: fit-content;
-  height: 100%;
   flex-direction: column;
   align-items: center;
   display: flex;
@@ -41,6 +40,26 @@ export const ProfileImg = styled.div<{ imgUrl: string }>`
 export const ProfileName = styled.div`
   font-size: 20px;
   font-family: Galmuri11;
+`;
+
+export const ProfileNameInput = styled.input`
+  font-size: 20px;
+  font-family: Galmuri11;
+  text-align: center;
+  border: 1px solid #e774dd;
+  background: #fff;
+  padding: 4px 8px;
+  outline: none;
+  cursor: none;
+  width: 116px;
+  box-sizing: border-box;
+`;
+
+export const EditButtonContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
 `;
 
 export const Btn = styled.div`

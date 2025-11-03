@@ -5,7 +5,8 @@ import * as _ from './style.ts';
 import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer.ts';
 import { versionAtom } from '@/atoms/version.ts';
 import { alerterAtom } from '@/atoms/alerter.ts';
-import Choten from '@/assets/profile/choten.svg';
+import Seori from '@/assets/sulkkagi/black_stone.svg';
+import { getCookie } from '@/api/auth/cookie.ts';
 // import { useProcessManager } from '@/hooks/processManager.tsx';
 
 interface dataStructureProps {
@@ -32,6 +33,7 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
   const taskSearch = useAtomValue(taskSearchAtom);
   const taskTransform = useAtomValue(taskTransformerAtom);
   const version = useAtomValue(versionAtom);
+  const token = getCookie('access_token');
   // const [, addTask, removeTask] = useProcessManager();
 
   const stackProps = {
@@ -104,16 +106,20 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
 
   const moveTo = (idx: number | null) => {
     if (idx === 0) {
-// console.log(taskSearch?.('Search', stackProps));
+      // console.log(taskSearch?.('Search', stackProps));
       push(taskSearch?.('Search', stackProps));
     }
     if (idx === 1) {
       push(taskSearch?.('상주 관리', stackProps));
     }
     if (idx === 2) {
-      if (setAlert) {
+      if (!token && setAlert) {
+        setAlert(Seori, <>게스트는 추모관 신청이 불가합니다.</>, () => {
+          taskTransform?.('경고', '');
+        });
+      } else if (setAlert) {
         setAlert(
-          Choten,
+          Seori,
           <>
             최애의 사인에 부적합하다고 판단되는 추모관은
             <br />

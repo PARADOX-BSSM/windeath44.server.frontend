@@ -1,7 +1,8 @@
 import { useMutation } from '@tanstack/react-query';
 import React from 'react';
 import { memorial } from '@/config';
-import api from '@/api/axiosInstance.ts';
+import api from '../axiosInstance';
+
 export type memorialData = {
   memorialId: number;
   characterId: number;

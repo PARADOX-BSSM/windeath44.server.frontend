@@ -5,10 +5,10 @@ import { taskTransformerAtom } from '@/atoms/taskTransformer';
 import { useState, useRef, useEffect } from 'react';
 import MemorialBtn from '@/applications/components/memorialBtn';
 import { inputPortage } from '@/atoms/inputManager';
-import AvatarEditor from 'react-avatar-editor';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
 import { useGetUserMutation } from '@/api/user/getUser';
 import FilterBlock from '@/applications/components/filterBlock';
+import ImageCropper from '@/applications/components/imageCropper';
 
 interface dataStructureProps {
   stack: any[];
@@ -65,7 +65,7 @@ const MemorialApply = ({}: dataStructureProps) => {
     }
     getUser(undefined, {
       onSuccess: (data) => {
-// console.log('성공:', data);
+        // console.log('성공:', data);
         setUserName(data.data.userId);
       },
       onError: (err) => {
@@ -96,16 +96,15 @@ const MemorialApply = ({}: dataStructureProps) => {
 
   const [imageSrc, setImageSrc] = useState<string>('');
   const [isCropping, setIsCropping] = useState<boolean>(false);
-  const editorRef = useRef<AvatarEditor | null>(null);
-  const [scale, setScale] = useState<number>(1);
 
-  const handleCropConfirm = () => {
-    if (editorRef.current) {
-      const canvas = editorRef.current.getImageScaledToCanvas().toDataURL();
-      setInputValue((prev) => ({ ...prev, profileImage: canvas }));
-      setProfileImage(canvas);
-      setIsCropping(false);
-    }
+  const handleCropConfirm = (croppedImage: string) => {
+    setInputValue((prev) => ({ ...prev, profileImage: croppedImage }));
+    setProfileImage(croppedImage);
+    setIsCropping(false);
+  };
+
+  const handleCropCancel = () => {
+    setIsCropping(false);
   };
 
   return (
@@ -116,6 +115,12 @@ const MemorialApply = ({}: dataStructureProps) => {
             <_.CharacterNameInput
               placeholder="이름을 입력해주세요..."
               onChange={(e) => setInputValue((prev) => ({ ...prev, name: e.target.value }))}
+              onMouseEnter={() => {
+                setCursorImage(CURSOR_IMAGES.drag);
+              }}
+              onMouseLeave={() => {
+                setCursorImage(CURSOR_IMAGES.default);
+              }}
             ></_.CharacterNameInput>
             <_.Status>문서 수정 중</_.Status>
           </_.HeaderTextContainer>
@@ -157,10 +162,17 @@ const MemorialApply = ({}: dataStructureProps) => {
                     <_.CharacterInformationRowValue>
                       <_.CharacterInformationRowValueText>
                         <_.CharacterInforInput
-                          type="text"
+                          type="number"
                           placeholder="예) 1"
+                          min="0"
                           onChange={(e) => {
                             setInputValue((prev) => ({ ...prev, age: Number(e.target.value) }));
+                          }}
+                          onMouseEnter={() => {
+                            setCursorImage(CURSOR_IMAGES.drag);
+                          }}
+                          onMouseLeave={() => {
+                            setCursorImage(CURSOR_IMAGES.default);
                           }}
                         ></_.CharacterInforInput>
                       </_.CharacterInformationRowValueText>
@@ -181,27 +193,11 @@ const MemorialApply = ({}: dataStructureProps) => {
                           onChange={(e) => {
                             setInputValue((prev) => ({ ...prev, date: e.target.value }));
                           }}
-                        ></_.CharacterInforInput>
-                      </_.CharacterInformationRowValueText>
-                    </_.CharacterInformationRowValue>
-                  </_.CharacterInformationRow>
-
-                  <_.CharacterInformationRow>
-                    <_.CharacterInformationRowAttribute>
-                      <_.CharacterInformationRowAttributeText>
-                        생존 기간
-                      </_.CharacterInformationRowAttributeText>
-                    </_.CharacterInformationRowAttribute>
-                    <_.CharacterInformationRowValue>
-                      <_.CharacterInformationRowValueText>
-                        <_.CharacterInforInput
-                          type="number"
-                          placeholder="예) 1"
-                          onChange={(e) => {
-                            setInputValue((prev) => ({
-                              ...prev,
-                              lifeCycle: Number(e.target.value),
-                            }));
+                          onMouseEnter={() => {
+                            setCursorImage(CURSOR_IMAGES.drag);
+                          }}
+                          onMouseLeave={() => {
+                            setCursorImage(CURSOR_IMAGES.default);
                           }}
                         ></_.CharacterInforInput>
                       </_.CharacterInformationRowValueText>
@@ -231,13 +227,41 @@ const MemorialApply = ({}: dataStructureProps) => {
                   <_.CharacterInformationRow>
                     <_.CharacterInformationRowAttribute>
                       <_.CharacterInformationRowAttributeText>
+                        상세 사인
+                      </_.CharacterInformationRowAttributeText>
+                    </_.CharacterInformationRowAttribute>
+                    <_.CharacterInformationRowValue>
+                      <_.CharacterInformationRowValueText>
+                        <_.CharacterInforInput
+                          type="text"
+                          placeholder="상세 사인을 입력하세요..."
+                          onChange={(e) => {
+                            setInputValue((prev) => ({
+                              ...prev,
+                              causeOfDeathDetails: e.target.value,
+                            }));
+                          }}
+                          onMouseEnter={() => {
+                            setCursorImage(CURSOR_IMAGES.drag);
+                          }}
+                          onMouseLeave={() => {
+                            setCursorImage(CURSOR_IMAGES.default);
+                          }}
+                        ></_.CharacterInforInput>
+                      </_.CharacterInformationRowValueText>
+                    </_.CharacterInformationRowValue>
+                  </_.CharacterInformationRow>
+
+                  <_.CharacterInformationRow>
+                    <_.CharacterInformationRowAttribute>
+                      <_.CharacterInformationRowAttributeText>
                         애니메이션
                       </_.CharacterInformationRowAttributeText>
                     </_.CharacterInformationRowAttribute>
                     <_.CharacterInformationRowValue>
                       <_.CharacterInformationRowValueText
                         onClick={() => {
-// console.log(taskTransform);
+                          // console.log(taskTransform);
                           if (taskTransform) {
                             taskTransform('', '애니메이션 선택');
                           }
@@ -273,9 +297,15 @@ const MemorialApply = ({}: dataStructureProps) => {
 
       <_.PhraseContainer
         type="text"
-        placeholder="고인의 명언을 입력하세요..."
+        placeholder="고인의 마지막 한마디를 입력하세요..."
         onChange={(e) => {
           setInputValue((prev) => ({ ...prev, phrase: e.target.value }));
+        }}
+        onMouseEnter={() => {
+          setCursorImage(CURSOR_IMAGES.drag);
+        }}
+        onMouseLeave={() => {
+          setCursorImage(CURSOR_IMAGES.default);
         }}
       ></_.PhraseContainer>
 
@@ -289,61 +319,13 @@ const MemorialApply = ({}: dataStructureProps) => {
         />
       </_.TextAreaContainer>
 
-      {isCropping && (
-        <_.ImgCropContainer>
-          <_.ImgCropInner>
-            <_.Connnnn>
-              <AvatarEditor
-                ref={editorRef}
-                image={imageSrc}
-                width={cropSize.width}
-                height={cropSize.height}
-                border={20}
-                borderRadius={0}
-                color={[0, 0, 0, 0.6]}
-                scale={scale}
-                rotate={0}
-                style={{ cursor: 'none' }}
-              />
-              <_.CropText>드래그하여 이미지 위치 변경!</_.CropText>
-            </_.Connnnn>
-            <_.Connnnn>
-              <_.RangeSlider
-                type="range"
-                min={1}
-                max={3}
-                step={0.1}
-                value={scale}
-                percent={((scale - 1) / 2) * 100}
-                onChange={(e) => setScale(parseFloat(e.target.value))}
-                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
-                onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
-              />
-              <_.CropText>이미지 확대/축소</_.CropText>
-            </_.Connnnn>
-            <_.BtnContainer>
-              <MemorialBtn
-                name="확인"
-                onClick={handleCropConfirm}
-                type="submit"
-                active={true}
-                width="144px"
-                height="40px"
-                fontSize="18px"
-              />
-              <MemorialBtn
-                name="취소"
-                onClick={() => setIsCropping(false)}
-                type="submit"
-                active={true}
-                width="144px"
-                height="40px"
-                fontSize="18px"
-              />
-            </_.BtnContainer>
-          </_.ImgCropInner>
-        </_.ImgCropContainer>
-      )}
+      <ImageCropper
+        isOpen={isCropping}
+        imageSrc={imageSrc}
+        cropSize={cropSize}
+        onConfirm={handleCropConfirm}
+        onCancel={handleCropCancel}
+      />
     </_.Container>
   );
 };

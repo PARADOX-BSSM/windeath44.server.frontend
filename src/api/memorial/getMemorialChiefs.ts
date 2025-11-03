@@ -64,9 +64,6 @@ export const useMemorialChiefBows = (
       const userList = chiefIds.map((id) => id);
       // console.log('userList 데이터!!!:', userList);
       const usersRes: usersData = await getUserByList({ userList });
-      // console.log('users:', usersRes.data);
-      // bowCount + name 합치기
-      // console.log('bowResults 상세:', JSON.stringify(bowResults, null, 2));
       const merged = bowResults
         .filter((bow) => bow?.data) // null/undefined 필터링
         .map((bow) => {

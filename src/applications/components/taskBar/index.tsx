@@ -24,6 +24,7 @@ const TaskBar = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
           if (task.type === 'Shell') {
             return (
               <_.Observer
+                key={task.name || 'observer'}
                 selected={startOption}
                 onClick={(e) => {
                   e.stopPropagation();
@@ -34,7 +35,7 @@ const TaskBar = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
                       setBackUpFocus(focus);
                       setFocus('Observer');
                     }
-// console.log(startOption);
+                    // console.log(startOption);
                     return !prev;
                   });
                 }}
@@ -48,13 +49,13 @@ const TaskBar = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
               </_.Observer>
             );
           } else {
-            if (task.name === focus) {
+            if ((task.instanceId || task.name) === focus) {
               return (
                 <_.TaskItem
                   style={_.taskSelectButtonStyle}
-                  key={task.name}
+                  key={task.instanceId || task.name}
                   onClick={() => {
-                    // setTabDownInterrupt(task.name);
+                    // setTabDownInterrupt(task.instanceId || task.name);
                   }}
                   onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
                   onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
@@ -70,11 +71,11 @@ const TaskBar = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
               return (
                 <_.TaskItem
                   style={_.taskButtonStyle}
-                  key={task.name}
+                  key={task.instanceId || task.name}
                   onClick={(e) => {
                     e.stopPropagation();
-                    setFocus(task.name);
-// console.log(focus);
+                    setFocus(task.instanceId || task.name);
+                    // console.log(focus);
                   }}
                   onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
                   onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}

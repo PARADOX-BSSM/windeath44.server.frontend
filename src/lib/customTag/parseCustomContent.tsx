@@ -47,10 +47,26 @@ export const parseCustomContent = (root: string[], content: string): React.React
       );
     } else if (match[4]) {
       // 동영상
+      const videoUrl = match[4].trim();
+      let embedUrl = '';
+
+      // 유튜브 링크를 embed 형식으로 변환
+      if (videoUrl.includes('youtube.com/watch?v=')) {
+        // 일반 링크: https://www.youtube.com/watch?v=VIDEO_ID
+        embedUrl = videoUrl.replace('watch?v=', 'embed/').split('&')[0];
+      } else if (videoUrl.includes('youtu.be/')) {
+        // 공유 링크: https://youtu.be/VIDEO_ID?si=...
+        const videoId = videoUrl.split('youtu.be/')[1].split('?')[0];
+        embedUrl = `https://www.youtube.com/embed/${videoId}`;
+      } else {
+        // 이미 embed 형식이거나 다른 형식
+        embedUrl = videoUrl;
+      }
+
       elements.push(
         <iframe
           key={`동영상-${match.index}`}
-          src={match[4].trim().replace('watch?v=', 'embed/')}
+          src={embedUrl}
           width="560"
           height="315"
           allowFullScreen

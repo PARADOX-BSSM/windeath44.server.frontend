@@ -6,6 +6,7 @@ export const tempMain = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
 `;
 
 export const tempImage = styled.div`

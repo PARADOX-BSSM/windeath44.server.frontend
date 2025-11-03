@@ -31,6 +31,7 @@ export const CommitAreaContainer = styled.div`
 
 export const CommitArea = styled(TextareaAutosize)`
   display: flex;
+  cursor: none;
   padding: 0.5rem;
   flex-direction: column;
   align-items: flex-start;
