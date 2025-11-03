@@ -187,6 +187,13 @@ const WindowManager = () => {
     setTimeout(() => {
       setNotification?.([
         {
+          title: '서비스 복구 안내',
+          content:
+            'https://cdn.discordapp.com/attachments/1435047224550883481/1435047874366017556/Frame_29.png?ex=690a8bfb&is=69093a7b&hm=58ec03d50000631635ca310d15b6e95498d01a747d1cecc974b076f6c6c36c66&',
+          is_image: true,
+          created_at: '2025-11-04T08:35:00', // 원하는 날짜를 ISO 형식으로 설정 (선택사항)
+        },
+        {
           title: '서버 점검 안내',
           content:
             'https://cdn.discordapp.com/attachments/1363488381392388187/1433441915302318091/1.png?ex=6908a8d0&is=69075750&hm=8f7d76c4d87e9510944b9ae85fbfeb2347631a6ba1112c3332c0f7e7fcecb668&',
