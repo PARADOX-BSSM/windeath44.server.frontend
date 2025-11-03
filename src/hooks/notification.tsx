@@ -68,9 +68,9 @@ export const useNotification = () => {
       }
 
       // 긴급 공지사항(만약 무조건 띄워야 하는 공지가 있다면 이거 주석 해제하고 사용할 것)
-      if (notificationViewerApp) {
-        addTask(notificationViewerApp);
-      }
+      // if (notificationViewerApp) {
+      //   addTask(notificationViewerApp);
+      // }
     }
   };
 
