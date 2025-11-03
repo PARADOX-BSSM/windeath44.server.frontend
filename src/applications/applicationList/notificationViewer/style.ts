@@ -13,7 +13,7 @@ export const Wrapper = styled.div`
 export const Container = styled.div`
   display: flex;
   padding: 8px;
-  height: fit-content;
+  height: 100%;
   box-sizing: border-box;
   justify-content: center;
   align-items: flex-start;
@@ -28,7 +28,7 @@ export const InnerContainer = styled.div`
   justify-content: center;
   align-items: flex-start;
   gap: 10px;
-  height: fit-content;
+  height: 100%;
   align-self: stretch;
   overflow: hidden;
   background: #fff;
@@ -43,6 +43,8 @@ export const ContentContainer = styled.div`
   gap: 0;
   flex: 1 0 0;
   width: 100%;
+  overflow-y: auto;
+  height: 100%;
 `;
 
 // 상세 뷰

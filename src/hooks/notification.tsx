@@ -35,7 +35,12 @@ export const useNotification = () => {
     ) {
       const now = new Date().toISOString();
       finalNotifications = notifications.map((item, index) => {
-        const simpleItem = item as { title: string; content?: string; is_image?: boolean; created_at?: string };
+        const simpleItem = item as {
+          title: string;
+          content?: string;
+          is_image?: boolean;
+          created_at?: string;
+        };
         return {
           notification_id: Date.now() + index,
           writer_id: 'system',
@@ -63,9 +68,9 @@ export const useNotification = () => {
       }
 
       // 긴급 공지사항(만약 무조건 띄워야 하는 공지가 있다면 이거 주석 해제하고 사용할 것)
-      // if (notificationViewerApp) {
-      //   addTask(notificationViewerApp);
-      // }
+      if (notificationViewerApp) {
+        addTask(notificationViewerApp);
+      }
     }
   };
 

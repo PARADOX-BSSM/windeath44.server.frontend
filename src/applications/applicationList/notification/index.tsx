@@ -55,7 +55,10 @@ const Notification = () => {
                 </_.BackButton>
               </_.DetailHeader>
               {selectedNotification.is_image ? (
-                <_.DetailImage src={selectedNotification.content} alt={selectedNotification.title} />
+                <>
+                  <_.DetailImage src={selectedNotification.content} alt={selectedNotification.title} />
+                  <_.DetailDate>{formatDate(selectedNotification.created_at)}</_.DetailDate>
+                </>
               ) : (
                 <>
                   <_.DetailTitle>{selectedNotification.title}</_.DetailTitle>
