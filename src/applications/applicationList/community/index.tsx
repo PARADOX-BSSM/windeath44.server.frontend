@@ -10,7 +10,10 @@ import { useAtomValue } from 'jotai';
 import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer';
 import HommerBackground from '@/assets/community/homer_background.png';
 import Hommer from '@/assets/community/hommer.svg';
+import Seori from '@/assets/sulkkagi/black_stone.svg';
 import { usePostListSearch } from '@/api/community/postListSearch';
+import { getCookie } from '@/api/auth/cookie.ts';
+import { alerterAtom } from '@/atoms/alerter';
 
 enum sortOption {
   Latest = '최신순',
@@ -38,7 +41,7 @@ interface dataStructureProps {
 
 const Community = ({ stack, push, pop, top }: dataStructureProps) => {
   const postData = usePostListSearch();
-  console.log(postData, '데이터 불러옴');
+  if (postData) console.log(postData, '데이터 불러옴');
 
   useEffect(() => {
     postData.mutate({});
@@ -53,16 +56,36 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
 
   const taskTransform = useAtomValue(taskTransformerAtom);
   const taskSearch = useAtomValue(taskSearchAtom);
+  const setAlert = useAtomValue(alerterAtom);
 
   const [isOpen, setIsOpen] = useState(false);
   const [sort, setSort] = useState(sortOption.Latest);
   const [active, setActive] = useState('humor');
   const [search, setSearch] = useState('');
+  const token = getCookie('access_token');
 
   const sortOp: string[] = [sortOption.Latest, sortOption.Popular];
   const sortChange = (value: any) => {
     setSort(value);
     setIsOpen(false);
+  };
+  const postCreateClick = () => {
+    if (!token && setAlert) {
+      setAlert(
+        Seori,
+        <>
+          게스트는 게시글 작성이 불가능 합니다.
+          <br />
+          로그인 후 사용 가능 합니다.
+        </>,
+        () => {
+          taskTransform?.('경고', '');
+        },
+      );
+      return;
+    } else if (taskTransform) {
+      taskTransform('', '게시글 작성');
+    }
   };
 
   return (
@@ -91,9 +114,7 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
             <CommunityBtn
               name="게시글 작성"
               selected={false}
-              onClick={() => {
-                if (taskTransform) taskTransform('', '게시글 작성');
-              }}
+              onClick={postCreateClick}
               type="menu"
             />
           </_.ButtonArea>
@@ -131,10 +152,10 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
         )}
         <_.PostArea>
           {/*postData.map(data=>{
-                        <Posts user={{name:"방태양", id:"noah_byte", profileImage:""}}
-                            post={{title:data.title, content:"", datetime:data.created_at}}
-                         />
-                    })*/}
+              <Posts user={{name:"방태양", id:"noah_byte", profileImage:""}}
+                  post={{title:data.title, content:"", datetime:data.created_at}}
+                />
+          })*/}
           <Posts
             user={{ name: '방태양', id: 'noah_byte', profileImage: '' }}
             post={{
