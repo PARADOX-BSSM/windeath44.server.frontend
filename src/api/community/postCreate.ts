@@ -45,6 +45,9 @@ export const usePostCreate = () => {
     onSuccess: () => {
       console.log('게시글 작성 완료');
     },
-    onError: () => {},
+    onError: (error) => {
+      console.error('게시글 작성 실패:', error);
+      alert('게시글 작성에 실패했습니다');
+    },
   });
 };

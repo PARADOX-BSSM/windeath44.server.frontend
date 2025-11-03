@@ -1,14 +1,48 @@
 import React from 'react';
 import * as _ from './style';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import CommunityBtn from '@/applications/components/communityBtn';
 import ChevronIcon from '@/assets/community/chevron-left.svg';
 import { usePostCreate } from '@/api/community/postCreate';
+import { useGetUserMutation } from '@/api/user/getUser';
 
 const CommunityPostWrite: React.FC = () => {
+  const postCreateMutation = usePostCreate();
+  const { mutate: getUser, data: userData } = useGetUserMutation();
+  const currentUserId = userData?.data?.userId;
   const [loadPage, setLoadPage] = useState(false);
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
+
+  useEffect(() => {
+    getUser();
+  }, []);
+
+  const postCreate = () => {
+    if (!currentUserId) {
+      console.log('유저 정보가 없습니다');
+      return;
+    }
+
+    postCreateMutation.mutate(
+      {
+        user_id: currentUserId,
+        title: title,
+        body: body,
+        status: 'PUBLISHED',
+      },
+      {
+        onSuccess: () => {
+          console.log('게시글 작성 완료');
+          setTitle('');
+          setBody('');
+        },
+        onError: () => {
+          console.log('게시글 작성 중 에러 발생');
+        },
+      },
+    );
+  };
   return (
     <_.Container>
       {!loadPage ? (
@@ -64,7 +98,7 @@ const CommunityPostWrite: React.FC = () => {
         <CommunityBtn
           name="게시"
           type="submit"
-          onClick={() => {}}
+          onClick={postCreate}
         />
       </_.BtnArea>
     </_.Container>

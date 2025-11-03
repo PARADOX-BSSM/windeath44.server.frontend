@@ -900,7 +900,7 @@ const useApps = (): TaskType[] => {
         setUpWidth: 800,
         setUpHeight: 562,
       },
-      visible: true,
+      visible: false,
     },
     {
       component: <Suspense fallback={null}>{<JudgementChat />}</Suspense>,
@@ -915,7 +915,7 @@ const useApps = (): TaskType[] => {
         setUpWidth: 800,
         setUpHeight: 562,
       },
-      visible: true,
+      visible: false,
     },
     {
       component: (
