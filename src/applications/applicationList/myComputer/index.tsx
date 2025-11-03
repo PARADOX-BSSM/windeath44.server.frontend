@@ -26,6 +26,7 @@ import ImageCropper from '@/applications/components/imageCropper';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
 import MemorialChief from '@/applications/applicationList/memorialChief';
 import { InputsList } from './style.ts';
+import { useDeleteAccount } from '@/api/user/deleteAccount.ts';
 
 // 캐릭터 정보를 가져오는 커스텀 hook
 const useCharacterInfo = (characterId: number) => {
@@ -68,6 +69,7 @@ const MyComputer = () => {
   const taskTransform = useAtomValue(taskTransformerAtom);
   const setAlert = useAtomValue(alerterAtom);
   const logOutMutation = useLogOut();
+  const deleteAccountMutation = useDeleteAccount();
   const { mutate: getUser, data: userData, isPending, error } = useGetUserMutation();
   const updateNameMutation = useUpdateUserName();
   const updateProfileMutation = useUpdateUserProfile();
@@ -274,6 +276,26 @@ const MyComputer = () => {
       />
     );
   };
+  const handleDleteAccount = () => {
+    deleteAccountMutation.mutate(userData?.data?.userId, {
+      onSuccess: () => {
+        setAlert?.(Choten, <>계정삭제 요청 중 오류가 발생했습니다.</>, () => {
+          taskTransform?.('경고', '');
+        });
+        setIsLogIned('false');
+        sessionStorage.setItem('hasBootedSession', 'false');
+        localStorage.removeItem('isLogIned');
+        deleteCookie('access_token');
+        location.reload();
+      },
+      onError: (error) => {
+        console.error('계정탈퇴 실패', error);
+        setAlert?.(Choten, <>계정삭제 요청 중 오류가 발생했습니다.</>, () => {
+          taskTransform?.('경고', '');
+        });
+      },
+    });
+  };
 
   const isLoggedIn = loggedIn;
   const isUserReady = !!(userData && userData.data && userData.data.name) && !isPending && !error;
@@ -364,8 +386,17 @@ const MyComputer = () => {
     <_.Container>
       <_.LeftContainer>
         <_.ProfileContainer>{renderProfileSection()}</_.ProfileContainer>
-
-        {renderMemorialBtn()}
+        <div>
+          <MemorialBtn
+            name="탈퇴"
+            onClick={handleDleteAccount}
+            type="submit"
+            active={true}
+            width="116px"
+            fontSize="18px"
+          />
+          {renderMemorialBtn()}
+        </div>
       </_.LeftContainer>
       <_.Btn>
         <_.InnerItem>
@@ -417,7 +448,7 @@ const MyComputer = () => {
               {!loggedIn ? (
                 <_.MessageText>로그인 후 이용할 수 있습니다.</_.MessageText>
               ) : (
-                <MemorialChief/>
+                <MemorialChief />
               )}
             </_.InputsList>
           </_.Shadow>
