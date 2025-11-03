@@ -191,6 +191,7 @@ const WindowManager = () => {
           content:
             'https://cdn.discordapp.com/attachments/1363488381392388187/1433441915302318091/1.png?ex=6908a8d0&is=69075750&hm=8f7d76c4d87e9510944b9ae85fbfeb2347631a6ba1112c3332c0f7e7fcecb668&',
           is_image: true,
+          created_at: '2025-10-29T19:55:00', // 원하는 날짜를 ISO 형식으로 설정 (선택사항)
         },
       ]);
     }, 500);

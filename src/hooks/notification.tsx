@@ -23,28 +23,31 @@ export const useNotification = () => {
   const setNotification = (
     notifications:
       | NotificationData[]
-      | Array<{ title: string; content?: string; is_image?: boolean }>,
+      | Array<{ title: string; content?: string; is_image?: boolean; created_at?: string }>,
   ) => {
     let finalNotifications: NotificationData[];
 
-    // { title, content, is_image } 객체 배열로 받은 경우
+    // { title, content, is_image, created_at } 객체 배열로 받은 경우
     if (
       notifications.length > 0 &&
       'title' in notifications[0] &&
       !('notification_id' in notifications[0])
     ) {
       const now = new Date().toISOString();
-      finalNotifications = notifications.map((item, index) => ({
-        notification_id: Date.now() + index,
-        writer_id: 'system',
-        title: (item as { title: string; content?: string; is_image?: boolean }).title,
-        content: (item as { title: string; content?: string; is_image?: boolean }).content || '',
-        is_open: true,
-        is_image: (item as { title: string; content?: string; is_image?: boolean }).is_image,
-        end_date: now,
-        created_at: now,
-        updated_at: now,
-      }));
+      finalNotifications = notifications.map((item, index) => {
+        const simpleItem = item as { title: string; content?: string; is_image?: boolean; created_at?: string };
+        return {
+          notification_id: Date.now() + index,
+          writer_id: 'system',
+          title: simpleItem.title,
+          content: simpleItem.content || '',
+          is_open: true,
+          is_image: simpleItem.is_image,
+          end_date: now,
+          created_at: simpleItem.created_at || now,
+          updated_at: now,
+        };
+      });
     } else {
       // NotificationData[] 배열로 받은 경우
       finalNotifications = notifications as NotificationData[];

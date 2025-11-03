@@ -7,7 +7,7 @@ export const notificationAtom = atom<
   | ((
       notifications:
         | NotificationData[]
-        | Array<{ title: string; content?: string; is_image?: boolean }>,
+        | Array<{ title: string; content?: string; is_image?: boolean; created_at?: string }>,
     ) => void)
   | null
 >(null);
