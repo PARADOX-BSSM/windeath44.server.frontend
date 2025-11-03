@@ -386,7 +386,8 @@ const MyComputer = () => {
     <_.Container>
       <_.LeftContainer>
         <_.ProfileContainer>{renderProfileSection()}</_.ProfileContainer>
-        <div>
+        <_.ButtonSet>
+          {renderMemorialBtn()}
           <MemorialBtn
             name="탈퇴"
             onClick={handleDleteAccount}
@@ -395,8 +396,7 @@ const MyComputer = () => {
             width="116px"
             fontSize="18px"
           />
-          {renderMemorialBtn()}
-        </div>
+        </_.ButtonSet>
       </_.LeftContainer>
       <_.Btn>
         <_.InnerItem>
