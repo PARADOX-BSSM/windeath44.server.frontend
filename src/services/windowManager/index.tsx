@@ -1,6 +1,6 @@
 import * as _ from './style.ts';
 import { useEffect, useState, Suspense, lazy, useRef } from 'react';
-import { useAtom } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import {
   isLogInedAtom,
   focusAtom,
@@ -15,10 +15,13 @@ import { getTaskCreators } from './tasks';
 import { useTaskTransformFunction } from '@/hooks/taskTransformer.tsx';
 import { useTaskSearchFunction } from '@/hooks/taskSearch.tsx';
 import { useAlerter } from '@/hooks/alerter.tsx';
+import { useNotification } from '@/hooks/notification.tsx';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg.tsx';
 import { useDrag } from 'react-use-gesture';
 import useApps from '@/applications/data/importManager.tsx';
 import { lastTaskListAtom, windowPositionsAtom } from '@/atoms/processManager.ts';
+import { useGetPublicNotificationsQuery } from '@/api/notification/getPublicNotifications';
+import { notificationAtom } from '@/atoms/notification';
 
 const Application = lazy(() => import('@/applications/layout/index.tsx'));
 
@@ -34,6 +37,7 @@ const WindowManager = () => {
   const [hydrated, setHydrated] = useState(false);
   const [lastTaskList] = useAtom(lastTaskListAtom);
   const [, setWindowPositions] = useAtom(windowPositionsAtom);
+  const setNotification = useAtomValue(notificationAtom);
 
   const [taskList, addTask, removeTask] = useProcessManager();
   const { logIn, signUp, emailChack, auth } = getTaskCreators(setIsLogIned, addTask, removeTask);
@@ -42,6 +46,10 @@ const WindowManager = () => {
   const dragOffset = useRef([0, 0]);
   const clickTimeout = useRef<NodeJS.Timeout | null>(null);
   const hasRestoredTasks = useRef(false);
+  const hasCheckedNotification = useRef(false);
+
+  // 공지사항 조회
+  const { data: notificationsData } = useGetPublicNotificationsQuery();
 
   useEffect(() => {
     setHydrated(true);
@@ -80,7 +88,7 @@ const WindowManager = () => {
       hasRestoredTasks: hasRestoredTasks.current,
       isLogIned,
       lastTaskListLength: lastTaskList?.length,
-      availableAppsLength: availableApps?.length
+      availableAppsLength: availableApps?.length,
     });
 
     if (!hydrated || hasRestoredTasks.current || isLogIned !== 'true') return;
@@ -98,11 +106,19 @@ const WindowManager = () => {
       console.log('[WindowManager] Restoring tasks:', lastTaskList);
 
       // 위치 정보를 windowPositionsAtom에 먼저 복원
-      const positions: Record<string, { top: number; left: number; width: number; height: number }> = {};
+      const positions: Record<
+        string,
+        { top: number; left: number; width: number; height: number }
+      > = {};
       lastTaskList.forEach((savedTask) => {
         if (savedTask.position) {
           positions[savedTask.name] = savedTask.position;
-          console.log('[WindowManager] Will restore position for', savedTask.name, ':', savedTask.position);
+          console.log(
+            '[WindowManager] Will restore position for',
+            savedTask.name,
+            ':',
+            savedTask.position,
+          );
         }
       });
 
@@ -115,9 +131,15 @@ const WindowManager = () => {
         console.log('[WindowManager] Now adding tasks...');
         lastTaskList.forEach((savedTask) => {
           const app = availableApps.find(
-            (availableApp) => availableApp.id === savedTask.id && availableApp.name === savedTask.name
+            (availableApp) =>
+              availableApp.id === savedTask.id && availableApp.name === savedTask.name,
           );
-          console.log('[WindowManager] Looking for app:', savedTask.name, 'Found:', app ? 'YES' : 'NO');
+          console.log(
+            '[WindowManager] Looking for app:',
+            savedTask.name,
+            'Found:',
+            app ? 'YES' : 'NO',
+          );
           if (app) {
             console.log('[WindowManager] Adding task:', savedTask.name);
             addTask(app);
@@ -158,6 +180,43 @@ const WindowManager = () => {
       }, 200);
     }
   }, [isLogIned, hydrated]);
+
+  useEffect(() => {
+    if (!hydrated || isLogIned !== 'true') return;
+
+    setTimeout(() => {
+      setNotification?.([
+        {
+          title: '서버 점검 안내',
+          content:
+            'https://cdn.discordapp.com/attachments/1363488381392388187/1433441915302318091/1.png?ex=6908a8d0&is=69075750&hm=8f7d76c4d87e9510944b9ae85fbfeb2347631a6ba1112c3332c0f7e7fcecb668&',
+          is_image: true,
+          created_at: '2025-10-29T19:55:00', // 원하는 날짜를 ISO 형식으로 설정 (선택사항)
+        },
+      ]);
+    }, 500);
+  }, [isLogIned, setNotification, hydrated]);
+
+  // 공지사항 자동 표시
+  useEffect(() => {
+    if (!hydrated || hasCheckedNotification.current || isLogIned !== 'true') return;
+    if (!notificationsData?.data) return;
+
+    const openNotifications = notificationsData.data.filter((n) => n.is_open);
+    if (openNotifications.length === 0) {
+      hasCheckedNotification.current = true;
+      return;
+    }
+
+    hasCheckedNotification.current = true;
+
+    // setNotification 사용하여 공지사항 표시
+    if (setNotification) {
+      setTimeout(() => {
+        setNotification(openNotifications);
+      }, 500); // 부팅 후 0.5초 뒤에 표시
+    }
+  }, [hydrated, isLogIned, notificationsData, setNotification]);
 
   let resizeObserver = new ResizeObserver((_entries) => {
     const container: HTMLElement = document.getElementById('cursorContainer') as HTMLElement;
@@ -219,6 +278,7 @@ const WindowManager = () => {
   useTaskTransformFunction();
   useTaskSearchFunction();
   useAlerter();
+  useNotification();
 
   return (
     <_.Desktop>
