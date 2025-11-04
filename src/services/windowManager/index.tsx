@@ -22,6 +22,7 @@ import useApps from '@/applications/data/importManager.tsx';
 import { lastTaskListAtom, windowPositionsAtom } from '@/atoms/processManager.ts';
 import { useGetPublicNotificationsQuery } from '@/api/notification/getPublicNotifications';
 import { notificationAtom } from '@/atoms/notification';
+import { settingsAtom } from '@/atoms/settings.ts';
 
 const Application = lazy(() => import('@/applications/layout/index.tsx'));
 
@@ -38,6 +39,7 @@ const WindowManager = () => {
   const [lastTaskList] = useAtom(lastTaskListAtom);
   const [, setWindowPositions] = useAtom(windowPositionsAtom);
   const setNotification = useAtomValue(notificationAtom);
+  const [settings,] = useAtom(settingsAtom);
 
   const [taskList, addTask, removeTask] = useProcessManager();
   const { logIn, signUp, emailChack, auth } = getTaskCreators(setIsLogIned, addTask, removeTask);
@@ -225,38 +227,61 @@ const WindowManager = () => {
     }
   }, [hydrated, isLogIned, notificationsData, setNotification]);
 
-  let resizeObserver = new ResizeObserver((_entries) => {
-    const container: HTMLElement = document.getElementById('cursorContainer') as HTMLElement;
-    const cursor = document.getElementById('cursor');
-    if (!container || !cursor) return;
-    cursor.style.zIndex = '9990';
-    const bounds = container.getBoundingClientRect();
-    document.addEventListener('mousemove', (event: MouseEvent) => {
-      let x = event.clientX - bounds.x + bounds.left;
-      let y = event.clientY - bounds.y;
-      x = Math.max(bounds.left, Math.min(bounds.width - 1 + bounds.left, x));
-      y = Math.max(0, Math.min(bounds.height - 1, y));
-      cursor.style.left = `${x}px`;
-      cursor.style.top = `${y}px`;
-      setCursorVec([x, y]);
+  const resizeObserver = new ResizeObserver((_entries) => {
+    requestAnimationFrame(() => {
+      const container = document.getElementById('cursorContainer') as HTMLElement;
+      const cursor = document.getElementById('cursor');
+      if (!container || !cursor) return;
+
+      cursor.style.zIndex = '9990';
+      const bounds = container.getBoundingClientRect();
+
+      const handleMouseMove = (event: MouseEvent) => {
+        let x = event.clientX - bounds.x + bounds.left;
+        let y = event.clientY - bounds.y;
+        x = Math.max(bounds.left, Math.min(bounds.width - 1 + bounds.left, x));
+        y = Math.max(0, Math.min(bounds.height - 1, y));
+        cursor.style.left = `${x}px`;
+        cursor.style.top = `${y}px`;
+        setCursorVec([x, y]);
+      };
+
+      // 중복 등록 방지
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mousemove', handleMouseMove);
     });
   });
-  useEffect(() => {
-    resizeObserver.observe(document.getElementById('display') as HTMLElement);
-  }, []);
 
   useEffect(() => {
-    const updateSideWidth = () => {
-      const fullWidth = window.innerWidth;
-      const fullHeight = window.innerHeight;
-      const containerWidth = (fullHeight * 4) / 3;
-      const calculatedSide = (fullWidth - containerWidth) / 2;
-      setSideWidth(Math.max(0, calculatedSide));
-    };
-    updateSideWidth();
-    window.addEventListener('resize', updateSideWidth);
-    return () => window.removeEventListener('resize', updateSideWidth);
-  }, []);
+    const display = document.getElementById('display');
+    if (display) resizeObserver.observe(display);
+    return () => resizeObserver.disconnect();
+  }, [settings]);
+
+
+  useEffect(() => {
+    if (settings.screenRatio === "4:3") {
+      const updateSideWidth = () => {
+        const fullWidth = window.innerWidth;
+        const fullHeight = window.innerHeight;
+        const containerWidth = (fullHeight * 4) / 3;
+        const calculatedSide = (fullWidth - containerWidth) / 2;
+        setSideWidth(Math.max(0, calculatedSide));
+      };
+      updateSideWidth();
+      window.addEventListener('resize', updateSideWidth);
+      return () => window.removeEventListener('resize', updateSideWidth);
+    }
+    else if(settings.screenRatio === "16:9") {
+      const updateSideWidth = () => {
+        setSideWidth(0);
+      };
+      updateSideWidth();
+      console.log("asdf");
+      window.addEventListener('resize', updateSideWidth);
+      return () => window.removeEventListener('resize', updateSideWidth);
+    }
+  }, [settings]);
 
   // 클릭 시 cursor 변경
   useEffect(() => {
@@ -293,6 +318,7 @@ const WindowManager = () => {
         <_.BackgroundDiv width={sideWidth}></_.BackgroundDiv>
         <_.Display
           id="cursorContainer"
+          is43={settings.screenRatio === "4:3"}
           {...bindDrag()}
         >
           <div id="cursor"></div>
