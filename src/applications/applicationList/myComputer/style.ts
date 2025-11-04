@@ -21,6 +21,14 @@ export const LeftContainer = styled.div`
   display: flex;
 `;
 
+export const ButtonSet = styled.div`
+  width: fit-content;
+  height: fit-content;
+  flex-direction: column;
+  display: flex;
+  gap: 1rem;
+`;
+
 export const ProfileContainer = styled.div`
   width: fit-content;
   flex-direction: column;

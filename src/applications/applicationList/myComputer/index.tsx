@@ -2,7 +2,6 @@ import MemorialBtn from '@/applications/components/memorialBtn/index.tsx';
 import Loading from '@/applications/components/loading';
 import * as _ from './style.ts';
 import myComputer from '@/assets/appIcons/my_computer.svg';
-import Choten from '@/assets/profile/choten.svg';
 import { taskTransformerAtom } from '@/atoms/taskTransformer.ts';
 import { alerterAtom } from '@/atoms/alerter';
 import { useAtomValue, useAtom } from 'jotai';
@@ -25,7 +24,8 @@ import { useEffect, useState, useMemo, useRef } from 'react';
 import ImageCropper from '@/applications/components/imageCropper';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
 import MemorialChief from '@/applications/applicationList/memorialChief';
-import { InputsList } from './style.ts';
+import { useDeleteAccount } from '@/api/user/deleteAccount.ts';
+import Seori from '@/assets/sulkkagi/black_stone.svg';
 
 // 캐릭터 정보를 가져오는 커스텀 hook
 const useCharacterInfo = (characterId: number) => {
@@ -68,6 +68,7 @@ const MyComputer = () => {
   const taskTransform = useAtomValue(taskTransformerAtom);
   const setAlert = useAtomValue(alerterAtom);
   const logOutMutation = useLogOut();
+  const deleteAccountMutation = useDeleteAccount();
   const { mutate: getUser, data: userData, isPending, error } = useGetUserMutation();
   const updateNameMutation = useUpdateUserName();
   const updateProfileMutation = useUpdateUserProfile();
@@ -169,7 +170,7 @@ const MyComputer = () => {
   const handleSaveProfile = async () => {
     // 이름 유효성 검사
     if (editName.trim() === '') {
-      setAlert?.(Choten, <>이름을 입력해주세요.</>, () => {
+      setAlert?.(Seori, <>이름을 입력해주세요.</>, () => {
         taskTransform?.('경고', '');
       });
       return;
@@ -196,7 +197,7 @@ const MyComputer = () => {
       }
 
       // 성공 시
-      setAlert?.(Choten, <>프로필이 성공적으로 수정되었습니다.</>, () => {
+      setAlert?.(Seori, <>프로필이 성공적으로 수정되었습니다.</>, () => {
         taskTransform?.('경고', '');
       });
       setIsEditMode(false);
@@ -205,7 +206,7 @@ const MyComputer = () => {
       getUser(undefined as unknown as void);
     } catch (error) {
       console.error('프로필 수정 실패', error);
-      setAlert?.(Choten, <>프로필 수정 중 오류가 발생했습니다.</>, () => {
+      setAlert?.(Seori, <>프로필 수정 중 오류가 발생했습니다.</>, () => {
         taskTransform?.('경고', '');
       });
     }
@@ -260,7 +261,7 @@ const MyComputer = () => {
               },
               onError: (error) => {
                 console.error('로그아웃 실패', error);
-                setAlert?.(Choten, <>로그아웃 중 오류가 발생했습니다.</>, () => {
+                setAlert?.(Seori, <>로그아웃 중 오류가 발생했습니다.</>, () => {
                   taskTransform?.('경고', '');
                 });
               },
@@ -273,6 +274,26 @@ const MyComputer = () => {
         fontSize="18px"
       />
     );
+  };
+  const handleDeleteAccount = () => {
+    deleteAccountMutation.mutate(userData?.data?.userId, {
+      onSuccess: () => {
+        setAlert?.(Seori, <>성공적으로 탈퇴되었습니다.</>, () => {
+          taskTransform?.('경고', '');
+        });
+        setIsLogIned('false');
+        sessionStorage.setItem('hasBootedSession', 'false');
+        localStorage.removeItem('isLogIned');
+        deleteCookie('access_token');
+        location.reload();
+      },
+      onError: (error) => {
+        console.error('계정탈퇴 실패', error);
+        setAlert?.(Seori, <>계정삭제 요청 중 오류가 발생했습니다.</>, () => {
+          taskTransform?.('경고', '');
+        });
+      },
+    });
   };
 
   const isLoggedIn = loggedIn;
@@ -364,8 +385,19 @@ const MyComputer = () => {
     <_.Container>
       <_.LeftContainer>
         <_.ProfileContainer>{renderProfileSection()}</_.ProfileContainer>
-
-        {renderMemorialBtn()}
+        <_.ButtonSet>
+          {renderMemorialBtn()}
+          {loggedIn && (
+            <MemorialBtn
+              name="탈퇴"
+              onClick={handleDeleteAccount}
+              type="submit"
+              active={true}
+              width="116px"
+              fontSize="18px"
+            />
+          )}
+        </_.ButtonSet>
       </_.LeftContainer>
       <_.Btn>
         <_.InnerItem>
@@ -417,7 +449,7 @@ const MyComputer = () => {
               {!loggedIn ? (
                 <_.MessageText>로그인 후 이용할 수 있습니다.</_.MessageText>
               ) : (
-                <MemorialChief/>
+                <MemorialChief />
               )}
             </_.InputsList>
           </_.Shadow>
