@@ -284,7 +284,7 @@ const Application = (props: ApplicationProps) => {
         style={window}
         onMouseDown={() => setFocus(props.instanceId || props.name)}
       >
-        <_.WindowHeader {...moveManager()}>
+        <_.WindowHeader {...moveManager()} onDoubleClick={() => setIsFullScreen(!isFullScreen)}>
           <_.TitleContainer>
             <_.HeartImg
               src={Heart}
