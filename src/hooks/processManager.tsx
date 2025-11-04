@@ -87,7 +87,7 @@ export const useProcessManager = (): [
   };
 
   const taskList = [...globalTaskList, ...virtualTaskList];
-  return [taskList, addTask, removeTask, setVirtualWindowPosition];
+  return [taskList, addTask, removeTask, setVirtualWindowPosition] as const;
 };
 
 // --- Virtual Process Manager ---
@@ -113,17 +113,19 @@ const useVirtualProcessManager = (): [
   };
 
   const addTask = (task: TaskType) => {
-    setTaskList(prev =>
-      !prev.some(t => t.name === task.name && t.instanceId === task.instanceId)
-        ? [...prev, task]
-        : prev
-    );
+    setTaskList(prev => {
+      if (prev.some(t => t.name === task.name)) return prev;
+      return [...prev, task];
+    });
   };
 
   const removeTask = (task: TaskType) => {
-    setTaskList(prev =>
-      prev.filter(t => task.instanceId ? t.instanceId !== task.instanceId : t.name !== task.name)
-    );
+    setTaskList(prev => {
+      const filtered = prev.filter(
+        (item)=>item.instanceId ? item.instanceId !== task.instanceId : item.name !== task.name,
+      );
+      return filtered;
+    });
   };
 
   return [taskList, addTask, removeTask];
