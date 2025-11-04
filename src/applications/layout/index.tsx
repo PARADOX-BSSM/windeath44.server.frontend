@@ -65,6 +65,10 @@ const Application = (props: ApplicationProps) => {
 
   // 마운트 후 위치 복원 (초기 렌더링 후 짧은 딜레이)
   useEffect(() => {
+    if (isFullScreen) {
+      return;
+    }
+
     const savedPos = windowPositions[props.name];
     if (savedPos) {
       console.log('[Application] Will restore position for', props.name, 'after delay');
@@ -92,7 +96,7 @@ const Application = (props: ApplicationProps) => {
       }, 200);
       return () => clearTimeout(timer);
     }
-  }, [props.name, windowPositions]);
+  }, [props.name, windowPositions, isFullScreen]);
 
   // 창의 위치/크기 저장 : window state가 변경될 때마다 localStorage에 저장
   useEffect(() => {
@@ -280,7 +284,7 @@ const Application = (props: ApplicationProps) => {
         style={window}
         onMouseDown={() => setFocus(props.instanceId || props.name)}
       >
-        <_.WindowHeader {...moveManager()}>
+        <_.WindowHeader {...moveManager()} onDoubleClick={() => setIsFullScreen(!isFullScreen)}>
           <_.TitleContainer>
             <_.HeartImg
               src={Heart}
