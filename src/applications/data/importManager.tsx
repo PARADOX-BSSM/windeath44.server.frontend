@@ -849,6 +849,25 @@ const useApps = (): TaskType[] => {
     {
       component: (
         <Suspense fallback={null}>
+          <Settings />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2254,
+      name: '설정',
+      layer: undefined,
+      appSetup: {
+        Image: setting,
+        minWidth: 600,
+        minHeight: 400,
+        setUpWidth: 700,
+        setUpHeight: 500,
+      },
+      visible: true,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
           <MemorialApplicationListApproach
             window={{}}
             setWindow={() => {}}
@@ -932,25 +951,6 @@ const useApps = (): TaskType[] => {
         setUpHeight: 480,
       },
       visible: false,
-    },
-    {
-      component: (
-        <Suspense fallback={null}>
-          <Settings />
-        </Suspense>
-      ),
-      type: 'App',
-      id: 2254,
-      name: '설정',
-      layer: undefined,
-      appSetup: {
-        Image: setting,
-        minWidth: 600,
-        minHeight: 400,
-        setUpWidth: 700,
-        setUpHeight: 500,
-      },
-      visible: true,
     },
   ];
 
