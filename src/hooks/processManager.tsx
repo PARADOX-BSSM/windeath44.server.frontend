@@ -17,7 +17,7 @@ export const useProcessManager = (): [
   TaskType[],
   (task: TaskType, position?: Position) => void,
   (task: TaskType) => void,
-  (positions: Record<string, Position>) => void
+  (positions: Record<string, Position>, index?: number) => void
 ] => {
   const [globalTaskList, setGlobalTaskList] = useAtom(taskManagerAtom);
   const [virtualTaskLists, ] = useAtom(virtualTaskListsAtom);
@@ -28,10 +28,14 @@ export const useProcessManager = (): [
   const [desktopIndex] = useAtom(virtualDesktopIndexAtom);
 
   const isInitialMount = useRef(true);
-  const setVirtualWindowPosition = (positions: Record<string, Position>) => {
+  const setVirtualWindowPosition = (
+    positions: Record<string, Position>,
+    index?: number
+  ) => {
     setVirtualWindowPositions(prev => {
+      const targetIndex = index ?? desktopIndex;
       const updated = [...prev];
-      updated[desktopIndex] = { ...updated[desktopIndex], ...positions }; // 기존 값 대체
+      updated[targetIndex] = { ...updated[targetIndex], ...positions };
       return updated;
     });
   };
@@ -69,6 +73,7 @@ export const useProcessManager = (): [
           id: t.id,
           name: t.name,
           position: virtualWindowPositions[idx]?.[t.name],
+          desktopIndex: idx,
         }))
     );
 
@@ -96,42 +101,40 @@ export const useProcessManager = (): [
 };
 
 // --- Virtual Process Manager ---
-const useVirtualProcessManager = (): [
+export const useVirtualProcessManager = (): [
   TaskType[],
   (task: TaskType) => void,
-  (task: TaskType) => void
+  (task: TaskType) => void,
+  (task: TaskType, index: number) => void
 ] => {
   const [desktopIndex] = useAtom(virtualDesktopIndexAtom);
   const [virtualTaskLists, setVirtualTaskLists] = useAtom(virtualTaskListsAtom);
 
   const taskList = virtualTaskLists[desktopIndex] || [];
 
-  const setTaskList = (newListOrFn: TaskType[] | ((prev: TaskType[]) => TaskType[])) => {
+  const addTaskToDesktop = (task: TaskType, index: number) => {
     setVirtualTaskLists(prev => {
       const updated = [...prev];
-      updated[desktopIndex] =
-        typeof newListOrFn === 'function'
-          ? (newListOrFn as (prev: TaskType[]) => TaskType[])([...(updated[desktopIndex] || [])])
-          : newListOrFn;
+      const targetList = updated[index] || [];
+      if (targetList.some(t => t.name === task.name)) return prev;
+      updated[index] = [...targetList, task];
       return updated;
     });
   };
 
-  const addTask = (task: TaskType) => {
-    setTaskList(prev => {
-      if (prev.some(t => t.name === task.name)) return prev;
-      return [...prev, task];
-    });
-  };
+  const addTask = (task: TaskType) => addTaskToDesktop(task, desktopIndex);
 
   const removeTask = (task: TaskType) => {
-    setTaskList(prev => {
-      const filtered = prev.filter(
-        (item)=>item.instanceId ? item.instanceId !== task.instanceId : item.name !== task.name,
+    setVirtualTaskLists(prev => {
+      const updated = [...prev];
+      const currentList = updated[desktopIndex] || [];
+      updated[desktopIndex] = currentList.filter(
+        (item) => item.instanceId ? item.instanceId !== task.instanceId : item.name !== task.name
       );
-      return filtered;
+      return updated;
     });
   };
 
-  return [taskList, addTask, removeTask];
+  return [taskList, addTask, removeTask, addTaskToDesktop];
+  return [taskList, addTask, removeTask, addTaskToDesktop] as const;
 };
