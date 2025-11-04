@@ -184,7 +184,7 @@ const WindowManager = () => {
   }, [isLogIned, hydrated]);
 
   useEffect(() => {
-    if (!hydrated || isLogIned !== 'true') return;
+    if (!hydrated || !settings.showBootNotification || isLogIned !== 'true') return;
 
     setTimeout(() => {
       setNotification?.([
@@ -208,7 +208,7 @@ const WindowManager = () => {
 
   // 공지사항 자동 표시
   useEffect(() => {
-    if (!hydrated || hasCheckedNotification.current || isLogIned !== 'true') return;
+    if (!hydrated || hasCheckedNotification.current || !settings.showBootNotification || isLogIned !== 'true') return;
     if (!notificationsData?.data) return;
 
     const openNotifications = notificationsData.data.filter((n) => n.is_open);
@@ -225,7 +225,7 @@ const WindowManager = () => {
         setNotification(openNotifications);
       }, 500); // 부팅 후 0.5초 뒤에 표시
     }
-  }, [hydrated, isLogIned, notificationsData, setNotification]);
+  }, [hydrated, settings, isLogIned, notificationsData, setNotification]);
 
   const resizeObserver = new ResizeObserver((_entries) => {
     requestAnimationFrame(() => {
