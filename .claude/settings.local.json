@@ -23,5 +23,6 @@
   },
   "enabledMcpjsonServers": [
     "apidog"
-  ]
+  ],
+  "enableAllProjectMcpServers": true
 }
