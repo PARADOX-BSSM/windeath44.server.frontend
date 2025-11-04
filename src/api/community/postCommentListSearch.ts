@@ -11,7 +11,7 @@ const postCommentListSearch = async (post_id: number) => {
     if (error.response?.data) {
       console.log('댓글 조회가 실패했습니다: ', error.data);
     }
-    throw Error;
+    throw error;
   }
 };
 

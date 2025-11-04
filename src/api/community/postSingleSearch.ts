@@ -11,7 +11,7 @@ const postSingleSearch = async (post_id: number) => {
     if (error.response?.data) {
       console.log('게시글 조회 실패: ', error.data);
     }
-    throw Error;
+    throw error;
   }
 };
 

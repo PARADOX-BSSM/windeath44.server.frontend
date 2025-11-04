@@ -35,7 +35,7 @@ const postCreate = async ({
     if (error.response?.data) {
       console.log(`게시글 작성 실패: ${JSON.stringify(error.response.data)}`);
     }
-    throw Error;
+    throw error;
   }
 };
 
