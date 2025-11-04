@@ -8,6 +8,7 @@ export type SavedTaskType = {
   instanceId?: string;
   name: string;
   position?: { top: number; left: number; width: number; height: number };
+  desktopIndex?: number;
 };
 
 export const taskManagerAtom = atom<TaskType[]>([]);
