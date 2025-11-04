@@ -109,7 +109,7 @@ const WindowManager = () => {
         string,
         { top: number; left: number; width: number; height: number }
       > = {};
-      lastTaskList.forEach((savedTask) => {
+      lastTaskList.map((tasks)=>tasks.forEach((savedTask) => {
         if (savedTask.position) {
           positions[savedTask.name] = savedTask.position;
           console.log(
@@ -119,7 +119,7 @@ const WindowManager = () => {
             savedTask.position,
           );
         }
-      });
+      }));
 
       // setTimeout 전에 positions 설정하고 확인
       setVirtualWindowPosition(positions);
@@ -128,7 +128,7 @@ const WindowManager = () => {
       // 위치 설정 후 조금 기다렸다가 앱 추가
       setTimeout(() => {
         console.log('[WindowManager] Now adding tasks...');
-        lastTaskList.forEach((savedTask) => {
+        lastTaskList.map((tasks)=>tasks.forEach((savedTask) => {
           const app = availableApps.find(
             (availableApp) =>
               availableApp.id === savedTask.id && availableApp.name === savedTask.name,
@@ -143,7 +143,7 @@ const WindowManager = () => {
             console.log('[WindowManager] Adding task:', savedTask.name);
             addTask(app);
           }
-        });
+        }));
       }, 500); // 위치 설정 후 여유있게 대기
     } else {
       console.log('[WindowManager] No tasks to restore');

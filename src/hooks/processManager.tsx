@@ -20,6 +20,7 @@ export const useProcessManager = (): [
   (positions: Record<string, Position>) => void
 ] => {
   const [globalTaskList, setGlobalTaskList] = useAtom(taskManagerAtom);
+  const [virtualTaskLists, ] = useAtom(virtualTaskListsAtom);
   const [virtualTaskList, addVirtualTask, removeVirtualTask] = useVirtualProcessManager();
   const [, setLastTaskList] = useAtom(lastTaskListAtom);
   const [windowPositions, setWindowPositions] = useAtom(windowPositionsAtom);
@@ -55,20 +56,24 @@ export const useProcessManager = (): [
       '이메일 인증','인증코드 입력','비밀번호 재설정',
       '공지사항','공지사항 뷰어',
     ];
-
-    const savedTasks: SavedTaskType[] = [...globalTaskList, ...virtualTaskList]
-      .filter(t => t.type === 'App' && !t.instanceId && !excludedPages.includes(t.name))
-      .map(t => ({
-        type: t.type,
-        id: t.id,
-        name: t.name,
-        position: t.type === 'Shell'
-          ? windowPositions[t.name]
-          : virtualWindowPositions[desktopIndex]?.[t.name],
-      }));
+    
+    const savedTasks: SavedTaskType[][] = virtualTaskLists.map((tasks, idx) =>
+      tasks
+        .filter(
+          (t) =>
+            !t.instanceId &&
+            !excludedPages.includes(t.name)
+        )
+        .map((t) => ({
+          type: t.type,
+          id: t.id,
+          name: t.name,
+          position: virtualWindowPositions[idx]?.[t.name],
+        }))
+    );
 
     setLastTaskList(savedTasks);
-  }, [globalTaskList, virtualTaskList, windowPositions, virtualWindowPositions, desktopIndex, setLastTaskList]);
+  }, [virtualTaskList, windowPositions, virtualWindowPositions, desktopIndex]);
 
   const addTask = (task: TaskType) => {
     if (task.type === 'Shell') {

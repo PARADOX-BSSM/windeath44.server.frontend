@@ -83,7 +83,7 @@ const TaskBar = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
                 style={isFocused ? _.taskSelectButtonStyle : _.taskButtonStyle}
                 key={task.instanceId || task.name}
                 onClick={(e) => {
-                  if(isFocused){
+                  if(!isFocused){
                     e.stopPropagation();
                     setFocus(task.instanceId || task.name);
                   }

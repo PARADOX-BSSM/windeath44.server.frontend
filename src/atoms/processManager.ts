@@ -11,7 +11,7 @@ export type SavedTaskType = {
 };
 
 export const taskManagerAtom = atom<TaskType[]>([]);
-export const lastTaskListAtom = atomWithStorage<SavedTaskType[]>('lastTaskList', []);
+export const lastTaskListAtom = atomWithStorage<SavedTaskType[][]>('lastTaskList',[[]]);
 export const windowPositionsAtom = atom<Record<string, { top: number; left: number; width: number; height: number }>>({});
 
 export const virtualDesktopIndexAtom = atom<number>(0);
