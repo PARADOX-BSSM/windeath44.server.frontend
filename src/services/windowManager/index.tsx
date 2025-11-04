@@ -173,8 +173,18 @@ const WindowManager = () => {
         appSetup: undefined,
         visible: false,
       };
+      const virtualDesktopService: TaskType = {
+        component: <></>,
+        type: 'Shell',
+        id: 1,
+        layer: -999,
+        name: 'Extender',
+        appSetup: undefined,
+        visible: false,
+      }
       setTimeout(() => {
         addTask(discover);
+        addTask(virtualDesktopService);
       }, 200);
     } else {
       setTimeout(() => {

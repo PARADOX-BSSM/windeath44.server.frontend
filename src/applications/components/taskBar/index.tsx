@@ -8,49 +8,29 @@ import StartImg from '@/assets/Start.svg';
 import { CURSOR_IMAGES, setCursorImage } from '@/lib/setCursorImg';
 import { useVirtualDesktopManager } from '@/hooks/virtualDesktopManager';
 
+
 interface TaskBarProps {
   backUpFocus: string;
   setBackUpFocus: React.Dispatch<React.SetStateAction<string>>;
 }
-
-// Virtual Desktop Switcher
-const VirtualDesktopSwitcher = () => {
-  const {
-    virtualDesktopList,
-    virtualCurrentDesktop,
-    switchVirtualDesktop,
-    addVirtualDesktop,
-  } = useVirtualDesktopManager(); // 훅 이름 수정
-
-  return (
-    <div className="flex gap-2 p-2 bg-gray-800 text-white">
-      {virtualDesktopList.map((id) => (
-        <button
-          key={id}
-          className={`px-3 py-1 rounded ${
-            id === virtualCurrentDesktop ? 'bg-blue-600' : 'bg-gray-600'
-          }`}
-          onClick={() => switchVirtualDesktop(id)}
-        >
-          Desktop {id}
-        </button>
-      ))}
-      <button onClick={addVirtualDesktop}>＋</button>
-    </div>
-  );
-};
 
 const TaskBar = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
   const [taskList] = useProcessManager();
   const [focus, setFocus] = useAtom(focusAtom);
   const [startOption, setStartOption] = useAtom(startOptionAtom);
 
+  const {
+    virtualDesktopList,
+    virtualCurrentDesktop,
+    switchVirtualDesktop,
+    addVirtualDesktop,
+  } = useVirtualDesktopManager();
+
   return (
     <_.TTaskBar id="taskbarContainer">
       <_.TaskList>
-        <VirtualDesktopSwitcher />
         {taskList.map((task) => {
-          if (task.type === 'Shell') {
+          if (task.name === 'Discover') {
             return (
               <_.Observer
                 key={task.name || 'observer'}
@@ -76,6 +56,28 @@ const TaskBar = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
                 />
               </_.Observer>
             );
+          } else if (task.name === 'Extender') {
+            return (
+              <>
+                {virtualDesktopList.map((id) => (
+                  <_.VirtualDesktopItem
+                    key={id}
+                    style={virtualCurrentDesktop === id ? _.taskSelectButtonStyle : _.taskButtonStyle}
+                    onClick={() => switchVirtualDesktop(id)}
+                    onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                    onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+                  >
+                    <_.TaskName>{id+1}</_.TaskName>
+                  </_.VirtualDesktopItem>
+                ))}
+                <_.VirtualDesktopItem 
+                  onClick={addVirtualDesktop} 
+                  style={_.taskButtonStyle}
+                  onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                  onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+                >＋</_.VirtualDesktopItem>  
+              </>
+            )
           } else {
             const isFocused = (task.instanceId || task.name) === focus;
             return (
