@@ -9,7 +9,7 @@ import {
 } from '@/atoms/windowManager.ts';
 import Discover from '@/applications/discover/index.tsx';
 import Observer from '@/applications/utility/observer/index.tsx';
-import { useProcessManager } from '@/hooks/processManager.tsx';
+import { useProcessManager, useVirtualProcessManager } from '@/hooks/processManager.tsx';
 import { TaskType } from '@/modules/typeModule.tsx';
 import { getTaskCreators } from './tasks';
 import { useTaskTransformFunction } from '@/hooks/taskTransformer.tsx';
@@ -39,6 +39,7 @@ const WindowManager = () => {
   const setNotification = useAtomValue(notificationAtom);
 
   const [taskList, addTask, removeTask, setVirtualWindowPosition] = useProcessManager();
+  const [,,,addTaskToDesktop] = useVirtualProcessManager();
   const { logIn, signUp, emailChack, auth } = getTaskCreators(setIsLogIned, addTask, removeTask);
   const availableApps = useApps();
   const isDragging = useRef(false);
@@ -105,25 +106,27 @@ const WindowManager = () => {
       console.log('[WindowManager] Restoring tasks:', lastTaskList);
 
       // 위치 정보를 windowPositionsAtom에 먼저 복원
-      const positions: Record<
-        string,
-        { top: number; left: number; width: number; height: number }
-      > = {};
-      lastTaskList.map((tasks)=>tasks.forEach((savedTask) => {
-        if (savedTask.position) {
-          positions[savedTask.name] = savedTask.position;
-          console.log(
-            '[WindowManager] Will restore position for',
-            savedTask.name,
-            ':',
-            savedTask.position,
-          );
-        }
-      }));
+      lastTaskList.map((tasks, index)=>{
+        const positions: Record<
+          string,
+          { top: number; left: number; width: number; height: number }
+        > = {};
+        tasks.forEach((savedTask) => {
+          if (savedTask.position) {
+            positions[savedTask.name] = savedTask.position;
+            console.log(
+              '[WindowManager] Will restore position for',
+              savedTask.name,
+              ':',
+              savedTask.position,
+            );
+          }
+        })
+        setVirtualWindowPosition(positions, index);
+        console.log('[WindowManager] Set windowPositions to:', positions);
+      });
 
       // setTimeout 전에 positions 설정하고 확인
-      setVirtualWindowPosition(positions);
-      console.log('[WindowManager] Set windowPositions to:', positions);
 
       // 위치 설정 후 조금 기다렸다가 앱 추가
       setTimeout(() => {
@@ -141,7 +144,7 @@ const WindowManager = () => {
           );
           if (app) {
             console.log('[WindowManager] Adding task:', savedTask.name);
-            addTask(app);
+            addTaskToDesktop(app, savedTask.desktopIndex || 0);
           }
         }));
       }, 500); // 위치 설정 후 여유있게 대기
