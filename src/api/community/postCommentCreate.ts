@@ -7,7 +7,7 @@ interface PostCommentCreateInterface {
   post_id: number;
   user_id: string;
   body: string;
-  parentCommentId: number;
+  parentCommentId?: number | null;
 }
 
 interface PostCommentResponse {

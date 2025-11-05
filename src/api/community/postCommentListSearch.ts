@@ -18,7 +18,7 @@ const postCommentListSearch = async (post_id: number) => {
 export const usePostCommentListSearch = (post_id: number) => {
   return useQuery({
     queryKey: ['postComment', post_id],
-    queryFn: () => postCommentListSearch,
+    queryFn: () => postCommentListSearch(post_id),
     staleTime: 5 * 60 * 1000, // 5분 동안 fresh상태 유지
     gcTime: 10 * 60 * 1000, // 10분 동안 캐시 유지
   });

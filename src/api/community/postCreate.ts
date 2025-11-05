@@ -21,7 +21,6 @@ const postCreate = async ({
   isBlind,
 }: postCreateInterface) => {
   const data = JSON.stringify({
-    user_id: user_id,
     characterId: characterId,
     title: title,
     body: body,
@@ -29,7 +28,9 @@ const postCreate = async ({
     isBlind: isBlind,
   });
   try {
-    const response: AxiosResponse = await api.post(`${community}/posts`, data);
+    const response: AxiosResponse = await api.post(`${community}/posts`, data, {
+      headers: { 'user-id': user_id },
+    });
     return true;
   } catch (error: any) {
     if (error.response?.data) {

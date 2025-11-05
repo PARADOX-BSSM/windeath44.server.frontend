@@ -11,12 +11,12 @@ interface postListSearchInterface {
 }
 
 const postListSearch = async ({ title, isBlind, characterId, status }: postListSearchInterface) => {
-  const data = JSON.stringify({
+  const data = {
     title: title,
     is_blind: isBlind,
     character_id: characterId,
     status: status,
-  });
+  };
   try {
     const response: AxiosResponse = await api.post(`${community}/posts/list`, data);
     console.log(data);

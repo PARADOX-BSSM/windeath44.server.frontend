@@ -9,7 +9,7 @@ const postDelete = async (post_id: number) => {
     return response.data;
   } catch (error: any) {
     if (error.response?.data) {
-      console.log('게시글 삭제 실패', Error);
+      console.log('게시글 삭제 실패', error);
     }
     throw error;
   }
