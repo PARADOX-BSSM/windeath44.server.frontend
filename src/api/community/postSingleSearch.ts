@@ -3,9 +3,20 @@ import { AxiosResponse } from 'axios';
 import { community } from '@/config';
 import api from '../axiosInstance';
 
+interface postData {
+  postId: number;
+  userId: string;
+  name: string;
+  profile: string;
+  title: string;
+  body: string;
+  createdAt: string;
+  likesCount: number;
+  commentCount: number;
+}
 const postSingleSearch = async (post_id: number) => {
   try {
-    const response: AxiosResponse = await api.get(`${community}/posts/${post_id}`);
+    const response: AxiosResponse<postData> = await api.get(`${community}/posts/${post_id}`);
     return response.data;
   } catch (error) {
     if (error instanceof Error) {

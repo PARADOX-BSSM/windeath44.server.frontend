@@ -21,13 +21,14 @@ interface Post {
 interface PostsProps {
   user: User;
   post: Post;
+  onClick: (() => void) | ((e: React.MouseEvent<HTMLDivElement>) => Promise<void> | void);
 }
-const Posts: React.FC<PostsProps> = ({ user, post }) => {
+const PostPreview: React.FC<PostsProps> = ({ user, post, onClick }) => {
   const { name, userId, profile = '' } = user;
   const { title, body, commentCount = 0, likesCount = 0, postImage = '', createdAt } = post;
 
   return (
-    <_.Post onClick={() => {}}>
+    <_.Post onClick={() => onClick()}>
       <_.Main>
         <_.ProfileImg imgUrl={profile || ProfileImg} />
         <_.PostMain>
@@ -67,4 +68,4 @@ const Posts: React.FC<PostsProps> = ({ user, post }) => {
   );
 };
 
-export default Posts;
+export default PostPreview;

@@ -6,40 +6,42 @@ import CommentIcon from '@/assets/community/comment.svg';
 import KebabIcon from '@/assets/community/kebab_icon.svg';
 import { parseCustomContent } from '@/lib/customTag/parseCustomContent';
 
-interface PostData {
-  postId: number;
-  userId: string;
+interface User {
   name: string;
-  profile: string;
+  userId: string;
+  profile?: string;
+}
+interface Post {
+  postId?: number;
   title: string;
   body: string;
-  createdAt: string;
-  likesCount: number;
   commentCount: number;
+  likesCount: number;
+  createdAt: string;
 }
-
 interface PostsProps {
-  postData: PostData;
+  user: User;
+  post: Post;
 }
 
-const Posts: React.FC<PostsProps> = ({ postData }) => {
+const Posts: React.FC<PostsProps> = ({ user, post }) => {
   const arr: string[] = [];
-  const parsedContent = parseCustomContent(arr, postData.body);
+  const parsedContent = parseCustomContent(arr, post.body);
 
   return (
     <_.Post>
       <_.Main>
-        <_.ProfileImg imgUrl={postData.profile || ProfileImg} />
+        <_.ProfileImg imgUrl={user.profile || ProfileImg} />
         <_.PostMain>
           <_.PostInfo>
-            <_.Name>{postData.name}</_.Name>
-            <_.UserId>@{postData.userId}</_.UserId>
+            <_.Name>{user.name}</_.Name>
+            <_.UserId>@{user.userId}</_.UserId>
           </_.PostInfo>
           <_.Content>
-            <_.PostTitle>{postData.title}</_.PostTitle>
+            <_.PostTitle>{post.title}</_.PostTitle>
             <_.PostContent>{parsedContent}</_.PostContent>
           </_.Content>
-          <_.Datetime>{postData.createdAt}</_.Datetime>
+          <_.Datetime>{post.createdAt}</_.Datetime>
           <_.PostInfo>
             <_.Icons>
               <_.Icon
@@ -48,7 +50,7 @@ const Posts: React.FC<PostsProps> = ({ postData }) => {
                 width="10px"
                 height="10px"
               />
-              {postData.likesCount}
+              {post.likesCount}
             </_.Icons>
             <_.Icons>
               <_.Icon
@@ -57,7 +59,7 @@ const Posts: React.FC<PostsProps> = ({ postData }) => {
                 width="10px"
                 height="10px"
               />
-              {postData.commentCount}
+              {post.commentCount}
             </_.Icons>
           </_.PostInfo>
         </_.PostMain>

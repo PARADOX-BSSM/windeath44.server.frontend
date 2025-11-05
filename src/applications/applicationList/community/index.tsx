@@ -5,7 +5,7 @@ import MemorialBtn from '@/applications/components/memorialBtn';
 import CommunityBtn from '@/applications/components/communityBtn';
 import FilterBlock from '@/applications/components/filterBlock';
 import Inputs from '@/applications/components/inputs';
-import Posts from '@/applications/components/posts';
+import PostPreview from '@/applications/components/postPreview';
 import { useAtomValue } from 'jotai';
 import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer';
 import HommerBackground from '@/assets/community/homer_background.png';
@@ -21,16 +21,17 @@ enum sortOption {
 }
 interface User {
   name: string;
-  id: string;
-  profileImage: string;
+  userId: string;
+  profile?: string;
 }
 interface Post {
+  postId: number;
   title: string;
-  content: string;
+  body: string;
   postImage: string;
-  comment: number;
-  heart: number;
-  datetime: string;
+  commentCount: number;
+  likesCount: number;
+  createdAt: string;
 }
 interface dataStructureProps {
   stack: any[];
@@ -155,15 +156,16 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
                   post={{title:data.title, content:"", datetime:data.created_at}}
                 />
           })*/}
-          <Posts
-            user={{ name: '방태양', id: 'noah_byte', profileImage: '' }}
+          <PostPreview
+            user={{ name: '방태양', userId: 'noah_byte' }}
             post={{
+              postId: 1,
               title: '아니 얘가 벌써 죽는다고?',
-              content: '아니 이건 진짜 아니지. 살려내라.',
+              body: '아니 이건 진짜 아니지. 살려내라.',
               postImage: '',
-              datetime: '2025년 09월 14일 AM 8:47',
-              heart: 12,
-              comment: 20,
+              createdAt: '2025년 09월 14일 AM 8:47',
+              likesCount: 12,
+              commentCount: 20,
             }}
             onClick={() => push(taskSearch?.('communityPost', stackProps))}
           />
