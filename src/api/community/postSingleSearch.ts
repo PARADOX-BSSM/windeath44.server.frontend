@@ -7,17 +7,19 @@ const postSingleSearch = async (post_id: number) => {
   try {
     const response: AxiosResponse = await api.get(`${community}/posts/${post_id}`);
     return response.data;
-  } catch (error: any) {
-    if (error.response?.data) {
-      console.log('게시글 조회 실패: ', error.data);
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error('게시글 조회 실패:', error.message);
     }
     throw error;
   }
 };
 
 export const usePostSingleSearch = (post_id: number) => {
-  useQuery({
+  return useQuery({
     queryKey: ['post', post_id],
-    queryFn: () => postSingleSearch,
+    queryFn: () => postSingleSearch(post_id),
+    staleTime: 5 * 60 * 1000, // 5분 동안 fresh상태 유지
+    gcTime: 10 * 60 * 1000, // 10분 동안 캐시 유지
   });
 };
