@@ -187,6 +187,13 @@ const WindowManager = () => {
     setTimeout(() => {
       setNotification?.([
         {
+          title: '[공지] 정식 출시 안내 및 데이터 초기화 공지',
+          content:
+            'https://cdn.discordapp.com/attachments/1435047224550883481/1435434858989092905/dsf.png?ex=690bf463&is=690aa2e3&hm=cd24dbbbebd27ed01335798e16d9eba6c5c5686a5bd17b8b16fac4eb7959874e&',
+          is_image: true,
+          created_at: '2025-11-05T10:10:00',
+        },
+        {
           title: '서비스 복구 안내',
           content:
             'https://cdn.discordapp.com/attachments/1435047224550883481/1435047874366017556/Frame_29.png?ex=690a8bfb&is=69093a7b&hm=58ec03d50000631635ca310d15b6e95498d01a747d1cecc974b076f6c6c36c66&',
