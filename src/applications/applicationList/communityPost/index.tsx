@@ -8,6 +8,10 @@ import { useAtomValue } from 'jotai';
 import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer';
 import HommerBackground from '@/assets/community/homer_background.png';
 import Hommer from '@/assets/community/hommer.svg';
+import Seori from '@/assets/sulkkagi/black_stone.svg';
+import { alerterAtom } from '@/atoms/alerter';
+import { usePostSingleSearch } from '@/api/community/postSingleSearch';
+import { usePostCommentListSearch } from '@/api/community/postCommentListSearch';
 
 interface dataStructureProps {
   stack: any[];
@@ -26,6 +30,7 @@ const CommunityPost = ({ stack, push, pop, top }: dataStructureProps) => {
 
   const taskSearch = useAtomValue(taskSearchAtom);
   const taskTransform = useAtomValue(taskTransformerAtom);
+  const setAlert = useAtomValue(alerterAtom);
 
   return (
     <_.Container>

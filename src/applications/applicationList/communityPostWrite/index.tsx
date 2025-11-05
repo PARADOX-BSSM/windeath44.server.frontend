@@ -5,6 +5,10 @@ import CommunityBtn from '@/applications/components/communityBtn';
 import ChevronIcon from '@/assets/community/chevron-left.svg';
 import { usePostCreate } from '@/api/community/postCreate';
 import { useGetUserMutation } from '@/api/user/getUser';
+import Seori from '@/assets/sulkkagi/black_stone.svg';
+import { alerterAtom } from '@/atoms/alerter';
+import { useAtomValue } from 'jotai';
+import { taskTransformerAtom } from '@/atoms/taskTransformer';
 
 const CommunityPostWrite: React.FC = () => {
   const postCreateMutation = usePostCreate();
@@ -13,6 +17,9 @@ const CommunityPostWrite: React.FC = () => {
   const [loadPage, setLoadPage] = useState(false);
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
+
+  const taskTransform = useAtomValue(taskTransformerAtom);
+  const setAlert = useAtomValue(alerterAtom);
 
   useEffect(() => {
     getUser();
@@ -38,7 +45,11 @@ const CommunityPostWrite: React.FC = () => {
           setBody('');
         },
         onError: () => {
-          console.log('게시글 작성 중 에러 발생');
+          if (setAlert) {
+            setAlert(Seori, <>게시글이 작성되지 않았습니다.</>, () => {
+              taskTransform?.('경고', '');
+            });
+          }
         },
       },
     );
