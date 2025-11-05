@@ -3,45 +3,43 @@ import * as _ from './style';
 import ProfileImg from '@/assets/profile/choten.svg';
 import Heart from '@/assets/community/heart_line.svg';
 import CommentIcon from '@/assets/community/comment.svg';
-import KebabIcon from '@/assets/community/kebab_icon.svg';
-import { parseCustomContent } from '@/lib/customTag/parseCustomContent';
 
 interface User {
   name: string;
-  id: string;
-  profileImage: string;
+  userId: string;
+  profile?: string;
 }
 interface Post {
+  postId: number;
   title: string;
-  content: string;
+  body: string;
   postImage: string;
-  comment: number;
-  heart: number;
-  datetime: string;
+  commentCount: number;
+  likesCount: number;
+  createdAt: string;
 }
 interface PostsProps {
   user: User;
   post: Post;
-  detail?: boolean;
-  onClick?: (() => void) | ((e: React.MouseEvent<HTMLDivElement>) => Promise<void> | void);
 }
-const Posts: React.FC<PostsProps> = ({ user, post, detail = false, onClick }) => {
-  const { name, id, profileImage = '' } = user;
-  const { title, content, comment = 0, heart = 0, postImage = '', datetime } = post;
+const Posts: React.FC<PostsProps> = ({ user, post }) => {
+  const { name, userId, profile = '' } = user;
+  const { title, body, commentCount = 0, likesCount = 0, postImage = '', createdAt } = post;
+
   return (
-    <_.Post onClick={onClick}>
+    <_.Post onClick={() => {}}>
       <_.Main>
-        <_.ProfileImg imgUrl={profileImage || ProfileImg} />
+        <_.ProfileImg imgUrl={profile || ProfileImg} />
         <_.PostMain>
           <_.PostInfo>
             <_.Name>{name}</_.Name>
-            <_.UserId>@{id}</_.UserId>
+            <_.UserId>@{userId}</_.UserId>
           </_.PostInfo>
           <_.Content>
             <_.PostTitle>{title}</_.PostTitle>
-            <_.PostContent>{content}</_.PostContent>
+            <_.PostContent>{body}</_.PostContent>
           </_.Content>
-          <_.Datetime>{datetime}</_.Datetime>
+          <_.Datetime>{createdAt}</_.Datetime>
           <_.PostInfo>
             <_.Icons>
               <_.Icon
@@ -50,7 +48,7 @@ const Posts: React.FC<PostsProps> = ({ user, post, detail = false, onClick }) =>
                 width="10px"
                 height="10px"
               />
-              {comment}
+              {commentCount}
             </_.Icons>
             <_.Icons>
               <_.Icon
@@ -59,21 +57,12 @@ const Posts: React.FC<PostsProps> = ({ user, post, detail = false, onClick }) =>
                 width="10px"
                 height="10px"
               />
-              {heart}
+              {likesCount}
             </_.Icons>
           </_.PostInfo>
         </_.PostMain>
       </_.Main>
-      {detail ? (
-        <_.Icon
-          src={KebabIcon}
-          alt="moreButton"
-          width="20px"
-          height="20px"
-        />
-      ) : (
-        <_.PostImg imgUrl={postImage} />
-      )}
+      <_.PostImg imgUrl={postImage} />
     </_.Post>
   );
 };

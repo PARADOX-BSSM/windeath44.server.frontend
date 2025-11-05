@@ -41,7 +41,6 @@ interface dataStructureProps {
 
 const Community = ({ stack, push, pop, top }: dataStructureProps) => {
   const postData = usePostListSearch();
-  if (postData) console.log(postData, '데이터 불러옴');
 
   useEffect(() => {
     postData.mutate({});

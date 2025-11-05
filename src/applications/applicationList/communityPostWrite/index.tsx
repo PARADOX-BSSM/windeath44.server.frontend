@@ -19,14 +19,14 @@ const CommunityPostWrite: React.FC = () => {
   }, []);
 
   const postCreate = () => {
-    if (!currentUserId) {
+    /*if (!currentUserId) {
       console.log('유저 정보가 없습니다');
       return;
-    }
+    }*/
 
     postCreateMutation.mutate(
       {
-        user_id: currentUserId,
+        user_id: 'testid',
         title: title,
         body: body,
         status: 'PUBLISHED',
