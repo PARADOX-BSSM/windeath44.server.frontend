@@ -54,8 +54,8 @@ const CommunityPost = ({ stack, push, pop, top }: dataStructureProps) => {
           />
           <CommentInput
             name="방태양"
-            id="noah_byte"
-            profileImage=""
+            userId="noah_byte"
+            postId={1}
           />
           <Comment
             user={{ name: '방태양', id: 'noah_byte', profileImage: '' }}

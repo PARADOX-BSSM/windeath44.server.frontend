@@ -14,14 +14,14 @@ interface CommentInputProps {
   name: string;
   userId: string;
   postId: number;
-  profileImage: string;
+  profile?: string;
   parentCommentId?: number | null;
 }
 const CommentInput: React.FC<CommentInputProps> = ({
   name,
   userId,
   postId,
-  profileImage,
+  profile = '',
   parentCommentId,
 }) => {
   const postCreateCommentMutation = usePostCommentCreate();
@@ -57,7 +57,7 @@ const CommentInput: React.FC<CommentInputProps> = ({
   return (
     <_.Post>
       <_.Line></_.Line>
-      <_.ProfileImg imgUrl={profileImage || ProfileImg} />
+      <_.ProfileImg imgUrl={profile || ProfileImg} />
       <_.PostMain>
         <_.PostInfo>
           <_.Name>{name}</_.Name>
