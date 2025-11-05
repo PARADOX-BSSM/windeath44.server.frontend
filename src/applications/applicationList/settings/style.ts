@@ -77,10 +77,14 @@ export const RadioButtonIcon = styled.div`
     width: 100%;
     height: 100%;
     max-width: none;
+    user-select: none;
+    -webkit-user-drag: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
   }
 `;
 
-export const CheckboxIcon = styled.div<{ checked: boolean }>`
+export const CheckboxContainer = styled.div`
   width: 19.5px;
   height: 19.5px;
   background: white;
@@ -90,24 +94,19 @@ export const CheckboxIcon = styled.div<{ checked: boolean }>`
     inset 1.5px 1.5px 0px 0px var(--Black, #2e2e2e),
     inset -3px -3px 0px 0px var(--dark-primary-color, #dcafdd),
     inset 3px 3px 0px 0px var(--dark-primary-color, #dcafdd);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
 
-  ${({ checked }) =>
-    checked &&
-    `
-    &::after {
-      content: '';
-      position: absolute;
-      left: 23.08%;
-      top: 23.08%;
-      right: 15.38%;
-      bottom: 15.38%;
-      width: 10.5px;
-      height: 10.5px;
-      background-image: url('http://localhost:3845/assets/d9ead7b44aaf089073cb31ba3fa9c37fc02f8616.svg');
-      background-size: contain;
-      background-repeat: no-repeat;
-    }
-  `}
+export const CheckIcon = styled.img`
+  width: 12px;
+  height: 12px;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 `;
 
 export const LabelText = styled.p`

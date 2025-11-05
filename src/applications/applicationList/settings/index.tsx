@@ -2,9 +2,9 @@ import * as _ from './style';
 import { useAtom } from 'jotai';
 import { settingsAtom, settingsConfig, type SettingsState } from '@/atoms/settings';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
-
-const radioButtonSelected = 'http://localhost:3845/assets/95657640fe36fee6c1e4de89f9edf3543959ea37.svg';
-const radioButtonUnselected = 'http://localhost:3845/assets/e2a6764f10f473ad3025a6ba7c33ccb1059c0831.svg';
+import radioButtonSelected from '@/assets/radio/selected.svg';
+import radioButtonUnselected from '@/assets/radio/unselected.svg';
+import checkIcon from '@/assets/checkbox/check.svg';
 
 const Settings = () => {
   const [settings, setSettings] = useAtom(settingsAtom);
@@ -37,6 +37,7 @@ const Settings = () => {
                           <img
                             src={settings[item.key] === option.value ? radioButtonSelected : radioButtonUnselected}
                             alt={`${option.label} radio`}
+                            draggable={false}
                           />
                         </_.RadioButtonIcon>
                         <_.LabelText>{option.label}</_.LabelText>
@@ -60,7 +61,9 @@ const Settings = () => {
                         onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
                         onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
                       >
-                        <_.CheckboxIcon checked={Boolean(settings[item.key])} />
+                        <_.CheckboxContainer>
+                          {Boolean(settings[item.key]) && <_.CheckIcon src={checkIcon} alt="check" draggable={false} />}
+                        </_.CheckboxContainer>
                         <_.LabelText>{item.label}</_.LabelText>
                         <_.HiddenInput
                           type="checkbox"
