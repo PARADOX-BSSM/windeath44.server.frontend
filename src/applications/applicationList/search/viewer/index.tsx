@@ -56,7 +56,7 @@ const Viewer = ({
                         key={character.characterId}
                         icon={character.imageUrl || ''}
                         name={character.name}
-                        animation={character.animeId}
+                        animeId={character.animeId}
                         onDoubleClick={() => {
                           const characterId = character.characterId;
                           let targetMemorialId = relatedMemorials[0].memorialId;
