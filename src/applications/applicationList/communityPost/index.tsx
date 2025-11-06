@@ -13,14 +13,15 @@ import { alerterAtom } from '@/atoms/alerter';
 import { usePostSingleSearch } from '@/api/community/postSingleSearch';
 import { usePostCommentListSearch } from '@/api/community/postCommentListSearch';
 
-interface dataStructureProps {
+interface postProps {
   stack: any[];
   push: any;
   pop: any;
   top: any;
+  postId: number;
 }
 
-const CommunityPost = ({ stack, push, pop, top }: dataStructureProps) => {
+const CommunityPost = ({ stack, push, pop, top, postId }: postProps) => {
   const stackProps = {
     stack: stack,
     push: push,
@@ -55,7 +56,7 @@ const CommunityPost = ({ stack, push, pop, top }: dataStructureProps) => {
           <CommentInput
             name="방태양"
             userId="noah_byte"
-            postId={1}
+            postId={postId}
           />
           <Comment
             user={{ name: '방태양', id: 'noah_byte', profileImage: '' }}

@@ -151,11 +151,24 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
           </_.InputArea>
         )}
         <_.PostArea>
-          {/*postData.map(data=>{
-              <Posts user={{name:"방태양", id:"noah_byte", profileImage:""}}
-                  post={{title:data.title, content:"", datetime:data.created_at}}
-                />
-          })*/}
+          {postData.data?.posts?.map((data) => (
+            <PostPreview
+              key={data.postId}
+              user={{ name: data.name, userId: data.userId, profile: data.profile }}
+              post={{
+                postId: data.postId,
+                title: data.title,
+                body: data.body,
+                postImage: '',
+                createdAt: data.createdAt,
+                likesCount: data.likesCount || 0,
+                commentCount: data.commentCount || 0,
+              }}
+              onClick={() =>
+                push(taskSearch?.('communityPost', { ...stackProps, postId: data.postId }))
+              }
+            />
+          ))}
           <PostPreview
             user={{ name: '방태양', userId: 'noah_byte' }}
             post={{

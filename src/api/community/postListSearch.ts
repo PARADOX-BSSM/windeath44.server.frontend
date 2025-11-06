@@ -9,7 +9,24 @@ interface postListSearchInterface {
   characterId?: number;
   status?: string;
 }
-
+interface postListSearchResponse {
+  message: string;
+  posts: {
+    postId: number;
+    userId: string;
+    name: string;
+    profile: string;
+    title: string;
+    body: string;
+    status: string;
+    isBlind: boolean;
+    createdAt: string;
+    updatedAt: string;
+    viewCount: number;
+    likesCount: number;
+    commentCount?: number;
+  }[];
+}
 const postListSearch = async ({ title, isBlind, characterId, status }: postListSearchInterface) => {
   const data = {
     title: title,
@@ -18,7 +35,10 @@ const postListSearch = async ({ title, isBlind, characterId, status }: postListS
     status: status,
   };
   try {
-    const response: AxiosResponse = await api.post(`${community}/posts/list`, data);
+    const response: AxiosResponse<postListSearchResponse> = await api.post(
+      `${community}/posts/list`,
+      data,
+    );
     console.log(data);
     return response.data;
   } catch (error: any) {
