@@ -285,5 +285,5 @@ const Search = () => {
     </_.main>
   );
 };
-
+s
 export default Search;

@@ -24,6 +24,7 @@ export const useGetAnimeQuery = (animeId: number, enabled: boolean = true) => {
     queryKey: ['anime', animeId],
     queryFn: () => getAnime(animeId),
     enabled: enabled && !!animeId,
-    staleTime: 10 * 60 * 1000, // 10분간 캐시
+    staleTime: Infinity, // 애니메이션 정보는 변경되지 않으므로 무한 캐시
+    gcTime: 1000 * 60 * 60 * 24, // 24시간 동안 메모리에 유지
   });
 };
