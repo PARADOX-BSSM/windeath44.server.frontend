@@ -6,10 +6,25 @@ import { parseCustomContent } from '@/lib/customTag/parseCustomContent';
 import ribbon from '@/assets/memorial_ribbon.svg';
 import { useMemo, useState } from 'react';
 
+// 날짜 포맷팅 함수
+const formatDate = (dateString: string) => {
+  const d = new Date(dateString);
+  const Y = d.getFullYear();
+  const M = String(d.getMonth() + 1).padStart(2, '0');
+  const D = String(d.getDate()).padStart(2, '0');
+  let h = d.getHours();
+  const m = String(d.getMinutes()).padStart(2, '0');
+  const ampm = h >= 12 ? '오후' : '오전';
+  if (h > 12) h -= 12;
+  if (h === 0) h = 12;
+  return `${Y}-${M}-${D}. ${ampm} ${h}:${m}`;
+};
+
 const MemorialPreview = () => {
   const [inputValue] = useAtom(inputPortage);
   const [contentIn] = useAtom(inputContent);
   const [indexData, setIndexData] = useState<string[]>([]);
+  const currentDate = new Date().toISOString();
 
   // content가 변경될 때마다 파싱하여 목차 업데이트
   const parsedContent = useMemo(() => {
@@ -27,7 +42,7 @@ const MemorialPreview = () => {
             <_.Header>
               <_.TextContainer>
                 <_.Title>{inputValue.name}</_.Title>
-                <_.Subtitle>최근 수정: 2025-07-04 12:34:56</_.Subtitle>
+                <_.Subtitle>최근 수정: {formatDate(currentDate)}</_.Subtitle>
               </_.TextContainer>
               <_.CurrentPage>문서 수정본 미리보기</_.CurrentPage>
             </_.Header>
