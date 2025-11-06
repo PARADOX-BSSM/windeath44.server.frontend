@@ -14,6 +14,7 @@ import chatbot from '@/assets/appIcons/ChatBot.svg';
 import chatbotRejection from '@/assets/appIcons/ChatBotRejection.svg';
 import game from '@/assets/appIcons/game.svg';
 import sulkkagi from '@/assets/sulkkagi/black_stone.svg';
+import community from '@/assets/appIcons/community.svg';
 
 import Sulkkagi from '../applicationList/sulkkagi';
 import SulkkagiApproach from '../applicationList/sulkkagiApproach';
@@ -787,7 +788,7 @@ const useApps = (): TaskType[] => {
       name: '커뮤니티',
       layer: undefined,
       appSetup: {
-        Image: 'default',
+        Image: community,
         minWidth: 700,
         minHeight: 562,
         setUpWidth: 800,
