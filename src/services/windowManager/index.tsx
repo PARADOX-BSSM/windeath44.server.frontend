@@ -234,36 +234,41 @@ const WindowManager = () => {
     }
   }, [hydrated, settings, isLogIned, notificationsData, setNotification]);
 
-  const resizeObserver = new ResizeObserver((_entries) => {
-    requestAnimationFrame(() => {
-      const container = document.getElementById('cursorContainer') as HTMLElement;
-      const cursor = document.getElementById('cursor');
-      if (!container || !cursor) return;
-
-      cursor.style.zIndex = '9990';
-      const bounds = container.getBoundingClientRect();
-
-      const handleMouseMove = (event: MouseEvent) => {
-        let x = event.clientX - bounds.x + bounds.left;
-        let y = event.clientY - bounds.y;
-        x = Math.max(bounds.left, Math.min(bounds.width - 1 + bounds.left, x));
-        y = Math.max(0, Math.min(bounds.height - 1, y));
-        cursor.style.left = `${x}px`;
-        cursor.style.top = `${y}px`;
-        setCursorVec([x, y]);
-      };
-
-      // 중복 등록 방지
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mousemove', handleMouseMove);
-    });
-  });
-
   useEffect(() => {
+    const container = document.getElementById('cursorContainer') as HTMLElement;
+    const cursor = document.getElementById('cursor');
+    if (!container || !cursor) return;
+
+    cursor.style.zIndex = '9990';
+
+    const handleMouseMove = (event: MouseEvent) => {
+      const bounds = container.getBoundingClientRect();
+      let x = event.clientX - bounds.x + bounds.left;
+      let y = event.clientY - bounds.y;
+      x = Math.max(bounds.left, Math.min(bounds.width - 1 + bounds.left, x));
+      y = Math.max(0, Math.min(bounds.height - 1, y));
+      cursor.style.left = `${x}px`;
+      cursor.style.top = `${y}px`;
+      setCursorVec([x, y]);
+    };
+
+    const resizeObserver = new ResizeObserver((_entries) => {
+      requestAnimationFrame(() => {
+        // bounds를 다시 계산하도록 트리거
+        const bounds = container.getBoundingClientRect();
+      });
+    });
+
     const display = document.getElementById('display');
     if (display) resizeObserver.observe(display);
-    return () => resizeObserver.disconnect();
-  }, [settings]);
+
+    document.addEventListener('mousemove', handleMouseMove);
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      resizeObserver.disconnect();
+    };
+  }, [settings, sideWidth]);
 
 
   useEffect(() => {
