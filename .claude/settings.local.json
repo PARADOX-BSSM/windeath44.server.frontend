@@ -13,7 +13,8 @@
       "Bash(npm run dev:*)",
       "mcp__apidog__read_project_oas_31b1m9",
       "mcp__apidog__refresh_project_oas_31b1m9",
-      "Bash(xargs sed:*)"
+      "Bash(xargs sed:*)",
+      "Bash(curl:*)"
     ],
     "deny": [],
     "ask": [],
@@ -21,8 +22,8 @@
       "/Users/rsc/Desktop/프로젝트/windeath44.server.frontend/src/applications/applicationList"
     ]
   },
+  "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "apidog"
-  ],
-  "enableAllProjectMcpServers": true
+  ]
 }

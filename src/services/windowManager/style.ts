@@ -2,9 +2,10 @@ import styled from "@emotion/styled";
 import bgImg from '@/assets/Background.svg';
 import skeleton from '@/assets/skeleton.png';
 
-export const Display = styled.main`
+export const Display = styled.main<{is43:boolean}>`
     height : 100vh;
-    aspect-ratio: 4/3;
+    width : 100vw;
+    ${({ is43 }) => is43 ? `aspect-ratio: 4/3;` : ``}
     inset: 0;
     margin: 0 auto;
     cursor: none;

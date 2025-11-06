@@ -1,3 +1,3 @@
 import { atom } from 'jotai';
 
-export const versionAtom = atom<string>('0.4.9');
+export const versionAtom = atom<string>('0.4.10');
