@@ -36,9 +36,13 @@ const getMemorialsByIds = async (memorialIds: number[]): Promise<GetMemorialsByI
 };
 
 export const useGetMemorialsByIdsQuery = (memorialIds: number[], enabled: boolean = true) => {
+  // 배열을 정렬하여 queryKey 생성 - 순서가 달라도 같은 ID 세트면 캐시 재사용
+  const sortedIds = [...memorialIds].sort((a, b) => a - b);
+
   return useQuery({
-    queryKey: ['memorialsByIds', memorialIds],
+    queryKey: ['memorialsByIds', sortedIds],
     queryFn: () => getMemorialsByIds(memorialIds),
     enabled: enabled && memorialIds.length > 0,
+    staleTime: 60 * 1000, // 1분 캐시
   });
 };
