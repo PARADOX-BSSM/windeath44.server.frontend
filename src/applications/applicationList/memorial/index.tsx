@@ -485,7 +485,8 @@ const Memorial = ({
         animeId: characterData.animeId,
         age: characterData.age,
         profileImage: characterData.imageUrl,
-        phrase: '',
+        phrase: characterData.saying,
+        causeOfDeathDetails: characterData.causeOfDeathDetails || '',
       });
 
       // taskTransform으로 캐릭터 정보와 추모관 데이터 전달

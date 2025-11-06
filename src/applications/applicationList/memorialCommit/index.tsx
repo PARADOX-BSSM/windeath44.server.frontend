@@ -98,12 +98,25 @@ const MemorialCommit = ({
                   <_.CharacterInformationRow>
                     <_.CharacterInformationRowAttribute>
                       <_.CharacterInformationRowAttributeText>
-                        생존 기간
+                        사인(死因)
                       </_.CharacterInformationRowAttributeText>
                     </_.CharacterInformationRowAttribute>
                     <_.CharacterInformationRowValue>
                       <_.CharacterInformationRowValueText>
-                        {characterData.lifeTime}화
+                        {characterData.deathReason}
+                      </_.CharacterInformationRowValueText>
+                    </_.CharacterInformationRowValue>
+                  </_.CharacterInformationRow>
+
+                  <_.CharacterInformationRow>
+                    <_.CharacterInformationRowAttribute>
+                      <_.CharacterInformationRowAttributeText>
+                        상세 사인
+                      </_.CharacterInformationRowAttributeText>
+                    </_.CharacterInformationRowAttribute>
+                    <_.CharacterInformationRowValue>
+                      <_.CharacterInformationRowValueText>
+                        {characterData.causeOfDeathDetails}
                       </_.CharacterInformationRowValueText>
                     </_.CharacterInformationRowValue>
                   </_.CharacterInformationRow>
