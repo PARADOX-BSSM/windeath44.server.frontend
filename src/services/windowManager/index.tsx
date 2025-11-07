@@ -9,7 +9,7 @@ import {
 } from '@/atoms/windowManager.ts';
 import Discover from '@/applications/discover/index.tsx';
 import Observer from '@/applications/utility/observer/index.tsx';
-import { useProcessManager } from '@/hooks/processManager.tsx';
+import { useProcessManager, useVirtualProcessManager } from '@/hooks/processManager.tsx';
 import { TaskType } from '@/modules/typeModule.tsx';
 import { getTaskCreators } from './tasks';
 import { useTaskTransformFunction } from '@/hooks/taskTransformer.tsx';
@@ -37,11 +37,11 @@ const WindowManager = () => {
   const [isLogIned, setIsLogIned] = useAtom(isLogInedAtom);
   const [hydrated, setHydrated] = useState(false);
   const [lastTaskList] = useAtom(lastTaskListAtom);
-  const [, setWindowPositions] = useAtom(windowPositionsAtom);
   const setNotification = useAtomValue(notificationAtom);
   const [settings,] = useAtom(settingsAtom);
 
-  const [taskList, addTask, removeTask] = useProcessManager();
+  const [taskList, addTask, removeTask, setVirtualWindowPosition] = useProcessManager();
+  const [,,,addTaskToDesktop] = useVirtualProcessManager();
   const { logIn, signUp, emailChack, auth } = getTaskCreators(setIsLogIned, addTask, removeTask);
   const availableApps = useApps();
   const isDragging = useRef(false);
@@ -108,30 +108,32 @@ const WindowManager = () => {
       console.log('[WindowManager] Restoring tasks:', lastTaskList);
 
       // 위치 정보를 windowPositionsAtom에 먼저 복원
-      const positions: Record<
-        string,
-        { top: number; left: number; width: number; height: number }
-      > = {};
-      lastTaskList.forEach((savedTask) => {
-        if (savedTask.position) {
-          positions[savedTask.name] = savedTask.position;
-          console.log(
-            '[WindowManager] Will restore position for',
-            savedTask.name,
-            ':',
-            savedTask.position,
-          );
-        }
+      lastTaskList.map((tasks, index)=>{
+        const positions: Record<
+          string,
+          { top: number; left: number; width: number; height: number }
+        > = {};
+        tasks.forEach((savedTask) => {
+          if (savedTask.position) {
+            positions[savedTask.name] = savedTask.position;
+            console.log(
+              '[WindowManager] Will restore position for',
+              savedTask.name,
+              ':',
+              savedTask.position,
+            );
+          }
+        })
+        setVirtualWindowPosition(positions, index);
+        console.log('[WindowManager] Set windowPositions to:', positions);
       });
 
       // setTimeout 전에 positions 설정하고 확인
-      setWindowPositions(positions);
-      console.log('[WindowManager] Set windowPositions to:', positions);
 
       // 위치 설정 후 조금 기다렸다가 앱 추가
       setTimeout(() => {
         console.log('[WindowManager] Now adding tasks...');
-        lastTaskList.forEach((savedTask) => {
+        lastTaskList.map((tasks)=>tasks.forEach((savedTask) => {
           const app = availableApps.find(
             (availableApp) =>
               availableApp.id === savedTask.id && availableApp.name === savedTask.name,
@@ -144,14 +146,14 @@ const WindowManager = () => {
           );
           if (app) {
             console.log('[WindowManager] Adding task:', savedTask.name);
-            addTask(app);
+            addTaskToDesktop(app, savedTask.desktopIndex || 0);
           }
-        });
+        }));
       }, 500); // 위치 설정 후 여유있게 대기
     } else {
       console.log('[WindowManager] No tasks to restore');
     }
-  }, [hydrated, isLogIned, lastTaskList, availableApps, addTask, setWindowPositions]);
+  }, [hydrated, isLogIned, lastTaskList, availableApps, addTask, setVirtualWindowPosition]);
 
   useEffect(() => {
     if (!hydrated) return; // hydration 전엔 아무것도 하지 않음
@@ -173,8 +175,18 @@ const WindowManager = () => {
         appSetup: undefined,
         visible: false,
       };
+      const virtualDesktopService: TaskType = {
+        component: <></>,
+        type: 'Shell',
+        id: 1,
+        layer: -999,
+        name: 'Extender',
+        appSetup: undefined,
+        visible: false,
+      }
       setTimeout(() => {
         addTask(discover);
+        addTask(virtualDesktopService);
       }, 200);
     } else {
       setTimeout(() => {
