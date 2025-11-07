@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import * as _ from './style';
 import { useProcessManager } from '@/hooks/processManager';
 import { useAtom } from 'jotai';
@@ -19,11 +19,14 @@ const TaskBar = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
   const [focus, setFocus] = useAtom(focusAtom);
   const [startOption, setStartOption] = useAtom(startOptionAtom);
 
+  const [extender, setExtender] = useState(false);
+
   const {
     virtualDesktopList,
     virtualCurrentDesktop,
     switchVirtualDesktop,
     addVirtualDesktop,
+    deleteVirtualDesktop,
   } = useVirtualDesktopManager();
 
   return (
@@ -57,25 +60,38 @@ const TaskBar = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
               </_.Observer>
             );
           } else if (task.name === 'Extender') {
+            
             return (
               <>
-                {virtualDesktopList.map((id) => (
-                  <_.VirtualDesktopItem
-                    key={id}
-                    style={virtualCurrentDesktop === id ? _.taskSelectButtonStyle : _.taskButtonStyle}
-                    onClick={() => switchVirtualDesktop(id)}
+                {extender && <>
+                  {virtualDesktopList.map((id) => (
+                    <_.VirtualDesktopItem
+                      key={id}
+                      style={virtualCurrentDesktop === id ? _.taskSelectButtonStyle : _.taskButtonStyle}
+                      onClick={() => switchVirtualDesktop(id)}
+                      onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                      onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+                    >
+                      <_.TaskName>{id+1}</_.TaskName>
+                    </_.VirtualDesktopItem>
+                  ))}
+                  <_.VirtualDesktopItem 
+                    onClick={addVirtualDesktop} 
+                    style={_.taskButtonStyle}
                     onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
                     onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
-                  >
-                    <_.TaskName>{id+1}</_.TaskName>
-                  </_.VirtualDesktopItem>
-                ))}
-                <_.VirtualDesktopItem 
-                  onClick={addVirtualDesktop} 
-                  style={_.taskButtonStyle}
-                  onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
-                  onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
-                >＋</_.VirtualDesktopItem>  
+                  >＋</_.VirtualDesktopItem>
+                  <_.VirtualDesktopItem 
+                    onClick={deleteVirtualDesktop} 
+                    style={_.taskButtonStyle}
+                    onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                    onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+                  >-</_.VirtualDesktopItem>    
+                </>}
+                <_.VirtualDesktopItem
+                  onClick={() => setExtender(!extender)}
+                  style={extender ? _.taskSelectButtonStyle : _.taskButtonStyle}
+                >{extender ? "<" : ">"}</_.VirtualDesktopItem>
               </>
             )
           } else {

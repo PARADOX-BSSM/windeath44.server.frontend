@@ -37,7 +37,7 @@ export const useVirtualDesktopManager = () => {
   },[isMaxError, setAlert, taskTransform]);
 
   useEffect(()=>{
-    if(!isMaxError) return;
+    if(!isMinError) return;
     setAlert?.(
       Seori,
       <>
@@ -59,12 +59,12 @@ export const useVirtualDesktopManager = () => {
     setVirtualWindowPositions([...virtualWindowPositions, {}]);
   }
 
-  const deleteVirtualDesktop = (index: number) => {
+  const deleteVirtualDesktop = () => {
     if (virtualTaskLists.length <= 1) {
       setIsMinError(true);
       return;
     }
-
+    const index = virtualTaskLists.length - 1;
     setVirtualTaskLists(prev => prev.filter((_, i) => i !== index));
     setVirtualWindowPositions(prev => prev.filter((_, i) => i !== index));
 
