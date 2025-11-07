@@ -1,9 +1,10 @@
-import { useSetAtom } from 'jotai';
+import { useSetAtom, useAtomValue } from 'jotai';
 import useApps from '@/applications/data/importManager';
 import { Suspense, useEffect } from 'react';
 import React from 'react';
 import { alerterAtom } from '@/atoms/alerter';
 import { useProcessManager } from './processManager';
+import { virtualDesktopIndexAtom } from '@/atoms/processManager';
 
 export const useAlerter = () => {
   const setAlerterAtom = useSetAtom(alerterAtom);
@@ -11,6 +12,7 @@ export const useAlerter = () => {
   const Apps = useApps();
 
   const [, addTask] = useProcessManager();
+  const desktopIndex = useAtomValue(virtualDesktopIndexAtom);
 
   let foundTask = Apps.filter((app) => {
     return app.name === '경고';
@@ -32,5 +34,6 @@ export const useAlerter = () => {
 
   useEffect(() => {
     setAlerterAtom(() => setAlert);
-  }, []);
+  }, [desktopIndex]);
 };
+
