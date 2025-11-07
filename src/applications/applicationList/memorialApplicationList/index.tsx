@@ -13,6 +13,7 @@ import {
   useMemorialApplicationApproveMutation,
   useMemorialApplicationRejectMutation,
 } from '@/api/memorial/memorialApplicationApprove';
+import { useMemorialApplicationDeleteMutation } from '@/api/memorial/deleteMemorialApplication';
 
 interface dataStructureProps {
   stack: any[];
@@ -30,9 +31,11 @@ const MemorialApplicationList = ({ stack, push, pop, top }: dataStructureProps) 
   const likeMutation = useMemorialApplicationLikeMutation();
   const approveMutation = useMemorialApplicationApproveMutation();
   const rejectMutation = useMemorialApplicationRejectMutation();
+  const deleteMutation = useMemorialApplicationDeleteMutation();
   const { mutate: getUser, data: userData } = useGetUserMutation();
 
   const isAdmin = userData?.data?.role === 'ADMIN';
+  const currentUserId = userData?.data?.userId;
 
   // 유저 정보 조회
   useEffect(() => {
@@ -185,6 +188,38 @@ const MemorialApplicationList = ({ stack, push, pop, top }: dataStructureProps) 
     });
   };
 
+  // 취소 핸들러
+  const handleCancel = (memorialApplicationId: number) => {
+    deleteMutation.mutate(memorialApplicationId, {
+      onSuccess: () => {
+        // 삭제된 항목을 로컬 상태에서 즉시 제거
+        setAllApplications((prev) =>
+          prev.filter((app) => app.memorialApplicationId !== memorialApplicationId),
+        );
+        setAlert?.(
+          Seori,
+          <>추모관 신청이 취소되었습니다.</>,
+          () => {
+            taskTransform?.('경고', '');
+          },
+        );
+      },
+      onError: () => {
+        setAlert?.(
+          Seori,
+          <>
+            신청 취소 중 오류가 발생했습니다.
+            <br />
+            잠시 후 다시 시도해주세요.
+          </>,
+          () => {
+            taskTransform?.('경고', '');
+          },
+        );
+      },
+    });
+  };
+
   // 좋아요 토글 핸들러 (낙관적 업데이트)
   const handleLikeToggle = (memorialApplicationId: number, isLiked: boolean) => {
     // 즉시 UI 업데이트 (낙관적 렌더링)
@@ -270,6 +305,9 @@ const MemorialApplicationList = ({ stack, push, pop, top }: dataStructureProps) 
                           isAdmin={isAdmin}
                           onApprove={handleApprove}
                           onReject={handleReject}
+                          currentUserId={currentUserId}
+                          onCancel={handleCancel}
+                          isCanceling={deleteMutation.isPending}
                           onClick={() => {
                             const stackProps = {
                               stack: stack,
