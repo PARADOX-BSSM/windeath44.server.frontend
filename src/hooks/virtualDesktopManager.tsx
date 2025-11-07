@@ -7,7 +7,8 @@ import { useEffect, useState } from 'react';
 
 
 export const useVirtualDesktopManager = () => {
-  const [isError, setIsError] = useState(false);
+  const [isMaxError, setIsMaxError] = useState(false);
+  const [isMinError, setIsMinError] = useState(false);
   const [desktopIndex, setDesktopIndex] = useAtom(virtualDesktopIndexAtom);
   const [virtualTaskLists, setVirtualTaskLists] = useAtom(virtualTaskListsAtom);
   const [virtualWindowPositions, setVirtualWindowPositions] = useAtom(virtualWindowPositionsAtom);
@@ -20,7 +21,7 @@ export const useVirtualDesktopManager = () => {
   const switchVirtualDesktop = (id: number) => setDesktopIndex(id);
 
   useEffect(()=>{
-    if(!isError) return;
+    if(!isMaxError) return;
     setAlert?.(
       Seori,
       <>
@@ -32,23 +33,60 @@ export const useVirtualDesktopManager = () => {
         taskTransform?.('경고', '');
       },
     );
-    setIsError(false);
-  },[isError, setAlert, taskTransform]);
+    setIsMaxError(false);
+  },[isMaxError, setAlert, taskTransform]);
+
+  useEffect(()=>{
+    if(!isMaxError) return;
+    setAlert?.(
+      Seori,
+      <>
+        가상 데스크탑은 최소 1개 이상 존재해야 합니다.
+      </>,
+      () => {
+        taskTransform?.('경고', '');
+      },
+    );
+    setIsMinError(false);
+  },[isMinError, setAlert, taskTransform]);
 
   const addVirtualDesktop = () => {
     if( virtualTaskLists.length >= 5 ) {
-      setIsError(true);
+      setIsMaxError(true);
       return;
     } // 최대 5개 데스크탑 제한
     setVirtualTaskLists([...virtualTaskLists, []]);
     setVirtualWindowPositions([...virtualWindowPositions, {}]);
   }
 
+  const deleteVirtualDesktop = (index: number) => {
+    if (virtualTaskLists.length <= 1) {
+      setIsMinError(true);
+      return;
+    }
+
+    setVirtualTaskLists(prev => prev.filter((_, i) => i !== index));
+    setVirtualWindowPositions(prev => prev.filter((_, i) => i !== index));
+
+    // 현재 인덱스 조정
+    setDesktopIndex(prev => {
+      if (index === prev) {
+        // 삭제된 데스크탑이 현재 데스크탑이면
+        return index > 0 ? index - 1 : 0;
+      } else if (index < prev) {
+        // 앞쪽 데스크탑이 삭제되면 인덱스 하나 감소
+        return prev - 1;
+      }
+      return prev;
+    });
+  };
+
   return {
     virtualDesktopList,
     virtualCurrentDesktop,
     switchVirtualDesktop,
     addVirtualDesktop,
+    deleteVirtualDesktop
   };
 };
 
