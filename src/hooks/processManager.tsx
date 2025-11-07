@@ -42,11 +42,8 @@ export const useProcessManager = (): [
   // 데스크탑 전환 시 위치 복원
   useEffect(() => {
     if(desktopIndex !== undefined) setWindowPositions({ ...(virtualWindowPositions[desktopIndex] || {}) });
-  }, [desktopIndex]);
-  useEffect(() => {
     setWindowPositions(virtualWindowPositions[desktopIndex]);
-    console.log(virtualWindowPositions[desktopIndex]);
-  }, [virtualWindowPositions[desktopIndex]]);
+  }, [desktopIndex, virtualWindowPositions[desktopIndex]]);;
 
   // Task 저장 (lastTaskList)
   useEffect(() => {
