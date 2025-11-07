@@ -13,6 +13,8 @@ interface PropsType {
   isAdmin?: boolean;
   onApprove?: (memorialApplicationId: number) => void;
   onReject?: (memorialApplicationId: number) => void;
+  isApproving?: boolean;
+  isRejecting?: boolean;
 }
 
 const Application = ({
@@ -28,6 +30,8 @@ const Application = ({
   isAdmin,
   onApprove,
   onReject,
+  isApproving = false,
+  isRejecting = false,
 }: PropsType) => {
   const getStateText = (state: string) => {
     switch (state) {
@@ -71,16 +75,18 @@ const Application = ({
                 e.stopPropagation();
                 onApprove?.(memorialApplicationId);
               }}
+              disabled={isApproving || isRejecting}
             >
-              승인
+              {isApproving ? '처리 중...' : '승인'}
             </_.ApproveBtn>
             <_.RejectBtn
               onClick={(e) => {
                 e.stopPropagation();
                 onReject?.(memorialApplicationId);
               }}
+              disabled={isApproving || isRejecting}
             >
-              거절
+              {isRejecting ? '처리 중...' : '거절'}
             </_.RejectBtn>
           </>
         )}
