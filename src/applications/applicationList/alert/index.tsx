@@ -1,5 +1,8 @@
 import * as _ from './style.ts';
 import MemorialBtn from '@/applications/components/memorialBtn';
+import { useAtom } from 'jotai';
+import { focusAtom } from '@/atoms/windowManager.ts';
+import { useEffect } from 'react';
 
 interface AlertProps {
   icon: string;
@@ -8,6 +11,13 @@ interface AlertProps {
 }
 
 const Alert = ({ icon, text, onClick }: AlertProps) => {
+  const [, setFocus] = useAtom(focusAtom);
+  useEffect(() => {
+    setFocus('');
+    return () => {
+      setFocus('Observer');
+    };
+  });
   return (
     <>
       <_.overlay />
