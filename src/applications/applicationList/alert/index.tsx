@@ -1,4 +1,4 @@
-import * as _ from '@/applications/applicationList/alert/style.ts';
+import * as _ from './style.ts';
 import MemorialBtn from '@/applications/components/memorialBtn';
 
 interface AlertProps {
@@ -9,28 +9,31 @@ interface AlertProps {
 
 const Alert = ({ icon, text, onClick }: AlertProps) => {
   return (
-    <_.main>
-      <_.container>
-        <_.place>
-          <_.icon
-            src={icon}
-            alt="아이콘"
-          ></_.icon>
-          <_.text>{text}</_.text>
-        </_.place>
-        <_.btnContainer>
-          <MemorialBtn
-            name={'확인'}
-            type="submit"
-            active={true}
-            onClick={onClick}
-            width="144px"
-            height="42px"
-            fontSize="20px"
-          ></MemorialBtn>
-        </_.btnContainer>
-      </_.container>
-    </_.main>
+    <>
+      <_.overlay />
+      <_.main>
+        <_.container>
+          <_.place>
+            <_.icon
+              src={icon}
+              alt="아이콘"
+            ></_.icon>
+            <_.text>{text}</_.text>
+          </_.place>
+          <_.btnContainer>
+            <MemorialBtn
+              name={'확인'}
+              type="submit"
+              active={true}
+              onClick={onClick}
+              width="144px"
+              height="42px"
+              fontSize="20px"
+            ></MemorialBtn>
+          </_.btnContainer>
+        </_.container>
+      </_.main>
+    </>
   );
 };
 export default Alert;
