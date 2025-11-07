@@ -7,7 +7,12 @@ export type SavedTaskType = {
   id: number | undefined;
   instanceId?: string;
   name: string;
-  position?: { top: number; left: number; width: number; height: number };
+  position?: { 
+    top: number; 
+    left: number; 
+    width: number; 
+    height: number 
+  };
   desktopIndex?: number;
 };
 
