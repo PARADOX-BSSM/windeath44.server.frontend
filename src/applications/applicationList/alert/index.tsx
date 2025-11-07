@@ -17,7 +17,7 @@ const Alert = ({ icon, text, onClick }: AlertProps) => {
     return () => {
       setFocus('Observer');
     };
-  });
+  }, [setFocus]);
   return (
     <>
       <_.overlay />
