@@ -134,7 +134,5 @@ export const useVirtualProcessManager = (): [
       return updated;
     });
   };
-
-  return [taskList, addTask, removeTask, addTaskToDesktop];
   return [taskList, addTask, removeTask, addTaskToDesktop] as const;
 };
