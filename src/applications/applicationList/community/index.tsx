@@ -43,9 +43,15 @@ interface dataStructureProps {
 const Community = ({ stack, push, pop, top }: dataStructureProps) => {
   const postData = usePostListSearch();
 
+  const [isOpen, setIsOpen] = useState(false);
+  const [sort, setSort] = useState(sortOption.Latest);
+  const [active, setActive] = useState('humor');
+  const [search, setSearch] = useState('');
+  const token = getCookie('access_token');
+
   useEffect(() => {
-    postData.mutate({});
-  }, []);
+    postData.mutate({ status: 'PUBLISHED' }); // 게시된 상태의 게시물 전체 조회
+  }, [active]);
 
   const stackProps = {
     stack: stack,
@@ -58,17 +64,12 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
   const taskSearch = useAtomValue(taskSearchAtom);
   const setAlert = useAtomValue(alerterAtom);
 
-  const [isOpen, setIsOpen] = useState(false);
-  const [sort, setSort] = useState(sortOption.Latest);
-  const [active, setActive] = useState('humor');
-  const [search, setSearch] = useState('');
-  const token = getCookie('access_token');
-
   const sortOp: string[] = [sortOption.Latest, sortOption.Popular];
   const sortChange = (value: any) => {
     setSort(value);
     setIsOpen(false);
   };
+
   const postCreateClick = () => {
     if (!token && setAlert) {
       setAlert(
@@ -86,6 +87,10 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
     } else if (taskTransform) {
       taskTransform('', '게시글 작성');
     }
+  };
+
+  const searchHandle = () => {
+    postData.mutate({ title: search, status: 'PUBLISHED' });
   };
 
   return (
@@ -146,6 +151,7 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
               width="74px"
               height="100%"
               fontSize="14px"
+              onClick={searchHandle}
             />
             {/*<CommunityBtn name="검색" onClick={()=>setActive("search")} type='menu' />*/}
           </_.InputArea>
