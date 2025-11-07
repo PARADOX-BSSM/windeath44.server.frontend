@@ -71,10 +71,10 @@ const ChatbotSelect = () => {
     if (!chatBotsQuery.data?.data?.values) return [];
     return chatBotsQuery.data.data.values.flat();
   }, [chatBotsQuery.data]);
-if(!token && setAlert) {
-  const task = taskSearch?.('분신사바');
-  if (task) removeTask(task);
-  return (
+
+  if (!token && setAlert) {
+    const task = taskSearch?.('분신사바');
+    if (task) removeTask(task);
     setAlert(
       Choten,
       <>
@@ -85,9 +85,9 @@ if(!token && setAlert) {
       () => {
         taskTransform?.('경고', '로그인');
       },
-    )
-  )
-};
+    );
+    return null;
+  }
   return (
     <_.Container>
       <_.TopContainer>
