@@ -204,7 +204,7 @@ const useApps = (): TaskType[] => {
       appSetup: {
         Image: 'default',
         minWidth: 600,
-        minHeight: 300,
+        minHeight: 400,
         setUpWidth: 950,
         setUpHeight: 500,
       },

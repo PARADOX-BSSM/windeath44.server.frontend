@@ -9,6 +9,20 @@ import { taskTransformerAtom } from '@/atoms/taskTransformer';
 import Seori from '@/assets/sulkkagi/black_stone.svg';
 import { useEffect, useMemo } from 'react';
 
+// 날짜 포맷팅 함수
+const formatDate = (dateString: string) => {
+  const d = new Date(dateString);
+  const Y = d.getFullYear();
+  const M = String(d.getMonth() + 1).padStart(2, '0');
+  const D = String(d.getDate()).padStart(2, '0');
+  let h = d.getHours();
+  const m = String(d.getMinutes()).padStart(2, '0');
+  const ampm = h >= 12 ? '오후' : '오전';
+  if (h > 12) h -= 12;
+  if (h === 0) h = 12;
+  return `${Y}-${M}-${D}. ${ampm} ${h}:${m}`;
+};
+
 interface dataStructureProps {
   stack: any[];
   push: any;
@@ -109,7 +123,7 @@ const MemorailHistory = ({
             <_.InnerHeader>
               <_.LeftHeader>
                 <_.Title>{characterName}</_.Title>
-                <_.SubTitle>최근 수정: {lastModified}</_.SubTitle>
+                <_.SubTitle>최근 수정: {formatDate(lastModified)}</_.SubTitle>
               </_.LeftHeader>
               <_.GoToBackBtn
                 onClick={() => {

@@ -84,6 +84,8 @@ export const DescriptionBox = styled.div`
   align-self: stretch;
   background: #FFF;
   box-shadow: ${shadow};
+  overflow-y: auto;
+  overflow-x: hidden;
 `;
 
 export const Description = styled.div`
