@@ -22,6 +22,7 @@ import useApps from '@/applications/data/importManager.tsx';
 import { lastTaskListAtom, windowPositionsAtom } from '@/atoms/processManager.ts';
 import { useGetPublicNotificationsQuery } from '@/api/notification/getPublicNotifications';
 import { notificationAtom } from '@/atoms/notification';
+import { settingsAtom } from '@/atoms/settings.ts';
 
 const Application = lazy(() => import('@/applications/layout/index.tsx'));
 
@@ -38,6 +39,7 @@ const WindowManager = () => {
   const [lastTaskList] = useAtom(lastTaskListAtom);
   const [, setWindowPositions] = useAtom(windowPositionsAtom);
   const setNotification = useAtomValue(notificationAtom);
+  const [settings,] = useAtom(settingsAtom);
 
   const [taskList, addTask, removeTask] = useProcessManager();
   const { logIn, signUp, emailChack, auth } = getTaskCreators(setIsLogIned, addTask, removeTask);
@@ -182,10 +184,24 @@ const WindowManager = () => {
   }, [isLogIned, hydrated]);
 
   useEffect(() => {
-    if (!hydrated || isLogIned !== 'true') return;
+    if (!hydrated || !settings.showBootNotification || isLogIned !== 'true') return;
 
     setTimeout(() => {
       setNotification?.([
+        {
+          title: '[공지] 정식 출시 안내 및 데이터 초기화 공지',
+          content:
+            'https://cdn.discordapp.com/attachments/1435047224550883481/1435434858989092905/dsf.png?ex=690bf463&is=690aa2e3&hm=cd24dbbbebd27ed01335798e16d9eba6c5c5686a5bd17b8b16fac4eb7959874e&',
+          is_image: true,
+          created_at: '2025-11-05T10:10:00',
+        },
+        {
+          title: '서비스 복구 안내',
+          content:
+            'https://cdn.discordapp.com/attachments/1435047224550883481/1435047874366017556/Frame_29.png?ex=690a8bfb&is=69093a7b&hm=58ec03d50000631635ca310d15b6e95498d01a747d1cecc974b076f6c6c36c66&',
+          is_image: true,
+          created_at: '2025-11-04T08:35:00', // 원하는 날짜를 ISO 형식으로 설정 (선택사항)
+        },
         {
           title: '서버 점검 안내',
           content:
@@ -199,7 +215,7 @@ const WindowManager = () => {
 
   // 공지사항 자동 표시
   useEffect(() => {
-    if (!hydrated || hasCheckedNotification.current || isLogIned !== 'true') return;
+    if (!hydrated || hasCheckedNotification.current || !settings.showBootNotification || isLogIned !== 'true') return;
     if (!notificationsData?.data) return;
 
     const openNotifications = notificationsData.data.filter((n) => n.is_open);
@@ -216,15 +232,17 @@ const WindowManager = () => {
         setNotification(openNotifications);
       }, 500); // 부팅 후 0.5초 뒤에 표시
     }
-  }, [hydrated, isLogIned, notificationsData, setNotification]);
+  }, [hydrated, settings, isLogIned, notificationsData, setNotification]);
 
-  let resizeObserver = new ResizeObserver((_entries) => {
-    const container: HTMLElement = document.getElementById('cursorContainer') as HTMLElement;
+  useEffect(() => {
+    const container = document.getElementById('cursorContainer') as HTMLElement;
     const cursor = document.getElementById('cursor');
     if (!container || !cursor) return;
+
     cursor.style.zIndex = '9990';
-    const bounds = container.getBoundingClientRect();
-    document.addEventListener('mousemove', (event: MouseEvent) => {
+
+    const handleMouseMove = (event: MouseEvent) => {
+      const bounds = container.getBoundingClientRect();
       let x = event.clientX - bounds.x + bounds.left;
       let y = event.clientY - bounds.y;
       x = Math.max(bounds.left, Math.min(bounds.width - 1 + bounds.left, x));
@@ -232,24 +250,50 @@ const WindowManager = () => {
       cursor.style.left = `${x}px`;
       cursor.style.top = `${y}px`;
       setCursorVec([x, y]);
+    };
+
+    const resizeObserver = new ResizeObserver((_entries) => {
+      requestAnimationFrame(() => {
+        // bounds를 다시 계산하도록 트리거
+        const bounds = container.getBoundingClientRect();
+      });
     });
-  });
-  useEffect(() => {
-    resizeObserver.observe(document.getElementById('display') as HTMLElement);
-  }, []);
+
+    const display = document.getElementById('display');
+    if (display) resizeObserver.observe(display);
+
+    document.addEventListener('mousemove', handleMouseMove);
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      resizeObserver.disconnect();
+    };
+  }, [settings, sideWidth]);
+
 
   useEffect(() => {
-    const updateSideWidth = () => {
-      const fullWidth = window.innerWidth;
-      const fullHeight = window.innerHeight;
-      const containerWidth = (fullHeight * 4) / 3;
-      const calculatedSide = (fullWidth - containerWidth) / 2;
-      setSideWidth(Math.max(0, calculatedSide));
-    };
-    updateSideWidth();
-    window.addEventListener('resize', updateSideWidth);
-    return () => window.removeEventListener('resize', updateSideWidth);
-  }, []);
+    if (settings.screenRatio === "4:3") {
+      const updateSideWidth = () => {
+        const fullWidth = window.innerWidth;
+        const fullHeight = window.innerHeight;
+        const containerWidth = (fullHeight * 4) / 3;
+        const calculatedSide = (fullWidth - containerWidth) / 2;
+        setSideWidth(Math.max(0, calculatedSide));
+      };
+      updateSideWidth();
+      window.addEventListener('resize', updateSideWidth);
+      return () => window.removeEventListener('resize', updateSideWidth);
+    }
+    else if(settings.screenRatio === "16:9") {
+      const updateSideWidth = () => {
+        setSideWidth(0);
+      };
+      updateSideWidth();
+      console.log("asdf");
+      window.addEventListener('resize', updateSideWidth);
+      return () => window.removeEventListener('resize', updateSideWidth);
+    }
+  }, [settings]);
 
   // 클릭 시 cursor 변경
   useEffect(() => {
@@ -286,6 +330,7 @@ const WindowManager = () => {
         <_.BackgroundDiv width={sideWidth}></_.BackgroundDiv>
         <_.Display
           id="cursorContainer"
+          is43={settings.screenRatio === "4:3"}
           {...bindDrag()}
         >
           <div id="cursor"></div>

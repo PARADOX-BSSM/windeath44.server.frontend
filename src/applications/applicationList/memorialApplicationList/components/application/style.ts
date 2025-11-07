@@ -139,8 +139,13 @@ export const ApproveBtn = styled.button`
   border: none;
   cursor: none;
 
-  &:hover {
+  &:hover:not(:disabled) {
     opacity: 0.7;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 `;
 
@@ -156,7 +161,12 @@ export const RejectBtn = styled.button`
   border: none;
   cursor: none;
 
-  &:hover {
+  &:hover:not(:disabled) {
     opacity: 0.7;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 `;

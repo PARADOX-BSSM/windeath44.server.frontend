@@ -115,6 +115,8 @@ const NotificationViewer = lazy(
   () => import('@/applications/applicationList/notificationViewer/index.tsx'),
 );
 
+const Settings = lazy(() => import('@/applications/applicationList/settings/index.tsx'));
+
 //Application Import 형식 예시
 /*
 {
@@ -202,7 +204,7 @@ const useApps = (): TaskType[] => {
       appSetup: {
         Image: 'default',
         minWidth: 600,
-        minHeight: 300,
+        minHeight: 400,
         setUpWidth: 950,
         setUpHeight: 500,
       },
@@ -301,7 +303,7 @@ const useApps = (): TaskType[] => {
       name: '추모관 수정',
       layer: undefined,
       appSetup: {
-        Image: 'default',
+        Image: search,
         minWidth: 580,
         minHeight: 420,
         setUpWidth: 890,
@@ -750,7 +752,7 @@ const useApps = (): TaskType[] => {
       name: '추모관 수정 요청 뷰어',
       layer: undefined,
       appSetup: {
-        Image: 'default',
+        Image: search,
         minWidth: 800,
         minHeight: 600,
         setUpWidth: 1100,
@@ -788,7 +790,7 @@ const useApps = (): TaskType[] => {
       name: '추모관 수정 요청',
       layer: undefined,
       appSetup: {
-        Image: 'default',
+        Image: search,
         minWidth: 600,
         minHeight: 500,
         setUpWidth: 900,
@@ -843,6 +845,25 @@ const useApps = (): TaskType[] => {
         setUpHeight: 577,
       },
       visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <Settings />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2254,
+      name: '설정',
+      layer: undefined,
+      appSetup: {
+        Image: setting,
+        minWidth: 600,
+        minHeight: 400,
+        setUpWidth: 700,
+        setUpHeight: 500,
+      },
+      visible: true,
     },
     {
       component: (

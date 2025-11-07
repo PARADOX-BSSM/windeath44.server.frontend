@@ -27,6 +27,10 @@ const MemorialApplicationListMain = ({ stack, push, pop, top }: dataStructurePro
   const taskSearch = useAtomValue(taskSearchAtom);
   const [cursorId, setCursorId] = useState<number | undefined>(undefined);
   const [allApplications, setAllApplications] = useState<any[]>([]);
+  const [processingIds, setProcessingIds] = useState<{ approving: Set<number>; rejecting: Set<number> }>({
+    approving: new Set(),
+    rejecting: new Set(),
+  });
   const likeMutation = useMemorialApplicationLikeMutation();
   const approveMutation = useMemorialApplicationApproveMutation();
   const rejectMutation = useMemorialApplicationRejectMutation();
@@ -137,8 +141,24 @@ const MemorialApplicationListMain = ({ stack, push, pop, top }: dataStructurePro
 
   // 승인 핸들러
   const handleApprove = (memorialApplicationId: number) => {
+    // 처리 중 상태 추가
+    setProcessingIds(prev => ({
+      ...prev,
+      approving: new Set(prev.approving).add(memorialApplicationId),
+    }));
+
     approveMutation.mutate(memorialApplicationId, {
       onSuccess: () => {
+        // 낙관적 업데이트: 목록에서 해당 신청 제거
+        setAllApplications(prev => prev.filter(app => app.memorialApplicationId !== memorialApplicationId));
+
+        // 처리 중 상태 제거
+        setProcessingIds(prev => {
+          const newApproving = new Set(prev.approving);
+          newApproving.delete(memorialApplicationId);
+          return { ...prev, approving: newApproving };
+        });
+
         setAlert?.(
           Seori,
           <>추모관 신청이 승인되었습니다.</>,
@@ -148,6 +168,13 @@ const MemorialApplicationListMain = ({ stack, push, pop, top }: dataStructurePro
         );
       },
       onError: () => {
+        // 처리 중 상태 제거
+        setProcessingIds(prev => {
+          const newApproving = new Set(prev.approving);
+          newApproving.delete(memorialApplicationId);
+          return { ...prev, approving: newApproving };
+        });
+
         setAlert?.(
           Seori,
           <>
@@ -165,8 +192,24 @@ const MemorialApplicationListMain = ({ stack, push, pop, top }: dataStructurePro
 
   // 거절 핸들러
   const handleReject = (memorialApplicationId: number) => {
+    // 처리 중 상태 추가
+    setProcessingIds(prev => ({
+      ...prev,
+      rejecting: new Set(prev.rejecting).add(memorialApplicationId),
+    }));
+
     rejectMutation.mutate(memorialApplicationId, {
       onSuccess: () => {
+        // 낙관적 업데이트: 목록에서 해당 신청 제거
+        setAllApplications(prev => prev.filter(app => app.memorialApplicationId !== memorialApplicationId));
+
+        // 처리 중 상태 제거
+        setProcessingIds(prev => {
+          const newRejecting = new Set(prev.rejecting);
+          newRejecting.delete(memorialApplicationId);
+          return { ...prev, rejecting: newRejecting };
+        });
+
         setAlert?.(
           Seori,
           <>추모관 신청이 거절되었습니다.</>,
@@ -176,6 +219,13 @@ const MemorialApplicationListMain = ({ stack, push, pop, top }: dataStructurePro
         );
       },
       onError: () => {
+        // 처리 중 상태 제거
+        setProcessingIds(prev => {
+          const newRejecting = new Set(prev.rejecting);
+          newRejecting.delete(memorialApplicationId);
+          return { ...prev, rejecting: newRejecting };
+        });
+
         setAlert?.(
           Seori,
           <>
@@ -282,6 +332,8 @@ const MemorialApplicationListMain = ({ stack, push, pop, top }: dataStructurePro
                           isAdmin={isAdmin}
                           onApprove={handleApprove}
                           onReject={handleReject}
+                          isApproving={processingIds.approving.has(app.memorialApplicationId)}
+                          isRejecting={processingIds.rejecting.has(app.memorialApplicationId)}
                           onClick={() => {
                             push(
                               taskSearch?.('추모관 신청 뷰어', {

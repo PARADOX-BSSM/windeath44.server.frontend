@@ -39,6 +39,20 @@ interface dataStructureProps {
   props?: ApplicationProps;
   setWindowName?: (name: string) => void;
 }
+// 날짜 포맷팅 함수
+const formatDate = (dateString: string) => {
+  const d = new Date(dateString);
+  const Y = d.getFullYear();
+  const M = String(d.getMonth() + 1).padStart(2, '0');
+  const D = String(d.getDate()).padStart(2, '0');
+  let h = d.getHours();
+  const m = String(d.getMinutes()).padStart(2, '0');
+  const ampm = h >= 12 ? '오후' : '오전';
+  if (h > 12) h -= 12;
+  if (h === 0) h = 12;
+  return `${Y}-${M}-${D}. ${ampm} ${h}:${m}`;
+};
+
 const Memorial = ({
   stack,
   push,
@@ -485,7 +499,8 @@ const Memorial = ({
         animeId: characterData.animeId,
         age: characterData.age,
         profileImage: characterData.imageUrl,
-        phrase: '',
+        phrase: characterData.saying,
+        causeOfDeathDetails: characterData.causeOfDeathDetails || '',
       });
 
       // taskTransform으로 캐릭터 정보와 추모관 데이터 전달
@@ -507,7 +522,7 @@ const Memorial = ({
             <_.Header>
               <_.TextContainer>
                 <_.Title>{characterData.name}</_.Title>
-                <_.Subtitle>최근 수정: {memorialData.updatedAt}</_.Subtitle>
+                <_.Subtitle>최근 수정: {formatDate(memorialData.updatedAt)}</_.Subtitle>
               </_.TextContainer>
               <_.History
                 onClick={() => {
