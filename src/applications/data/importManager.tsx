@@ -51,6 +51,10 @@ const Search = lazy(() => import('@/applications/applicationList/search/index.ts
 
 const MemorialApply = lazy(() => import('@/applications/applicationList/memorialApply/index.tsx'));
 
+const MemorialApplicationEdit = lazy(
+  () => import('@/applications/applicationList/memorialApplicationEdit/index.tsx'),
+);
+
 const MyComputer = lazy(() => import('@/applications/applicationList/myComputer/index.tsx'));
 
 const MemorialMerge = lazy(() => import('@/applications/applicationList/memorialMerge/index.tsx'));
@@ -325,6 +329,31 @@ const useApps = (): TaskType[] => {
       type: 'App',
       id: 2227,
       name: 'MemorialApply',
+      layer: undefined,
+      appSetup: {
+        Image: 'default',
+        minWidth: 580,
+        minHeight: 420,
+        setUpWidth: 890,
+        setUpHeight: 577,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <MemorialApplicationEdit
+            stack={[]}
+            push={undefined}
+            pop={undefined}
+            top={undefined}
+            memorialApplicationId={0}
+          />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2255,
+      name: '추모관 신청 수정',
       layer: undefined,
       appSetup: {
         Image: 'default',

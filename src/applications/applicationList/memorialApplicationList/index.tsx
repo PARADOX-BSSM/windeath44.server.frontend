@@ -220,6 +220,22 @@ const MemorialApplicationList = ({ stack, push, pop, top }: dataStructureProps) 
     });
   };
 
+  // 수정 핸들러
+  const handleEdit = (memorialApplicationId: number) => {
+    const stackProps = {
+      stack: stack,
+      push: push,
+      pop: pop,
+      top: top,
+    };
+    push(
+      taskSearch?.('추모관 신청 수정', {
+        ...stackProps,
+        memorialApplicationId: memorialApplicationId,
+      }),
+    );
+  };
+
   // 좋아요 토글 핸들러 (낙관적 업데이트)
   const handleLikeToggle = (memorialApplicationId: number, isLiked: boolean) => {
     // 즉시 UI 업데이트 (낙관적 렌더링)
@@ -308,6 +324,7 @@ const MemorialApplicationList = ({ stack, push, pop, top }: dataStructureProps) 
                           currentUserId={currentUserId}
                           onCancel={handleCancel}
                           isCanceling={deleteMutation.isPending}
+                          onEdit={handleEdit}
                           onClick={() => {
                             const stackProps = {
                               stack: stack,

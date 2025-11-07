@@ -18,6 +18,8 @@ interface PropsType {
   currentUserId?: string;
   onCancel?: (memorialApplicationId: number) => void;
   isCanceling?: boolean;
+  onEdit?: (memorialApplicationId: number) => void;
+  isEditing?: boolean;
 }
 
 const Application = ({
@@ -38,6 +40,8 @@ const Application = ({
   currentUserId,
   onCancel,
   isCanceling = false,
+  onEdit,
+  isEditing = false,
 }: PropsType) => {
   const getStateText = (state: string) => {
     switch (state) {
@@ -97,15 +101,26 @@ const Application = ({
           </>
         )}
         {currentUserId === userId && state === 'PENDING' && (
-          <_.CancelBtn
-            onClick={(e) => {
-              e.stopPropagation();
-              onCancel?.(memorialApplicationId);
-            }}
-            disabled={isCanceling}
-          >
-            {isCanceling ? '취소 중...' : '취소'}
-          </_.CancelBtn>
+          <>
+            <_.EditBtn
+              onClick={(e) => {
+                e.stopPropagation();
+                onEdit?.(memorialApplicationId);
+              }}
+              disabled={isEditing}
+            >
+              {isEditing ? '수정 중...' : '수정'}
+            </_.EditBtn>
+            <_.CancelBtn
+              onClick={(e) => {
+                e.stopPropagation();
+                onCancel?.(memorialApplicationId);
+              }}
+              disabled={isCanceling}
+            >
+              {isCanceling ? '취소 중...' : '취소'}
+            </_.CancelBtn>
+          </>
         )}
         <_.ViewBtn onClick={onClick}>신청 내용 보기</_.ViewBtn>
       </_.ButtonContainer>
