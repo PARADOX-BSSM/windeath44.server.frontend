@@ -6,10 +6,9 @@ import CommunityBtn from '@/applications/components/communityBtn';
 import FilterBlock from '@/applications/components/filterBlock';
 import Inputs from '@/applications/components/inputs';
 import PostPreview from '@/applications/components/postPreview';
+import JudgementPreview from '@/applications/components/judgementPreview';
 import { useAtomValue } from 'jotai';
 import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer';
-import HommerBackground from '@/assets/community/homer_background.png';
-import Hommer from '@/assets/community/hommer.svg';
 import Seori from '@/assets/sulkkagi/black_stone.svg';
 import { usePostListSearch } from '@/api/community/postListSearch';
 import { getCookie } from '@/api/auth/cookie.ts';
@@ -190,37 +189,7 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
           />
         </_.PostArea>
       </_.Main>
-      <_.Judgement>
-        <_.NavJudgement>
-          <_.JudgementImgDiv
-            background={HommerBackground}
-            onClick={() => {
-              if (taskTransform) taskTransform('', '재판');
-            }}
-          >
-            <_.JudgementImg src={Hommer} />
-          </_.JudgementImgDiv>
-          <_.JudgementText>재판으로</_.JudgementText>
-        </_.NavJudgement>
-
-        <_.JudgementLankArea>
-          <_.JudgementText>진행중인 재판</_.JudgementText>
-          <_.JudgementLankList>
-            <_.JudgementLank>
-              <_.JudgementLankNum>#1</_.JudgementLankNum>
-              <_.JudgementName>호시노 아이</_.JudgementName>
-            </_.JudgementLank>
-            <_.JudgementLank>
-              <_.JudgementLankNum>#2</_.JudgementLankNum>
-              <_.JudgementName>포트거스 D. 에이스</_.JudgementName>
-            </_.JudgementLank>
-            <_.JudgementLank>
-              <_.JudgementLankNum>#3</_.JudgementLankNum>
-              <_.JudgementName>사토 카즈마</_.JudgementName>
-            </_.JudgementLank>
-          </_.JudgementLankList>
-        </_.JudgementLankArea>
-      </_.Judgement>
+      <JudgementPreview />
     </_.Container>
   );
 };
