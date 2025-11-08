@@ -21,6 +21,14 @@ export const LeftContainer = styled.div`
   display: flex;
 `;
 
+export const ButtonSet = styled.div`
+  width: fit-content;
+  height: fit-content;
+  flex-direction: column;
+  display: flex;
+  gap: 1rem;
+`;
+
 export const ProfileContainer = styled.div`
   width: fit-content;
   flex-direction: column;
@@ -118,6 +126,21 @@ export const Inputs = styled.div`
   overflow-y: auto;
   overflow-x: hidden;
   gap: 24px;
+  flex-wrap: wrap;
+`;
+export const InputsList = styled.div`
+  margin: 0.0625rem 0 0 0.0625rem;
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  outline: none;
+  border-color: #dcafdd;
+  border-style: solid;
+  border-width: 0.1125rem;
+  box-sizing: border-box;
+  background-color: #ffffff;
+  overflow-y: auto;
+  overflow-x: hidden;
   flex-wrap: wrap;
 `;
 

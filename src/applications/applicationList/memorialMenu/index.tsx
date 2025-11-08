@@ -16,7 +16,7 @@ interface dataStructureProps {
   top: any;
 }
 
-const btnList = ['추모관', '상주', '추모관 신청'];
+const btnList = ['추모관', '', '추모관 신청'];
 
 const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
@@ -73,15 +73,14 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
     if (selectedIdx === 1) {
       setDescription(
         <>
-          "상주"에서 자신이 상주인 추모관을 확인할 수 있습니다.
+          추후 업데이트 될 기능입니다.
           <br />
           <br />
           <div style={{ fontSize: '1.375rem' }}>
             <div style={{ margin: '0 0 16px 0' }}>
-              * 상주는 추모관에서 가장 활발히 활동하는 사람에게 주어집니다.
+
             </div>
             <div style={{ margin: '0 0 16px 0' }}>
-              * 상주가 되면 추모관을 관리할 수 있는 권한이 주어집니다.
             </div>
           </div>
         </>,
@@ -109,8 +108,7 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
       // console.log(taskSearch?.('Search', stackProps));
       push(taskSearch?.('Search', stackProps));
     }
-    if (idx === 1) {
-      push(taskSearch?.('상주 관리', stackProps));
+    if (idx === 1 && setAlert) {
     }
     if (idx === 2) {
       if (!token && setAlert) {

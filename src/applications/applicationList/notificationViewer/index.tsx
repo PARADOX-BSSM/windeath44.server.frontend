@@ -24,7 +24,6 @@ const NotificationViewer = () => {
                 <>
                   <_.DetailTitle>{latestNotification.title}</_.DetailTitle>
                   <_.DetailContent>{latestNotification.content}</_.DetailContent>
-                  <_.DetailDate>작성일: {latestNotification.created_at}</_.DetailDate>
                 </>
               )}
             </_.DetailView>

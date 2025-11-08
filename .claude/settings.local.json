@@ -14,7 +14,7 @@
       "mcp__apidog__read_project_oas_31b1m9",
       "mcp__apidog__refresh_project_oas_31b1m9",
       "Bash(xargs sed:*)",
-      "Read(//Users/harin/Desktop/파라독스/paradox/windeath44.server.frontend/**)"
+      "Bash(curl:*)"
     ],
     "deny": [],
     "ask": [],
@@ -23,7 +23,5 @@
     ]
   },
   "enableAllProjectMcpServers": true,
-  "enabledMcpjsonServers": [
-    "apidog"
-  ]
+  "enabledMcpjsonServers": ["apidog"]
 }
