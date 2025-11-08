@@ -3,9 +3,27 @@ import { AxiosResponse } from 'axios';
 import { community } from '@/config';
 import api from '../axiosInstance';
 
+interface commentData {
+  message: string;
+  comments: {
+    commentId: number;
+    postId: number;
+    userId: string;
+    name: string;
+    profile: string;
+    parantsCommentId?: number | null;
+    body: string;
+    createdAt: string;
+    updatedAt: string;
+    likesCount: number;
+  }[];
+}
+
 const postCommentListSearch = async (post_id: number) => {
   try {
-    const response: AxiosResponse = await api.get(`${community}/posts/${post_id}/comments`);
+    const response: AxiosResponse<commentData> = await api.get(
+      `${community}/posts/${post_id}/comments`,
+    );
     return response.data;
   } catch (error: any) {
     if (error.response?.data) {

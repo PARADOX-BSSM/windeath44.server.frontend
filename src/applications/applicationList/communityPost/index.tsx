@@ -60,6 +60,13 @@ const CommunityPost = ({ stack, push, pop, top, postId }: postProps) => {
             userId="noah_byte"
             postId={postId}
           />
+          {postCommentsData.data?.comments?.map((data) => (
+            <Comment
+              user={{ name: data.name, id: data.userId, profileImage: data.profile }}
+              post={{ content: data.body, heart: data.likesCount, comment: 20 }}
+              first={data.createdAt !== ''}
+            />
+          ))}
           <Comment
             user={{ name: '방태양', id: 'noah_byte', profileImage: '' }}
             post={{ content: '아니 이건 진짜 아니지. 살려내라.', heart: 12, comment: 20 }}
