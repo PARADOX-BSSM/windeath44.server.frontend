@@ -7,8 +7,6 @@ import JudgementPreview from '@/applications/components/judgementPreview';
 import chevron from '@/assets/community/chevron-left.svg';
 import { useAtomValue } from 'jotai';
 import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer';
-import HommerBackground from '@/assets/community/homer_background.png';
-import Hommer from '@/assets/community/hommer.svg';
 import Seori from '@/assets/sulkkagi/black_stone.svg';
 import { alerterAtom } from '@/atoms/alerter';
 import { usePostSingleSearch } from '@/api/community/postSingleSearch';
@@ -30,6 +28,9 @@ const CommunityPost = ({ stack, push, pop, top, postId }: postProps) => {
     top: top,
   };
 
+  const { data } = usePostSingleSearch(postId);
+  const postCommentsData = usePostCommentListSearch(postId);
+
   const taskSearch = useAtomValue(taskSearchAtom);
   const taskTransform = useAtomValue(taskTransformerAtom);
   const setAlert = useAtomValue(alerterAtom);
@@ -41,17 +42,17 @@ const CommunityPost = ({ stack, push, pop, top, postId }: postProps) => {
           <_.BtnIcon onClick={() => push(taskSearch?.('communityMain', stackProps))}>
             <_.Icon src={chevron} />
           </_.BtnIcon>
-          방태양님의 게시글
+          {data?.name || '사용자'}님의 게시글
         </_.Header>
         <_.PostArea>
           <Posts
-            user={{ name: '방태양', userId: 'noah_byte' }}
+            user={{ name: data?.name || '사용자', userId: data?.userId || 'userId' }}
             post={{
-              title: '아니 얘가 벌써 죽는다고?',
-              body: '아니 이건 진짜 아니지. 살려내라.',
-              createdAt: '2025년 09월 14일 AM 8:47',
-              likesCount: 12,
-              commentCount: 20,
+              title: data?.title || 'title',
+              body: data?.body || 'body',
+              createdAt: data?.createdAt || 'createdAt',
+              likesCount: data?.likesCount || 0,
+              commentCount: data?.commentCount || 0,
             }}
           />
           <CommentInput

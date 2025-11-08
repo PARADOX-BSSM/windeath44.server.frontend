@@ -67,7 +67,11 @@ const CommentInput: React.FC<CommentInputProps> = ({
           <_.InputArea>
             <_.Input
               type="text"
-              placeholder="자유롭게 의견을 작성해보세요!"
+              placeholder={
+                parentCommentId
+                  ? '자유롭게 대댓글을 작성해보세요!'
+                  : '자유롭게 의견을 작성해보세요!'
+              }
               value={commentInput}
               onChange={(e) => setCommentInput(e.target.value)}
             />
