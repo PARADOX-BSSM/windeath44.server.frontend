@@ -5,7 +5,13 @@ import ProfileImg from '@/assets/profile/choten.svg';
 import Heart from '@/assets/community/heart_line.svg';
 import CommentIcon from '@/assets/community/comment.svg';
 import KebabIcon from '@/assets/community/kebab_icon.svg';
+import Seori from '@/assets/seori/seori_mini.png';
 import { parseCustomContent } from '@/lib/customTag/parseCustomContent';
+import { useGetUserMutation } from '@/api/user/getUser';
+import { usePostDelete } from '@/api/community/postDelete';
+import { useAtomValue } from 'jotai';
+import { taskTransformerAtom } from '@/atoms/taskTransformer';
+import { alerterAtom } from '@/atoms/alerter';
 
 interface User {
   name: string;
@@ -25,11 +31,21 @@ interface PostsProps {
   post: Post;
 }
 
-const Posts: React.FC<PostsProps> = ({ user, post }) => {
-  const arr: string[] = [];
-  const parsedContent = parseCustomContent(arr, post.body);
+const Posts = ({ user, post }: PostsProps) => {
+  const parsedContent = parseCustomContent([], post.body);
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+
+  // 로그인한 유저 정보 가져오기
+  const { mutate: getUser, data: userData } = useGetUserMutation();
+  const currentUserId = userData?.data?.userId;
+  const taskTransform = useAtomValue(taskTransformerAtom);
+  const setAlert = useAtomValue(alerterAtom);
+  const postDeleteMutation = usePostDelete();
+
+  useEffect(() => {
+    getUser();
+  }, [getUser]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -51,15 +67,41 @@ const Posts: React.FC<PostsProps> = ({ user, post }) => {
     setIsOpen(!isOpen);
   };
 
-  const handleEdit = () => {
-    console.log('수정 클릭');
-    setIsOpen(false);
-  };
+  const handleEdit = () => {};
 
   const handleDelete = () => {
-    console.log('삭제 클릭');
-    setIsOpen(false);
+    if (!post.postId) {
+      console.log('게시글 ID가 없습니다');
+      return;
+    }
+
+    if (window.confirm('정말 삭제하시겠습니까?')) {
+      postDeleteMutation.mutate(post.postId, {
+        onSuccess: () => {},
+        onError: (error) => {
+          console.error('게시글 삭제 실패:', error);
+          if (setAlert) {
+            setAlert(
+              Seori,
+              <>
+                댓글이 삭제되지 않았습니다.
+                <br />
+                잠시 후 다시 시도해주세요
+              </>,
+              () => {
+                taskTransform?.('경고', '');
+              },
+            );
+          }
+        },
+      });
+      setIsOpen(false);
+    }
   };
+
+  // 로그인한 유저가 게시글 작성자인지 확인
+  // const isOwner = currentUserId && currentUserId === user.userId;
+  const isOwner = true; // 테스트용
 
   return (
     <_.Post>
@@ -98,20 +140,22 @@ const Posts: React.FC<PostsProps> = ({ user, post }) => {
           </_.PostInfo>
         </_.PostMain>
       </_.Main>
-      <_.KebabContainer ref={menuRef}>
-        <_.KebabBtn onClick={handleKebabClick}>
-          <_.Icon
-            src={KebabIcon}
-            alt="메뉴"
-          />
-        </_.KebabBtn>
-        {isOpen && (
-          <_.ContextMenu>
-            <_.MenuItem onClick={handleEdit}>수정</_.MenuItem>
-            <_.MenuItem onClick={handleDelete}>삭제</_.MenuItem>
-          </_.ContextMenu>
-        )}
-      </_.KebabContainer>
+      {isOwner && (
+        <_.KebabContainer ref={menuRef}>
+          <_.KebabBtn onClick={handleKebabClick}>
+            <_.Icon
+              src={KebabIcon}
+              alt="메뉴"
+            />
+          </_.KebabBtn>
+          {isOpen && (
+            <_.ContextMenu>
+              <_.MenuItem onClick={handleEdit}>수정</_.MenuItem>
+              <_.MenuItem onClick={handleDelete}>삭제</_.MenuItem>
+            </_.ContextMenu>
+          )}
+        </_.KebabContainer>
+      )}
     </_.Post>
   );
 };

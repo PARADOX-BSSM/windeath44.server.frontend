@@ -137,3 +137,44 @@ export const MenuItem = styled.button`
     background-color: #f5f5f5;
   }
 `;
+export const EditInputArea = styled.div`
+  display: flex;
+  width: 100%;
+  padding: 8px 10px;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffebfd;
+`;
+export const EditInput = styled.input`
+  width: 100%;
+  background: none;
+  border: none;
+  outline: none;
+
+  &::focus {
+    border: none;
+    outline: none;
+  }
+
+  &::placeholder {
+    color: #dcafdd;
+  }
+
+  color: #2e2e2e;
+  font-family: Galmuri11;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+`;
+export const EditIcon = styled.img`
+  width: 16px;
+  height: 15px;
+  aspect-ratio: 16/15;
+`;
+export const EditBtnGroup = styled.div`
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  justify-content: flex-end;
+`;

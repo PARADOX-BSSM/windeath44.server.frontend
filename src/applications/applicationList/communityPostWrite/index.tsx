@@ -10,7 +10,13 @@ import { alerterAtom } from '@/atoms/alerter';
 import { useAtomValue } from 'jotai';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
 
-const CommunityPostWrite: React.FC = () => {
+interface postData {
+  postId?: string;
+  defaultTitle?: string;
+  defaultBody?: string;
+}
+
+const CommunityPostWrite: React.FC = ({ postId, defaultTitle, defaultBody }: postData) => {
   const postCreateMutation = usePostCreate();
   const { mutate: getUser, data: userData } = useGetUserMutation();
   const currentUserId = userData?.data?.userId;
@@ -61,11 +67,13 @@ const CommunityPostWrite: React.FC = () => {
           <_.Title
             type="text"
             placeholder="제목을 입력해주세요"
+            defaultValue={defaultTitle}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
           <_.Content
             placeholder="자유롭게 글을 작성해 보세요."
+            defaultValue={defaultBody}
             value={body}
             onChange={(e) => setBody(e.target.value)}
           ></_.Content>
@@ -100,14 +108,18 @@ const CommunityPostWrite: React.FC = () => {
           name="이미지 첨부"
           type="submit"
         />
+        {postId ? (
+          <></>
+        ) : (
+          <CommunityBtn
+            name="임시저장/불러오기"
+            selected={loadPage}
+            onClick={() => setLoadPage(!loadPage)}
+            type="menu"
+          />
+        )}
         <CommunityBtn
-          name="임시저장/불러오기"
-          selected={loadPage}
-          onClick={() => setLoadPage(!loadPage)}
-          type="menu"
-        />
-        <CommunityBtn
-          name="게시"
+          name={postId ? '수정' : '게시'}
           type="submit"
           onClick={postCreate}
         />

@@ -1,9 +1,15 @@
 import React from 'react';
 import * as _ from './style';
 import { useState, useRef, useEffect } from 'react';
+import Seori from '@/assets/seori/seori_mini.png';
 import ProfileImg from '@/assets/profile/choten.svg';
 import Heart from '@/assets/community/heart_line.svg';
 import KebabIcon from '@/assets/community/kebab_icon.svg';
+import { useGetUserMutation } from '@/api/user/getUser';
+import { usePostCommentDelete } from '@/api/community/postCommentDelete';
+import { alerterAtom } from '@/atoms/alerter';
+import { useAtomValue } from 'jotai';
+import { taskTransformerAtom } from '@/atoms/taskTransformer';
 
 interface User {
   name: string;
@@ -11,6 +17,8 @@ interface User {
   profile?: string;
 }
 interface Post {
+  postId: number;
+  commentId: number;
   body: string;
   likesCount: number;
   createdAt: string;
@@ -24,7 +32,19 @@ const Posts: React.FC<PostsProps> = ({ user, post }) => {
   const { name, userId, profile = '' } = user;
   const { body, likesCount, createdAt, updatedAt } = post;
   const [isOpen, setIsOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedBody, setEditedBody] = useState(body);
   const menuRef = useRef<HTMLDivElement>(null);
+  const taskTransform = useAtomValue(taskTransformerAtom);
+  const setAlert = useAtomValue(alerterAtom);
+
+  const { mutate: getUser, data: userData } = useGetUserMutation();
+  const currentUserId = userData?.data?.userId;
+  const commentDeleteMutation = usePostCommentDelete();
+
+  useEffect(() => {
+    getUser();
+  }, [getUser]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -47,14 +67,53 @@ const Posts: React.FC<PostsProps> = ({ user, post }) => {
   };
 
   const handleEdit = () => {
-    console.log('수정 클릭');
+    setIsEditing(true);
     setIsOpen(false);
   };
 
-  const handleDelete = () => {
-    console.log('삭제 클릭');
-    setIsOpen(false);
+  const handleEditCancel = () => {
+    setIsEditing(false);
+    setEditedBody(body);
   };
+
+  const handleEditSave = () => {};
+
+  const handleDelete = () => {
+    if (!post.commentId || !post.commentId) {
+      console.log('게시글 ID, 혹은 댓글 ID가 없습니다');
+      return;
+    }
+
+    if (window.confirm('정말 삭제하시겠습니까?')) {
+      commentDeleteMutation.mutate(
+        { post_id: post.postId, comment_id: post.commentId },
+        {
+          onSuccess: () => {},
+          onError: (error) => {
+            console.error('댓글 삭제 실패:', error);
+            if (setAlert) {
+              setAlert(
+                Seori,
+                <>
+                  댓글이 삭제되지 않았습니다.
+                  <br />
+                  잠시 후 다시 시도해주세요
+                </>,
+                () => {
+                  taskTransform?.('경고', '');
+                },
+              );
+            }
+          },
+        },
+      );
+      setIsOpen(false);
+    }
+  };
+
+  // 로그인한 유저가 댓글 작성자인지 확인
+  // const isOwner = currentUserId && currentUserId === userId;
+  const isOwner = true; // 테스트용: 항상 수정/삭제 가능
 
   return (
     <_.Post>
@@ -67,22 +126,41 @@ const Posts: React.FC<PostsProps> = ({ user, post }) => {
             <_.UserId>@{userId}</_.UserId>
             <_.Edited>{createdAt !== updatedAt ? '(수정됨)' : ''}</_.Edited>
           </_.PostInfo>
-          <_.KebabContainer ref={menuRef}>
-            <_.KebabBtn onClick={handleKebabClick}>
-              <_.Icon
-                src={KebabIcon}
-                alt="메뉴"
-              />
-            </_.KebabBtn>
-            {isOpen && (
-              <_.ContextMenu>
-                <_.MenuItem onClick={handleEdit}>수정</_.MenuItem>
-                <_.MenuItem onClick={handleDelete}>삭제</_.MenuItem>
-              </_.ContextMenu>
-            )}
-          </_.KebabContainer>
+          {isOwner && (
+            <_.KebabContainer ref={menuRef}>
+              <_.KebabBtn onClick={handleKebabClick}>
+                <_.Icon
+                  src={KebabIcon}
+                  alt="메뉴"
+                />
+              </_.KebabBtn>
+              {isOpen && (
+                <_.ContextMenu>
+                  <_.MenuItem onClick={handleEdit}>수정</_.MenuItem>
+                  <_.MenuItem onClick={handleDelete}>삭제</_.MenuItem>
+                </_.ContextMenu>
+              )}
+            </_.KebabContainer>
+          )}
         </_.PostHeader>
-        <_.PostContent>{body}</_.PostContent>
+        {isEditing ? (
+          <>
+            <_.EditInputArea>
+              <_.EditInput
+                type="text"
+                value={editedBody}
+                onChange={(e) => setEditedBody(e.target.value)}
+                placeholder="댓글을 수정하세요"
+              />
+            </_.EditInputArea>
+            <_.EditBtnGroup>
+              <_.EditBtn onClick={handleEditSave}>저장</_.EditBtn>
+              <_.EditBtn onClick={handleEditCancel}>취소</_.EditBtn>
+            </_.EditBtnGroup>
+          </>
+        ) : (
+          <_.PostContent>{body}</_.PostContent>
+        )}
         <_.PostInfo>
           <_.Icons>
             <_.Icon

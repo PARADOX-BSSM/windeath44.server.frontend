@@ -132,3 +132,86 @@ export const PostImg = styled.div<{ imgUrl: string }>`
   background-image: url(${(props) => props.imgUrl});
   background-size: cover;
 `;
+export const CommentMain = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  align-self: stretch;
+`;
+export const InputArea = styled.div`
+  display: flex;
+  width: 100%;
+  padding: 8px 10px;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1 0 0;
+  background: #ffebfd;
+`;
+export const Input = styled.input`
+  width: 100%;
+  background: none;
+  border: none;
+  outline: none;
+
+  &::focus {
+    border: none;
+    outline: none;
+  }
+
+  &::placeholder {
+    color: #dcafdd;
+  }
+
+  color: #2e2e2e;
+  font-family: Galmuri11;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+`;
+export const EditInputArea = styled.div`
+  display: flex;
+  width: 100%;
+  padding: 8px 10px;
+  align-items: center;
+  background: #ffebfd;
+`;
+export const EditInput = styled.input`
+  width: 100%;
+  background: none;
+  border: none;
+  outline: none;
+
+  &::focus {
+    border: none;
+    outline: none;
+  }
+
+  &::placeholder {
+    color: #dcafdd;
+  }
+
+  color: #2e2e2e;
+  font-family: Galmuri11;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+`;
+export const EditBtnGroup = styled.div`
+  display: flex;
+  gap: 16px;
+`;
+export const EditBtn = styled.button`
+  background: none;
+  border: none;
+  color: #e774dd;
+  font-family: Galmuri11;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  cursor: pointer;
+`;
