@@ -84,7 +84,7 @@ export const Icons = styled.div`
   font-weight: 400;
   line-height: normal;
 `;
-export const Icon = styled.img<{ width: string; height: string }>`
+export const Icon = styled.img<{ width?: string; height?: string }>`
   width: ${(props) => props.width};
   height: 10px;
 `;
@@ -94,4 +94,46 @@ export const PostImg = styled.div<{ imgUrl: string }>`
   background: #fff;
   background-image: url(${(props) => props.imgUrl});
   background-size: cover;
+`;
+
+export const KebabContainer = styled.div`
+  position: relative;
+`;
+export const KebabBtn = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    opacity: 0.7;
+  }
+`;
+export const ContextMenu = styled.div`
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  background: #ffffff;
+  border: 1px solid #ccc;
+  z-index: 1000;
+  min-width: 80px;
+`;
+export const MenuItem = styled.button`
+  width: 100%;
+  padding: 8px 16px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  font-family: Galmuri11;
+  font-size: 12px;
+  color: #2e2e2e;
+
+  &:hover {
+    background-color: #f5f5f5;
+  }
 `;

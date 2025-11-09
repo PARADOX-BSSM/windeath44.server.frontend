@@ -42,17 +42,17 @@ const CommunityPost = ({ stack, push, pop, top, postId }: postProps) => {
           <_.BtnIcon onClick={() => push(taskSearch?.('communityMain', stackProps))}>
             <_.Icon src={chevron} />
           </_.BtnIcon>
-          {data?.name || '사용자'}님의 게시글
+          {data?.data.name || '사용자'}님의 게시글
         </_.Header>
         <_.PostArea>
           <Posts
-            user={{ name: data?.name || '사용자', userId: data?.userId || 'userId' }}
+            user={{ name: data?.data.name || '사용자', userId: data?.data.userId || 'userId' }}
             post={{
-              title: data?.title || 'title',
-              body: data?.body || 'body',
-              createdAt: data?.createdAt || 'createdAt',
-              likesCount: data?.likesCount || 0,
-              commentCount: data?.commentCount || 0,
+              title: data?.data.title || 'title',
+              body: data?.data.body || 'body',
+              createdAt: data?.data.createdAt || 'createdAt',
+              likesCount: data?.data.likesCount || 0,
+              commentCount: data?.data.commentCount || 0,
             }}
           />
           <CommentInput
@@ -62,15 +62,23 @@ const CommunityPost = ({ stack, push, pop, top, postId }: postProps) => {
           />
           {postCommentsData.data?.comments?.map((data) => (
             <Comment
-              user={{ name: data.name, id: data.userId, profileImage: data.profile }}
-              post={{ content: data.body, heart: data.likesCount, comment: 20 }}
-              first={data.createdAt !== ''}
+              user={{ name: data.name, userId: data.userId, profile: data.profile }}
+              post={{
+                body: data.body,
+                likesCount: data.likesCount,
+                createdAt: data.createdAt,
+                updatedAt: data.updatedAt,
+              }}
             />
           ))}
           <Comment
-            user={{ name: '방태양', id: 'noah_byte', profileImage: '' }}
-            post={{ content: '아니 이건 진짜 아니지. 살려내라.', heart: 12, comment: 20 }}
-            first={true}
+            user={{ name: '방태양', userId: 'noah_byte', profile: '' }}
+            post={{
+              body: '아니 이건 진짜 아니지. 살려내라.',
+              likesCount: 12,
+              createdAt: '',
+              updatedAt: '',
+            }}
           />
         </_.PostArea>
       </_.Main>

@@ -30,6 +30,13 @@ export const PostMain = styled.div`
   flex-direction: column;
   align-items: flex-start;
   gap: 10px;
+  flex: 1;
+`;
+export const PostHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 `;
 export const PostInfo = styled.div`
   display: flex;
@@ -42,6 +49,47 @@ export const PostInfo = styled.div`
   font-weight: 400;
   line-height: normal;
 `;
+export const KebabContainer = styled.div`
+  position: relative;
+`;
+export const KebabBtn = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    opacity: 0.7;
+  }
+`;
+export const ContextMenu = styled.div`
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  background: #ffffff;
+  border: 1px solid #ccc;
+  z-index: 1000;
+  min-width: 80px;
+`;
+export const MenuItem = styled.button`
+  width: 100%;
+  padding: 8px 16px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  font-family: Galmuri11;
+  font-size: 12px;
+  color: #2e2e2e;
+
+  &:hover {
+    background-color: #f5f5f5;
+  }
+`;
 export const Name = styled.p`
   color: #9a5a95;
 `;
@@ -49,18 +97,14 @@ export const UserId = styled.p`
   color: #dcafdd;
   font-size: 10px;
 `;
+export const Edited = styled.p`
+  color: #ccc;
+  font-size: 10px;
+`;
 export const PostContent = styled.p`
   color: #2e2e2e;
   font-family: Galmuri11;
   font-size: 14px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-`;
-export const Datetime = styled.p`
-  color: #999;
-  font-family: Galmuri11;
-  font-size: 10px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -78,8 +122,8 @@ export const Icons = styled.div`
   line-height: normal;
 `;
 export const Icon = styled.img`
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
 `;
 export const PostImg = styled.div<{ imgUrl: string }>`
   width: 110px;
