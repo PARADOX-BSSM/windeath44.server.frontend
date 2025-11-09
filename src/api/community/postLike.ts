@@ -27,10 +27,12 @@ const postLike = async ({ post_id, user_id }: postLike) => {
   }
 };
 
-export const usePostLike = useMutation({
-  mutationFn: postLike,
-  onSuccess: () => {},
-  onError: (error) => {
-    console.error('댓글 좋아요 실패:', error);
-  },
-});
+export const usePostLike = () => {
+  useMutation({
+    mutationFn: postLike,
+    onSuccess: () => {},
+    onError: (error) => {
+      console.error('댓글 좋아요 실패:', error);
+    },
+  });
+};

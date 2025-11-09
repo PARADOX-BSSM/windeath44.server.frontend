@@ -3,36 +3,36 @@ import { AxiosResponse } from 'axios';
 import { community } from '@/config';
 import api from '../axiosInstance';
 
-interface postCommentLike {
+interface postCommentLikeDeleteInterface {
   comment_id: number;
   user_id: string;
 }
-const postCommentLike = async ({ comment_id, user_id }: postCommentLike) => {
+
+const postCommentLikeDelete = async ({ comment_id, user_id }: postCommentLikeDeleteInterface) => {
   try {
-    const Response: AxiosResponse = await api.post(
+    const response: AxiosResponse = await api.delete(
       `${community}/posts/comments/${comment_id}/likes`,
-      {},
       {
         headers: {
           'user-id': user_id,
         },
       },
     );
-    return Response.data;
+    return response.data;
   } catch (error: any) {
     if (error.response?.data) {
-      console.log(`댓글 좋아요 실패: ${JSON.stringify(error.response.data)}`);
+      console.log(`댓글 좋아요 삭제 실패: ${JSON.stringify(error.response.data)}`);
     }
     throw error;
   }
 };
 
-export const usePostCommentLike = () => {
+export const useCommentPosstLikeDelete = () => {
   useMutation({
-    mutationFn: postCommentLike,
+    mutationFn: postCommentLikeDelete,
     onSuccess: () => {},
     onError: (error) => {
-      console.error('댓글 좋아요 실패:', error);
+      console.error('댓글 좋아요 삭제 실패:', error);
     },
   });
 };
