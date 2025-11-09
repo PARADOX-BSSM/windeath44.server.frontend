@@ -49,6 +49,7 @@ const Posts: React.FC<PostsProps> = ({ user, post }) => {
                 alt="PostHeart"
                 width="10px"
                 height="10px"
+                onClick={() => {}}
               />
               {post.likesCount}
             </_.Icons>
