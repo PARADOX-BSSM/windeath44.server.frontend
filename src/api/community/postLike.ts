@@ -3,14 +3,14 @@ import { AxiosResponse } from 'axios';
 import { community } from '@/config';
 import api from '../axiosInstance';
 
-interface postCommentLike {
-  comment_id: number;
+interface postLike {
+  post_id: number;
   user_id: string;
 }
-const postCommentLike = async ({ comment_id, user_id }: postCommentLike) => {
+const postLike = async ({ post_id, user_id }: postLike) => {
   try {
     const Response: AxiosResponse = await api.post(
-      `${community}/posts/${comment_id}/likes`,
+      `${community}/posts/${post_id}/likes`,
       {},
       {
         headers: {
@@ -27,8 +27,8 @@ const postCommentLike = async ({ comment_id, user_id }: postCommentLike) => {
   }
 };
 
-export const usePostCommentLike = useMutation({
-  mutationFn: postCommentLike,
+export const usePostLike = useMutation({
+  mutationFn: postLike,
   onSuccess: () => {},
   onError: (error) => {
     console.error('댓글 좋아요 실패:', error);
