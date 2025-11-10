@@ -11,6 +11,7 @@ export const Container = styled.div`
   align-self: stretch;
   overflow: hidden;
   background: var(--LightPrimary, #ffd3fb);
+  position: relative; /* 모달의 기준점으로 사용 */
 `;
 
 export const InnerContainer = styled.div`

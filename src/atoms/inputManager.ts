@@ -1,9 +1,10 @@
 import { InputContentType, InputPortageType } from '@/modules/inputPortageInterface';
 import { atom } from 'jotai';
+import type deathType from '@/modules/deathType';
 
 export const inputPortage = atom<InputPortageType>({
   name: '',
-  deathReason: '자연사(自然死)' as deathType,
+  deathReason: '사인 선택' as deathType,
   date: '',
   lifeCycle: 0,
   anime: '',
