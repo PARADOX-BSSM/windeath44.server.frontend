@@ -11,21 +11,23 @@ interface postListSearchInterface {
 }
 interface postListSearchResponse {
   message: string;
-  posts: {
-    postId: number;
-    userId: string;
-    name: string;
-    profile: string;
-    title: string;
-    body: string;
-    status: string;
-    isBlind: boolean;
-    createdAt: string;
-    updatedAt: string;
-    viewCount: number;
-    likesCount: number;
-    commentCount?: number;
-  }[];
+  data: {
+    content: {
+      postId: number;
+      userId: string;
+      name: string;
+      profile: string | null;
+      title: string;
+      body: string;
+      status: string;
+      isBlind: boolean;
+      createdAt: string;
+      updatedAt: string;
+      viewsCount: number;
+      likesCount: number;
+      postCommentCount: number;
+    }[];
+  };
 }
 const postListSearch = async ({ title, isBlind, characterId, status }: postListSearchInterface) => {
   const data = {
@@ -39,11 +41,12 @@ const postListSearch = async ({ title, isBlind, characterId, status }: postListS
       `${community}/posts/list`,
       data,
     );
-    console.log(data);
+    console.log('API 요청 데이터:', data);
+    console.log('API 응답 데이터:', response.data);
     return response.data;
   } catch (error: any) {
     if (error.response?.data) {
-      console.log('게시글 불러오기 실패');
+      console.log('게시글 불러오기 실패:', error.response.data);
     }
     throw error;
   }

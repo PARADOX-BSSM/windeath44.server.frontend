@@ -50,13 +50,42 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
   const token = getCookie('access_token');
 
   useEffect(() => {
-    if (postListSearchMutation.isSuccess && postListSearchMutation.data?.posts) {
-      setPostData(postListSearchMutation.data.posts);
+    if (postListSearchMutation.isSuccess && postListSearchMutation.data?.data?.content) {
+      setPostData(postListSearchMutation.data.data.content);
     }
   }, [postListSearchMutation.isSuccess, postListSearchMutation.data]);
 
+  // 컴포넌트 마운트 시 초기 게시글 로딩
   useEffect(() => {
-    postListSearchMutation.mutate({ status: 'PUBLISHED' });
+    postListSearchMutation.mutate(
+      { status: 'PUBLISHED' },
+      {
+        onError: () => {
+          if (setAlert) {
+            setAlert(Seori, <>게시글이 제대로 불러와지지 않았습니다.</>, () =>
+              taskTransform?.('경고', ''),
+            );
+          }
+        },
+      },
+    );
+  }, []);
+
+  useEffect(() => {
+    if (active) {
+      postListSearchMutation.mutate(
+        { status: 'PUBLISHED' },
+        {
+          onError: () => {
+            if (setAlert) {
+              setAlert(Seori, <>게시글이 제대로 불러와지지 않았습니다.</>, () =>
+                taskTransform?.('경고', ''),
+              );
+            }
+          },
+        },
+      );
+    }
   }, [active]);
 
   const stackProps = {
@@ -172,7 +201,7 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
                 postImage: '',
                 createdAt: data.createdAt,
                 likesCount: data.likesCount || 0,
-                commentCount: data.commentCount || 0,
+                commentCount: data.postCommentCount || 0,
               }}
               onClick={() =>
                 push(taskSearch?.('communityPost', { ...stackProps, postId: data.postId }))
