@@ -11,15 +11,15 @@ import { useAtomValue } from 'jotai';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
 
 interface CommentInputProps {
-  name: string;
-  userId: string;
+  name?: string;
+  userId?: string;
   postId: number;
   profile?: string;
   parentCommentId?: number | null;
 }
 const CommentInput: React.FC<CommentInputProps> = ({
-  name,
-  userId,
+  name = '게스트',
+  userId = 'guest_user',
   postId,
   profile = '',
   parentCommentId,

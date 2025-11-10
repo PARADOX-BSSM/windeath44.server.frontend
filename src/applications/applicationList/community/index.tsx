@@ -208,19 +208,6 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
               }
             />
           ))}
-          <PostPreview
-            user={{ name: '방태양', userId: 'noah_byte' }}
-            post={{
-              postId: 1,
-              title: '아니 얘가 벌써 죽는다고?',
-              body: '아니 이건 진짜 아니지. 살려내라.',
-              postImage: '',
-              createdAt: '2025년 09월 14일 AM 8:47',
-              likesCount: 12,
-              commentCount: 20,
-            }}
-            onClick={() => push(taskSearch?.('communityPost', { ...stackProps, postId: 1 }))}
-          />
         </_.PostArea>
       </_.Main>
       <JudgementPreview />

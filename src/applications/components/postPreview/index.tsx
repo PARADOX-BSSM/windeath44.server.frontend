@@ -49,7 +49,7 @@ const PostPreview: React.FC<PostsProps> = ({ user, post, onClick }) => {
                 width="10px"
                 height="10px"
               />
-              {commentCount}
+              {likesCount}
             </_.Icons>
             <_.Icons>
               <_.Icon
@@ -58,7 +58,7 @@ const PostPreview: React.FC<PostsProps> = ({ user, post, onClick }) => {
                 width="10px"
                 height="10px"
               />
-              {likesCount}
+              {commentCount}
             </_.Icons>
           </_.PostInfo>
         </_.PostMain>

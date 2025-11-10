@@ -11,6 +11,9 @@ import Seori from '@/assets/sulkkagi/black_stone.svg';
 import { alerterAtom } from '@/atoms/alerter';
 import { usePostSingleSearch } from '@/api/community/postSingleSearch';
 import { usePostCommentListSearch } from '@/api/community/postCommentListSearch';
+import { useGetUserMutation } from '@/api/user/getUser';
+import { getCookie } from '@/api/auth/cookie';
+import { useEffect, useState } from 'react';
 
 interface postProps {
   stack: any[];
@@ -30,6 +33,39 @@ const CommunityPost = ({ stack, push, pop, top, postId }: postProps) => {
 
   const { data } = usePostSingleSearch(postId);
   const postCommentsData = usePostCommentListSearch(postId);
+  const getUserMutation = useGetUserMutation();
+  const token = getCookie('access_token');
+
+  const [currentUser, setCurrentUser] = useState<{
+    name: string;
+    userId: string;
+    profile?: string;
+  } | null>(null);
+
+  useEffect(() => {
+    if (token) {
+      getUserMutation.mutate(undefined, {
+        onSuccess: (response: any) => {
+          setCurrentUser({
+            name: response.data?.name || '사용자',
+            userId: response.data?.userId || 'user',
+            profile: response.data?.profile,
+          });
+        },
+        onError: () => {
+          setCurrentUser({
+            name: '사용자',
+            userId: 'userId',
+          });
+        },
+      });
+    } else {
+      setCurrentUser({
+        name: '게스트',
+        userId: 'guest_user',
+      });
+    }
+  }, [token]);
 
   const taskSearch = useAtomValue(taskSearchAtom);
   const taskTransform = useAtomValue(taskTransformerAtom);
@@ -57,9 +93,10 @@ const CommunityPost = ({ stack, push, pop, top, postId }: postProps) => {
             }}
           />
           <CommentInput
-            name="방태양"
-            userId="noah_byte"
+            name={currentUser?.name}
+            userId={currentUser?.userId}
             postId={postId}
+            profile={currentUser?.profile}
           />
           {postCommentsData.data?.comments?.map((data) => (
             <Comment
