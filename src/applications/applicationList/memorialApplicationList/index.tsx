@@ -13,6 +13,8 @@ import {
   useMemorialApplicationApproveMutation,
   useMemorialApplicationRejectMutation,
 } from '@/api/memorial/memorialApplicationApprove';
+import * as ViewerStyle from '../memorialApplicationViewer/style';
+import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
 
 interface dataStructureProps {
   stack: any[];
@@ -27,6 +29,11 @@ const MemorialApplicationList = ({ stack, push, pop, top }: dataStructureProps) 
   const taskSearch = useAtomValue(taskSearchAtom);
   const [cursorId, setCursorId] = useState<number | undefined>(undefined);
   const [allApplications, setAllApplications] = useState<any[]>([]);
+  const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
+  const [rejectReason, setRejectReason] = useState('');
+  const [rejectTargetId, setRejectTargetId] = useState<number | null>(null);
+  const [isViewRejectedReasonModalOpen, setIsViewRejectedReasonModalOpen] = useState(false);
+  const [viewingRejectedReason, setViewingRejectedReason] = useState('');
   const likeMutation = useMemorialApplicationLikeMutation();
   const approveMutation = useMemorialApplicationApproveMutation();
   const rejectMutation = useMemorialApplicationRejectMutation();
@@ -157,32 +164,70 @@ const MemorialApplicationList = ({ stack, push, pop, top }: dataStructureProps) 
     });
   };
 
-  // 거절 핸들러
+  // 거절 버튼 클릭 시 모달 열기
   const handleReject = (memorialApplicationId: number) => {
-    rejectMutation.mutate(memorialApplicationId, {
-      onSuccess: () => {
-        setAlert?.(
-          Seori,
-          <>추모관 신청이 거절되었습니다.</>,
-          () => {
-            taskTransform?.('경고', '');
-          },
-        );
+    setRejectTargetId(memorialApplicationId);
+    setIsRejectModalOpen(true);
+  };
+
+  // 거절 모달 닫기
+  const handleRejectModalClose = () => {
+    setIsRejectModalOpen(false);
+    setRejectReason('');
+    setRejectTargetId(null);
+  };
+
+  // 거절 사유 제출
+  const handleRejectSubmit = () => {
+    if (!rejectReason.trim()) {
+      setAlert?.(Seori, <>거절 사유를 입력해주세요.</>, () => {
+        taskTransform?.('경고', '');
+      });
+      return;
+    }
+
+    if (!rejectTargetId) return;
+
+    rejectMutation.mutate(
+      { id: rejectTargetId, reason: rejectReason },
+      {
+        onSuccess: () => {
+          setAlert?.(
+            Seori,
+            <>추모관 신청이 거절되었습니다.</>,
+            () => {
+              taskTransform?.('경고', '');
+            },
+          );
+          handleRejectModalClose();
+        },
+        onError: () => {
+          setAlert?.(
+            Seori,
+            <>
+              거절 처리 중 오류가 발생했습니다.
+              <br />
+              잠시 후 다시 시도해주세요.
+            </>,
+            () => {
+              taskTransform?.('경고', '');
+            },
+          );
+        },
       },
-      onError: () => {
-        setAlert?.(
-          Seori,
-          <>
-            거절 처리 중 오류가 발생했습니다.
-            <br />
-            잠시 후 다시 시도해주세요.
-          </>,
-          () => {
-            taskTransform?.('경고', '');
-          },
-        );
-      },
-    });
+    );
+  };
+
+  // 거절 사유 보기 핸들러
+  const handleViewRejectedReason = (rejectedReason: string) => {
+    setViewingRejectedReason(rejectedReason);
+    setIsViewRejectedReasonModalOpen(true);
+  };
+
+  // 거절 사유 보기 모달 닫기
+  const handleViewRejectedReasonModalClose = () => {
+    setIsViewRejectedReasonModalOpen(false);
+    setViewingRejectedReason('');
   };
 
   // 좋아요 토글 핸들러 (낙관적 업데이트)
@@ -270,6 +315,8 @@ const MemorialApplicationList = ({ stack, push, pop, top }: dataStructureProps) 
                           isAdmin={isAdmin}
                           onApprove={handleApprove}
                           onReject={handleReject}
+                          rejectedReason={app.rejectedReason}
+                          onViewRejectedReason={handleViewRejectedReason}
                           onClick={() => {
                             const stackProps = {
                               stack: stack,
@@ -301,6 +348,66 @@ const MemorialApplicationList = ({ stack, push, pop, top }: dataStructureProps) 
           </_.ApplicationContainer>
         </_.ContentContainer>
       </_.InnerContainer>
+
+      {/* 거절 사유 입력 모달 */}
+      {isRejectModalOpen && (
+        <ViewerStyle.ModalOverlay onClick={handleRejectModalClose}>
+          <ViewerStyle.ModalContent onClick={(e) => e.stopPropagation()}>
+            <ViewerStyle.ModalTitle>거절 사유 입력</ViewerStyle.ModalTitle>
+            <ViewerStyle.ModalTextarea
+              placeholder="거절 사유를 입력해주세요..."
+              value={rejectReason}
+              onChange={(e) => setRejectReason(e.target.value)}
+              onMouseEnter={() => setCursorImage(CURSOR_IMAGES.drag)}
+              onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+            />
+            <ViewerStyle.ModalButtonGroup>
+              <ViewerStyle.ModalButton
+                variant="secondary"
+                onClick={handleRejectModalClose}
+                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+              >
+                취소
+              </ViewerStyle.ModalButton>
+              <ViewerStyle.ModalButton
+                variant="primary"
+                onClick={handleRejectSubmit}
+                disabled={rejectMutation.isPending}
+                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+              >
+                {rejectMutation.isPending ? '처리 중...' : '거절'}
+              </ViewerStyle.ModalButton>
+            </ViewerStyle.ModalButtonGroup>
+          </ViewerStyle.ModalContent>
+        </ViewerStyle.ModalOverlay>
+      )}
+
+      {/* 거절 사유 보기 모달 */}
+      {isViewRejectedReasonModalOpen && (
+        <ViewerStyle.ModalOverlay onClick={handleViewRejectedReasonModalClose}>
+          <ViewerStyle.ModalContent onClick={(e) => e.stopPropagation()}>
+            <ViewerStyle.ModalTitle>거절 사유</ViewerStyle.ModalTitle>
+            <ViewerStyle.ModalTextarea
+              value={viewingRejectedReason}
+              readOnly
+              onMouseEnter={() => setCursorImage(CURSOR_IMAGES.default)}
+              onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+            />
+            <ViewerStyle.ModalButtonGroup>
+              <ViewerStyle.ModalButton
+                variant="primary"
+                onClick={handleViewRejectedReasonModalClose}
+                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+              >
+                닫기
+              </ViewerStyle.ModalButton>
+            </ViewerStyle.ModalButtonGroup>
+          </ViewerStyle.ModalContent>
+        </ViewerStyle.ModalOverlay>
+      )}
     </_.Container>
   );
 };

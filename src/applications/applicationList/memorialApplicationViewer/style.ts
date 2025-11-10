@@ -11,6 +11,7 @@ export const Main = styled.main`
   background: var(--LightPrimary, #ffd3fb);
   height: 100%;
   box-sizing: border-box;
+  position: relative; /* 모달의 기준점으로 사용 */
 `;
 
 export const Container = styled.div`
@@ -54,6 +55,8 @@ export const Header = styled.header`
   align-items: center;
   gap: 24px;
   align-self: stretch;
+  position: relative;
+  z-index: 100;
 `;
 
 export const TextContainer = styled.div`
@@ -114,6 +117,10 @@ export const BackButton = styled.button`
   background: none;
   border: none;
   cursor: none;
+  pointer-events: auto;
+  position: relative;
+  z-index: 101;
+  padding: 4px 8px;
 
   &:hover {
     opacity: 0.7;
@@ -131,6 +138,10 @@ export const ApproveButton = styled.button`
   background: none;
   border: none;
   cursor: none;
+  pointer-events: auto;
+  position: relative;
+  z-index: 101;
+  padding: 4px 8px;
 
   &:hover {
     opacity: 0.7;
@@ -139,6 +150,7 @@ export const ApproveButton = styled.button`
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+    pointer-events: none;
   }
 `;
 
@@ -153,6 +165,10 @@ export const RejectButton = styled.button`
   background: none;
   border: none;
   cursor: none;
+  pointer-events: auto;
+  position: relative;
+  z-index: 101;
+  padding: 4px 8px;
 
   &:hover {
     opacity: 0.7;
@@ -161,6 +177,7 @@ export const RejectButton = styled.button`
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+    pointer-events: none;
   }
 `;
 
@@ -319,4 +336,92 @@ export const ArticleContent = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+`;
+
+// 거절 사유 모달
+export const ModalOverlay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
+export const ModalContent = styled.div`
+  background: #fff;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 400px;
+  max-width: 600px;
+`;
+
+export const ModalTitle = styled.h2`
+  color: #2e2e2e;
+  font-family: Galmuri11;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  margin: 0;
+`;
+
+export const ModalTextarea = styled.textarea`
+  width: 100%;
+  min-height: 120px;
+  padding: 8px;
+  border: 1px solid var(--Stroke, #e774dd);
+  background: #fff;
+  color: #2e2e2e;
+  font-family: Galmuri11;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  resize: none;
+  box-sizing: border-box;
+  cursor: none;
+
+  &:focus {
+    outline: none;
+    border-color: var(--off, #fd51a7);
+  }
+
+  &::placeholder {
+    color: #999;
+  }
+`;
+
+export const ModalButtonGroup = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+`;
+
+export const ModalButton = styled.button<{ variant?: 'primary' | 'secondary' }>`
+  padding: 8px 16px;
+  background: ${(props) => (props.variant === 'primary' ? 'var(--Stroke, #e774dd)' : '#fff')};
+  color: ${(props) => (props.variant === 'primary' ? '#fff' : '#2e2e2e')};
+  border: 1px solid var(--Stroke, #e774dd);
+  font-family: Galmuri11;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  cursor: none;
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 `;
