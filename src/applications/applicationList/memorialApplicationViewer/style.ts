@@ -11,6 +11,7 @@ export const Main = styled.main`
   background: var(--LightPrimary, #ffd3fb);
   height: 100%;
   box-sizing: border-box;
+  position: relative; /* 모달의 기준점으로 사용 */
 `;
 
 export const Container = styled.div`
@@ -339,7 +340,7 @@ export const ArticleContent = styled.div`
 
 // 거절 사유 모달
 export const ModalOverlay = styled.div`
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
@@ -384,8 +385,9 @@ export const ModalTextarea = styled.textarea`
   font-style: normal;
   font-weight: 400;
   line-height: normal;
-  resize: vertical;
+  resize: none;
   box-sizing: border-box;
+  cursor: none;
 
   &:focus {
     outline: none;

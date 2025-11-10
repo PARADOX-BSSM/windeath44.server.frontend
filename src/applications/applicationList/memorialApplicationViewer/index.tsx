@@ -293,10 +293,7 @@ const MemorialApplicationViewer = ({
                     {approveMutation.isPending ? '처리 중...' : '승인'}
                   </_.ApproveButton>
                   <_.RejectButton
-                    onClick={() => {
-                      console.log('승인 버튼 클릭됨');
-                      // handleReject();
-                    }}
+                    onClick={handleReject}
                     disabled={rejectMutation.isPending}
                     onMouseEnter={() => {
                       setCursorImage(CURSOR_IMAGES.hand);
@@ -367,53 +364,6 @@ const MemorialApplicationViewer = ({
           </_.Section2>
         </_.InnerContainer>
       </_.Container>
-
-      {/* 거절 사유 입력 모달 */}
-      {(() => {
-        console.log('[MemorialApplicationViewer] 모달 렌더링 체크:', isRejectModalOpen);
-        return isRejectModalOpen ? (
-          <_.ModalOverlay
-            onClick={handleRejectModalClose}
-            onMouseEnter={() => setCursorImage(CURSOR_IMAGES.default)}
-            onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
-          >
-            <_.ModalContent
-              onClick={(e) => {
-                e.stopPropagation();
-                console.log('[MemorialApplicationViewer] 모달 컨텐츠 클릭');
-              }}
-            >
-              <_.ModalTitle>거절 사유 입력</_.ModalTitle>
-              <_.ModalTextarea
-                placeholder="거절 사유를 입력해주세요..."
-                value={rejectReason}
-                onChange={(e) => setRejectReason(e.target.value)}
-                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.drag)}
-                onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
-              />
-              <_.ModalButtonGroup>
-                <_.ModalButton
-                  variant="secondary"
-                  onClick={handleRejectModalClose}
-                  onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
-                  onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
-                >
-                  취소
-                </_.ModalButton>
-                <_.ModalButton
-                  variant="primary"
-                  onClick={handleRejectSubmit}
-                  disabled={rejectMutation.isPending}
-                  onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
-                  onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
-                >
-                  {rejectMutation.isPending ? '처리 중...' : '거절'}
-                </_.ModalButton>
-              </_.ModalButtonGroup>
-            </_.ModalContent>
-          </_.ModalOverlay>
-        ) : null;
-      })()}
     </_.Main>
   );
 };
