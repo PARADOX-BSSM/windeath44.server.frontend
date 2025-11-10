@@ -315,7 +315,11 @@ const MemorialApply = ({}: dataStructureProps) => {
           btnText="추모관 신청하기"
           from={userName}
           content="<목차>마지막 순간</목차>
-<동영상>https://youtu.be/KkQI3ECwfG4?si=esEW74t5OalkrbjO</동영상>"
+<동영상>https://youtu.be/KkQI3ECwfG4?si=esEW74t5OalkrbjO</동영상>
+<강조>너무 슬프다 ㅜㅜ</강조>
+<목차>이렇게 쓰는거구나!</목차>
+<다음/>
+"
           isPerson={true}
         />
       </_.TextAreaContainer>
