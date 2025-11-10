@@ -28,7 +28,7 @@ const postCommentLike = async ({ comment_id, user_id }: postCommentLike) => {
 };
 
 export const usePostCommentLike = () => {
-  useMutation({
+  return useMutation({
     mutationFn: postCommentLike,
     onSuccess: () => {},
     onError: (error) => {

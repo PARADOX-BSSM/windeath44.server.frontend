@@ -3,12 +3,15 @@ import * as _ from './style';
 import { useState, useRef, useEffect } from 'react';
 import ProfileImg from '@/assets/profile/choten.svg';
 import Heart from '@/assets/community/heart_line.svg';
+import HeartFill from '@/assets/community/heart_fill.svg';
 import CommentIcon from '@/assets/community/comment.svg';
 import KebabIcon from '@/assets/community/kebab_icon.svg';
 import Seori from '@/assets/seori/seori_mini.png';
 import { parseCustomContent } from '@/lib/customTag/parseCustomContent';
 import { useGetUserMutation } from '@/api/user/getUser';
 import { usePostDelete } from '@/api/community/postDelete';
+import { usePostLike } from '@/api/community/postLike';
+import { usePostLikeDelete } from '@/api/community/postLikeDelete';
 import { useAtomValue } from 'jotai';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
 import { alerterAtom } from '@/atoms/alerter';
@@ -19,7 +22,7 @@ interface User {
   profile?: string;
 }
 interface Post {
-  postId?: number;
+  postId: number;
   title: string;
   body: string;
   commentCount: number;
@@ -34,6 +37,7 @@ interface PostsProps {
 const Posts = ({ user, post }: PostsProps) => {
   const parsedContent = parseCustomContent([], post.body);
   const [isOpen, setIsOpen] = useState(false);
+  const [isLike, setIsLike] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   // 로그인한 유저 정보 가져오기
@@ -42,6 +46,8 @@ const Posts = ({ user, post }: PostsProps) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
   const setAlert = useAtomValue(alerterAtom);
   const postDeleteMutation = usePostDelete();
+  const postLikeMutation = usePostLike();
+  const postLikeDeleteMutation = usePostLikeDelete();
 
   useEffect(() => {
     getUser();
@@ -70,32 +76,52 @@ const Posts = ({ user, post }: PostsProps) => {
   const handleEdit = () => {};
 
   const handleDelete = () => {
-    if (!post.postId) {
-      console.log('게시글 ID가 없습니다');
-      return;
-    }
-
-    if (window.confirm('정말 삭제하시겠습니까?')) {
-      postDeleteMutation.mutate(post.postId, {
-        onSuccess: () => {},
-        onError: (error) => {
-          console.error('게시글 삭제 실패:', error);
-          if (setAlert) {
-            setAlert(
-              Seori,
-              <>
-                댓글이 삭제되지 않았습니다.
-                <br />
-                잠시 후 다시 시도해주세요
-              </>,
-              () => {
-                taskTransform?.('경고', '');
-              },
-            );
-          }
-        },
+    if (setAlert) {
+      setAlert(Seori, <>정말 삭제하시겠습니까?</>, () => {
+        if (!post.postId) {
+          console.log('게시글 ID가 없습니다');
+          return;
+        }
+        postDeleteMutation.mutate(post.postId, {
+          onSuccess: () => {},
+          onError: (error) => {
+            console.error('게시글 삭제 실패:', error);
+            if (setAlert) {
+              setAlert(
+                Seori,
+                <>
+                  게시글이 삭제되지 않았습니다.
+                  <br />
+                  잠시 후 다시 시도해주세요
+                </>,
+                () => {
+                  taskTransform?.('경고', '');
+                },
+              );
+            }
+          },
+        });
+        setIsOpen(false);
       });
-      setIsOpen(false);
+    }
+  };
+  const likeHandle = () => {
+    if (isLike) {
+      postLikeDeleteMutation.mutate(
+        { post_id: post.postId, user_id: user.userId },
+        {
+          onSuccess: () => setIsLike(false),
+          onError: () => {},
+        },
+      );
+    } else {
+      postLikeMutation.mutate(
+        { post_id: post.postId, user_id: user.userId },
+        {
+          onSuccess: () => setIsLike(true),
+          onError: () => {},
+        },
+      );
     }
   };
 
@@ -120,11 +146,11 @@ const Posts = ({ user, post }: PostsProps) => {
           <_.PostInfo>
             <_.Icons>
               <_.Icon
-                src={Heart}
+                src={isLike ? HeartFill : Heart}
                 alt="PostHeart"
                 width="10px"
                 height="10px"
-                onClick={() => {}}
+                onClick={likeHandle}
               />
               {post.likesCount}
             </_.Icons>

@@ -24,8 +24,8 @@ const postLikeDelete = async ({ post_id, user_id }: postLikeDeleteInterface) => 
   }
 };
 
-export const usePosstLikeDelete = () => {
-  useMutation({
+export const usePostLikeDelete = () => {
+  return useMutation({
     mutationFn: postLikeDelete,
     onSuccess: () => {},
     onError: (error) => {

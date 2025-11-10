@@ -21,18 +21,18 @@ const postLike = async ({ post_id, user_id }: postLike) => {
     return Response.data;
   } catch (error: any) {
     if (error.response?.data) {
-      console.log(`댓글 좋아요 실패: ${JSON.stringify(error.response.data)}`);
+      console.log(`게시글 좋아요 실패: ${JSON.stringify(error.response.data)}`);
     }
     throw error;
   }
 };
 
 export const usePostLike = () => {
-  useMutation({
+  return useMutation({
     mutationFn: postLike,
     onSuccess: () => {},
     onError: (error) => {
-      console.error('댓글 좋아요 실패:', error);
+      console.error('게시글 좋아요 실패:', error);
     },
   });
 };

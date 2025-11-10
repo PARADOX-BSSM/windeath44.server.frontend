@@ -4,9 +4,12 @@ import { useState, useRef, useEffect } from 'react';
 import Seori from '@/assets/seori/seori_mini.png';
 import ProfileImg from '@/assets/profile/choten.svg';
 import Heart from '@/assets/community/heart_line.svg';
+import HeartFill from '@/assets/community/heart_fill.svg';
 import KebabIcon from '@/assets/community/kebab_icon.svg';
 import { useGetUserMutation } from '@/api/user/getUser';
 import { usePostCommentDelete } from '@/api/community/postCommentDelete';
+import { usePostCommentLike } from '@/api/community/postCommentLike';
+import { usePostCommentLikeDelete } from '@/api/community/postCommentLikeDelete';
 import { alerterAtom } from '@/atoms/alerter';
 import { useAtomValue } from 'jotai';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
@@ -30,10 +33,11 @@ interface PostsProps {
 }
 const Posts: React.FC<PostsProps> = ({ user, post }) => {
   const { name, userId, profile = '' } = user;
-  const { body, likesCount, createdAt, updatedAt } = post;
+  const { commentId, body, likesCount, createdAt, updatedAt } = post;
   const [isOpen, setIsOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedBody, setEditedBody] = useState(body);
+  const [isLike, setIsLike] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const taskTransform = useAtomValue(taskTransformerAtom);
   const setAlert = useAtomValue(alerterAtom);
@@ -41,6 +45,8 @@ const Posts: React.FC<PostsProps> = ({ user, post }) => {
   const { mutate: getUser, data: userData } = useGetUserMutation();
   const currentUserId = userData?.data?.userId;
   const commentDeleteMutation = usePostCommentDelete();
+  const commentLikeMutation = usePostCommentLike();
+  const commentLikeDeleteMutation = usePostCommentLikeDelete();
 
   useEffect(() => {
     getUser();
@@ -79,19 +85,18 @@ const Posts: React.FC<PostsProps> = ({ user, post }) => {
   const handleEditSave = () => {};
 
   const handleDelete = () => {
-    if (!post.commentId || !post.commentId) {
-      console.log('게시글 ID, 혹은 댓글 ID가 없습니다');
-      return;
-    }
-
-    if (window.confirm('정말 삭제하시겠습니까?')) {
-      commentDeleteMutation.mutate(
-        { post_id: post.postId, comment_id: post.commentId },
-        {
-          onSuccess: () => {},
-          onError: (error) => {
-            console.error('댓글 삭제 실패:', error);
-            if (setAlert) {
+    if (setAlert) {
+      setAlert(Seori, <>댓글을 삭제하시겠습니까?</>, () => {
+        if (!post.commentId || !post.commentId) {
+          console.log('게시글 ID, 혹은 댓글 ID가 없습니다');
+          return;
+        }
+        commentDeleteMutation.mutate(
+          { post_id: post.postId, comment_id: post.commentId },
+          {
+            onSuccess: () => {},
+            onError: (error) => {
+              console.error('댓글 삭제 실패:', error);
               setAlert(
                 Seori,
                 <>
@@ -103,11 +108,31 @@ const Posts: React.FC<PostsProps> = ({ user, post }) => {
                   taskTransform?.('경고', '');
                 },
               );
-            }
+            },
           },
+        );
+        setIsOpen(false);
+      });
+    }
+  };
+
+  const likeHandle = () => {
+    if (isLike) {
+      commentLikeDeleteMutation.mutate(
+        { comment_id: post.commentId, user_id: user.userId },
+        {
+          onSuccess: () => setIsLike(false),
+          onError: () => {},
         },
       );
-      setIsOpen(false);
+    } else {
+      commentLikeMutation.mutate(
+        { comment_id: post.commentId, user_id: user.userId },
+        {
+          onSuccess: () => setIsLike(true),
+          onError: () => {},
+        },
+      );
     }
   };
 
@@ -164,8 +189,9 @@ const Posts: React.FC<PostsProps> = ({ user, post }) => {
         <_.PostInfo>
           <_.Icons>
             <_.Icon
-              src={Heart}
+              src={isLike ? HeartFill : Heart}
               alt="PostHeart"
+              onClick={likeHandle}
             />
             {likesCount}
           </_.Icons>

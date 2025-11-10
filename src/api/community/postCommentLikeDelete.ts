@@ -27,8 +27,8 @@ const postCommentLikeDelete = async ({ comment_id, user_id }: postCommentLikeDel
   }
 };
 
-export const useCommentPosstLikeDelete = () => {
-  useMutation({
+export const usePostCommentLikeDelete = () => {
+  return useMutation({
     mutationFn: postCommentLikeDelete,
     onSuccess: () => {},
     onError: (error) => {

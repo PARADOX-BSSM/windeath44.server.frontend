@@ -48,6 +48,7 @@ const CommunityPost = ({ stack, push, pop, top, postId }: postProps) => {
           <Posts
             user={{ name: data?.data.name || '사용자', userId: data?.data.userId || 'userId' }}
             post={{
+              postId: postId,
               title: data?.data.title || 'title',
               body: data?.data.body || 'body',
               createdAt: data?.data.createdAt || 'createdAt',
@@ -64,6 +65,8 @@ const CommunityPost = ({ stack, push, pop, top, postId }: postProps) => {
             <Comment
               user={{ name: data.name, userId: data.userId, profile: data.profile }}
               post={{
+                postId: data.postId,
+                commentId: data.commentId,
                 body: data.body,
                 likesCount: data.likesCount,
                 createdAt: data.createdAt,
@@ -74,6 +77,8 @@ const CommunityPost = ({ stack, push, pop, top, postId }: postProps) => {
           <Comment
             user={{ name: '방태양', userId: 'noah_byte', profile: '' }}
             post={{
+              postId: 1,
+              commentId: 1,
               body: '아니 이건 진짜 아니지. 살려내라.',
               likesCount: 12,
               createdAt: '',
