@@ -9,6 +9,7 @@ import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
 import { useGetUserMutation } from '@/api/user/getUser';
 import FilterBlock from '@/applications/components/filterBlock';
 import ImageCropper from '@/applications/components/imageCropper';
+import type deathType from '@/modules/deathType';
 
 interface dataStructureProps {
   stack: any[];
@@ -41,7 +42,7 @@ const MemorialApply = ({}: dataStructureProps) => {
     '돌연사(突然死)',
   ];
   const [death, setDeath] = useState(false);
-  const [fillDeath, setFillDeath] = useState('모두');
+  const [fillDeath, setFillDeath] = useState('사인 선택');
   const handleDeath = () => {
     setDeath(!death);
   };
