@@ -190,7 +190,7 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
               likesCount: 12,
               commentCount: 20,
             }}
-            onClick={() => push(taskSearch?.('communityPost', stackProps))}
+            onClick={() => push(taskSearch?.('communityPost', { ...stackProps, postId: 1 }))}
           />
         </_.PostArea>
       </_.Main>
