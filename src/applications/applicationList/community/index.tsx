@@ -40,16 +40,23 @@ interface dataStructureProps {
 }
 
 const Community = ({ stack, push, pop, top }: dataStructureProps) => {
-  const postData = usePostListSearch();
+  const postListSearchMutation = usePostListSearch();
 
   const [isOpen, setIsOpen] = useState(false);
   const [sort, setSort] = useState(sortOption.Latest);
   const [active, setActive] = useState('humor');
   const [search, setSearch] = useState('');
+  const [postData, setPostData] = useState<any[]>([]);
   const token = getCookie('access_token');
 
   useEffect(() => {
-    postData.mutate({ status: 'PUBLISHED' }); // 게시된 상태의 게시물 전체 조회
+    if (postListSearchMutation.isSuccess && postListSearchMutation.data?.posts) {
+      setPostData(postListSearchMutation.data.posts);
+    }
+  }, [postListSearchMutation.isSuccess, postListSearchMutation.data]);
+
+  useEffect(() => {
+    postListSearchMutation.mutate({ status: 'PUBLISHED' });
   }, [active]);
 
   const stackProps = {
@@ -88,9 +95,7 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
     }
   };
 
-  const searchHandle = () => {
-    postData.mutate({ title: search, status: 'PUBLISHED' });
-  };
+  const searchHandle = () => {};
 
   return (
     <_.Container>
@@ -156,7 +161,7 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
           </_.InputArea>
         )}
         <_.PostArea>
-          {postData.data?.posts?.map((data) => (
+          {postData.map((data) => (
             <PostPreview
               key={data.postId}
               user={{ name: data.name, userId: data.userId, profile: data.profile }}
