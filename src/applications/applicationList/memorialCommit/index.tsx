@@ -31,8 +31,8 @@ const MemorialCommit = ({
 }: dataStructureProps) => {
   // const taskSearch = useAtomValue(taskSearchAtom);
   const { mutate: getUser, data, isPending, error } = useGetUserMutation();
-  const contentIn = useAtom(inputContent);
-  const [inputValue] = useAtom(inputPortage);
+  const [contentIn, setContentIn] = useAtom(inputContent);
+  const [inputValue, setInputValue] = useAtom(inputPortage);
   const [userId, setUserId] = useAtom(userIdAtom);
 
   // console.log(contentIn);
@@ -48,6 +48,31 @@ const MemorialCommit = ({
       },
     });
   }, []);
+
+  // characterData와 memorialData를 atom에 설정하여 미리보기와 동기화
+  useEffect(() => {
+    if (characterData) {
+      setInputValue({
+        name: characterData.name,
+        deathReason: characterData.deathReason as any,
+        date: characterData.deathOfDay,
+        lifeCycle: characterData.lifeTime,
+        anime: animation,
+        animeId: characterData.animeId,
+        age: characterData.age,
+        profileImage: characterData.imageUrl,
+        phrase: characterData.saying,
+        causeOfDeathDetails: characterData.causeOfDeathDetails || '',
+      });
+    }
+
+    if (memorialData) {
+      setContentIn({
+        characterId: String(memorialData.characterId),
+        content: memorialData.content,
+      });
+    }
+  }, [characterData, memorialData, animation, setInputValue, setContentIn]);
 
   return (
     <_.Container>
