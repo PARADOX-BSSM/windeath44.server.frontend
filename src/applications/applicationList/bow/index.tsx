@@ -14,6 +14,7 @@ import { getCookie } from '@/api/auth/cookie.ts';
 import { useGetBowByUserId, useMemorialBow } from '@/api/memorial/memorialBow.ts';
 import { useGetUserMutation } from '@/api/user/getUser.ts';
 import Loading from '@/applications/components/loading';
+import Seori from '@/assets/sulkkagi/black_stone.svg';
 
 interface bowProps {
   memorialId: number;
@@ -36,7 +37,7 @@ const Bow = ({ memorialId }: bowProps) => {
   const addBow = () => {
     if (!token && setAlert) {
       setAlert(
-        Choten,
+        Seori,
         <>
           게스트는 절을 할 수 없습니다.
           <br />
@@ -56,7 +57,7 @@ const Bow = ({ memorialId }: bowProps) => {
             return `${Number(hours)}시 ${Number(minutes)}분`;
           };
           (setAlert ?? userId)(
-            Choten,
+            Seori,
             <>
               아직 절을 할 수 없습니다
               <br />
@@ -71,7 +72,7 @@ const Bow = ({ memorialId }: bowProps) => {
         onSuccess: () => {
           // 서버 응답 성공 시에만 UI 숫자 증가
           (setAlert ?? userId)(
-            Choten,
+            Seori,
             <>
               절하기를 성공하였습니다.
               <br />
