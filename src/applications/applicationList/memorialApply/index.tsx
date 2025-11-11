@@ -4,7 +4,7 @@ import { useAtom, useAtomValue } from 'jotai';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
 import { useState, useRef, useEffect } from 'react';
 import MemorialBtn from '@/applications/components/memorialBtn';
-import { inputPortage } from '@/atoms/inputManager';
+import { inputPortage, inputContent } from '@/atoms/inputManager';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
 import { useGetUserMutation } from '@/api/user/getUser';
 import FilterBlock from '@/applications/components/filterBlock';
@@ -22,6 +22,7 @@ const MemorialApply = ({}: dataStructureProps) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
   const [userName, setUserName] = useState('guest');
   const [inputValue, setInputValue] = useAtom(inputPortage);
+  const [, setContentIn] = useAtom(inputContent);
   const { mutate: getUser, data, isPending, error } = useGetUserMutation();
 
   const [profileImage, setProfileImage] = useState<string>('');
@@ -54,6 +55,26 @@ const MemorialApply = ({}: dataStructureProps) => {
   };
 
   useEffect(() => {
+    // 컴포넌트 마운트 시 atom 초기화
+    setInputValue({
+      name: '',
+      deathReason: '사인 선택' as any,
+      date: '',
+      lifeCycle: 0,
+      anime: '',
+      animeId: 0,
+      age: 0,
+      profileImage: '',
+      phrase: '',
+      causeOfDeathDetails: '',
+    });
+
+    // content atom도 초기화
+    setContentIn({
+      characterId: '',
+      content: '<목차>마지막 순간</목차>\n<동영상>https://youtu.be/KkQI3ECwfG4?si=esEW74t5OalkrbjO</동영상>\n<강조>너무 슬프다 ㅜㅜ</강조>\n<목차>이렇게 쓰는거구나!</목차>\n<다음/>',
+    });
+
     if (profileImgRef.current) {
       const el = profileImgRef.current;
       const style = window.getComputedStyle(el);
@@ -77,6 +98,7 @@ const MemorialApply = ({}: dataStructureProps) => {
 
   const handleImageClick = () => {
     if (fileInputRef.current) {
+      fileInputRef.current.value = ''; // 같은 파일 재선택 가능하도록 초기화
       fileInputRef.current.click();
     }
   };

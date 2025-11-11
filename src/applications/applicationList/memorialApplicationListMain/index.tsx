@@ -63,7 +63,13 @@ const MemorialApplicationListMain = ({ stack, push, pop, top }: dataStructurePro
     data: applicationsData,
     isLoading: isApplicationsLoading,
     error: applicationsError,
+    refetch,
   } = useGetMemorialApplicationsQuery(cursorId, 10, 3); // memorizingCode 3 = PENDING
+
+  // 컴포넌트 마운트 시 데이터 refetch
+  useEffect(() => {
+    refetch();
+  }, []);
 
   // 데이터가 로드되면 allApplications에 추가
   useEffect(() => {
@@ -357,7 +363,7 @@ const MemorialApplicationListMain = ({ stack, push, pop, top }: dataStructurePro
                         likes={app.likes}
                         profileUrl={userProfiles[app.userId] || ''}
                         memorialApplicationId={app.memorialApplicationId}
-                        isLiked={app.didUserLiked || false}
+                        isLiked={app.isLiked ?? app.didUserLiked ?? false}
                         onLikeToggle={handleLikeToggle}
                         isAdmin={isAdmin}
                         onApprove={handleApprove}

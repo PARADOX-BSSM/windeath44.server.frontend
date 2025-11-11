@@ -1,6 +1,6 @@
 import * as _ from './style';
 import Application from './components/application';
-import { useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { alerterAtom } from '@/atoms/alerter';
 import { taskTransformerAtom, taskSearchAtom } from '@/atoms/taskTransformer';
 import Seori from '@/assets/sulkkagi/black_stone.svg';
@@ -13,8 +13,12 @@ import {
   useMemorialApplicationApproveMutation,
   useMemorialApplicationRejectMutation,
 } from '@/api/memorial/memorialApplicationApprove';
+import { useMemorialApplicationDeleteMutation } from '@/api/memorial/memorialApplicationDelete';
 import * as ViewerStyle from '../memorialApplicationViewer/style';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
+import Loading from '@/applications/components/loading';
+import { useProcessManager } from '@/hooks/processManager';
+import { focusAtom } from '@/atoms/windowManager';
 
 interface dataStructureProps {
   stack: any[];
@@ -27,6 +31,7 @@ const MemorialApplicationList = ({ stack, push, pop, top }: dataStructureProps) 
   const setAlert = useAtomValue(alerterAtom);
   const taskTransform = useAtomValue(taskTransformerAtom);
   const taskSearch = useAtomValue(taskSearchAtom);
+  const [, addTask] = useProcessManager();
   const [cursorId, setCursorId] = useState<number | undefined>(undefined);
   const [allApplications, setAllApplications] = useState<any[]>([]);
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
@@ -34,12 +39,18 @@ const MemorialApplicationList = ({ stack, push, pop, top }: dataStructureProps) 
   const [rejectTargetId, setRejectTargetId] = useState<number | null>(null);
   const [isViewRejectedReasonModalOpen, setIsViewRejectedReasonModalOpen] = useState(false);
   const [viewingRejectedReason, setViewingRejectedReason] = useState('');
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
   const likeMutation = useMemorialApplicationLikeMutation();
   const approveMutation = useMemorialApplicationApproveMutation();
   const rejectMutation = useMemorialApplicationRejectMutation();
+  const deleteMutation = useMemorialApplicationDeleteMutation();
   const { mutate: getUser, data: userData } = useGetUserMutation();
+  const [, setFocus] = useAtom(focusAtom);
 
   const isAdmin = userData?.data?.role === 'ADMIN';
+  const currentUserId = userData?.data?.userId;
 
   // 유저 정보 조회
   useEffect(() => {
@@ -140,13 +151,9 @@ const MemorialApplicationList = ({ stack, push, pop, top }: dataStructureProps) 
   const handleApprove = (memorialApplicationId: number) => {
     approveMutation.mutate(memorialApplicationId, {
       onSuccess: () => {
-        setAlert?.(
-          Seori,
-          <>추모관 신청이 승인되었습니다.</>,
-          () => {
-            taskTransform?.('경고', '');
-          },
-        );
+        setAlert?.(Seori, <>추모관 신청이 승인되었습니다.</>, () => {
+          taskTransform?.('경고', '');
+        });
       },
       onError: () => {
         setAlert?.(
@@ -192,13 +199,9 @@ const MemorialApplicationList = ({ stack, push, pop, top }: dataStructureProps) 
       { id: rejectTargetId, reason: rejectReason },
       {
         onSuccess: () => {
-          setAlert?.(
-            Seori,
-            <>추모관 신청이 거절되었습니다.</>,
-            () => {
-              taskTransform?.('경고', '');
-            },
-          );
+          setAlert?.(Seori, <>추모관 신청이 거절되었습니다.</>, () => {
+            taskTransform?.('경고', '');
+          });
           handleRejectModalClose();
         },
         onError: () => {
@@ -230,6 +233,72 @@ const MemorialApplicationList = ({ stack, push, pop, top }: dataStructureProps) 
     setViewingRejectedReason('');
   };
 
+  // 삭제 버튼 클릭 시 모달 열기
+  const handleDelete = (memorialApplicationId: number) => {
+    setDeleteTargetId(memorialApplicationId);
+    setIsDeleteModalOpen(true);
+  };
+
+  // 삭제 모달 닫기
+  const handleDeleteModalClose = () => {
+    setIsDeleteModalOpen(false);
+    setDeleteTargetId(null);
+  };
+
+  // 삭제 확인
+  const handleDeleteConfirm = () => {
+    if (!deleteTargetId) return;
+
+    setDeletingId(deleteTargetId);
+
+    deleteMutation.mutate(deleteTargetId, {
+      onSuccess: () => {
+        setAlert?.(Seori, <>추모관 신청이 삭제되었습니다.</>, () => {
+          taskTransform?.('경고', '');
+        });
+        handleDeleteModalClose();
+        setDeletingId(null);
+      },
+      onError: () => {
+        setAlert?.(
+          Seori,
+          <>
+            삭제 처리 중 오류가 발생했습니다.
+            <br />
+            잠시 후 다시 시도해주세요.
+          </>,
+          () => {
+            taskTransform?.('경고', '');
+          },
+        );
+        setDeletingId(null);
+      },
+    });
+  };
+
+  // 수정 핸들러
+  const handleEdit = (memorialApplicationId: number) => {
+    const stackProps = {
+      stack: stack,
+      push: push,
+      pop: pop,
+      top: top,
+    };
+
+    // 추모관 신청 수정 task 추가
+    const editTask = taskSearch?.('추모관 신청 수정', {
+      ...stackProps,
+      memorialApplicationId: memorialApplicationId,
+    });
+
+    // 미리보기 task 추가
+    const previewTask = taskSearch?.('미리보기', stackProps);
+
+    // 미리보기를 먼저 추가하고, editTask를 나중에 추가하여 focus가 editTask에 가도록 함
+    if (previewTask) addTask(previewTask);
+    if (editTask) addTask(editTask);
+  };
+
   // 좋아요 토글 핸들러 (낙관적 업데이트)
   const handleLikeToggle = (memorialApplicationId: number, isLiked: boolean) => {
     // 즉시 UI 업데이트 (낙관적 렌더링)
@@ -250,12 +319,12 @@ const MemorialApplicationList = ({ stack, push, pop, top }: dataStructureProps) 
       { memorialApplicationId, isLiked },
       {
         onError: () => {
-          // 에러 발생 시 롤백
           setAllApplications((prev) =>
             prev.map((app) =>
               app.memorialApplicationId === memorialApplicationId
                 ? {
                     ...app,
+
                     isLiked: isLiked,
                     likes: isLiked ? app.likes + 1 : app.likes - 1,
                   }
@@ -302,37 +371,41 @@ const MemorialApplicationList = ({ stack, push, pop, top }: dataStructureProps) 
                 ) : (
                   <>
                     {allApplications.map((app) => (
-                        <Application
-                          key={app.memorialApplicationId}
-                          userId={app.userId}
-                          createdAt={app.createdAt}
-                          state={app.state}
-                          likes={app.likes}
-                          profileUrl={userProfiles[app.userId] || ''}
-                          memorialApplicationId={app.memorialApplicationId}
-                          isLiked={app.didUserLiked || false}
-                          onLikeToggle={handleLikeToggle}
-                          isAdmin={isAdmin}
-                          onApprove={handleApprove}
-                          onReject={handleReject}
-                          rejectedReason={app.rejectedReason}
-                          onViewRejectedReason={handleViewRejectedReason}
-                          onClick={() => {
-                            const stackProps = {
-                              stack: stack,
-                              push: push,
-                              pop: pop,
-                              top: top,
-                            };
-                            push(
-                              taskSearch?.('추모관 신청 뷰어', {
-                                ...stackProps,
-                                memorialApplicationId: app.memorialApplicationId,
-                              }),
-                            );
-                          }}
-                        />
-                      ))}
+                      <Application
+                        key={app.memorialApplicationId}
+                        userId={app.userId}
+                        createdAt={app.createdAt}
+                        state={app.state}
+                        likes={app.likes}
+                        profileUrl={userProfiles[app.userId] || ''}
+                        memorialApplicationId={app.memorialApplicationId}
+                        isLiked={app.isLiked ?? app.didUserLiked ?? false}
+                        onLikeToggle={handleLikeToggle}
+                        isAdmin={isAdmin}
+                        onApprove={handleApprove}
+                        onReject={handleReject}
+                        rejectedReason={app.rejectedReason}
+                        onViewRejectedReason={handleViewRejectedReason}
+                        currentUserId={currentUserId}
+                        onDelete={handleDelete}
+                        isDeleting={deletingId === app.memorialApplicationId}
+                        onEdit={handleEdit}
+                        onClick={() => {
+                          const stackProps = {
+                            stack: stack,
+                            push: push,
+                            pop: pop,
+                            top: top,
+                          };
+                          push(
+                            taskSearch?.('추모관 신청 뷰어', {
+                              ...stackProps,
+                              memorialApplicationId: app.memorialApplicationId,
+                            }),
+                          );
+                        }}
+                      />
+                    ))}
                     {applicationsData?.data?.hasNext && (
                       <_.LoadMoreBtn
                         onClick={handleLoadMore}
@@ -407,6 +480,50 @@ const MemorialApplicationList = ({ stack, push, pop, top }: dataStructureProps) 
             </ViewerStyle.ModalButtonGroup>
           </ViewerStyle.ModalContent>
         </ViewerStyle.ModalOverlay>
+      )}
+
+      {/* 삭제 확인 모달 */}
+      {isDeleteModalOpen && (
+        <ViewerStyle.ModalOverlay onClick={handleDeleteModalClose}>
+          <ViewerStyle.ModalContent onClick={(e) => e.stopPropagation()}>
+            <ViewerStyle.ModalTitle>추모관 신청 삭제</ViewerStyle.ModalTitle>
+            <ViewerStyle.ModalTextarea
+              value="정말로 이 추모관 신청을 삭제하시겠습니까?"
+              readOnly
+              onMouseEnter={() => setCursorImage(CURSOR_IMAGES.default)}
+              onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+              style={{ resize: 'none', height: '60px' }}
+            />
+            <ViewerStyle.ModalButtonGroup>
+              <ViewerStyle.ModalButton
+                variant="secondary"
+                onClick={handleDeleteModalClose}
+                disabled={deleteMutation.isPending}
+                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+              >
+                취소
+              </ViewerStyle.ModalButton>
+              <ViewerStyle.ModalButton
+                variant="primary"
+                onClick={handleDeleteConfirm}
+                disabled={deleteMutation.isPending}
+                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+              >
+                {deleteMutation.isPending ? '삭제 중...' : '삭제'}
+              </ViewerStyle.ModalButton>
+            </ViewerStyle.ModalButtonGroup>
+          </ViewerStyle.ModalContent>
+        </ViewerStyle.ModalOverlay>
+      )}
+
+      {/* 삭제 중 로딩 오버레이 */}
+      {deleteMutation.isPending && (
+        <Loading
+          overlay={true}
+          text="삭제 중..."
+        />
       )}
     </_.Container>
   );

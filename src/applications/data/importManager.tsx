@@ -32,6 +32,9 @@ const MemorialCommit = lazy(
 const MemorialPreview = lazy(
   () => import('@/applications/applicationList/memorialPreview/index.tsx'),
 );
+const MemorialEdit = lazy(
+  () => import('@/applications/applicationList/memorialApplicationEdit/index.tsx'),
+);
 
 const AnimationSelect = lazy(
   () => import('@/applications/applicationList/animationSelect/index.tsx'),
@@ -489,6 +492,31 @@ const useApps = (): TaskType[] => {
       layer: undefined,
       appSetup: {
         Image: setting,
+        minWidth: 580,
+        minHeight: 420,
+        setUpWidth: 890,
+        setUpHeight: 577,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <MemorialEdit
+            stack={[]}
+            push={undefined}
+            pop={undefined}
+            top={undefined}
+            memorialApplicationId={0}
+          />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2255,
+      name: '추모관 신청 수정',
+      layer: undefined,
+      appSetup: {
+        Image: search,
         minWidth: 580,
         minHeight: 420,
         setUpWidth: 890,

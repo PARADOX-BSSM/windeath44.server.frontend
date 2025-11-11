@@ -17,6 +17,10 @@ interface PropsType {
   isRejecting?: boolean;
   rejectedReason?: string;
   onViewRejectedReason?: (rejectedReason: string) => void;
+  currentUserId?: string;
+  onDelete?: (memorialApplicationId: number) => void;
+  isDeleting?: boolean;
+  onEdit?: (memorialApplicationId: number) => void;
 }
 
 const Application = ({
@@ -36,6 +40,10 @@ const Application = ({
   isRejecting = false,
   rejectedReason,
   onViewRejectedReason,
+  currentUserId,
+  onDelete,
+  isDeleting = false,
+  onEdit,
 }: PropsType) => {
   const getStateText = (state: string) => {
     switch (state) {
@@ -103,6 +111,29 @@ const Application = ({
           >
             거절 사유 보기
           </_.ViewRejectedReasonBtn>
+        )}
+        {currentUserId === userId && (
+          <>
+            {state === 'PENDING' && (
+              <_.EditBtn
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onEdit?.(memorialApplicationId);
+                }}
+              >
+                수정
+              </_.EditBtn>
+            )}
+            <_.DeleteBtn
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete?.(memorialApplicationId);
+              }}
+              disabled={isDeleting}
+            >
+              {isDeleting ? '삭제 중...' : '삭제'}
+            </_.DeleteBtn>
+          </>
         )}
         <_.ViewBtn onClick={onClick}>신청 내용 보기</_.ViewBtn>
       </_.ButtonContainer>
