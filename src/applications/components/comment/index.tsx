@@ -14,6 +14,8 @@ interface PropsType {
   currentUserId?: string;
   likes: number;
   isLiked: boolean;
+  userName?: string;
+  userProfile?: string;
   onReplySubmit?: (commentId: number, content: string) => void;
   onEditSubmit?: (commentId: number, content: string) => void;
   onDeleteSubmit?: (commentId: number) => void;
@@ -29,13 +31,16 @@ const Comment = ({
   currentUserId,
   likes,
   isLiked,
+  userName,
+  userProfile,
   onReplySubmit,
   onEditSubmit,
   onDeleteSubmit,
   onLikeToggle,
 }: PropsType) => {
   // console.log(idx);
-  const imgUrl = idx % 2 === 0 ? ameImg : chotenImg;
+  const imgUrl = userProfile || (idx % 2 === 0 ? ameImg : chotenImg);
+  const displayName = userName || userid;
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [replyContent, setReplyContent] = useState('');
   const [isEditing, setIsEditing] = useState(false);
@@ -76,7 +81,7 @@ const Comment = ({
         <_.ProfileImg imgUrl={imgUrl} />
         <_.TextBox>
           <_.NickNameContainer>
-            {/*<_.NickName>{nickname}</_.NickName>*/}
+            {userName && <_.NickName>{displayName}</_.NickName>}
             <_.UserId>@{userid}</_.UserId>
           </_.NickNameContainer>
           {isEditing ? (

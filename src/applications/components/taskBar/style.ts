@@ -41,6 +41,11 @@ export const TaskItem = styled.div`
   box-sizing: border-box;
 `;
 
+export const VirtualDesktopItem = styled(TaskItem)`
+  width: 2.5rem;
+  justify-content: center;
+`;
+
 export const ImgContainer = styled.img`
   width: 1.75rem;
   height: 1.75rem;

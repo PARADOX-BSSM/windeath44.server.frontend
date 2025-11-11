@@ -1,5 +1,14 @@
 import styled from '@emotion/styled';
 
+export const overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1000;
+`;
+
 export const main = styled.div`
   box-sizing: border-box;
   background-color: var(--light-primary-color);
@@ -9,6 +18,7 @@ export const main = styled.div`
   height: 100%;
   padding: 24px 32px;
   position: relative;
+  z-index: 1001;
 `;
 
 export const container = styled.div`

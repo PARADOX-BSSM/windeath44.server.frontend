@@ -1,0 +1,11 @@
+<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M15 6V4.5H13.5V6L15 6Z" fill="#FFD3FB"/>
+<path d="M15 12H16.5V6H15V12Z" fill="#FFD3FB"/>
+<path d="M12 15H15V12H13.5V13.5H12V15Z" fill="#FFD3FB"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M6 15V13.5H3V15H6ZM6 15H12V16.5H6V15Z" fill="#FFD3FB"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M12 3H6V4.5H4.5V6H3V12H4.5V13.5H6V15H3V16.5H6V18H12V16.5H15V15H16.5V12H18V6H16.5V3H15V6H13.5V4.5H12V3ZM15 12V6H16.5V12H15ZM12 15H6V16.5H12V15ZM12 15V13.5H13.5V12H15V15H12Z" fill="white"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M6 1.5H12V3H6V1.5ZM12 3V4.5H15V3H12Z" fill="#2E2E2E"/>
+<path d="M3 6V3H6V4.5H4.5V6H3Z" fill="#2E2E2E"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M3 12H1.5V6H3V12ZM3 12H4.5V13.5H3V12Z" fill="#2E2E2E"/>
+<path d="M12 0H6V1.5H3V3H1.5V6H0V12H1.5V15H3V12H1.5V6H3V3H6V1.5H12V3H15V1.5H12V0Z" fill="#DCAFDD"/>
+</svg>

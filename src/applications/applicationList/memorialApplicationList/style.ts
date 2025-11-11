@@ -11,6 +11,7 @@ export const Container = styled.div`
   align-self: stretch;
   overflow: hidden;
   background: var(--LightPrimary, #ffd3fb);
+  position: relative; /* 모달의 기준점으로 사용 */
 `;
 
 export const InnerContainer = styled.div`
@@ -60,7 +61,7 @@ export const GoToBackBtn = styled.p`
   font-style: normal;
   font-weight: 400;
   line-height: normal;
-  cursor: pointer;
+  cursor: none;
 
   &:hover {
     opacity: 0.7;
@@ -164,7 +165,7 @@ export const LoadMoreBtn = styled.button`
   padding: 12px 24px;
   background: #fff;
   border: 1px solid var(--Stroke, #e774dd);
-  cursor: pointer;
+  cursor: none;
   margin-top: 20px;
 
   &:hover {

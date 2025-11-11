@@ -13,6 +13,8 @@ import {
   useMemorialApplicationApproveMutation,
   useMemorialApplicationRejectMutation,
 } from '@/api/memorial/memorialApplicationApprove';
+import * as ViewerStyle from '../memorialApplicationViewer/style';
+import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
 
 interface dataStructureProps {
   stack: any[];
@@ -27,6 +29,16 @@ const MemorialApplicationListMain = ({ stack, push, pop, top }: dataStructurePro
   const taskSearch = useAtomValue(taskSearchAtom);
   const [cursorId, setCursorId] = useState<number | undefined>(undefined);
   const [allApplications, setAllApplications] = useState<any[]>([]);
+  const [processingIds, setProcessingIds] = useState<{
+    approving: Set<number>;
+    rejecting: Set<number>;
+  }>({
+    approving: new Set(),
+    rejecting: new Set(),
+  });
+  const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
+  const [rejectReason, setRejectReason] = useState('');
+  const [rejectTargetId, setRejectTargetId] = useState<number | null>(null);
   const likeMutation = useMemorialApplicationLikeMutation();
   const approveMutation = useMemorialApplicationApproveMutation();
   const rejectMutation = useMemorialApplicationRejectMutation();
@@ -137,17 +149,38 @@ const MemorialApplicationListMain = ({ stack, push, pop, top }: dataStructurePro
 
   // 승인 핸들러
   const handleApprove = (memorialApplicationId: number) => {
+    // 처리 중 상태 추가
+    setProcessingIds((prev) => ({
+      ...prev,
+      approving: new Set(prev.approving).add(memorialApplicationId),
+    }));
+
     approveMutation.mutate(memorialApplicationId, {
       onSuccess: () => {
-        setAlert?.(
-          Seori,
-          <>추모관 신청이 승인되었습니다.</>,
-          () => {
-            taskTransform?.('경고', '');
-          },
+        // 낙관적 업데이트: 목록에서 해당 신청 제거
+        setAllApplications((prev) =>
+          prev.filter((app) => app.memorialApplicationId !== memorialApplicationId),
         );
+
+        // 처리 중 상태 제거
+        setProcessingIds((prev) => {
+          const newApproving = new Set(prev.approving);
+          newApproving.delete(memorialApplicationId);
+          return { ...prev, approving: newApproving };
+        });
+
+        setAlert?.(Seori, <>추모관 신청이 승인되었습니다.</>, () => {
+          taskTransform?.('경고', '');
+        });
       },
       onError: () => {
+        // 처리 중 상태 제거
+        setProcessingIds((prev) => {
+          const newApproving = new Set(prev.approving);
+          newApproving.delete(memorialApplicationId);
+          return { ...prev, approving: newApproving };
+        });
+
         setAlert?.(
           Seori,
           <>
@@ -163,32 +196,79 @@ const MemorialApplicationListMain = ({ stack, push, pop, top }: dataStructurePro
     });
   };
 
-  // 거절 핸들러
+  // 거절 버튼 클릭 시 모달 열기
   const handleReject = (memorialApplicationId: number) => {
-    rejectMutation.mutate(memorialApplicationId, {
-      onSuccess: () => {
-        setAlert?.(
-          Seori,
-          <>추모관 신청이 거절되었습니다.</>,
-          () => {
+    setRejectTargetId(memorialApplicationId);
+    setIsRejectModalOpen(true);
+  };
+
+  // 거절 모달 닫기
+  const handleRejectModalClose = () => {
+    setIsRejectModalOpen(false);
+    setRejectReason('');
+    setRejectTargetId(null);
+  };
+
+  // 거절 사유 제출
+  const handleRejectSubmit = () => {
+    if (!rejectReason.trim()) {
+      setAlert?.(Seori, <>거절 사유를 입력해주세요.</>, () => {
+        taskTransform?.('경고', '');
+      });
+      return;
+    }
+
+    if (!rejectTargetId) return;
+
+    // 처리 중 상태 추가
+    setProcessingIds((prev) => ({
+      ...prev,
+      rejecting: new Set(prev.rejecting).add(rejectTargetId),
+    }));
+
+    rejectMutation.mutate(
+      { id: rejectTargetId, reason: rejectReason },
+      {
+        onSuccess: () => {
+          // 낙관적 업데이트: 목록에서 해당 신청 제거
+          setAllApplications((prev) =>
+            prev.filter((app) => app.memorialApplicationId !== rejectTargetId),
+          );
+
+          // 처리 중 상태 제거
+          setProcessingIds((prev) => {
+            const newRejecting = new Set(prev.rejecting);
+            newRejecting.delete(rejectTargetId);
+            return { ...prev, rejecting: newRejecting };
+          });
+
+          setAlert?.(Seori, <>추모관 신청이 거절되었습니다.</>, () => {
             taskTransform?.('경고', '');
-          },
-        );
+          });
+          handleRejectModalClose();
+        },
+        onError: () => {
+          // 처리 중 상태 제거
+          setProcessingIds((prev) => {
+            const newRejecting = new Set(prev.rejecting);
+            newRejecting.delete(rejectTargetId);
+            return { ...prev, rejecting: newRejecting };
+          });
+
+          setAlert?.(
+            Seori,
+            <>
+              거절 처리 중 오류가 발생했습니다.
+              <br />
+              잠시 후 다시 시도해주세요.
+            </>,
+            () => {
+              taskTransform?.('경고', '');
+            },
+          );
+        },
       },
-      onError: () => {
-        setAlert?.(
-          Seori,
-          <>
-            거절 처리 중 오류가 발생했습니다.
-            <br />
-            잠시 후 다시 시도해주세요.
-          </>,
-          () => {
-            taskTransform?.('경고', '');
-          },
-        );
-      },
-    });
+    );
   };
 
   // 좋아요 토글 핸들러 (낙관적 업데이트)
@@ -269,29 +349,31 @@ const MemorialApplicationListMain = ({ stack, push, pop, top }: dataStructurePro
                 ) : (
                   <>
                     {allApplications.map((app) => (
-                        <Application
-                          key={app.memorialApplicationId}
-                          userId={app.userId}
-                          createdAt={app.createdAt}
-                          state={app.state}
-                          likes={app.likes}
-                          profileUrl={userProfiles[app.userId] || ''}
-                          memorialApplicationId={app.memorialApplicationId}
-                          isLiked={app.didUserLiked || false}
-                          onLikeToggle={handleLikeToggle}
-                          isAdmin={isAdmin}
-                          onApprove={handleApprove}
-                          onReject={handleReject}
-                          onClick={() => {
-                            push(
-                              taskSearch?.('추모관 신청 뷰어', {
-                                ...stackProps,
-                                memorialApplicationId: app.memorialApplicationId,
-                              }),
-                            );
-                          }}
-                        />
-                      ))}
+                      <Application
+                        key={app.memorialApplicationId}
+                        userId={app.userId}
+                        createdAt={app.createdAt}
+                        state={app.state}
+                        likes={app.likes}
+                        profileUrl={userProfiles[app.userId] || ''}
+                        memorialApplicationId={app.memorialApplicationId}
+                        isLiked={app.didUserLiked || false}
+                        onLikeToggle={handleLikeToggle}
+                        isAdmin={isAdmin}
+                        onApprove={handleApprove}
+                        onReject={handleReject}
+                        isApproving={processingIds.approving.has(app.memorialApplicationId)}
+                        isRejecting={processingIds.rejecting.has(app.memorialApplicationId)}
+                        onClick={() => {
+                          push(
+                            taskSearch?.('추모관 신청 뷰어', {
+                              ...stackProps,
+                              memorialApplicationId: app.memorialApplicationId,
+                            }),
+                          );
+                        }}
+                      />
+                    ))}
                     {applicationsData?.data?.hasNext && (
                       <_.LoadMoreBtn
                         onClick={handleLoadMore}
@@ -307,6 +389,41 @@ const MemorialApplicationListMain = ({ stack, push, pop, top }: dataStructurePro
           </_.ApplicationContainer>
         </_.ContentContainer>
       </_.InnerContainer>
+
+      {/* 거절 사유 입력 모달 */}
+      {isRejectModalOpen && (
+        <ViewerStyle.ModalOverlay onClick={handleRejectModalClose}>
+          <ViewerStyle.ModalContent onClick={(e) => e.stopPropagation()}>
+            <ViewerStyle.ModalTitle>거절 사유 입력</ViewerStyle.ModalTitle>
+            <ViewerStyle.ModalTextarea
+              placeholder="거절 사유를 입력해주세요..."
+              value={rejectReason}
+              onChange={(e) => setRejectReason(e.target.value)}
+              onMouseEnter={() => setCursorImage(CURSOR_IMAGES.drag)}
+              onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+            />
+            <ViewerStyle.ModalButtonGroup>
+              <ViewerStyle.ModalButton
+                variant="secondary"
+                onClick={handleRejectModalClose}
+                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+              >
+                취소
+              </ViewerStyle.ModalButton>
+              <ViewerStyle.ModalButton
+                variant="primary"
+                onClick={handleRejectSubmit}
+                disabled={rejectMutation.isPending}
+                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+              >
+                {rejectMutation.isPending ? '처리 중...' : '거절'}
+              </ViewerStyle.ModalButton>
+            </ViewerStyle.ModalButtonGroup>
+          </ViewerStyle.ModalContent>
+        </ViewerStyle.ModalOverlay>
+      )}
     </_.Container>
   );
 };

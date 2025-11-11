@@ -23,6 +23,7 @@ import {
 
 import React from 'react';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
+import { useProcessManager } from '@/hooks/processManager.tsx';
 
 const Application = (props: ApplicationProps) => {
   // jotai 상태 사용
@@ -31,6 +32,7 @@ const Application = (props: ApplicationProps) => {
   const [tabDownInterrupt, setTabDownInterrupt] = useAtom(tabDownInterruptAtom); // 단축키 등으로 창 최소화 등 인터럽트 신호 (전역)
   const [isLogIned, setIsLogIned] = useAtom(isLogInedAtom); // 로그인 여부 (전역)
   const [windowPositions, setWindowPositions] = useAtom(windowPositionsAtom); // 창 위치 저장 (전역)
+  const [,,,setVirtualWindowPositions] = useProcessManager();
   const [windowName, setWindowName] = useState<string>(props.name); // 현재 창 이름 (로컬)
 
   const setUpHeight = props.setUpHeight;
@@ -65,6 +67,10 @@ const Application = (props: ApplicationProps) => {
 
   // 마운트 후 위치 복원 (초기 렌더링 후 짧은 딜레이)
   useEffect(() => {
+    if (isFullScreen) {
+      return;
+    }
+
     const savedPos = windowPositions[props.name];
     if (savedPos) {
       console.log('[Application] Will restore position for', props.name, 'after delay');
@@ -92,7 +98,7 @@ const Application = (props: ApplicationProps) => {
       }, 200);
       return () => clearTimeout(timer);
     }
-  }, [props.name, windowPositions]);
+  }, [props.name, windowPositions, isFullScreen]);
 
   // 창의 위치/크기 저장 : window state가 변경될 때마다 localStorage에 저장
   useEffect(() => {
@@ -116,10 +122,7 @@ const Application = (props: ApplicationProps) => {
       };
 
       console.log('[Application] Saving position for', props.name, position);
-      setWindowPositions((prev) => ({
-        ...prev,
-        [props.name]: position,
-      }));
+      setVirtualWindowPositions({[props.name]: position });
     }
   }, [window.top, window.left, window.width, window.height, isFullScreen, isMinimized, hasEnabledSave, props.instanceId, props.type, props.name, setWindowPositions]);
 
@@ -280,7 +283,7 @@ const Application = (props: ApplicationProps) => {
         style={window}
         onMouseDown={() => setFocus(props.instanceId || props.name)}
       >
-        <_.WindowHeader {...moveManager()}>
+        <_.WindowHeader {...moveManager()} onDoubleClick={() => setIsFullScreen(!isFullScreen)}>
           <_.TitleContainer>
             <_.HeartImg
               src={Heart}
