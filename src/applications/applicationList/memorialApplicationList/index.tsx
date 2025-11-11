@@ -13,8 +13,10 @@ import {
   useMemorialApplicationApproveMutation,
   useMemorialApplicationRejectMutation,
 } from '@/api/memorial/memorialApplicationApprove';
+import { useMemorialApplicationDeleteMutation } from '@/api/memorial/memorialApplicationDelete';
 import * as ViewerStyle from '../memorialApplicationViewer/style';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
+import Loading from '@/applications/components/loading';
 
 interface dataStructureProps {
   stack: any[];
@@ -34,12 +36,17 @@ const MemorialApplicationList = ({ stack, push, pop, top }: dataStructureProps) 
   const [rejectTargetId, setRejectTargetId] = useState<number | null>(null);
   const [isViewRejectedReasonModalOpen, setIsViewRejectedReasonModalOpen] = useState(false);
   const [viewingRejectedReason, setViewingRejectedReason] = useState('');
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
   const likeMutation = useMemorialApplicationLikeMutation();
   const approveMutation = useMemorialApplicationApproveMutation();
   const rejectMutation = useMemorialApplicationRejectMutation();
+  const deleteMutation = useMemorialApplicationDeleteMutation();
   const { mutate: getUser, data: userData } = useGetUserMutation();
 
   const isAdmin = userData?.data?.role === 'ADMIN';
+  const currentUserId = userData?.data?.userId;
 
   // 유저 정보 조회
   useEffect(() => {
@@ -230,6 +237,53 @@ const MemorialApplicationList = ({ stack, push, pop, top }: dataStructureProps) 
     setViewingRejectedReason('');
   };
 
+  // 삭제 버튼 클릭 시 모달 열기
+  const handleDelete = (memorialApplicationId: number) => {
+    setDeleteTargetId(memorialApplicationId);
+    setIsDeleteModalOpen(true);
+  };
+
+  // 삭제 모달 닫기
+  const handleDeleteModalClose = () => {
+    setIsDeleteModalOpen(false);
+    setDeleteTargetId(null);
+  };
+
+  // 삭제 확인
+  const handleDeleteConfirm = () => {
+    if (!deleteTargetId) return;
+
+    setDeletingId(deleteTargetId);
+
+    deleteMutation.mutate(deleteTargetId, {
+      onSuccess: () => {
+        setAlert?.(
+          Seori,
+          <>추모관 신청이 삭제되었습니다.</>,
+          () => {
+            taskTransform?.('경고', '');
+          },
+        );
+        handleDeleteModalClose();
+        setDeletingId(null);
+      },
+      onError: () => {
+        setAlert?.(
+          Seori,
+          <>
+            삭제 처리 중 오류가 발생했습니다.
+            <br />
+            잠시 후 다시 시도해주세요.
+          </>,
+          () => {
+            taskTransform?.('경고', '');
+          },
+        );
+        setDeletingId(null);
+      },
+    });
+  };
+
   // 좋아요 토글 핸들러 (낙관적 업데이트)
   const handleLikeToggle = (memorialApplicationId: number, isLiked: boolean) => {
     // 즉시 UI 업데이트 (낙관적 렌더링)
@@ -317,6 +371,9 @@ const MemorialApplicationList = ({ stack, push, pop, top }: dataStructureProps) 
                           onReject={handleReject}
                           rejectedReason={app.rejectedReason}
                           onViewRejectedReason={handleViewRejectedReason}
+                          currentUserId={currentUserId}
+                          onDelete={handleDelete}
+                          isDeleting={deletingId === app.memorialApplicationId}
                           onClick={() => {
                             const stackProps = {
                               stack: stack,
@@ -408,6 +465,45 @@ const MemorialApplicationList = ({ stack, push, pop, top }: dataStructureProps) 
           </ViewerStyle.ModalContent>
         </ViewerStyle.ModalOverlay>
       )}
+
+      {/* 삭제 확인 모달 */}
+      {isDeleteModalOpen && (
+        <ViewerStyle.ModalOverlay onClick={handleDeleteModalClose}>
+          <ViewerStyle.ModalContent onClick={(e) => e.stopPropagation()}>
+            <ViewerStyle.ModalTitle>추모관 신청 삭제</ViewerStyle.ModalTitle>
+            <ViewerStyle.ModalTextarea
+              value="정말로 이 추모관 신청을 삭제하시겠습니까?"
+              readOnly
+              onMouseEnter={() => setCursorImage(CURSOR_IMAGES.default)}
+              onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+              style={{ resize: 'none', height: '60px' }}
+            />
+            <ViewerStyle.ModalButtonGroup>
+              <ViewerStyle.ModalButton
+                variant="secondary"
+                onClick={handleDeleteModalClose}
+                disabled={deleteMutation.isPending}
+                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+              >
+                취소
+              </ViewerStyle.ModalButton>
+              <ViewerStyle.ModalButton
+                variant="primary"
+                onClick={handleDeleteConfirm}
+                disabled={deleteMutation.isPending}
+                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+              >
+                {deleteMutation.isPending ? '삭제 중...' : '삭제'}
+              </ViewerStyle.ModalButton>
+            </ViewerStyle.ModalButtonGroup>
+          </ViewerStyle.ModalContent>
+        </ViewerStyle.ModalOverlay>
+      )}
+
+      {/* 삭제 중 로딩 오버레이 */}
+      {deleteMutation.isPending && <Loading overlay={true} text="삭제 중..." />}
     </_.Container>
   );
 };
