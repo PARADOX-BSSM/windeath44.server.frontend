@@ -61,6 +61,11 @@ const MemorialApplicationList = ({ stack, push, pop, top }: dataStructureProps) 
     refetch,
   } = useGetMyMemorialApplicationsQuery(cursorId, 10);
 
+  // 컴포넌트 마운트 시 데이터 refetch
+  useEffect(() => {
+    refetch();
+  }, []);
+
   // 데이터가 로드되면 allApplications에 추가
   useEffect(() => {
     if (applicationsData?.data?.values) {
