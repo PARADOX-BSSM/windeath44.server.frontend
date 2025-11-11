@@ -52,6 +52,7 @@ const MemorialApplicationViewer = ({
   });
   const mutationGetCharacter = useGetCharacter(setCharacterData);
   const [animation, setAnimation] = useState<string>('');
+  const [hasCharacterError, setHasCharacterError] = useState<boolean>(false);
   const mutationAnimation = useGetAnimation(setAnimation);
   const approveMutation = useMemorialApplicationApproveMutation();
   const rejectMutation = useMemorialApplicationRejectMutation();
@@ -101,6 +102,7 @@ const MemorialApplicationViewer = ({
     if (application?.characterId) {
       mutationGetCharacter.mutate(application.characterId, {
         onError: () => {
+          setHasCharacterError(true);
           setAlert?.(
             Seori,
             <>
@@ -256,6 +258,50 @@ const MemorialApplicationViewer = ({
         return '#2e2e2e';
     }
   };
+
+  // 에러 처리 - 신청 정보 조회 실패
+  if (applicationError) {
+    return (
+      <_.Main>
+        <_.ErrorContainer>
+          <_.ErrorMessage>
+            추모관 신청 정보를 가져오는 중 오류가 발생했습니다.
+            <br />
+            잠시 후 다시 시도해 주세요.
+          </_.ErrorMessage>
+          <_.ErrorButton
+            onClick={() => pop()}
+            onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+            onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+          >
+            닫기
+          </_.ErrorButton>
+        </_.ErrorContainer>
+      </_.Main>
+    );
+  }
+
+  // 에러 처리 - 캐릭터 정보 조회 실패
+  if (hasCharacterError) {
+    return (
+      <_.Main>
+        <_.ErrorContainer>
+          <_.ErrorMessage>
+            캐릭터 정보를 가져오는 중 오류가 발생했습니다.
+            <br />
+            잠시 후 다시 시도해 주세요.
+          </_.ErrorMessage>
+          <_.ErrorButton
+            onClick={() => pop()}
+            onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+            onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+          >
+            닫기
+          </_.ErrorButton>
+        </_.ErrorContainer>
+      </_.Main>
+    );
+  }
 
   // 로딩 중
   if (
