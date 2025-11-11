@@ -14,6 +14,8 @@ import { useUpdateMemorialApplication } from '@/api/memorial/updateMemorialAppli
 import { useUploadImage } from '@/api/anime/uploadImage';
 import { alerterAtom } from '@/atoms/alerter';
 import { taskTransformerAtom, taskSearchAtom } from '@/atoms/taskTransformer';
+import { useProcessManager } from '@/hooks/processManager';
+import useApps from '@/applications/data/importManager';
 import Seori from '@/assets/sulkkagi/black_stone.svg';
 import Loading from '@/applications/components/loading';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
@@ -38,6 +40,8 @@ const MemorialEdit = ({ stack, push, pop, top, memorialApplicationId }: dataStru
   const setAlert = useAtomValue(alerterAtom);
   const taskTransform = useAtomValue(taskTransformerAtom);
   const taskSearch = useAtomValue(taskSearchAtom);
+  const [, , removeTask] = useProcessManager();
+  const applications = useApps();
 
   const [characterData, setCharacterData] = useState<CharacterData>({
     characterId: 0,
@@ -321,62 +325,75 @@ const MemorialEdit = ({ stack, push, pop, top, memorialApplicationId }: dataStru
   };
 
   const updateCharacterAndApplication = (imageUrl: string) => {
-    // Character Update와 Memorial Application Update를 동시에 호출
-    Promise.all([
-      new Promise((resolve, reject) => {
-        updateCharacterMutation.mutate(
-          {
-            characterId: characterData.characterId,
-            data: {
-              animeId: inputValue.animeId,
-              name: inputValue.name,
-              age: inputValue.age,
-              saying: inputValue.phrase,
-              deathReason: inputValue.deathReason,
-              causeOfDeathDetails: inputValue.causeOfDeathDetails,
-              deathOfDay: inputValue.date,
-              imageUrl: imageUrl,
+    // Character Update 먼저 실행
+    updateCharacterMutation.mutate(
+      {
+        characterId: characterData.characterId,
+        data: {
+          animeId: inputValue.animeId,
+          name: inputValue.name,
+          age: inputValue.age,
+          saying: inputValue.phrase,
+          deathReason: inputValue.deathReason,
+          causeOfDeathDetails: inputValue.causeOfDeathDetails,
+          deathOfDay: inputValue.date,
+          imageUrl: imageUrl,
+        },
+      },
+      {
+        onSuccess: () => {
+          // Character Update 성공 후 Application Update 실행
+          updateApplicationMutation.mutate(
+            {
+              memorialApplicationId: memorialApplicationId,
+              content: contentIn.content,
             },
-          },
-          {
-            onSuccess: () => resolve(true),
-            onError: (error) => reject(error),
-          },
-        );
-      }),
-      new Promise((resolve, reject) => {
-        updateApplicationMutation.mutate(
-          {
-            memorialApplicationId: memorialApplicationId,
-            content: contentIn.content,
-          },
-          {
-            onSuccess: () => resolve(true),
-            onError: (error) => reject(error),
-          },
-        );
-      }),
-    ])
-      .then(() => {
-        setAlert?.(Seori, <>추모관 신청이 성공적으로 수정되었습니다.</>, () => {
-          taskTransform?.('경고', '');
-          pop(); // 수정 완료 후 이전 화면으로
-        });
-      })
-      .catch((error) => {
-        console.error('수정 중 오류:', error);
-        setAlert?.(
-          Seori,
-          <>
-            수정 중 오류가 발생했습니다.
-            <br />
-            잠시 후 다시 시도해주세요.
-          </>,
-          () => {
-            taskTransform?.('경고', '');
-          },
-        );
-      });
+            {
+              onSuccess: () => {
+                // 둘 다 성공
+                setAlert?.(Seori, <>추모관 신청이 성공적으로 수정되었습니다.</>, () => {
+                  taskTransform?.('경고', '');
+                  // 미리보기 테스크 닫기
+                  const previewTask = applications.find((app) => app.name === '미리보기');
+                  if (previewTask) removeTask(previewTask);
+                  // 추모관 신청 수정 테스크 닫기
+                  const editTask = applications.find((app) => app.name === '추모관 신청 수정');
+                  if (editTask) removeTask(editTask);
+                });
+              },
+              onError: (error) => {
+                console.error('신청 수정 중 오류:', error);
+                setAlert?.(
+                  Seori,
+                  <>
+                    추모관 신청 수정 중 오류가 발생했습니다.
+                    <br />
+                    잠시 후 다시 시도해주세요.
+                  </>,
+                  () => {
+                    taskTransform?.('경고', '');
+                  },
+                );
+              },
+            },
+          );
+        },
+        onError: (error) => {
+          console.error('캐릭터 수정 중 오류:', error);
+          setAlert?.(
+            Seori,
+            <>
+              캐릭터 정보 수정 중 오류가 발생했습니다.
+              <br />
+              잠시 후 다시 시도해주세요.
+            </>,
+            () => {
+              taskTransform?.('경고', '');
+            },
+          );
+        },
+      },
+    );
   };
 
   // 로딩 중

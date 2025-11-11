@@ -45,7 +45,7 @@ export const useUpdateMemorialApplication = () => {
   return useMutation({
     mutationFn: updateMemorialApplication,
     onSuccess: () => {
-      console.log('추모관 신청이 성공적으로 수정되었습니다.');
+      // console.log('추모관 신청이 성공적으로 수정되었습니다.');
       // 신청 목록 쿼리 무효화하여 새로고침
       queryClient.invalidateQueries({ queryKey: ['memorialApplications'] });
       queryClient.invalidateQueries({ queryKey: ['myMemorialApplications'] });
