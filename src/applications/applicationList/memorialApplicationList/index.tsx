@@ -17,6 +17,7 @@ import { useMemorialApplicationDeleteMutation } from '@/api/memorial/memorialApp
 import * as ViewerStyle from '../memorialApplicationViewer/style';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
 import Loading from '@/applications/components/loading';
+import { useProcessManager } from '@/hooks/processManager';
 
 interface dataStructureProps {
   stack: any[];
@@ -29,6 +30,7 @@ const MemorialApplicationList = ({ stack, push, pop, top }: dataStructureProps) 
   const setAlert = useAtomValue(alerterAtom);
   const taskTransform = useAtomValue(taskTransformerAtom);
   const taskSearch = useAtomValue(taskSearchAtom);
+  const [, addTask] = useProcessManager();
   const [cursorId, setCursorId] = useState<number | undefined>(undefined);
   const [allApplications, setAllApplications] = useState<any[]>([]);
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
@@ -289,6 +291,29 @@ const MemorialApplicationList = ({ stack, push, pop, top }: dataStructureProps) 
     });
   };
 
+  // 수정 핸들러
+  const handleEdit = (memorialApplicationId: number) => {
+    const stackProps = {
+      stack: stack,
+      push: push,
+      pop: pop,
+      top: top,
+    };
+
+    // 추모관 신청 수정 task 추가
+    const editTask = taskSearch?.('추모관 신청 수정', {
+      ...stackProps,
+      memorialApplicationId: memorialApplicationId,
+    });
+
+    // 미리보기 task 추가
+    const previewTask = taskSearch?.('미리보기', stackProps);
+
+    // 두 개의 task를 동시에 추가
+    if (editTask) addTask(editTask);
+    if (previewTask) addTask(previewTask);
+  };
+
   // 좋아요 토글 핸들러 (낙관적 업데이트)
   const handleLikeToggle = (memorialApplicationId: number, isLiked: boolean) => {
     // 즉시 UI 업데이트 (낙관적 렌더링)
@@ -379,6 +404,7 @@ const MemorialApplicationList = ({ stack, push, pop, top }: dataStructureProps) 
                           currentUserId={currentUserId}
                           onDelete={handleDelete}
                           isDeleting={deletingId === app.memorialApplicationId}
+                          onEdit={handleEdit}
                           onClick={() => {
                             const stackProps = {
                               stack: stack,
