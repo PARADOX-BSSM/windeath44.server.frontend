@@ -33,7 +33,7 @@ const MemorialPreview = lazy(
   () => import('@/applications/applicationList/memorialPreview/index.tsx'),
 );
 const MemorialEdit = lazy(
-  () => import('@/applications/applicationList/memorialEdit/index.tsx'),
+  () => import('@/applications/applicationList/memorialApplicationEdit/index.tsx'),
 );
 
 const AnimationSelect = lazy(
