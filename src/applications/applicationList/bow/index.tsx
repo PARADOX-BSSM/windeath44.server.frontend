@@ -149,7 +149,7 @@ const Bow = ({ memorialId }: bowProps) => {
   if (!characterData) {
     return null;
   }
-  if (mutationMemorialBows.isPending) {
+  if (mutationMemorialBows.isPending || memorialBowMutation.isPending) {
     return <Loading />;
   }
   return (
