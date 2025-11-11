@@ -1,6 +1,5 @@
 import * as _ from '@/applications/applicationList/bow/style.ts';
 import Table from '@/assets/bow/table.svg';
-// import { useMemorialBow } from '@/api/memorial/memorialBow.ts';
 import { useEffect, useState } from 'react';
 import { useMemorialGet as useMemorialGetBowCount } from '@/api/memorial/countBowsByMi.ts';
 import { useMemorialGet } from '@/api/memorial/memorialGet.ts';
@@ -49,19 +48,25 @@ const Bow = ({ memorialId }: bowProps) => {
       );
     } else {
       memorialBowMutation.mutate(memorialId, {
-        onError: () => {
+        onError: (error) => {
+          const remainTime = error.response?.data.remainTime;
+          const formatRemainTime = (timeStr?: string) => {
+            if (!timeStr) return '';
+            const [hours, minutes] = timeStr.split(':');
+            return `${Number(hours)}시 ${Number(minutes)}분`;
+          };
           (setAlert ?? userId)(
             Choten,
             <>
-              절하기를 실패했습니다.
+              아직 절을 할 수 없습니다
               <br />
-              절을 한 번 한 후 24시간이 지나야 다시 할 수 있습니다.
+              절은 24시간마다 할 수 있습니다.
+              <br />* 남은 시간: {formatRemainTime(remainTime)}
             </>,
             () => {
               taskTransform?.('경고', '');
             },
           );
-          console.log('에러남');
         },
         onSuccess: () => {
           // 서버 응답 성공 시에만 UI 숫자 증가
@@ -70,7 +75,7 @@ const Bow = ({ memorialId }: bowProps) => {
             <>
               절하기를 성공하였습니다.
               <br />
-              절을 한 번 한 후 24시간이 지나야 다시 할 수 있습니다.
+              절하기를 한 번 한 후엔 24시간이 지나야 다시 할 수 있습니다.
             </>,
             () => {
               taskTransform?.('경고', '');
