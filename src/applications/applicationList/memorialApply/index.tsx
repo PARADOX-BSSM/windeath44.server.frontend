@@ -98,6 +98,7 @@ const MemorialApply = ({}: dataStructureProps) => {
 
   const handleImageClick = () => {
     if (fileInputRef.current) {
+      fileInputRef.current.value = ''; // 같은 파일 재선택 가능하도록 초기화
       fileInputRef.current.click();
     }
   };

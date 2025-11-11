@@ -29,7 +29,7 @@ export const SubmitBtn = styled.p`
   color: var(--Stroke, #e774dd);
   text-align: right;
   font-family: Galmuri11;
-  font-size: 36px;
+  font-size: 1.5rem;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -39,6 +39,7 @@ export const SubmitBtn = styled.p`
   text-decoration-thickness: auto;
   text-underline-offset: auto;
   text-underline-position: from-font;
+  cursor: none;
 `;
 
 export const Header = styled.header`

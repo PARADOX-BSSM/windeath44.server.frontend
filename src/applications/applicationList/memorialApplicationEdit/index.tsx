@@ -174,9 +174,9 @@ const MemorialEdit = ({ stack, push, pop, top, memorialApplicationId }: dataStru
     }
   }, [characterData, application, animation]);
 
-  // crop size 계산
+  // crop size 계산 - characterData 로드 후 실행
   useEffect(() => {
-    if (profileImgRef.current) {
+    if (profileImgRef.current && characterData.characterId !== 0) {
       const el = profileImgRef.current;
       const style = window.getComputedStyle(el);
       const borderLeft = parseFloat(style.borderLeftWidth);
@@ -186,11 +186,12 @@ const MemorialEdit = ({ stack, push, pop, top, memorialApplicationId }: dataStru
       const innerHeight = rect.height - borderTop * 2;
       setCropSize({ width: Math.floor(innerWidth), height: Math.floor(innerHeight) });
     }
-  }, []);
+  }, [characterData.characterId]);
 
   // 이미지 선택 핸들러
   const handleImageClick = () => {
     if (fileInputRef.current) {
+      fileInputRef.current.value = ''; // 같은 파일 재선택 가능하도록 초기화
       fileInputRef.current.click();
     }
   };
@@ -581,21 +582,16 @@ const MemorialEdit = ({ stack, push, pop, top, memorialApplicationId }: dataStru
           btnText=""
           from={userId}
           content={application?.content || ''}
-          isPerson={false}
+          isPerson={true}
         />
-      </_.TextAreaContainer>
-
-      <_.Header>
-        <div style={{ flex: 1 }} />
-        <_.UpdateButton
+        <_.SubmitBtn
           onClick={handleUpdate}
-          disabled={isUpdating}
           onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
           onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
         >
           {isUpdating ? '수정 중...' : '수정 완료'}
-        </_.UpdateButton>
-      </_.Header>
+        </_.SubmitBtn>
+      </_.TextAreaContainer>
 
       <ImageCropper
         isOpen={isCropping}

@@ -324,21 +324,12 @@ const MemorialApplicationList = ({ stack, push, pop, top }: dataStructureProps) 
       { memorialApplicationId, isLiked },
       {
         onError: () => {
-          
-
-
-
-
-
-
-
-
           setAllApplications((prev) =>
             prev.map((app) =>
               app.memorialApplicationId === memorialApplicationId
                 ? {
                     ...app,
-          
+
                     isLiked: isLiked,
                     likes: isLiked ? app.likes + 1 : app.likes - 1,
                   }
