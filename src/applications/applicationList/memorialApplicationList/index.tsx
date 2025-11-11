@@ -324,12 +324,21 @@ const MemorialApplicationList = ({ stack, push, pop, top }: dataStructureProps) 
       { memorialApplicationId, isLiked },
       {
         onError: () => {
-          // 에러 발생 시 롤백
+          
+
+
+
+
+
+
+
+
           setAllApplications((prev) =>
             prev.map((app) =>
               app.memorialApplicationId === memorialApplicationId
                 ? {
                     ...app,
+          
                     isLiked: isLiked,
                     likes: isLiked ? app.likes + 1 : app.likes - 1,
                   }

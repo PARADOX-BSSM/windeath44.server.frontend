@@ -1,11 +1,13 @@
 import styled from '@emotion/styled';
+import TextareaAutosize from 'react-textarea-autosize';
 
 export const Container = styled.div`
   display: flex;
+  width: 100%;
   padding: 28px 24px 36px 24px;
   flex-direction: column;
   align-items: center;
-  gap: 56px;
+  gap: 3.5rem;
   flex: 1 0 0;
   background: #fff;
   overflow: auto;
@@ -75,6 +77,22 @@ export const CharacterName = styled.h2`
   align-self: stretch;
 `;
 
+export const CharacterNameInput = styled(TextareaAutosize)`
+  display: flex;
+  cursor: none;
+  width: 100%;
+  color: #2e2e2e;
+  font-family: Galmuri11;
+  font-size: 36px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  align-self: stretch;
+  outline: none;
+  border: none;
+  resize: none;
+`;
+
 export const Status = styled.p`
   align-self: stretch;
   color: #2e2e2e;
@@ -118,12 +136,11 @@ export const CharacterProfile = styled.div`
   gap: 10px;
 `;
 
-export const CharacterProfileImg = styled.div<{ imgUrl: string }>`
+export const CharacterProfileImg = styled.div`
   width: 194px;
   height: 237.229px;
   border: 18.418px solid #000;
   background: #fff;
-  background-image: url(${(props) => props.imgUrl});
   background-size: cover;
   background-position: center;
 `;
@@ -194,15 +211,50 @@ export const CharacterInformationRowValue = styled.div`
   border: 1px solid var(--Stroke, #e774dd);
 `;
 
-export const CharacterInformationRowValueText = styled.div`
+export const CharacterInformationRowValueText = styled.p`
   width: 100%;
+  height: 100%;
   color: #2e2e2e;
   text-align: center;
   font-family: Galmuri11;
   font-size: 16px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
+`;
+
+export const CharacterInforInput = styled.input`
+  width: 100%;
+  height: 100%;
+  color: #2e2e2e;
+  text-align: center;
+  font-family: Galmuri11;
+  font-size: 16px;
+  border: none;
+  background: transparent;
+  outline: none;
+  cursor: none;
+`;
+
+export const PhraseContainer = styled.input`
+  width: 80%;
+  cursor: none;
+  height: 100%;
+  color: #2e2e2e;
+  text-align: center;
+  font-family: Galmuri11;
+  font-size: 24px;
+  border: none;
+  background: var(--VeryLightPrimary, #ffeefd);
+  outline: none;
+`;
+
+export const TextAreaContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  display: flex;
+  gap: 32px;
+  padding: 0 16px;
+  box-sizing: border-box;
 `;
 
 export const UpdateButton = styled.button`
@@ -219,7 +271,7 @@ export const UpdateButton = styled.button`
   font-weight: 400;
   line-height: normal;
   border: none;
-  cursor: pointer;
+  cursor: none;
   transition: background-color 0.3s;
 
   &:hover {
