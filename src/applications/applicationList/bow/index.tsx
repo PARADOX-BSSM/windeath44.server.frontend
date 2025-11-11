@@ -144,7 +144,7 @@ const Bow = ({ memorialId }: bowProps) => {
         );
       },
     });
-  }, []); // memorialId만 의존성으로 사용
+  }, [memorialId]);
   // 캐릭터 데이터가 로드되기 전에는 렌더링하지 않음
   if (!characterData) {
     return null;
