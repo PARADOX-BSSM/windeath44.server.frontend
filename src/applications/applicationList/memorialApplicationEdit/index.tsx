@@ -15,7 +15,6 @@ import { useUploadImage } from '@/api/anime/uploadImage';
 import { alerterAtom } from '@/atoms/alerter';
 import { taskTransformerAtom, taskSearchAtom } from '@/atoms/taskTransformer';
 import { useProcessManager } from '@/hooks/processManager';
-import useApps from '@/applications/data/importManager';
 import Seori from '@/assets/sulkkagi/black_stone.svg';
 import Loading from '@/applications/components/loading';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
@@ -40,8 +39,7 @@ const MemorialEdit = ({ stack, push, pop, top, memorialApplicationId }: dataStru
   const setAlert = useAtomValue(alerterAtom);
   const taskTransform = useAtomValue(taskTransformerAtom);
   const taskSearch = useAtomValue(taskSearchAtom);
-  const [, , removeTask] = useProcessManager();
-  const applications = useApps();
+  const [taskList, , removeTask] = useProcessManager();
 
   const [characterData, setCharacterData] = useState<CharacterData>({
     characterId: 0,
@@ -353,11 +351,13 @@ const MemorialEdit = ({ stack, push, pop, top, memorialApplicationId }: dataStru
                 // 둘 다 성공
                 setAlert?.(Seori, <>추모관 신청이 성공적으로 수정되었습니다.</>, () => {
                   taskTransform?.('경고', '');
+
                   // 미리보기 테스크 닫기
-                  const previewTask = applications.find((app) => app.name === '미리보기');
+                  const previewTask = taskList.find((task) => task.name === '미리보기');
                   if (previewTask) removeTask(previewTask);
+
                   // 추모관 신청 수정 테스크 닫기
-                  const editTask = applications.find((app) => app.name === '추모관 신청 수정');
+                  const editTask = taskList.find((task) => task.name === '추모관 신청 수정');
                   if (editTask) removeTask(editTask);
                 });
               },
