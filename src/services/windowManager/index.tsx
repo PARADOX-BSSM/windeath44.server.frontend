@@ -1,6 +1,6 @@
 import * as _ from './style.ts';
 import { useEffect, useState, Suspense, lazy, useRef } from 'react';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import {
   isLogInedAtom,
   focusAtom,
@@ -22,8 +22,9 @@ import { useDrag } from 'react-use-gesture';
 import useApps from '@/applications/data/importManager.tsx';
 import { lastTaskListAtom, windowPositionsAtom } from '@/atoms/processManager.ts';
 import { useGetPublicNotificationsQuery } from '@/api/notification/getPublicNotifications';
-import { notificationAtom } from '@/atoms/notification';
+import { notificationAtom, notificationListAtom } from '@/atoms/notification';
 import { settingsAtom } from '@/atoms/settings.ts';
+import { DEFAULT_NOTIFICATIONS } from '@/data/notifications.ts';
 
 const Application = lazy(() => import('@/applications/layout/index.tsx'));
 
@@ -39,6 +40,8 @@ const WindowManager = () => {
   const [hydrated, setHydrated] = useState(false);
   const [lastTaskList] = useAtom(lastTaskListAtom);
   const setNotification = useAtomValue(notificationAtom);
+  const setNotificationList = useSetAtom(notificationListAtom);
+  const [settings] = useAtom(settingsAtom);
   const [settings] = useAtom(settingsAtom);
 
   const [taskList, addTask, removeTask, setVirtualWindowPosition] = useProcessManager();
@@ -198,37 +201,35 @@ const WindowManager = () => {
     }
   }, [isLogIned, hydrated]);
 
+  // 공지사항 데이터를 atom에 저장 (항상 실행)
   useEffect(() => {
-    if (!hydrated || !settings.showBootNotification || isLogIned !== 'true') return;
+    if (!hydrated || isLogIned !== 'true') return;
 
-    setTimeout(() => {
-      setNotification?.([
-        {
-          title: '[공지] 정식 출시 안내 및 데이터 초기화 공지',
-          content:
-            'https://cdn.discordapp.com/attachments/1435047224550883481/1435434858989092905/dsf.png?ex=690bf463&is=690aa2e3&hm=cd24dbbbebd27ed01335798e16d9eba6c5c5686a5bd17b8b16fac4eb7959874e&',
-          is_image: true,
-          created_at: '2025-11-05T10:10:00',
-        },
-        {
-          title: '서비스 복구 안내',
-          content:
-            'https://cdn.discordapp.com/attachments/1435047224550883481/1435047874366017556/Frame_29.png?ex=690a8bfb&is=69093a7b&hm=58ec03d50000631635ca310d15b6e95498d01a747d1cecc974b076f6c6c36c66&',
-          is_image: true,
-          created_at: '2025-11-04T08:35:00', // 원하는 날짜를 ISO 형식으로 설정 (선택사항)
-        },
-        {
-          title: '서버 점검 안내',
-          content:
-            'https://cdn.discordapp.com/attachments/1363488381392388187/1433441915302318091/1.png?ex=6908a8d0&is=69075750&hm=8f7d76c4d87e9510944b9ae85fbfeb2347631a6ba1112c3332c0f7e7fcecb668&',
-          is_image: true,
-          created_at: '2025-10-29T19:55:00', // 원하는 날짜를 ISO 형식으로 설정 (선택사항)
-        },
-      ]);
-    }, 500);
-  }, [isLogIned, setNotification, hydrated]);
+    // API 데이터가 있으면 API 데이터 사용, 없으면 DEFAULT_NOTIFICATIONS 사용
+    let notificationsToStore;
 
-  // 공지사항 자동 표시
+    if (notificationsData?.data && notificationsData.data.length > 0) {
+      notificationsToStore = notificationsData.data;
+    } else {
+      // NotificationData 형식으로 변환
+      notificationsToStore = DEFAULT_NOTIFICATIONS.map((item, index) => ({
+        notification_id: Date.now() + index,
+        writer_id: 'system',
+        title: item.title,
+        content: item.content,
+        is_open: true,
+        is_image: item.is_image,
+        end_date: item.created_at,
+        created_at: item.created_at,
+        updated_at: item.created_at,
+      }));
+    }
+
+    // atom에 데이터 저장
+    setNotificationList(notificationsToStore);
+  }, [hydrated, isLogIned, notificationsData, setNotificationList]);
+
+  // 공지사항 자동 표시 (settings.showBootNotification이 true일 때만)
   useEffect(() => {
     if (
       !hydrated ||
@@ -242,15 +243,36 @@ const WindowManager = () => {
     const openNotifications = notificationsData.data.filter((n) => n.is_open);
     if (openNotifications.length === 0) {
       hasCheckedNotification.current = true;
-      return;
+      if (
+        !hydrated ||
+        hasCheckedNotification.current ||
+        !settings.showBootNotification ||
+        isLogIned !== 'true'
+      )
+        return;
     }
 
     hasCheckedNotification.current = true;
 
-    // setNotification 사용하여 공지사항 표시
-    if (setNotification) {
+    // API 데이터가 있으면 API 데이터 사용, 없으면 DEFAULT_NOTIFICATIONS 사용
+    let notificationsToShow;
+
+    if (notificationsData?.data) {
+      const openNotifications = notificationsData.data.filter((n) => n.is_open);
+      if (openNotifications.length > 0) {
+        notificationsToShow = openNotifications;
+      }
+    }
+
+    // API 데이터가 없으면 기본 공지사항 사용
+    if (!notificationsToShow) {
+      notificationsToShow = DEFAULT_NOTIFICATIONS;
+    }
+
+    // setNotification 사용하여 공지사항 창 자동으로 열기
+    if (setNotification && notificationsToShow) {
       setTimeout(() => {
-        setNotification(openNotifications);
+        setNotification(notificationsToShow);
       }, 500); // 부팅 후 0.5초 뒤에 표시
     }
   }, [hydrated, settings, isLogIned, notificationsData, setNotification]);
