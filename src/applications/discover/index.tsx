@@ -42,10 +42,12 @@ const Discover = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
           </_.AppContainer>
         );
       })}
-      <TaskBar
-        backUpFocus={backUpFocus}
-        setBackUpFocus={setBackUpFocus}
-      />
+      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, width: '100%' }}>
+        <TaskBar
+          backUpFocus={backUpFocus}
+          setBackUpFocus={setBackUpFocus}
+        />
+      </div>
     </>
   );
 };
