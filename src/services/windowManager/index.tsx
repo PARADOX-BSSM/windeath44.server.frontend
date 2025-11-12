@@ -15,6 +15,7 @@ import { getTaskCreators } from './tasks';
 import { useTaskTransformFunction } from '@/hooks/taskTransformer.tsx';
 import { useTaskSearchFunction } from '@/hooks/taskSearch.tsx';
 import { useAlerter } from '@/hooks/alerter.tsx';
+import { useConfirmAlerter } from '@/hooks/alerter.tsx';
 import { useNotification } from '@/hooks/notification.tsx';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg.tsx';
 import { useDrag } from 'react-use-gesture';
@@ -38,10 +39,10 @@ const WindowManager = () => {
   const [hydrated, setHydrated] = useState(false);
   const [lastTaskList] = useAtom(lastTaskListAtom);
   const setNotification = useAtomValue(notificationAtom);
-  const [settings,] = useAtom(settingsAtom);
+  const [settings] = useAtom(settingsAtom);
 
   const [taskList, addTask, removeTask, setVirtualWindowPosition] = useProcessManager();
-  const [,,,addTaskToDesktop] = useVirtualProcessManager();
+  const [, , , addTaskToDesktop] = useVirtualProcessManager();
   const { logIn, signUp, emailChack, auth } = getTaskCreators(setIsLogIned, addTask, removeTask);
   const availableApps = useApps();
   const isDragging = useRef(false);
@@ -108,7 +109,7 @@ const WindowManager = () => {
       console.log('[WindowManager] Restoring tasks:', lastTaskList);
 
       // 위치 정보를 windowPositionsAtom에 먼저 복원
-      lastTaskList.map((tasks, index)=>{
+      lastTaskList.map((tasks, index) => {
         const positions: Record<
           string,
           { top: number; left: number; width: number; height: number }
@@ -123,7 +124,7 @@ const WindowManager = () => {
               savedTask.position,
             );
           }
-        })
+        });
         setVirtualWindowPosition(positions, index);
         console.log('[WindowManager] Set windowPositions to:', positions);
       });
@@ -133,22 +134,24 @@ const WindowManager = () => {
       // 위치 설정 후 조금 기다렸다가 앱 추가
       setTimeout(() => {
         console.log('[WindowManager] Now adding tasks...');
-        lastTaskList.map((tasks)=>tasks.forEach((savedTask) => {
-          const app = availableApps.find(
-            (availableApp) =>
-              availableApp.id === savedTask.id && availableApp.name === savedTask.name,
-          );
-          console.log(
-            '[WindowManager] Looking for app:',
-            savedTask.name,
-            'Found:',
-            app ? 'YES' : 'NO',
-          );
-          if (app) {
-            console.log('[WindowManager] Adding task:', savedTask.name);
-            addTaskToDesktop(app, savedTask.desktopIndex || 0);
-          }
-        }));
+        lastTaskList.map((tasks) =>
+          tasks.forEach((savedTask) => {
+            const app = availableApps.find(
+              (availableApp) =>
+                availableApp.id === savedTask.id && availableApp.name === savedTask.name,
+            );
+            console.log(
+              '[WindowManager] Looking for app:',
+              savedTask.name,
+              'Found:',
+              app ? 'YES' : 'NO',
+            );
+            if (app) {
+              console.log('[WindowManager] Adding task:', savedTask.name);
+              addTaskToDesktop(app, savedTask.desktopIndex || 0);
+            }
+          }),
+        );
       }, 500); // 위치 설정 후 여유있게 대기
     } else {
       console.log('[WindowManager] No tasks to restore');
@@ -183,7 +186,7 @@ const WindowManager = () => {
         name: 'Extender',
         appSetup: undefined,
         visible: false,
-      }
+      };
       setTimeout(() => {
         addTask(discover);
         addTask(virtualDesktopService);
@@ -227,7 +230,13 @@ const WindowManager = () => {
 
   // 공지사항 자동 표시
   useEffect(() => {
-    if (!hydrated || hasCheckedNotification.current || !settings.showBootNotification || isLogIned !== 'true') return;
+    if (
+      !hydrated ||
+      hasCheckedNotification.current ||
+      !settings.showBootNotification ||
+      isLogIned !== 'true'
+    )
+      return;
     if (!notificationsData?.data) return;
 
     const openNotifications = notificationsData.data.filter((n) => n.is_open);
@@ -282,9 +291,8 @@ const WindowManager = () => {
     };
   }, [settings, sideWidth]);
 
-
   useEffect(() => {
-    if (settings.screenRatio === "4:3") {
+    if (settings.screenRatio === '4:3') {
       const updateSideWidth = () => {
         const fullWidth = window.innerWidth;
         const fullHeight = window.innerHeight;
@@ -295,13 +303,12 @@ const WindowManager = () => {
       updateSideWidth();
       window.addEventListener('resize', updateSideWidth);
       return () => window.removeEventListener('resize', updateSideWidth);
-    }
-    else if(settings.screenRatio === "16:9") {
+    } else if (settings.screenRatio === '16:9') {
       const updateSideWidth = () => {
         setSideWidth(0);
       };
       updateSideWidth();
-      console.log("asdf");
+      console.log('asdf');
       window.addEventListener('resize', updateSideWidth);
       return () => window.removeEventListener('resize', updateSideWidth);
     }
@@ -334,6 +341,7 @@ const WindowManager = () => {
   useTaskTransformFunction();
   useTaskSearchFunction();
   useAlerter();
+  useConfirmAlerter();
   useNotification();
 
   return (
@@ -342,7 +350,7 @@ const WindowManager = () => {
         <_.BackgroundDiv width={sideWidth}></_.BackgroundDiv>
         <_.Display
           id="cursorContainer"
-          is43={settings.screenRatio === "4:3"}
+          is43={settings.screenRatio === '4:3'}
           {...bindDrag()}
         >
           <div id="cursor"></div>

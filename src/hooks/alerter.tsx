@@ -2,7 +2,7 @@ import { useSetAtom, useAtomValue } from 'jotai';
 import useApps from '@/applications/data/importManager';
 import { Suspense, useEffect } from 'react';
 import React from 'react';
-import { alerterAtom } from '@/atoms/alerter';
+import { alerterAtom, reconfirmAlerterAtom } from '@/atoms/alerter';
 import { useProcessManager } from './processManager';
 import { virtualDesktopIndexAtom } from '@/atoms/processManager';
 
@@ -37,3 +37,35 @@ export const useAlerter = () => {
   }, [desktopIndex]);
 };
 
+export const useConfirmAlerter = () => {
+  const setConfirmAlerterAtom = useSetAtom(reconfirmAlerterAtom);
+
+  const Apps = useApps();
+
+  const [, addTask] = useProcessManager();
+  const desktopIndex = useAtomValue(virtualDesktopIndexAtom);
+
+  let foundTask = Apps.filter((app) => {
+    return app.name === '재확인';
+  })[0];
+
+  const setConfirmAlert = (icon: string, confirmText: string, onClick: () => void) => {
+    if (icon && confirmText) {
+      const original = foundTask.component;
+      const internal = original.props.children as React.ReactElement;
+      const type = internal.type;
+
+      foundTask.component = (
+        <Suspense fallback={null}>
+          {React.createElement(type, { icon, confirmText, onClick })}
+        </Suspense>
+      );
+
+      addTask(foundTask);
+    }
+  };
+
+  useEffect(() => {
+    setConfirmAlerterAtom(() => setConfirmAlert);
+  }, [desktopIndex]);
+};
