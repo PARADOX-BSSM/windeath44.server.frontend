@@ -11,9 +11,11 @@ import { useGetChatBotQuery } from '@/api/chatbot/getChatBot';
 import { useGetChatbotHistory, type ChatHistoryItem } from '@/api/chatbot/getChatbotHistory';
 import { useAtomValue } from 'jotai';
 import { alerterAtom } from '@/atoms/alerter';
-import { taskTransformerAtom } from '@/atoms/taskTransformer';
+import { taskTransformerAtom, taskSearchAtom } from '@/atoms/taskTransformer';
 import { useGetUserMutation } from '@/api/user/getUser';
 import { useGetCharacter, CharacterData } from '@/api/anime/getCharacter';
+import { useProcessManager } from '@/hooks/processManager';
+import { useGetMemorialsCharacterFilteredQuery } from '@/api/memorial/getMemorialsCharacterFiltered';
 import seori from '@/assets/sulkkagi/black_stone.svg';
 
 interface Message {
@@ -39,6 +41,8 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
   const doChatMutation = useDoChat();
   const setAlert = useAtomValue(alerterAtom);
   const taskTransform = useAtomValue(taskTransformerAtom);
+  const taskSearch = useAtomValue(taskSearchAtom);
+  const [, addTask] = useProcessManager();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [messages, setMessages] = useState<Message[]>([]);
 
@@ -58,6 +62,14 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
   const { mutate: getUser, data: userData } = useGetUserMutation();
   const getCharacterMutation = useGetCharacter(setCharacterData);
   const mutationGetChatHistory = useGetChatbotHistory(setChatHistory, setHasNextHistory, false);
+
+  // 캐릭터 ID로 추모관 조회
+  const { data: memorialsData } = useGetMemorialsCharacterFilteredQuery({
+    orderBy: 'recently-updated',
+    page: 1,
+    characters: [chatbotId],
+    enabled: true,
+  });
 
   // API에서 가져온 챗봇 정보
   const character = getChatBot.data?.data?.name || '챗봇';
@@ -129,7 +141,18 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
         setMessages([]);
       }
     }
-  }, [isHistoryLoaded, chatHistory, userData, characterData, getChatBot.data, userImg, userName, userId, characterImage, character]);
+  }, [
+    isHistoryLoaded,
+    chatHistory,
+    userData,
+    characterData,
+    getChatBot.data,
+    userImg,
+    userName,
+    userId,
+    characterImage,
+    character,
+  ]);
 
   useEffect(() => {
     const contributeData = getChatBot.data?.data?.contributor;
@@ -218,7 +241,58 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
   };
 
   const handleMemorialClick = () => {
-    // console.log('Navigate to memorial');
+    console.log('Memorial click - Full memorialsData:', memorialsData);
+    console.log('Memorial click - Data structure:', JSON.stringify(memorialsData, null, 2));
+
+    // API 응답 구조 확인: memorialsData?.data?.values 또는 memorialsData?.data
+    const memorials = memorialsData?.data?.values || memorialsData?.data || [];
+
+    console.log('Memorial click - memorials array:', memorials);
+    console.log('Memorial click - memorials length:', memorials.length);
+
+    if (!Array.isArray(memorials) || memorials.length === 0) {
+      setAlert?.(
+        seori,
+        <>
+          해당 캐릭터의 추모관을 찾을 수 없습니다.
+          <br />
+          추모관이 존재하는지 확인해주세요.
+        </>,
+        () => {
+          taskTransform?.('경고', '');
+        },
+      );
+      return;
+    }
+
+    // 첫 번째 추모관 사용 (캐릭터 ID로 필터링된 추모관)
+    const firstMemorial = memorials[0];
+    console.log('First memorial object:', firstMemorial);
+
+    if (!firstMemorial || !firstMemorial.memorialId) {
+      setAlert?.(
+        seori,
+        <>
+          추모관 데이터를 찾을 수 없습니다.
+          <br />
+          잠시 후 다시 시도해주세요.
+        </>,
+        () => {
+          taskTransform?.('경고', '');
+        },
+      );
+      return;
+    }
+
+    const memorialId = firstMemorial.memorialId;
+
+    console.log('Opening memorial - memorialId:', memorialId, 'characterId:', chatbotId);
+
+    // taskTransform 사용 (search/viewer와 동일한 방식)
+    taskTransform?.('', '추모관 뷰어', {
+      memorialId: memorialId,
+      characterId: chatbotId,
+    });
   };
 
   const handleContributorsCountClick = () => {
@@ -294,7 +368,10 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
                 />
               ))}
               {isLoading && (
-                <Loading text="답변을 기다리는 중입니다..." imageSize="60px" />
+                <Loading
+                  text="답변을 기다리는 중입니다..."
+                  imageSize="60px"
+                />
               )}
               <div ref={messagesEndRef} />
             </_.ChatMessagesContainer>
