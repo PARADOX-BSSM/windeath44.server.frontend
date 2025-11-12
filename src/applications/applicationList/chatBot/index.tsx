@@ -51,7 +51,7 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
   const [characterData, setCharacterData] = useState<CharacterData>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   };
 
   const getChatBot = useGetChatBotQuery({ chatbot_id: chatbotId });
