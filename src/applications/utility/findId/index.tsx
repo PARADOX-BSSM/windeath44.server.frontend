@@ -3,7 +3,6 @@ import * as _ from './style.ts';
 import Logo from '@/assets/windeath44.svg';
 import Choten from '@/assets/profile/choten.svg';
 import Inputs from '@/applications/components/inputs';
-// import { useChangeTemporaryKey } from '@/api/auth/changetemporaryKey.ts';
 import MemorialBtn from '@/applications/components/memorialBtn';
 import { useAtomValue } from 'jotai';
 import { alerterAtom } from '@/atoms/alerter';
@@ -22,17 +21,12 @@ const FindId = ({ changeToLogIn }: Props) => {
 
   const checkEmail = async (e: React.MouseEvent<HTMLButtonElement>) => {
     if (email.length === 0) {
-      setAlert?.(
-        Choten,
-        <>
-          이메일을 입력해주세요.
-        </>,
-        () => {
-          taskTransform?.('경고', '');
-        },
-      );
+      setAlert?.(Choten, <>이메일을 입력해주세요.</>, () => {
+        taskTransform?.('경고', '');
+      });
       return;
-    }if (!email.includes('@')){
+    }
+    if (!email.includes('@')) {
       setAlert?.(
         Choten,
         <>
@@ -51,6 +45,17 @@ const FindId = ({ changeToLogIn }: Props) => {
       { email },
       {
         onSuccess: () => {
+          setAlert?.(
+            Choten,
+            <>
+              이메일 전송에 실패했습니다.
+              <br />
+              다시 시도해 주세요.
+            </>,
+            () => {
+              taskTransform?.('경고', '');
+            },
+          );
           changeToLogIn();
         },
         onError: () => {
@@ -93,7 +98,7 @@ const FindId = ({ changeToLogIn }: Props) => {
             setValue={setEmail}
             type={'text'}
             flex={true}
-            placeHold={"example@email.com"}
+            placeHold={'example@email.com'}
           />
         </_.tempInputsStyle>
         <_.tempButtonsStyle>

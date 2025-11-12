@@ -13,6 +13,14 @@ interface PropsType {
   isAdmin?: boolean;
   onApprove?: (memorialApplicationId: number) => void;
   onReject?: (memorialApplicationId: number) => void;
+  isApproving?: boolean;
+  isRejecting?: boolean;
+  rejectedReason?: string;
+  onViewRejectedReason?: (rejectedReason: string) => void;
+  currentUserId?: string;
+  onDelete?: (memorialApplicationId: number) => void;
+  isDeleting?: boolean;
+  onEdit?: (memorialApplicationId: number) => void;
 }
 
 const Application = ({
@@ -28,6 +36,14 @@ const Application = ({
   isAdmin,
   onApprove,
   onReject,
+  isApproving = false,
+  isRejecting = false,
+  rejectedReason,
+  onViewRejectedReason,
+  currentUserId,
+  onDelete,
+  isDeleting = false,
+  onEdit,
 }: PropsType) => {
   const getStateText = (state: string) => {
     switch (state) {
@@ -71,17 +87,52 @@ const Application = ({
                 e.stopPropagation();
                 onApprove?.(memorialApplicationId);
               }}
+              disabled={isApproving || isRejecting}
             >
-              승인
+              {isApproving ? '처리 중...' : '승인'}
             </_.ApproveBtn>
             <_.RejectBtn
               onClick={(e) => {
                 e.stopPropagation();
                 onReject?.(memorialApplicationId);
               }}
+              disabled={isApproving || isRejecting}
             >
-              거절
+              {isRejecting ? '처리 중...' : '거절'}
             </_.RejectBtn>
+          </>
+        )}
+        {state === 'REJECTED' && rejectedReason && (
+          <_.ViewRejectedReasonBtn
+            onClick={(e) => {
+              e.stopPropagation();
+              onViewRejectedReason?.(rejectedReason);
+            }}
+          >
+            거절 사유 보기
+          </_.ViewRejectedReasonBtn>
+        )}
+        {currentUserId === userId && (
+          <>
+            {state === 'PENDING' && (
+              <_.EditBtn
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onEdit?.(memorialApplicationId);
+                }}
+              >
+                수정
+              </_.EditBtn>
+            )}
+            <_.DeleteBtn
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete?.(memorialApplicationId);
+              }}
+              disabled={isDeleting}
+            >
+              {isDeleting ? '삭제 중...' : '삭제'}
+            </_.DeleteBtn>
           </>
         )}
         <_.ViewBtn onClick={onClick}>신청 내용 보기</_.ViewBtn>

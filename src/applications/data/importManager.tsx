@@ -32,6 +32,9 @@ const MemorialCommit = lazy(
 const MemorialPreview = lazy(
   () => import('@/applications/applicationList/memorialPreview/index.tsx'),
 );
+const MemorialEdit = lazy(
+  () => import('@/applications/applicationList/memorialApplicationEdit/index.tsx'),
+);
 
 const AnimationSelect = lazy(
   () => import('@/applications/applicationList/animationSelect/index.tsx'),
@@ -108,6 +111,14 @@ const MemorialApplicationListApproach = lazy(
 const MemorialApplicationViewer = lazy(
   () => import('@/applications/applicationList/memorialApplicationViewer/index.tsx'),
 );
+
+const Notification = lazy(() => import('@/applications/applicationList/notification/index.tsx'));
+
+const NotificationViewer = lazy(
+  () => import('@/applications/applicationList/notificationViewer/index.tsx'),
+);
+
+const Settings = lazy(() => import('@/applications/applicationList/settings/index.tsx'));
 
 //Application Import 형식 예시
 /*
@@ -196,7 +207,7 @@ const useApps = (): TaskType[] => {
       appSetup: {
         Image: 'default',
         minWidth: 600,
-        minHeight: 300,
+        minHeight: 400,
         setUpWidth: 950,
         setUpHeight: 500,
       },
@@ -295,7 +306,7 @@ const useApps = (): TaskType[] => {
       name: '추모관 수정',
       layer: undefined,
       appSetup: {
-        Image: 'default',
+        Image: search,
         minWidth: 580,
         minHeight: 420,
         setUpWidth: 890,
@@ -481,6 +492,31 @@ const useApps = (): TaskType[] => {
       layer: undefined,
       appSetup: {
         Image: setting,
+        minWidth: 580,
+        minHeight: 420,
+        setUpWidth: 890,
+        setUpHeight: 577,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <MemorialEdit
+            stack={[]}
+            push={undefined}
+            pop={undefined}
+            top={undefined}
+            memorialApplicationId={0}
+          />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2255,
+      name: '추모관 신청 수정',
+      layer: undefined,
+      appSetup: {
+        Image: search,
         minWidth: 580,
         minHeight: 420,
         setUpWidth: 890,
@@ -744,7 +780,7 @@ const useApps = (): TaskType[] => {
       name: '추모관 수정 요청 뷰어',
       layer: undefined,
       appSetup: {
-        Image: 'default',
+        Image: search,
         minWidth: 800,
         minHeight: 600,
         setUpWidth: 1100,
@@ -782,7 +818,7 @@ const useApps = (): TaskType[] => {
       name: '추모관 수정 요청',
       layer: undefined,
       appSetup: {
-        Image: 'default',
+        Image: search,
         minWidth: 600,
         minHeight: 500,
         setUpWidth: 900,
@@ -841,6 +877,25 @@ const useApps = (): TaskType[] => {
     {
       component: (
         <Suspense fallback={null}>
+          <Settings />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2254,
+      name: '설정',
+      layer: undefined,
+      appSetup: {
+        Image: setting,
+        minWidth: 600,
+        minHeight: 400,
+        setUpWidth: 700,
+        setUpHeight: 500,
+      },
+      visible: true,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
           <MemorialApplicationListApproach
             window={{}}
             setWindow={() => {}}
@@ -884,6 +939,44 @@ const useApps = (): TaskType[] => {
         minHeight: 600,
         setUpWidth: 1100,
         setUpHeight: 800,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <Notification />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2252,
+      name: '공지사항',
+      layer: undefined,
+      appSetup: {
+        Image: setting,
+        minWidth: 600,
+        minHeight: 400,
+        setUpWidth: 800,
+        setUpHeight: 600,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <NotificationViewer />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2253,
+      name: '공지사항 뷰어',
+      layer: undefined,
+      appSetup: {
+        Image: setting,
+        minWidth: 600,
+        minHeight: 400,
+        setUpWidth: 800,
+        setUpHeight: 480,
       },
       visible: false,
     },

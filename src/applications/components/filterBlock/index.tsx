@@ -3,6 +3,7 @@ import Up from '@/assets/search/point_up.svg';
 import Down from '@/assets/search/point_down.svg';
 import * as _ from './style';
 import { CURSOR_IMAGES, setCursorImage } from '@/lib/setCursorImg';
+import type deathType from '@/modules/deathType';
 
 interface FilterBlockProps {
   label: string;

@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AxiosResponse } from 'axios';
 import { memorial_application } from '@/config/index';
 import api from '@/api/axiosInstance';
@@ -33,10 +33,15 @@ const applyMemorial = async ({
 };
 
 export const useApplyMemorial = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: applyMemorial,
     onSuccess: () => {
       // console.log('추모관이 성공적으로 등록되었습니다.');
+      // 신청 목록 쿼리 무효화하여 새로고침
+      queryClient.invalidateQueries({ queryKey: ['memorialApplications'] });
+      queryClient.invalidateQueries({ queryKey: ['myMemorialApplications'] });
     },
     onError: () => {},
   });

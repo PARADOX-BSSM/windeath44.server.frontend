@@ -1,70 +1,135 @@
 import { TaskType } from '@/modules/typeModule.tsx';
 import { useAtom } from 'jotai';
-import { taskManagerAtom, lastTaskListAtom, windowPositionsAtom, SavedTaskType } from '@/atoms/processManager.ts';
+import {
+  taskManagerAtom,
+  lastTaskListAtom,
+  windowPositionsAtom,
+  virtualDesktopIndexAtom,
+  virtualTaskListsAtom,
+  virtualWindowPositionsAtom,
+  SavedTaskType,
+} from '@/atoms/processManager.ts';
 import { useEffect, useRef } from 'react';
 
-const useProcessManager: () => [
-  TaskType[],
-  (component: TaskType) => void,
-  (component: TaskType) => void,
-] = () => {
-  const [taskList, setTaskList] = useAtom(taskManagerAtom);
-  const [, setLastTaskList] = useAtom(lastTaskListAtom);
-  const [windowPositions] = useAtom(windowPositionsAtom);
-  const isInitialMount = useRef(true);
+type Position = { top: number; left: number; width: number; height: number };
 
-  // taskList가 변경될 때마다 localStorage에 저장 (단, 초기 마운트는 제외)
+export const useProcessManager = (): [
+  TaskType[],
+  (task: TaskType, position?: Position) => void,
+  (task: TaskType) => void,
+  (positions: Record<string, Position>, index?: number) => void
+] => {
+  const [globalTaskList, setGlobalTaskList] = useAtom(taskManagerAtom);
+  const [virtualTaskLists, ] = useAtom(virtualTaskListsAtom);
+  const [virtualTaskList, addVirtualTask, removeVirtualTask] = useVirtualProcessManager();
+  const [, setLastTaskList] = useAtom(lastTaskListAtom);
+  const [windowPositions, setWindowPositions] = useAtom(windowPositionsAtom);
+  const [virtualWindowPositions, setVirtualWindowPositions] = useAtom(virtualWindowPositionsAtom);
+  const [desktopIndex] = useAtom(virtualDesktopIndexAtom);
+
+  const isInitialMount = useRef(true);
+  const setVirtualWindowPosition = (
+    positions: Record<string, Position>,
+    index?: number
+  ) => {
+    setVirtualWindowPositions(prev => {
+      const targetIndex = index ?? desktopIndex;
+      const updated = [...prev];
+      updated[targetIndex] = { ...updated[targetIndex], ...positions };
+      return updated;
+    });
+  };
+  // 데스크탑 전환 시 위치 복원
   useEffect(() => {
-    // 초기 마운트 시에는 저장하지 않음 (기존 데이터 보존)
+    if(desktopIndex !== undefined) setWindowPositions({ ...(virtualWindowPositions[desktopIndex] || {}) });
+    setWindowPositions(virtualWindowPositions[desktopIndex]);
+  }, [desktopIndex, virtualWindowPositions[desktopIndex]]);;
+
+  // Task 저장 (lastTaskList)
+  useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
-      console.log('[ProcessManager] Initial mount - skipping save');
       return;
     }
 
-    // 복원하지 않을 페이지 목록
     const excludedPages = [
-      'MemorialApply',
-      '추모관 수정',
-      '미리보기',
-      '로그인',
-      '회원가입',
-      '이메일 인증',
-      '인증코드 입력',
-      '비밀번호 재설정',
+      'MemorialApply','추모관 수정','미리보기','로그인','회원가입',
+      '이메일 인증','인증코드 입력','비밀번호 재설정',
+      '공지사항','공지사항 뷰어',
     ];
+    
+    const savedTasks: SavedTaskType[][] = virtualTaskLists.map((tasks, idx) =>
+      tasks
+        .filter(
+          (t) =>
+            !t.instanceId &&
+            !excludedPages.includes(t.name)
+        )
+        .map((t) => ({
+          type: t.type,
+          id: t.id,
+          name: t.name,
+          position: virtualWindowPositions[idx]?.[t.name],
+          desktopIndex: idx,
+        }))
+    );
 
-    const savedTasks: SavedTaskType[] = taskList
-      .filter((task) =>
-        task.type === 'App' &&
-        !task.instanceId &&
-        !excludedPages.includes(task.name) // 제외 목록에 없는 것만 저장
-      )
-      .map((task) => ({
-        type: task.type,
-        id: task.id,
-        name: task.name,
-        position: windowPositions[task.name], // 위치 정보도 함께 저장
-      }));
-    console.log('[ProcessManager] Saving tasks to localStorage:', savedTasks);
     setLastTaskList(savedTasks);
-  }, [taskList, windowPositions, setLastTaskList]);
+  }, [virtualTaskList, windowPositions, virtualWindowPositions, desktopIndex]);
 
-  const addTask = (component: TaskType) => {
-    setTaskList((Task) =>
-      !Task.some((item) => item.name === component.name && item.name !== '추모관 뷰어')
-        ? [...Task, component]
-        : [...Task],
-    );
+  const addTask = (task: TaskType) => {
+    if (task.type === 'Shell') {
+      setGlobalTaskList(prev => prev.some(t => t.name === task.name) ? prev : [...prev, task]);
+    } else {
+      addVirtualTask(task);
+    }
   };
-  const removeTask = (component: TaskType) => {
-    setTaskList((Task) =>
-      Task.filter((item) =>
-        item.instanceId ? item.instanceId !== component.instanceId : item.name !== component.name,
-      ),
-    );
+
+  const removeTask = (task: TaskType) => {
+    if (task.type === 'Shell') {
+      setGlobalTaskList(prev => prev.filter(t => t.name !== task.name));
+    } else {
+      removeVirtualTask(task);
+    }
   };
-  return [taskList, addTask, removeTask];
+
+  const taskList = [...globalTaskList, ...virtualTaskList];
+  return [taskList, addTask, removeTask, setVirtualWindowPosition] as const;
 };
 
-export { useProcessManager };
+// --- Virtual Process Manager ---
+export const useVirtualProcessManager = (): [
+  TaskType[],
+  (task: TaskType) => void,
+  (task: TaskType) => void,
+  (task: TaskType, index: number) => void
+] => {
+  const [desktopIndex] = useAtom(virtualDesktopIndexAtom);
+  const [virtualTaskLists, setVirtualTaskLists] = useAtom(virtualTaskListsAtom);
+
+  const taskList = virtualTaskLists[desktopIndex] || [];
+
+  const addTaskToDesktop = (task: TaskType, index: number) => {
+    setVirtualTaskLists(prev => {
+      const updated = [...prev];
+      const targetList = updated[index] || [];
+      if (targetList.some(t => t.name === task.name)) return prev;
+      updated[index] = [...targetList, task];
+      return updated;
+    });
+  };
+
+  const addTask = (task: TaskType) => addTaskToDesktop(task, desktopIndex);
+
+  const removeTask = (task: TaskType) => {
+    setVirtualTaskLists(prev => {
+      const updated = [...prev];
+      const currentList = updated[desktopIndex] || [];
+      updated[desktopIndex] = currentList.filter(
+        (item) => item.instanceId ? item.instanceId !== task.instanceId : item.name !== task.name
+      );
+      return updated;
+    });
+  };
+  return [taskList, addTask, removeTask, addTaskToDesktop] as const;
+};

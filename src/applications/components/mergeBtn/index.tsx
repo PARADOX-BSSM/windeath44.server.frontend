@@ -2,7 +2,7 @@ import * as _ from './style';
 import { useCreateCharacter } from '@/api/anime/createCharacter';
 import { useUploadImage } from '@/api/anime/uploadImage';
 import { useApplyMemorial } from '@/api/memorial/applyMemorial';
-import Choten from '@/assets/profile/choten.svg';
+import Seori from '@/assets/sulkkagi/black_stone.svg';
 import { inputPortage, inputContent } from '@/atoms/inputManager';
 import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer';
 import { alerterAtom } from '@/atoms/alerter';
@@ -47,63 +47,63 @@ const MergeBtn = ({ text, memorialId, characterId }: PropsType) => {
     if (isApply) {
       // 필수 필드 validation
       if (!inputValue.profileImage) {
-        setAlert?.(Choten, <>캐릭터 이미지를 업로드해주세요.</>, () => {
+        setAlert?.(Seori, <>캐릭터 이미지를 업로드해주세요.</>, () => {
           taskTransform?.('경고', '');
         });
         return;
       }
 
       if (!inputValue.name || inputValue.name.trim() === '') {
-        setAlert?.(Choten, <>캐릭터 이름을 입력해주세요.</>, () => {
+        setAlert?.(Seori, <>캐릭터 이름을 입력해주세요.</>, () => {
           taskTransform?.('경고', '');
         });
         return;
       }
 
       if (!inputValue.age || inputValue.age === 0) {
-        setAlert?.(Choten, <>캐릭터 나이를 입력해주세요.</>, () => {
+        setAlert?.(Seori, <>캐릭터 나이를 입력해주세요.</>, () => {
           taskTransform?.('경고', '');
         });
         return;
       }
 
       if (!inputValue.date || inputValue.date.trim() === '') {
-        setAlert?.(Choten, <>사망 날짜를 입력해주세요.</>, () => {
+        setAlert?.(Seori, <>사망 날짜를 입력해주세요.</>, () => {
           taskTransform?.('경고', '');
         });
         return;
       }
 
-      if (!inputValue.deathReason || inputValue.deathReason === '자살(自殺)') {
-        setAlert?.(Choten, <>사인을 선택해주세요.</>, () => {
+      if (!inputValue.deathReason || inputValue.deathReason === '사인 선택') {
+        setAlert?.(Seori, <>사인을 선택해주세요.</>, () => {
           taskTransform?.('경고', '');
         });
         return;
       }
 
       if (!inputValue.causeOfDeathDetails || inputValue.causeOfDeathDetails.trim() === '') {
-        setAlert?.(Choten, <>상세 사인을 입력해주세요.</>, () => {
+        setAlert?.(Seori, <>상세 사인을 입력해주세요.</>, () => {
           taskTransform?.('경고', '');
         });
         return;
       }
 
       if (!inputValue.anime || inputValue.anime.trim() === '') {
-        setAlert?.(Choten, <>애니메이션을 선택해주세요.</>, () => {
+        setAlert?.(Seori, <>애니메이션을 선택해주세요.</>, () => {
           taskTransform?.('경고', '');
         });
         return;
       }
 
       if (!inputValue.phrase || inputValue.phrase.trim() === '') {
-        setAlert?.(Choten, <>고인의 명언을 입력해주세요.</>, () => {
+        setAlert?.(Seori, <>고인의 명언을 입력해주세요.</>, () => {
           taskTransform?.('경고', '');
         });
         return;
       }
 
       if (!contentIn.content || contentIn.content.trim() === '') {
-        setAlert?.(Choten, <>추모관 내용을 작성해주세요.</>, () => {
+        setAlert?.(Seori, <>추모관 내용을 작성해주세요.</>, () => {
           taskTransform?.('경고', '');
         });
         return;
@@ -126,12 +126,12 @@ const MergeBtn = ({ text, memorialId, characterId }: PropsType) => {
                     },
                     {
                       onSuccess: () => {
-                        setAlert?.(Choten, <>추모관이 성공적으로 신청되었습니다.</>, () => {
+                        setAlert?.(Seori, <>추모관이 성공적으로 신청되었습니다.</>, () => {
                           taskTransform?.('경고', '');
                         });
                         setInputValue({
                           name: '',
-                          deathReason: '자연사(自然死)' as deathType,
+                          deathReason: '사인 선택' as deathType,
                           date: '',
                           lifeCycle: 0,
                           anime: '',
@@ -149,7 +149,7 @@ const MergeBtn = ({ text, memorialId, characterId }: PropsType) => {
                       },
                       onError: () => {
                         setAlert?.(
-                          Choten,
+                          Seori,
                           <>
                             추모관 신청 중 오류가 발생했습니다.
                             <br />
@@ -165,7 +165,7 @@ const MergeBtn = ({ text, memorialId, characterId }: PropsType) => {
                 },
                 onError: () => {
                   setAlert?.(
-                    Choten,
+                    Seori,
                     <>
                       캐릭터 등록 중 오류가 발생했습니다.
                       <br />
@@ -181,7 +181,7 @@ const MergeBtn = ({ text, memorialId, characterId }: PropsType) => {
           },
           onError: () => {
             setAlert?.(
-              Choten,
+              Seori,
               <>
                 이미지 업로드 중 오류가 발생했습니다.
                 <br />
@@ -207,9 +207,37 @@ const MergeBtn = ({ text, memorialId, characterId }: PropsType) => {
                 memorialCommitId: parseInt(commitResponse.data),
               },
               {
+                onSuccess: () => {
+                  setAlert?.(
+                    Seori,
+                    <>
+                      추모관 수정 요청이 성공적으로 처리되었습니다.
+                    </>,
+                    () => {
+                      taskTransform?.('경고', '');
+                    },
+                  );
+                  setInputValue({
+                    name: '',
+                    deathReason: '사인 선택' as deathType,
+                    date: '',
+                    lifeCycle: 0,
+                    anime: '',
+                    animeId: '',
+                    age: 0,
+                    profileImage: '',
+                    phrase: '',
+                    causeOfDeathDetails: '',
+                  });
+                  setContentIn({ characterId: '', content: '' });
+                  let task = taskList.find((t) => t.name === '미리보기');
+                  if (task) removeTask(task);
+                  task = taskList.find((t) => t.name === '추모관 수정');
+                  if (task) removeTask(task);
+                },
                 onError: () => {
                   setAlert?.(
-                    Choten,
+                    Seori,
                     <>
                       수정 신청 중 오류가 발생했습니다.
                       <br />
@@ -222,27 +250,10 @@ const MergeBtn = ({ text, memorialId, characterId }: PropsType) => {
                 },
               },
             );
-            setInputValue({
-              name: '',
-              deathReason: '자연사(自然死)' as deathType,
-              date: '',
-              lifeCycle: 0,
-              anime: '',
-              animeId: '',
-              age: 0,
-              profileImage: '',
-              phrase: '',
-              causeOfDeathDetails: '',
-            });
-            setContentIn({ characterId: '', content: '' });
-            let task = taskList.find((t) => t.name === '미리보기');
-            if (task) removeTask(task);
-            task = taskList.find((t) => t.name === '추모관 수정');
-            if (task) removeTask(task);
           },
           onError: () => {
             setAlert?.(
-              Choten,
+              Seori,
               <>
                 수정 내용 저장 중 오류가 발생했습니다.
                 <br />

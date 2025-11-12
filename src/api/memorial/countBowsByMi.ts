@@ -7,7 +7,7 @@ type BowData = {
   message: string;
   data: number;
 };
-const memorialGet = async (memorialId: number): Promise<void> => {
+const memorialGet = async (memorialId: number): Promise<BowData> => {
   const response = await api.get(`${memorial}/bow/count/${memorialId}`, {
     withCredentials: true,
   });
@@ -17,14 +17,11 @@ const memorialGet = async (memorialId: number): Promise<void> => {
 export const useMemorialGet = (
   setTotalBow: React.Dispatch<React.SetStateAction<number | null>>,
 ) => {
-  return useMutation<BowData, Error, number>({
+  return useMutation<BowData, Error, number, unknown>({
     mutationFn: memorialGet,
     onSuccess: (data: BowData) => {
       setTotalBow(data.data);
-      // console.log(data);
-    },
-    onError: (err: Error) => {
-      // console.log(err);
+      console.log('절 갯수?????', data);
     },
   });
 };
