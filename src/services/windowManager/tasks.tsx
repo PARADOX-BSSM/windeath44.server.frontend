@@ -5,6 +5,7 @@ import EmailChack from '@/applications/utility/emailCheck';
 import Auth from '@/applications/utility/auth';
 import { TaskType } from '@/modules/typeModule.tsx';
 import PasswordChange from '@/applications/utility/passwordChange';
+import FindId from '@/applications/utility/findId';
 import computer from '@/assets/appIcons/my_computer.svg';
 
 type SetIsLogIned = React.Dispatch<React.SetStateAction<string>>;
@@ -20,7 +21,8 @@ export function getTaskCreators(
     signUp: TaskType,
     emailChack: TaskType,
     auth: TaskType,
-    passwordChange: TaskType;
+    passwordChange: TaskType,
+    findId: TaskType;
 
   const changeToSignUp = () => {
     addTask(signUp);
@@ -31,6 +33,7 @@ export function getTaskCreators(
     removeTask(signUp);
     removeTask(emailChack);
     removeTask(passwordChange);
+    removeTask(findId);
   };
   const changeToEmailCheck = () => {
     addTask(emailChack);
@@ -45,13 +48,17 @@ export function getTaskCreators(
     addTask(passwordChange);
     removeTask(auth);
   };
-
+  const changeToFindId = () => {
+    addTask(findId);
+    removeTask(logIn);
+  };
   logIn = {
     component: (
       <Suspense fallback={null}>
         <LogIn
           changeToSignUp={changeToSignUp}
           changeToEmailCheck={changeToEmailCheck}
+          changeToFindId={changeToFindId}
         />
       </Suspense>
     ),
@@ -154,6 +161,25 @@ export function getTaskCreators(
     },
     visible: false,
   };
+  findId = {
+    component: (
+      <Suspense fallback={null}>
+        <FindId changeToLogIn={changeToLogIn} />
+      </Suspense>
+    ),
+    type: 'App',
+    id: 6,
+    name: '아이디 찾기',
+    layer: undefined,
+    appSetup: {
+      Image: computer,
+      minWidth: 51,
+      minHeight: 33,
+      setUpWidth: 800,
+      setUpHeight: 508,
+    },
+    visible: false,
+  };
 
-  return { logIn, signUp, emailChack, auth, passwordChange };
+  return { logIn, signUp, emailChack, auth, passwordChange, findId };
 }
