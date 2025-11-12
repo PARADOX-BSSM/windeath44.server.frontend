@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import * as _ from './style.ts';
 import Logo from '@/assets/windeath44.svg';
-import Choten from '@/assets/profile/choten.svg';
 import Inputs from '@/applications/components/inputs';
 import MemorialBtn from '@/applications/components/memorialBtn';
 import { useAtomValue } from 'jotai';
 import { alerterAtom } from '@/atoms/alerter';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
 import { useSendUserId } from '@/api/auth/sendUserId.ts';
+import Seori from '@/assets/sulkkagi/black_stone.svg';
+import Loading from '@/applications/components/loading';
 
 interface Props {
   changeToLogIn: () => void;
@@ -21,14 +22,14 @@ const FindId = ({ changeToLogIn }: Props) => {
 
   const checkEmail = async (e: React.MouseEvent<HTMLButtonElement>) => {
     if (email.length === 0) {
-      setAlert?.(Choten, <>이메일을 입력해주세요.</>, () => {
+      setAlert?.(Seori, <>이메일을 입력해주세요.</>, () => {
         taskTransform?.('경고', '');
       });
       return;
     }
     if (!email.includes('@')) {
       setAlert?.(
-        Choten,
+        Seori,
         <>
           이메일 형식이 잘못되었습니다.
           <br />
@@ -45,22 +46,22 @@ const FindId = ({ changeToLogIn }: Props) => {
       { email },
       {
         onSuccess: () => {
+          changeToLogIn();
           setAlert?.(
-            Choten,
+            Seori,
             <>
-              이메일 전송에 실패했습니다.
+              입력하신 이메일로 아이디를 발송했습니다.
               <br />
-              다시 시도해 주세요.
+              이메일함을 확인해 주세요.
             </>,
             () => {
               taskTransform?.('경고', '');
             },
           );
-          changeToLogIn();
         },
         onError: () => {
           setAlert?.(
-            Choten,
+            Seori,
             <>
               이메일 전송에 실패했습니다.
               <br />
@@ -79,6 +80,9 @@ const FindId = ({ changeToLogIn }: Props) => {
   const buttonHeight = '42px';
   const buttonFontSize = '20px';
 
+  if (mutationSendUserId.isPending) {
+    return <Loading />;
+  }
   return (
     <_.tempMain>
       <_.tempImage>
