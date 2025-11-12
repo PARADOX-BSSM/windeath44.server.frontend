@@ -1,6 +1,5 @@
 import * as _ from '@/applications/applicationList/bow/style.ts';
 import Table from '@/assets/bow/table.svg';
-// import { useMemorialBow } from '@/api/memorial/memorialBow.ts';
 import { useEffect, useState } from 'react';
 import { useMemorialGet as useMemorialGetBowCount } from '@/api/memorial/countBowsByMi.ts';
 import { useMemorialGet } from '@/api/memorial/memorialGet.ts';
@@ -12,8 +11,10 @@ import { alerterAtom } from '@/atoms/alerter';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
 import Choten from '@/assets/profile/choten.svg';
 import { getCookie } from '@/api/auth/cookie.ts';
-import { useGetBowByUserId } from '@/api/memorial/memorialBow.ts';
+import { useGetBowByUserId, useMemorialBow } from '@/api/memorial/memorialBow.ts';
 import { useGetUserMutation } from '@/api/user/getUser.ts';
+import Loading from '@/applications/components/loading';
+import Seori from '@/assets/sulkkagi/black_stone.svg';
 
 interface bowProps {
   memorialId: number;
@@ -32,10 +33,11 @@ const Bow = ({ memorialId }: bowProps) => {
   const { mutate: getUser, data: userData } = useGetUserMutation();
   const userId = userData?.data?.userId || 'user';
   const token = getCookie('access_token');
+  const memorialBowMutation = useMemorialBow();
   const addBow = () => {
     if (!token && setAlert) {
       setAlert(
-        Choten,
+        Seori,
         <>
           게스트는 절을 할 수 없습니다.
           <br />
@@ -46,28 +48,43 @@ const Bow = ({ memorialId }: bowProps) => {
         },
       );
     } else {
-      mutationMemorialBows.mutate(
-        { memorialId, userId },
-        {
-          onSuccess: () => {
-            // 서버 응답 성공 시에만 UI 숫자 증가
-            setTotalBow((prev) => (prev ? prev + 1 : 1));
-          },
-          onError: () => {
-            (setAlert ?? userId)(
-              Choten,
-              <>
-                절을 하지 못했습니다.
-                <br />
-                절을 한 번 한 후 24시간이 지나야 다시 할 수 있습니다.
-              </>,
-              () => {
-                taskTransform?.('경고', '로그인');
-              },
-            );
-          },
+      memorialBowMutation.mutate(memorialId, {
+        onError: (error) => {
+          const remainTime = error.response?.data.remainTime;
+          const formatRemainTime = (timeStr?: string) => {
+            if (!timeStr) return '';
+            const [hours, minutes] = timeStr.split(':');
+            return `${Number(hours)}시 ${Number(minutes)}분`;
+          };
+          (setAlert ?? userId)(
+            Seori,
+            <>
+              아직 절을 할 수 없습니다
+              <br />
+              절은 24시간마다 할 수 있습니다.
+              <br />* 남은 시간: {formatRemainTime(remainTime)}
+            </>,
+            () => {
+              taskTransform?.('경고', '');
+            },
+          );
         },
-      );
+        onSuccess: () => {
+          // 서버 응답 성공 시에만 UI 숫자 증가
+          (setAlert ?? userId)(
+            Seori,
+            <>
+              절하기를 성공하였습니다.
+              <br />
+              절하기를 한 번 한 후엔 24시간이 지나야 다시 할 수 있습니다.
+            </>,
+            () => {
+              taskTransform?.('경고', '');
+            },
+          );
+          setTotalBow((prev) => (prev ? prev + 1 : 1));
+        },
+      });
     }
   };
   useEffect(() => {
@@ -76,6 +93,7 @@ const Bow = ({ memorialId }: bowProps) => {
   useEffect(() => {
     // Bow count 가져오기
     mutationMemorialGetBowCount.mutate(memorialId, {
+      onSuccess: () => {},
       onError: () => {
         setAlert?.(
           Choten,
@@ -90,7 +108,6 @@ const Bow = ({ memorialId }: bowProps) => {
         );
       },
     });
-
     // Memorial 정보 가져오기
     mutationMemorialGet.mutate(memorialId, {
       onSuccess: (data) => {
@@ -127,14 +144,14 @@ const Bow = ({ memorialId }: bowProps) => {
         );
       },
     });
-  }, [memorialId]); // memorialId만 의존성으로 사용
-  // console.log(totalBow);
-
+  }, [memorialId]);
   // 캐릭터 데이터가 로드되기 전에는 렌더링하지 않음
   if (!characterData) {
     return null;
   }
-
+  if (mutationMemorialBows.isPending || memorialBowMutation.isPending) {
+    return <Loading />;
+  }
   return (
     <_.main>
       <_.nbow>
