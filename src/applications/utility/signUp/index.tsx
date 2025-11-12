@@ -226,7 +226,7 @@ const SignUp = ({ changeToLogIn }: Props) => {
     }
   };
   useEffect(() => {
-    if (!click || timeLeft <= 0) return;
+    if (!click || timeLeft <= 0 || verity) return;
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
@@ -237,7 +237,7 @@ const SignUp = ({ changeToLogIn }: Props) => {
       });
     }, 1000);
     return () => clearInterval(timer);
-  }, [click]);
+  }, [click, verity, timeLeft]);
   const formatTime = (seconds: number): string => {
     const min = Math.floor(seconds / 60);
     const sec = seconds % 60;
