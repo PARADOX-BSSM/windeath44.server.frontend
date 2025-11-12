@@ -164,9 +164,7 @@ export function getTaskCreators(
   findId = {
     component: (
       <Suspense fallback={null}>
-        <FindId
-          changeToLogIn={changeToLogIn}
-        />
+        <FindId changeToLogIn={changeToLogIn} />
       </Suspense>
     ),
     type: 'App',
@@ -174,14 +172,14 @@ export function getTaskCreators(
     name: '아이디 찾기',
     layer: undefined,
     appSetup: {
-      Image: myComputer,
+      Image: computer,
       minWidth: 51,
       minHeight: 33,
       setUpWidth: 800,
       setUpHeight: 508,
     },
     visible: false,
-  }
+  };
 
-  return { logIn, signUp, emailChack, auth, passwordChange };
+  return { logIn, signUp, emailChack, auth, passwordChange, findId };
 }

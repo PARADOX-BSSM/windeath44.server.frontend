@@ -21,13 +21,15 @@ const FindId = ({ changeToLogIn }: Props) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
 
   const checkEmail = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     if (email.length === 0) {
       setAlert?.(Seori, <>이메일을 입력해주세요.</>, () => {
         taskTransform?.('경고', '');
       });
       return;
     }
-    if (!email.includes('@')) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
       setAlert?.(
         Seori,
         <>
@@ -41,7 +43,6 @@ const FindId = ({ changeToLogIn }: Props) => {
       );
       return;
     }
-    e.preventDefault();
     mutationSendUserId.mutate(
       { email },
       {
