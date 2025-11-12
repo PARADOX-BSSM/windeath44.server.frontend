@@ -9,7 +9,6 @@ import Mourners from '@/applications/components/mourners';
 import { useAtom, useAtomValue } from 'jotai';
 import { alerterAtom } from '@/atoms/alerter';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
-import Choten from '@/assets/profile/choten.svg';
 import { getCookie } from '@/api/auth/cookie.ts';
 import { useGetBowByUserId, useMemorialBow } from '@/api/memorial/memorialBow.ts';
 import { useGetUserMutation } from '@/api/user/getUser.ts';
@@ -96,7 +95,7 @@ const Bow = ({ memorialId }: bowProps) => {
       onSuccess: () => {},
       onError: () => {
         setAlert?.(
-          Choten,
+          Seori,
           <>
             정보를 가져오는 중 문제가 발생했습니다.
             <br />
@@ -116,7 +115,7 @@ const Bow = ({ memorialId }: bowProps) => {
           mutationGetCharacter.mutate(data.data.characterId, {
             onError: () => {
               setAlert?.(
-                Choten,
+                Seori,
                 <>
                   캐릭터 정보를 가져오는 중 문제가 발생했습니다.
                   <br />
@@ -132,7 +131,7 @@ const Bow = ({ memorialId }: bowProps) => {
       },
       onError: () => {
         setAlert?.(
-          Choten,
+          Seori,
           <>
             추모관 정보를 가져오는 중 문제가 발생했습니다.
             <br />
