@@ -18,7 +18,7 @@ const GameFrame = styled.iframe`
 
 const RhythmGame = () => {
   // Use R2 URL if configured (for production), fallback to local path (for development)
-  const gameUrl = 'https://windeath44-server-rhythmgame.pages.dev/';
+  const gameUrl = 'https://rhythm.windeath44.wiki/';
 
   return (
     <Container>
