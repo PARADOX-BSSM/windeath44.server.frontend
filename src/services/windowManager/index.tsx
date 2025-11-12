@@ -42,7 +42,6 @@ const WindowManager = () => {
   const setNotification = useAtomValue(notificationAtom);
   const setNotificationList = useSetAtom(notificationListAtom);
   const [settings] = useAtom(settingsAtom);
-  const [settings] = useAtom(settingsAtom);
 
   const [taskList, addTask, removeTask, setVirtualWindowPosition] = useProcessManager();
   const [, , , addTaskToDesktop] = useVirtualProcessManager();
