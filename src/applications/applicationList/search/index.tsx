@@ -220,6 +220,19 @@ const Search = () => {
             />
             <_.Paging>
               <MemorialBtn
+                name="1"
+                selected={false}
+                type="menu"
+                onClick={() => {
+                  setPageNumber(1);
+                }}
+                active={true}
+                width="32px"
+                height="32px"
+                fontSize="16px"
+              />
+              <_.PagingGap>...</_.PagingGap>
+              <MemorialBtn
                 name={`${pageNumber - 1}`}
                 selected={false}
                 type={pageNumber === 1 ? 'hidden' : 'menu'}
