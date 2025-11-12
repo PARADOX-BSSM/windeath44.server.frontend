@@ -10,7 +10,7 @@ const memorialBow = async (memorialId: number) => {
 };
 
 export const useMemorialBow = () => {
-  return useMutation<unknown, AxiosError<{ remainTime?: string }>, number>(({
+  return useMutation<unknown, AxiosError<{ remainTime?: string }>, number>({
     mutationFn: memorialBow,
   });
 };
