@@ -307,13 +307,14 @@ const SignUp = ({ changeToLogIn }: Props) => {
                 setValue={setCheck}
                 type={'text'}
                 width={'100%'}
+                disabled={verity}
               />
               <div style={{ fontSize: '0.75rem' }}>{formatTime(timeLeft)}</div>
               <MemorialBtn
                 name="확인"
                 onClick={verifyCode}
                 type="submit"
-                active={true}
+                active={!verity}
                 height="34px"
                 fontSize={'16px'}
               />
