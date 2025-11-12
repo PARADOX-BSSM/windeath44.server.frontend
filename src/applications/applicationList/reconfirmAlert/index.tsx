@@ -4,6 +4,7 @@ import { useAtom, useAtomValue } from 'jotai';
 import { focusAtom } from '@/atoms/windowManager.ts';
 import { useEffect, useState } from 'react';
 import { taskTransformerAtom } from '@/atoms/taskTransformer.ts';
+import Inputs from '@/applications/components/inputs';
 
 interface ReconfirmAlertProps {
   icon: string;
@@ -14,7 +15,7 @@ interface ReconfirmAlertProps {
 
 const ReconfirmAlert = ({ icon, confirmText, onClick }: ReconfirmAlertProps) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
-  const [confirm, setConfirm] = useState<string>();
+  const [confirm, setConfirm] = useState<string>('');
   const [discord, setDiscord] = useState<boolean>(false);
   const [, setFocus] = useAtom(focusAtom);
   useEffect(() => {
@@ -29,6 +30,7 @@ const ReconfirmAlert = ({ icon, confirmText, onClick }: ReconfirmAlertProps) => 
   const handleConfirm = () => {
     if (confirm !== confirmText) {
       setDiscord(true);
+      return;
     }
     setDiscord(false);
     onClick();
@@ -45,9 +47,12 @@ const ReconfirmAlert = ({ icon, confirmText, onClick }: ReconfirmAlertProps) => 
             ></_.icon>
           </_.place>
           <div>{`계속하려면 아래에 "${confirmText}"를 입력해주세요.`}</div>
-          <input
+          <Inputs
             value={confirm}
-            onChange={(e) => setConfirm(e.target.value)}
+            type="text"
+            setValue={setConfirm}
+            flex={true}
+            width={'70%'}
           />
           {discord && <div>잘못된 단어를 입력하셨습니다.</div>}
           <_.btnContainer>

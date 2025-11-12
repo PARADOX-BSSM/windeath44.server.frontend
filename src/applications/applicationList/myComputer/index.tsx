@@ -278,26 +278,23 @@ const MyComputer = () => {
   };
   const handleDeleteAccount = () => {
     setConfirmAlert?.(Seori, '탈퇴', () => {
-      console.log('클릭클릭ㅋ에에에에ㅔ에ㅔㅔㅇ');
-      taskTransform?.('재확인', '');
-      // deleteAccountMutation.mutate(userData?.data?.userId, {
-      //   onSuccess: () => {
-      //     setAlert?.(Seori, <>성공적으로 탈퇴되었습니다.</>, () => {
-      //       taskTransform?.('경고', '');
-      //     });
-      //     setIsLogIned('false');
-      //     sessionStorage.setItem('hasBootedSession', 'false');
-      //     localStorage.removeItem('isLogIned');
-      //     deleteCookie('access_token');
-      //     location.reload();
-      //   },
-      //   onError: (error) => {
-      //     console.error('계정탈퇴 실패', error);
-      //     setAlert?.(Seori, <>계정삭제 요청 중 오류가 발생했습니다.</>, () => {
-      //       taskTransform?.('경고', '');
-      //     });
-      //   },
-      // });
+      deleteAccountMutation.mutate(userData?.data?.userId, {
+        onSuccess: () => {
+          taskTransform?.('재확인', '');
+          setIsLogIned('false');
+          sessionStorage.setItem('hasBootedSession', 'false');
+          localStorage.removeItem('isLogIned');
+          deleteCookie('access_token');
+          location.reload();
+        },
+        onError: (error) => {
+          console.error('계정탈퇴 실패', error);
+          setAlert?.(Seori, <>계정삭제 요청 중 오류가 발생했습니다.</>, () => {
+            taskTransform?.('재확인', '');
+            taskTransform?.('경고', '');
+          });
+        },
+      });
     });
   };
 
