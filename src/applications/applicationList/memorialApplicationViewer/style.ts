@@ -425,3 +425,48 @@ export const ModalButton = styled.button<{ variant?: 'primary' | 'secondary' }>`
     cursor: not-allowed;
   }
 `;
+
+export const ErrorContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 32px;
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
+  background: #fff;
+  border: 1px black solid;
+`;
+
+export const ErrorMessage = styled.p`
+  color: #2e2e2e;
+  text-align: center;
+  font-family: Galmuri11;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.6;
+`;
+
+export const ErrorButton = styled.button`
+  display: flex;
+  padding: 12px 24px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  background: var(--Stroke, #e774dd);
+  color: #fff;
+  font-family: Galmuri11;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  border: none;
+  cursor: none;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background: var(--off, #fd51a7);
+  }
+`;

@@ -187,3 +187,47 @@ export const ViewRejectedReasonBtn = styled.button`
     opacity: 0.7;
   }
 `;
+
+export const EditBtn = styled.button`
+  color: var(--Stroke, #e774dd);
+  font-family: Galmuri11;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  cursor: none;
+
+  &:hover:not(:disabled) {
+    opacity: 0.7;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+`;
+
+export const DeleteBtn = styled.button`
+  color: #f44336;
+  font-family: Galmuri11;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  cursor: none;
+
+  &:hover:not(:disabled) {
+    opacity: 0.7;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+`;
