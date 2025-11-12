@@ -15,6 +15,7 @@ import chatbotRejection from '@/assets/appIcons/ChatBotRejection.svg';
 import game from '@/assets/appIcons/game.svg';
 import sulkkagi from '@/assets/sulkkagi/black_stone.svg';
 import book from '@/assets/appIcons/book.svg';
+import memorial from '@/assets/appIcons/memorial.svg';
 
 import Sulkkagi from '../applicationList/sulkkagi';
 import SulkkagiApproach from '../applicationList/sulkkagiApproach';
@@ -910,7 +911,7 @@ const useApps = (): TaskType[] => {
       name: '추모관 신청 목록',
       layer: undefined,
       appSetup: {
-        Image: search,
+        Image: memorial,
         minWidth: 580,
         minHeight: 420,
         setUpWidth: 890,
