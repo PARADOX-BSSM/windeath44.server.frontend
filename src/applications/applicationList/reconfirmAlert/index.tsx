@@ -45,16 +45,19 @@ const ReconfirmAlert = ({ icon, confirmText, onClick }: ReconfirmAlertProps) => 
               src={icon}
               alt="아이콘"
             ></_.icon>
+            <_.inputSet>
+              <_.text>{`계속하려면 아래에 "${confirmText}"를 입력해주세요.`}</_.text>
+              <Inputs
+                value={confirm}
+                type="text"
+                setValue={setConfirm}
+                flex={true}
+                width={'100%'}
+              />
+              {discord && <_.alert>잘못된 단어를 입력하셨습니다.</_.alert>}
+            </_.inputSet>
           </_.place>
-          <div>{`계속하려면 아래에 "${confirmText}"를 입력해주세요.`}</div>
-          <Inputs
-            value={confirm}
-            type="text"
-            setValue={setConfirm}
-            flex={true}
-            width={'70%'}
-          />
-          {discord && <div>잘못된 단어를 입력하셨습니다.</div>}
+
           <_.btnContainer>
             <MemorialBtn
               name={'확인'}
