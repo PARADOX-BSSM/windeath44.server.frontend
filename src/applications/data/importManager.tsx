@@ -119,6 +119,9 @@ const NotificationViewer = lazy(
 );
 
 const Settings = lazy(() => import('@/applications/applicationList/settings/index.tsx'));
+const ReconfirmAlert = lazy(
+  () => import('@/applications/applicationList/reconfirmAlert/index.tsx'),
+);
 
 //Application Import 형식 예시
 /*
@@ -977,6 +980,30 @@ const useApps = (): TaskType[] => {
         minHeight: 400,
         setUpWidth: 800,
         setUpHeight: 480,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <ReconfirmAlert
+            icon=""
+            text={<></>}
+            confirmText=""
+            onClick={() => undefined}
+          />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2254,
+      name: '재확인',
+      layer: undefined,
+      appSetup: {
+        Image: setting,
+        minWidth: 690,
+        minHeight: 250,
+        setUpWidth: 690,
+        setUpHeight: 250,
       },
       visible: false,
     },
