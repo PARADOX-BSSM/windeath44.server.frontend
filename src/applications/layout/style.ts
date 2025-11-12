@@ -88,10 +88,10 @@ export const TitleContainer = styled.div`
 
 export const Title = styled.p`
   color: #e774dd;
-  font-family: DOSIyagiBoldface;
+  font-family: DosStory;
   font-size: ${24 / 16}rem;
   font-style: normal;
-  font-weight: 500;
+  font-weight: 700;
   line-height: normal;
   -webkit-user-select: none;
   -moz-user-select: none;

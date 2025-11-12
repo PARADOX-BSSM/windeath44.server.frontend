@@ -3,13 +3,14 @@ import Logo from '@/assets/windeath44.svg';
 import Choten from '@/assets/profile/choten.svg';
 import Inputs from '@/applications/components/inputs';
 import { useAtom, useAtomValue } from 'jotai';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useLogIn } from '@/api/auth/logIn';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
 import MemorialBtn from '@/applications/components/memorialBtn';
 import { isLogInedAtom } from '@/atoms/windowManager';
 import { alerterAtom } from '@/atoms/alerter';
 import { AxiosError } from 'axios';
+import Loading from '@/applications/components/loading';
 type Props = {
   changeToSignUp: () => void;
   changeToEmailCheck: () => void;
@@ -46,27 +47,15 @@ const LogIn = ({ changeToSignUp, changeToEmailCheck , changeToFindId}: Props) =>
     e.preventDefault();
     const id = userId;
     if (id.length === 0) {
-      setAlert?.(
-        Choten,
-        <>
-          아이디를 입력하지 않았습니다.
-        </>,
-        () => {
-          taskTransform?.('경고', '');
-        },
-      );
+      setAlert?.(Choten, <>아이디를 입력하지 않았습니다.</>, () => {
+        taskTransform?.('경고', '');
+      });
       return;
     }
     if (password.length === 0) {
-      setAlert?.(
-        Choten,
-        <>
-          비밀번호를 입력하지 않았습니다.
-        </>,
-        () => {
-          taskTransform?.('경고', '');
-        },
-      );
+      setAlert?.(Choten, <>비밀번호를 입력하지 않았습니다.</>, () => {
+        taskTransform?.('경고', '');
+      });
       return;
     }
     logInMutation.mutate(
@@ -130,6 +119,12 @@ const LogIn = ({ changeToSignUp, changeToEmailCheck , changeToFindId}: Props) =>
   const buttonFontSize = '20px';
   return (
     <_.tempMain>
+      {logInMutation.isPending && (
+        <Loading
+          text="로그인 중..."
+          overlay={true}
+        />
+      )}
       <_.tempImage>
         <img
           src={Logo}

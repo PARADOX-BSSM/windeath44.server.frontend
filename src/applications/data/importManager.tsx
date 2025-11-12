@@ -14,6 +14,8 @@ import chatbot from '@/assets/appIcons/ChatBot.svg';
 import chatbotRejection from '@/assets/appIcons/ChatBotRejection.svg';
 import game from '@/assets/appIcons/game.svg';
 import sulkkagi from '@/assets/sulkkagi/black_stone.svg';
+import book from '@/assets/appIcons/book.svg';
+import memorial from '@/assets/appIcons/memorial.svg';
 
 import Sulkkagi from '../applicationList/sulkkagi';
 import SulkkagiApproach from '../applicationList/sulkkagiApproach';
@@ -282,7 +284,7 @@ const useApps = (): TaskType[] => {
       name: '추모관 기록',
       layer: undefined,
       appSetup: {
-        Image: 'default',
+        Image: search,
         minWidth: 580,
         minHeight: 420,
         setUpWidth: 890,
@@ -392,7 +394,7 @@ const useApps = (): TaskType[] => {
       name: '절하기',
       layer: undefined,
       appSetup: {
-        Image: 'default',
+        Image: search,
         minWidth: 580,
         minHeight: 420,
         setUpWidth: 850,
@@ -909,7 +911,7 @@ const useApps = (): TaskType[] => {
       name: '추모관 신청 목록',
       layer: undefined,
       appSetup: {
-        Image: search,
+        Image: memorial,
         minWidth: 580,
         minHeight: 420,
         setUpWidth: 890,
@@ -953,13 +955,13 @@ const useApps = (): TaskType[] => {
       name: '공지사항',
       layer: undefined,
       appSetup: {
-        Image: setting,
+        Image: book,
         minWidth: 600,
         minHeight: 400,
         setUpWidth: 800,
         setUpHeight: 600,
       },
-      visible: false,
+      visible: true,
     },
     {
       component: (
@@ -972,7 +974,7 @@ const useApps = (): TaskType[] => {
       name: '공지사항 뷰어',
       layer: undefined,
       appSetup: {
-        Image: setting,
+        Image: book,
         minWidth: 600,
         minHeight: 400,
         setUpWidth: 800,

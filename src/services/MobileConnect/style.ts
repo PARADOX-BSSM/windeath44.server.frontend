@@ -34,6 +34,15 @@ export const informationSet = styled.div`
   justify-content: center;
   align-items: center;
 `;
+export const Hyperlink = styled.a`
+  color: var(--stroke, #e774dd);
+  font-family: 'Galmuri11';
+  font-size: 28px;
+  text-decoration: underline;
+  &:hover {
+    text-decoration: underline;
+  }
+`;
 export const ErrorCode = styled.div`
   font-family: 'Galmuri11';
   font-weight: bold;

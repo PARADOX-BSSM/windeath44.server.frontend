@@ -35,7 +35,7 @@ const Booting = () => {
             alt={'Window'}
           />
           <_.Title>
-            <_.Sub>Microsoft</_.Sub>
+            <_.Sub>PARADOX</_.Sub>
             <_.MainTexts>
               <_.Text>Windeath</_.Text>
               <_.Number>44</_.Number>

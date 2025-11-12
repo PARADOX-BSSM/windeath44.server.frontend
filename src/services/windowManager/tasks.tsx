@@ -4,9 +4,9 @@ import SignUp from '@/applications/utility/signUp';
 import EmailChack from '@/applications/utility/emailCheck';
 import Auth from '@/applications/utility/auth';
 import { TaskType } from '@/modules/typeModule.tsx';
-import myComputer from '@/assets/appIcons/my_computer.svg';
 import PasswordChange from '@/applications/utility/passwordChange';
 import FindId from '@/applications/utility/findId';
+import computer from '@/assets/appIcons/my_computer.svg';
 
 type SetIsLogIned = React.Dispatch<React.SetStateAction<string>>;
 type AddTask = (task: TaskType) => void;
@@ -67,7 +67,7 @@ export function getTaskCreators(
     name: '로그인',
     layer: undefined,
     appSetup: {
-      Image: myComputer,
+      Image: computer,
       minWidth: 51,
       minHeight: 33,
       setUpWidth: 800,
@@ -87,7 +87,7 @@ export function getTaskCreators(
     name: '회원가입',
     layer: undefined,
     appSetup: {
-      Image: 'default',
+      Image: computer,
       minWidth: 51,
       minHeight: 45,
       setUpWidth: 800,
@@ -110,7 +110,7 @@ export function getTaskCreators(
     name: '이메일 인증',
     layer: undefined,
     appSetup: {
-      Image: 'default',
+      Image: computer,
       minWidth: 51,
       minHeight: 33,
       setUpWidth: 800,
@@ -133,7 +133,7 @@ export function getTaskCreators(
     name: '인증코드 입력',
     layer: undefined,
     appSetup: {
-      Image: 'default',
+      Image: computer,
       minWidth: 51,
       minHeight: 33,
       setUpWidth: 800,
@@ -153,7 +153,7 @@ export function getTaskCreators(
     name: '비밀번호 재설정',
     layer: undefined,
     appSetup: {
-      Image: 'default',
+      Image: computer,
       minWidth: 51,
       minHeight: 33,
       setUpWidth: 800,
