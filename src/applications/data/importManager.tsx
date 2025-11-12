@@ -282,7 +282,7 @@ const useApps = (): TaskType[] => {
       name: '추모관 기록',
       layer: undefined,
       appSetup: {
-        Image: 'default',
+        Image: search,
         minWidth: 580,
         minHeight: 420,
         setUpWidth: 890,
@@ -392,7 +392,7 @@ const useApps = (): TaskType[] => {
       name: '절하기',
       layer: undefined,
       appSetup: {
-        Image: 'default',
+        Image: search,
         minWidth: 580,
         minHeight: 420,
         setUpWidth: 850,

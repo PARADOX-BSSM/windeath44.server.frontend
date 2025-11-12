@@ -179,6 +179,7 @@ export const ChatArea = styled.div`
 `;
 
 export const ChatMessagesContainer = styled.div`
+  flex: 1;
   background: var(--chatbot-background-overlay);
   display: flex;
   flex-direction: column;

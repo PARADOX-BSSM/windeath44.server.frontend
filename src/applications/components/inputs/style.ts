@@ -29,6 +29,12 @@ export const inputs = styled.input<{ width: string }>`
   border-width: 1px;
   box-sizing: border-box;
   cursor: none;
+
+  &:disabled {
+    background-color: #f5f5f5;
+    color: #999;
+    cursor: not-allowed;
+  }
 `;
 
 export const Shadow = styled.div<{ width: string }>`

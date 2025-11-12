@@ -47,8 +47,9 @@ export const UserNameSet = styled.div`
   gap: 0.25rem;
 `;
 export const UserName = styled.span`
-  font-family: DOSIyagiBoldface;
+  font-family: DosStory;
   font-size: 1rem;
+  font-weight: 700;
 `;
 export const UserRoll = styled.span`
   font-family: Galmuri11;
