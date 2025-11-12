@@ -6,6 +6,7 @@ import { useAtom, useAtomValue } from 'jotai';
 // import { useEffect } from 'react';
 import { memorialIdAtom } from '@/atoms/memorialManager.ts';
 import MemorialObject from '@/applications/components/memorialObject';
+import Loading from '@/applications/components/loading';
 
 interface ViewerProps {
   isMemorialLoading?: boolean;
@@ -40,7 +41,7 @@ const Viewer = ({
           <_.inputs>
             <_.List>
               {isMemorialLoading ? (
-                <p>불러오는 중...</p>
+                <Loading text="추모관 목록을 불러오는 중..." imageSize="100px" />
               ) : (
                 characters?.map((character: any) => {
                   const relatedMemorials =
