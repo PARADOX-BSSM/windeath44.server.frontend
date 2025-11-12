@@ -14,8 +14,9 @@ import Loading from '@/applications/components/loading';
 type Props = {
   changeToSignUp: () => void;
   changeToEmailCheck: () => void;
+  changeToFindId: () => void;
 };
-const LogIn = ({ changeToSignUp, changeToEmailCheck }: Props) => {
+const LogIn = ({ changeToSignUp, changeToEmailCheck , changeToFindId}: Props) => {
   const [userId, setUserId] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const logInMutation = useLogIn();
@@ -157,6 +158,15 @@ const LogIn = ({ changeToSignUp, changeToEmailCheck }: Props) => {
           <MemorialBtn
             name="회원가입"
             onClick={() => changeToSignUp()}
+            type="submit"
+            width={buttonWidth}
+            height={buttonHeight}
+            fontSize={buttonFontSize}
+            active={true}
+          />
+          <MemorialBtn
+            name="아이디 찾기"
+            onClick={() => changeToFindId()}
             type="submit"
             width={buttonWidth}
             height={buttonHeight}

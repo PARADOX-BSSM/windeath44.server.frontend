@@ -2,14 +2,13 @@ import * as _ from '@/applications/applicationList/bow/style.ts';
 import Table from '@/assets/bow/table.svg';
 import { useEffect, useState } from 'react';
 import { useMemorialGet as useMemorialGetBowCount } from '@/api/memorial/countBowsByMi.ts';
-import { useMemorialGet } from '@/api/memorial/memorialGet.ts';
+import { memorialDataResponse, useMemorialGet } from '@/api/memorial/memorialGet.ts';
 import { useGetCharacter, type CharacterData } from '@/api/anime/getCharacter.ts';
 import type { memorialData } from '@/api/memorial/memorialGet.ts';
 import Mourners from '@/applications/components/mourners';
 import { useAtom, useAtomValue } from 'jotai';
 import { alerterAtom } from '@/atoms/alerter';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
-import Choten from '@/assets/profile/choten.svg';
 import { getCookie } from '@/api/auth/cookie.ts';
 import { useGetBowByUserId, useMemorialBow } from '@/api/memorial/memorialBow.ts';
 import { useGetUserMutation } from '@/api/user/getUser.ts';
@@ -91,23 +90,6 @@ const Bow = ({ memorialId }: bowProps) => {
     getUser();
   }, [getUser]);
   useEffect(() => {
-    // Bow count 가져오기
-    mutationMemorialGetBowCount.mutate(memorialId, {
-      onSuccess: () => {},
-      onError: () => {
-        setAlert?.(
-          Choten,
-          <>
-            정보를 가져오는 중 문제가 발생했습니다.
-            <br />
-            잠시 후 다시 시도해 주세요.
-          </>,
-          () => {
-            taskTransform?.('경고', '');
-          },
-        );
-      },
-    });
     // Memorial 정보 가져오기
     mutationMemorialGet.mutate(memorialId, {
       onSuccess: (data) => {
@@ -116,7 +98,7 @@ const Bow = ({ memorialId }: bowProps) => {
           mutationGetCharacter.mutate(data.data.characterId, {
             onError: () => {
               setAlert?.(
-                Choten,
+                Seori,
                 <>
                   캐릭터 정보를 가져오는 중 문제가 발생했습니다.
                   <br />
@@ -132,7 +114,7 @@ const Bow = ({ memorialId }: bowProps) => {
       },
       onError: () => {
         setAlert?.(
-          Choten,
+          Seori,
           <>
             추모관 정보를 가져오는 중 문제가 발생했습니다.
             <br />
@@ -155,7 +137,7 @@ const Bow = ({ memorialId }: bowProps) => {
   return (
     <_.main>
       <_.nbow>
-        <div>절하고 간 사람 : {totalBow ? totalBow : '0'}명</div>
+        <div>절하고 간 사람 : {memorialData?.bowCount ? memorialData.bowCount : '0'}명</div>
       </_.nbow>
       <_.place>
         <_.imgs>
