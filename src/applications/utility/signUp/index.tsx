@@ -287,12 +287,13 @@ const SignUp = ({ changeToLogIn }: Props) => {
                 type={'text'}
                 width={'100%'}
                 placeHold={'example@email.com'}
+                disabled={verity}
               />
               <MemorialBtn
                 name={verity ? '인증완료' : click ? '코드 재전송' : '코드전송'}
                 onClick={sendEmail}
                 type="submit"
-                active={true}
+                active={!verity}
                 height="34px"
                 fontSize={'16px'}
               />
