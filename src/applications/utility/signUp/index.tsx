@@ -1,6 +1,7 @@
 import * as _ from './style';
 import Logo from '@/assets/windeath44.svg';
 import Choten from '@/assets/profile/choten.svg';
+import Seori from '@/assets/sulkkagi/black_stone.svg';
 import { useEffect, useState } from 'react';
 import Inputs from '@/applications/components/inputs';
 import Loading from '@/applications/components/loading';
@@ -11,6 +12,7 @@ import MemorialBtn from '@/applications/components/memorialBtn';
 import { useAtomValue } from 'jotai';
 import { alerterAtom } from '@/atoms/alerter';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
+import { AxiosError } from 'axios';
 type Props = {
   changeToLogIn: () => void;
 };
@@ -22,7 +24,7 @@ const SignUp = ({ changeToLogIn }: Props) => {
   const [checkingPw, setCheckingPw] = useState<string>('');
   const [check, setCheck] = useState<string>('');
   const [click, setClick] = useState(false);
-  const[verity, setVerity] = useState<boolean>(false);
+  const [verity, setVerity] = useState<boolean>(false);
   const [timeLeft, setTimeLeft] = useState(180);
 
   const setAlert = useAtomValue(alerterAtom);
@@ -34,54 +36,30 @@ const SignUp = ({ changeToLogIn }: Props) => {
 
   const sendAuth = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (name.length == 0) {
-      setAlert?.(
-        Choten,
-        <>
-          사용자 이름이 입력해 주세요.
-        </>,
-        () => {
-          taskTransform?.('경고', '');
-        },
-      );
+      setAlert?.(Choten, <>사용자 이름이 입력해 주세요.</>, () => {
+        taskTransform?.('경고', '');
+      });
       return;
     }
     if (userId.length == 0) {
-      setAlert?.(
-        Choten,
-        <>
-          아이디를 입력해 주세요.
-        </>,
-        () => {
-          taskTransform?.('경고', '');
-        },
-      );
+      setAlert?.(Choten, <>아이디를 입력해 주세요.</>, () => {
+        taskTransform?.('경고', '');
+      });
       return;
     }
     if (userId.length < 6 || userId.length > 16) {
-      setAlert?.(
-        Choten,
-        <>
-          아이디는 6~16자 이내로 입력해주세요.
-        </>,
-        () => {
-          taskTransform?.('경고', '');
-        },
-      );
+      setAlert?.(Choten, <>아이디는 6~16자 이내로 입력해주세요.</>, () => {
+        taskTransform?.('경고', '');
+      });
       return;
     }
     if (email.length == 0) {
-      setAlert?.(
-        Choten,
-        <>
-          이메일을 입력해 주세요.
-        </>,
-        () => {
-          taskTransform?.('경고', '');
-        },
-      );
+      setAlert?.(Choten, <>이메일을 입력해 주세요.</>, () => {
+        taskTransform?.('경고', '');
+      });
       return;
     }
-    if (!email.includes('@') ) {
+    if (!email.includes('@')) {
       setAlert?.(
         Choten,
         <>
@@ -131,10 +109,31 @@ const SignUp = ({ changeToLogIn }: Props) => {
             taskTransform?.('경고', '');
           });
         },
-        onError: () => {
-          setAlert?.(Choten, <>회원가입 실패: 다시 시도해 주세요 <br/> 문의 : paradox.windeath44@gmail.com </>, () => {
-            taskTransform?.('경고', '');
-          });
+        onError: (error) => {
+          const axiosError = error as AxiosError;
+          if (axiosError.response && axiosError.response.status === 400) {
+            setAlert?.(
+              Seori,
+              <>
+                이미 존재하는 이메일입니다.
+                <br />
+                다른 이메일을 사용해 주세요.
+              </>,
+              () => {
+                taskTransform?.('경고', '');
+              },
+            );
+          } else {
+            setAlert?.(
+              Choten,
+              <>
+                회원가입 실패: 다시 시도해 주세요 <br /> 문의 : paradox.windeath44@gmail.com{' '}
+              </>,
+              () => {
+                taskTransform?.('경고', '');
+              },
+            );
+          }
         },
       },
     );
@@ -144,18 +143,12 @@ const SignUp = ({ changeToLogIn }: Props) => {
   const sendEmail = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (email.length == 0) {
-      setAlert?.(
-        Choten,
-        <>
-          이메일을 입력해 주세요.
-        </>,
-        () => {
-          taskTransform?.('경고', '');
-        },
-      );
+      setAlert?.(Choten, <>이메일을 입력해 주세요.</>, () => {
+        taskTransform?.('경고', '');
+      });
       return;
     }
-    if (!email.includes('@') ) {
+    if (!email.includes('@')) {
       setAlert?.(
         Choten,
         <>
@@ -169,7 +162,7 @@ const SignUp = ({ changeToLogIn }: Props) => {
       );
       return;
     }
-    if(verity){
+    if (verity) {
       setAlert?.(Choten, <>이미 인증을 하셨습니다.</>, () => {
         taskTransform?.('경고', '');
       });
@@ -195,13 +188,12 @@ const SignUp = ({ changeToLogIn }: Props) => {
   };
   const verifyCode = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-   if(verity){
+    if (verity) {
       setAlert?.(Choten, <>이미 인증을 하셨습니다.</>, () => {
         taskTransform?.('경고', '');
       });
       return;
-    }
-    else if (check.length == 5) {
+    } else if (check.length == 5) {
       verifyEmailMutation.mutate(
         { email, check },
         {
@@ -213,14 +205,20 @@ const SignUp = ({ changeToLogIn }: Props) => {
             });
           },
           onError: () => {
-            setAlert?.(Choten, <>인증 실패: 다시 입력해 주세요<br/> 이미 회원이시라면 인증이 불가합니다. </>, () => {
-              taskTransform?.('경고', '');
-            });
+            setAlert?.(
+              Choten,
+              <>
+                인증 실패: 다시 입력해 주세요
+                <br /> 이미 회원이시라면 인증이 불가합니다.{' '}
+              </>,
+              () => {
+                taskTransform?.('경고', '');
+              },
+            );
           },
         },
       );
-    }
-    else {
+    } else {
       setAlert?.(Choten, <>인증코드 5자리를 입력하지 않았습니다.</>, () => {
         taskTransform?.('경고', '');
       });
@@ -278,7 +276,7 @@ const SignUp = ({ changeToLogIn }: Props) => {
             width={'80%'}
             fontSize="20px"
             flex={true}
-            placeHold={"아이디 (6~16자)"}
+            placeHold={'아이디 (6~16자)'}
           />
           <_.set>
             <_.label>이메일 :</_.label>
@@ -288,10 +286,10 @@ const SignUp = ({ changeToLogIn }: Props) => {
                 setValue={setEmail}
                 type={'text'}
                 width={'100%'}
-                placeHold={"example@email.com"}
+                placeHold={'example@email.com'}
               />
               <MemorialBtn
-                name={verity ? "인증완료" : click ? '코드 재전송' : '코드전송'}
+                name={verity ? '인증완료' : click ? '코드 재전송' : '코드전송'}
                 onClick={sendEmail}
                 type="submit"
                 active={true}
@@ -328,7 +326,7 @@ const SignUp = ({ changeToLogIn }: Props) => {
             width={'80%'}
             fontSize="20px"
             flex={true}
-            placeHold={"비밀번호 (8~20자)"}
+            placeHold={'비밀번호 (8~20자)'}
           />
           <Inputs
             label={'비밀번호 재입력:'}
