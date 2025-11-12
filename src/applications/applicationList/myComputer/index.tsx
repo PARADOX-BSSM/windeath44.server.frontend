@@ -3,7 +3,7 @@ import Loading from '@/applications/components/loading';
 import * as _ from './style.ts';
 import myComputer from '@/assets/appIcons/my_computer.svg';
 import { taskTransformerAtom } from '@/atoms/taskTransformer.ts';
-import { alerterAtom } from '@/atoms/alerter';
+import { alerterAtom, reconfirmAlerterAtom } from '@/atoms/alerter';
 import { useAtomValue, useAtom } from 'jotai';
 import { isLogInedAtom } from '@/atoms/windowManager';
 import MemorialWithIcon from '@/applications/components/memorialWithIcon/index.tsx';
@@ -67,6 +67,7 @@ const MemorialItem = ({
 const MyComputer = () => {
   const taskTransform = useAtomValue(taskTransformerAtom);
   const setAlert = useAtomValue(alerterAtom);
+  const setConfirmAlert = useAtomValue(reconfirmAlerterAtom);
   const logOutMutation = useLogOut();
   const deleteAccountMutation = useDeleteAccount();
   const { mutate: getUser, data: userData, isPending, error } = useGetUserMutation();
@@ -276,23 +277,24 @@ const MyComputer = () => {
     );
   };
   const handleDeleteAccount = () => {
-    deleteAccountMutation.mutate(userData?.data?.userId, {
-      onSuccess: () => {
-        setAlert?.(Seori, <>성공적으로 탈퇴되었습니다.</>, () => {
-          taskTransform?.('경고', '');
-        });
-        setIsLogIned('false');
-        sessionStorage.setItem('hasBootedSession', 'false');
-        localStorage.removeItem('isLogIned');
-        deleteCookie('access_token');
-        location.reload();
-      },
-      onError: (error) => {
-        console.error('계정탈퇴 실패', error);
-        setAlert?.(Seori, <>계정삭제 요청 중 오류가 발생했습니다.</>, () => {
-          taskTransform?.('경고', '');
-        });
-      },
+    setConfirmAlert?.(Seori, '탈퇴', () => {
+      deleteAccountMutation.mutate(userData?.data?.userId, {
+        onSuccess: () => {
+          taskTransform?.('재확인', '');
+          setIsLogIned('false');
+          sessionStorage.setItem('hasBootedSession', 'false');
+          localStorage.removeItem('isLogIned');
+          deleteCookie('access_token');
+          location.reload();
+        },
+        onError: (error) => {
+          console.error('계정탈퇴 실패', error);
+          setAlert?.(Seori, <>계정삭제 요청 중 오류가 발생했습니다.</>, () => {
+            taskTransform?.('재확인', '');
+            taskTransform?.('경고', '');
+          });
+        },
+      });
     });
   };
 
