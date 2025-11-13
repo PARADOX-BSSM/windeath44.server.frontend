@@ -15,6 +15,7 @@ import { getTaskCreators } from './tasks';
 import { useTaskTransformFunction } from '@/hooks/taskTransformer.tsx';
 import { useTaskSearchFunction } from '@/hooks/taskSearch.tsx';
 import { useAlerter } from '@/hooks/alerter.tsx';
+import { useConfirmAlerter } from '@/hooks/alerter.tsx';
 import { useNotification } from '@/hooks/notification.tsx';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg.tsx';
 import { useDrag } from 'react-use-gesture';
@@ -236,6 +237,19 @@ const WindowManager = () => {
       isLogIned !== 'true'
     )
       return;
+    if (!notificationsData?.data) return;
+
+    const openNotifications = notificationsData.data.filter((n) => n.is_open);
+    if (openNotifications.length === 0) {
+      hasCheckedNotification.current = true;
+      if (
+        !hydrated ||
+        hasCheckedNotification.current ||
+        !settings.showBootNotification ||
+        isLogIned !== 'true'
+      )
+        return;
+    }
 
     hasCheckedNotification.current = true;
 
@@ -348,6 +362,7 @@ const WindowManager = () => {
   useTaskTransformFunction();
   useTaskSearchFunction();
   useAlerter();
+  useConfirmAlerter();
   useNotification();
 
   return (
