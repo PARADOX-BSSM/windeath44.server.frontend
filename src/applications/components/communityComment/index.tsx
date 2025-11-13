@@ -10,6 +10,7 @@ import { useGetUserMutation } from '@/api/user/getUser';
 import { usePostCommentDelete } from '@/api/community/postCommentDelete';
 import { usePostCommentLike } from '@/api/community/postCommentLike';
 import { usePostCommentLikeDelete } from '@/api/community/postCommentLikeDelete';
+import { useIsPostCommentLiked } from '@/api/community/isPostCommentLiked';
 import { alerterAtom } from '@/atoms/alerter';
 import { useAtomValue } from 'jotai';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
@@ -51,6 +52,15 @@ const Posts: React.FC<PostsProps> = ({ user, post }) => {
   useEffect(() => {
     getUser();
   }, [getUser]);
+
+  useEffect(() => {
+    if (currentUserId) {
+      const { data } = useIsPostCommentLiked(post.postId, currentUserId);
+      if (data?.data.isLiked) {
+        setIsLike(data?.data.isLiked);
+      }
+    }
+  });
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

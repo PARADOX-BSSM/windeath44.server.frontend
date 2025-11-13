@@ -12,6 +12,7 @@ import { useGetUserMutation } from '@/api/user/getUser';
 import { usePostDelete } from '@/api/community/postDelete';
 import { usePostLike } from '@/api/community/postLike';
 import { usePostLikeDelete } from '@/api/community/postLikeDelete';
+import { useIsPostLiked } from '@/api/community/isPostLiked';
 import { useAtomValue } from 'jotai';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
 import { alerterAtom } from '@/atoms/alerter';
@@ -48,6 +49,7 @@ const Posts = ({ user, post }: PostsProps) => {
   const postDeleteMutation = usePostDelete();
   const postLikeMutation = usePostLike();
   const postLikeDeleteMutation = usePostLikeDelete();
+  const { data: likedData } = useIsPostLiked(post.postId, currentUserId || '');
 
   useEffect(() => {
     getUser();
@@ -68,6 +70,12 @@ const Posts = ({ user, post }: PostsProps) => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isOpen]);
+
+  useEffect(() => {
+    if (likedData?.data.isLiked) {
+      setIsLike(likedData.data.isLiked);
+    }
+  }, [likedData]);
 
   const handleKebabClick = () => {
     setIsOpen(!isOpen);

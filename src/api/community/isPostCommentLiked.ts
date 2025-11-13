@@ -21,8 +21,8 @@ const isPostCommentLiked = async (commentId: number, userId: string) => {
       },
     );
     return response.data;
-  } catch (error) {
-    if (error instanceof Error) {
+  } catch (error: any) {
+    if (error) {
       console.error('좋아요 상태 조회 실패:', error.message);
     }
     throw error;
