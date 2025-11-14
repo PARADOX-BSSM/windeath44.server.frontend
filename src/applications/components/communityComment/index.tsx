@@ -49,18 +49,17 @@ const Posts: React.FC<PostsProps> = ({ user, post }) => {
   const commentLikeMutation = usePostCommentLike();
   const commentLikeDeleteMutation = usePostCommentLikeDelete();
 
+  const { data: commentLikedData } = useIsPostCommentLiked(post.commentId, currentUserId || '');
+
   useEffect(() => {
     getUser();
   }, [getUser]);
 
   useEffect(() => {
-    if (currentUserId) {
-      const { data } = useIsPostCommentLiked(post.postId, currentUserId);
-      if (data?.data.isLiked) {
-        setIsLike(data?.data.isLiked);
-      }
+    if (commentLikedData?.data.isLiked) {
+      setIsLike(commentLikedData.data.isLiked);
     }
-  });
+  }, [commentLikedData]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

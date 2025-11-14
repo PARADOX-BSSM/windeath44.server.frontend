@@ -61,7 +61,7 @@ export const Content = styled.div`
 export const PostTitle = styled.h3`
   font-weight: 400;
 `;
-export const PostContent = styled.p`
+export const PostContent = styled.div`
   font-size: 14px;
 `;
 export const Datetime = styled.p`
