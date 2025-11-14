@@ -74,7 +74,7 @@ const MergeBtn = ({ text, memorialId, characterId }: PropsType) => {
         return;
       }
 
-      if (!inputValue.deathReason || inputValue.deathReason === '자살(自殺)') {
+      if (!inputValue.deathReason || inputValue.deathReason === '사인 선택') {
         setAlert?.(Seori, <>사인을 선택해주세요.</>, () => {
           taskTransform?.('경고', '');
         });
@@ -131,7 +131,7 @@ const MergeBtn = ({ text, memorialId, characterId }: PropsType) => {
                         });
                         setInputValue({
                           name: '',
-                          deathReason: '자연사(自然死)' as deathType,
+                          deathReason: '사인 선택' as deathType,
                           date: '',
                           lifeCycle: 0,
                           anime: '',
@@ -219,7 +219,7 @@ const MergeBtn = ({ text, memorialId, characterId }: PropsType) => {
                   );
                   setInputValue({
                     name: '',
-                    deathReason: '자연사(自然死)' as deathType,
+                    deathReason: '사인 선택' as deathType,
                     date: '',
                     lifeCycle: 0,
                     anime: '',

@@ -49,16 +49,29 @@ export const icon = styled.img`
   width: 64px;
   height: 64px;
 `;
-
-export const text = styled.p`
-  color: #2e2e2e;
-  font-size: 24px;
-  word-wrap: break-word;
-`;
-
 export const btnContainer = styled.div`
   display: flex;
   width: 100%;
   height: 100%;
   justify-content: center;
+`;
+export const inputSet = styled.p`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  position: relative;
+  margin-bottom: 1rem;
+`;
+export const text = styled.p`
+  color: #2e2e2e;
+  font-size: 1.2rem;
+  word-wrap: break-word;
+`;
+export const alert = styled.p`
+  color: #2e2e2e;
+  font-size: 0.8rem;
+  word-wrap: break-word;
+  position: absolute;
+  bottom: 0;
 `;

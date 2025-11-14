@@ -1,3 +1,5 @@
+import type deathType from './deathType';
+
 export interface InputPortageType {
   name: string;
   deathReason: deathType;

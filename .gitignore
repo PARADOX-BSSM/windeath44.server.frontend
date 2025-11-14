@@ -35,3 +35,6 @@ public/unity/Project_HG/Build/*.framework.js
 public/unity/Project_HG/Build/*.data.br
 public/unity/Project_HG/Build/*.wasm.br
 public/unity/Project_HG/Build/*.framework.js.br
+
+cert
+*.pem

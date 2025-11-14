@@ -4,8 +4,9 @@ import SignUp from '@/applications/utility/signUp';
 import EmailChack from '@/applications/utility/emailCheck';
 import Auth from '@/applications/utility/auth';
 import { TaskType } from '@/modules/typeModule.tsx';
-import myComputer from '@/assets/appIcons/my_computer.svg';
 import PasswordChange from '@/applications/utility/passwordChange';
+import FindId from '@/applications/utility/findId';
+import computer from '@/assets/appIcons/my_computer.svg';
 
 type SetIsLogIned = React.Dispatch<React.SetStateAction<string>>;
 type AddTask = (task: TaskType) => void;
@@ -20,7 +21,8 @@ export function getTaskCreators(
     signUp: TaskType,
     emailChack: TaskType,
     auth: TaskType,
-    passwordChange: TaskType;
+    passwordChange: TaskType,
+    findId: TaskType;
 
   const changeToSignUp = () => {
     addTask(signUp);
@@ -31,6 +33,7 @@ export function getTaskCreators(
     removeTask(signUp);
     removeTask(emailChack);
     removeTask(passwordChange);
+    removeTask(findId);
   };
   const changeToEmailCheck = () => {
     addTask(emailChack);
@@ -45,13 +48,17 @@ export function getTaskCreators(
     addTask(passwordChange);
     removeTask(auth);
   };
-
+  const changeToFindId = () => {
+    addTask(findId);
+    removeTask(logIn);
+  };
   logIn = {
     component: (
       <Suspense fallback={null}>
         <LogIn
           changeToSignUp={changeToSignUp}
           changeToEmailCheck={changeToEmailCheck}
+          changeToFindId={changeToFindId}
         />
       </Suspense>
     ),
@@ -60,7 +67,7 @@ export function getTaskCreators(
     name: '로그인',
     layer: undefined,
     appSetup: {
-      Image: myComputer,
+      Image: computer,
       minWidth: 51,
       minHeight: 33,
       setUpWidth: 800,
@@ -80,7 +87,7 @@ export function getTaskCreators(
     name: '회원가입',
     layer: undefined,
     appSetup: {
-      Image: 'default',
+      Image: computer,
       minWidth: 51,
       minHeight: 45,
       setUpWidth: 800,
@@ -103,7 +110,7 @@ export function getTaskCreators(
     name: '이메일 인증',
     layer: undefined,
     appSetup: {
-      Image: 'default',
+      Image: computer,
       minWidth: 51,
       minHeight: 33,
       setUpWidth: 800,
@@ -126,7 +133,7 @@ export function getTaskCreators(
     name: '인증코드 입력',
     layer: undefined,
     appSetup: {
-      Image: 'default',
+      Image: computer,
       minWidth: 51,
       minHeight: 33,
       setUpWidth: 800,
@@ -146,7 +153,26 @@ export function getTaskCreators(
     name: '비밀번호 재설정',
     layer: undefined,
     appSetup: {
-      Image: 'default',
+      Image: computer,
+      minWidth: 51,
+      minHeight: 33,
+      setUpWidth: 800,
+      setUpHeight: 508,
+    },
+    visible: false,
+  };
+  findId = {
+    component: (
+      <Suspense fallback={null}>
+        <FindId changeToLogIn={changeToLogIn} />
+      </Suspense>
+    ),
+    type: 'App',
+    id: 6,
+    name: '아이디 찾기',
+    layer: undefined,
+    appSetup: {
+      Image: computer,
       minWidth: 51,
       minHeight: 33,
       setUpWidth: 800,
@@ -155,5 +181,5 @@ export function getTaskCreators(
     visible: false,
   };
 
-  return { logIn, signUp, emailChack, auth, passwordChange };
+  return { logIn, signUp, emailChack, auth, passwordChange, findId };
 }

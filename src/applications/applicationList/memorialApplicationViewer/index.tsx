@@ -52,10 +52,25 @@ const MemorialApplicationViewer = ({
   });
   const mutationGetCharacter = useGetCharacter(setCharacterData);
   const [animation, setAnimation] = useState<string>('');
+  const [hasCharacterError, setHasCharacterError] = useState<boolean>(false);
   const mutationAnimation = useGetAnimation(setAnimation);
   const approveMutation = useMemorialApplicationApproveMutation();
   const rejectMutation = useMemorialApplicationRejectMutation();
   const { mutate: getUser, data: userData } = useGetUserMutation();
+
+  // 거절 모달 상태
+  const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
+  const [rejectReason, setRejectReason] = useState('');
+
+  // 디버깅용: 모달 상태 추적
+  useEffect(() => {
+    console.log('[MemorialApplicationViewer] isRejectModalOpen 상태 변경:', isRejectModalOpen);
+  }, [isRejectModalOpen]);
+
+  // 디버깅용: 컴포넌트 마운트 확인
+  useEffect(() => {
+    console.log('[MemorialApplicationViewer] 컴포넌트 마운트됨');
+  }, []);
 
   // 신청 정보 조회
   const {
@@ -67,6 +82,16 @@ const MemorialApplicationViewer = ({
   const application = applicationData?.data;
   const isAdmin = userData?.data?.role === 'ADMIN';
 
+  // 디버깅용: 권한과 상태 확인
+  useEffect(() => {
+    console.log('[MemorialApplicationViewer] 권한 및 상태:', {
+      isAdmin,
+      userRole: userData?.data?.role,
+      applicationState: application?.state,
+      shouldShowButtons: isAdmin && application?.state === 'PENDING',
+    });
+  }, [isAdmin, application?.state, userData]);
+
   // 유저 정보 조회
   useEffect(() => {
     getUser();
@@ -77,6 +102,7 @@ const MemorialApplicationViewer = ({
     if (application?.characterId) {
       mutationGetCharacter.mutate(application.characterId, {
         onError: () => {
+          setHasCharacterError(true);
           setAlert?.(
             Seori,
             <>
@@ -135,14 +161,10 @@ const MemorialApplicationViewer = ({
   const handleApprove = () => {
     approveMutation.mutate(memorialApplicationId, {
       onSuccess: () => {
-        setAlert?.(
-          Seori,
-          <>추모관 신청이 승인되었습니다.</>,
-          () => {
-            taskTransform?.('경고', '');
-            pop(); // 승인 후 목록으로 돌아가기
-          },
-        );
+        setAlert?.(Seori, <>추모관 신청이 승인되었습니다.</>, () => {
+          taskTransform?.('경고', '');
+          pop(); // 승인 후 목록으로 돌아가기
+        });
       },
       onError: () => {
         setAlert?.(
@@ -160,33 +182,53 @@ const MemorialApplicationViewer = ({
     });
   };
 
-  // 거절 핸들러
+  // 거절 버튼 클릭 시 모달 열기
   const handleReject = () => {
-    rejectMutation.mutate(memorialApplicationId, {
-      onSuccess: () => {
-        setAlert?.(
-          Seori,
-          <>추모관 신청이 거절되었습니다.</>,
-          () => {
+    console.log('거절 버튼 클릭됨');
+    setIsRejectModalOpen(true);
+    console.log('모달 상태:', true);
+  };
+
+  // 거절 모달 닫기
+  const handleRejectModalClose = () => {
+    setIsRejectModalOpen(false);
+    setRejectReason('');
+  };
+
+  // 거절 사유 제출
+  const handleRejectSubmit = () => {
+    if (!rejectReason.trim()) {
+      setAlert?.(Seori, <>거절 사유를 입력해주세요.</>, () => {
+        taskTransform?.('경고', '');
+      });
+      return;
+    }
+
+    rejectMutation.mutate(
+      { id: memorialApplicationId, reason: rejectReason },
+      {
+        onSuccess: () => {
+          setAlert?.(Seori, <>추모관 신청이 거절되었습니다.</>, () => {
             taskTransform?.('경고', '');
             pop(); // 거절 후 목록으로 돌아가기
-          },
-        );
+          });
+          handleRejectModalClose();
+        },
+        onError: () => {
+          setAlert?.(
+            Seori,
+            <>
+              거절 처리 중 오류가 발생했습니다.
+              <br />
+              잠시 후 다시 시도해주세요.
+            </>,
+            () => {
+              taskTransform?.('경고', '');
+            },
+          );
+        },
       },
-      onError: () => {
-        setAlert?.(
-          Seori,
-          <>
-            거절 처리 중 오류가 발생했습니다.
-            <br />
-            잠시 후 다시 시도해주세요.
-          </>,
-          () => {
-            taskTransform?.('경고', '');
-          },
-        );
-      },
-    });
+    );
   };
 
   // 상태 텍스트 변환
@@ -216,6 +258,50 @@ const MemorialApplicationViewer = ({
         return '#2e2e2e';
     }
   };
+
+  // 에러 처리 - 신청 정보 조회 실패
+  if (applicationError) {
+    return (
+      <_.Main>
+        <_.ErrorContainer>
+          <_.ErrorMessage>
+            추모관 신청 정보를 가져오는 중 오류가 발생했습니다.
+            <br />
+            잠시 후 다시 시도해 주세요.
+          </_.ErrorMessage>
+          <_.ErrorButton
+            onClick={() => pop()}
+            onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+            onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+          >
+            닫기
+          </_.ErrorButton>
+        </_.ErrorContainer>
+      </_.Main>
+    );
+  }
+
+  // 에러 처리 - 캐릭터 정보 조회 실패
+  if (hasCharacterError) {
+    return (
+      <_.Main>
+        <_.ErrorContainer>
+          <_.ErrorMessage>
+            캐릭터 정보를 가져오는 중 오류가 발생했습니다.
+            <br />
+            잠시 후 다시 시도해 주세요.
+          </_.ErrorMessage>
+          <_.ErrorButton
+            onClick={() => pop()}
+            onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+            onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+          >
+            닫기
+          </_.ErrorButton>
+        </_.ErrorContainer>
+      </_.Main>
+    );
+  }
 
   // 로딩 중
   if (
@@ -255,7 +341,9 @@ const MemorialApplicationViewer = ({
                   <_.RejectButton
                     onClick={handleReject}
                     disabled={rejectMutation.isPending}
-                    onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                    onMouseEnter={() => {
+                      setCursorImage(CURSOR_IMAGES.hand);
+                    }}
                     onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
                   >
                     {rejectMutation.isPending ? '처리 중...' : '거절'}
@@ -274,7 +362,10 @@ const MemorialApplicationViewer = ({
               <_.ProfileContainer>
                 <_.ProfileInnerContainer>
                   <_.PictureContainer>
-                    <_.Ribbon src={ribbon} alt="ribbon" />
+                    <_.Ribbon
+                      src={ribbon}
+                      alt="ribbon"
+                    />
                     <_.Picture imgUrl={characterData.imageUrl} />
                     <_.Name>{characterData.name}</_.Name>
                   </_.PictureContainer>

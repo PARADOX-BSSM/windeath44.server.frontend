@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
-import { useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import MemorialBtn from '@/applications/components/memorialBtn';
 import * as _ from './style.ts';
 import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer.ts';
 import { versionAtom } from '@/atoms/version.ts';
 import { alerterAtom } from '@/atoms/alerter.ts';
+import { focusAtom } from '@/atoms/windowManager.ts';
 import Seori from '@/assets/sulkkagi/black_stone.svg';
 import { getCookie } from '@/api/auth/cookie.ts';
 // import { useProcessManager } from '@/hooks/processManager.tsx';
@@ -33,6 +34,7 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
   const taskSearch = useAtomValue(taskSearchAtom);
   const taskTransform = useAtomValue(taskTransformerAtom);
   const version = useAtomValue(versionAtom);
+  const [, setFocus] = useAtom(focusAtom);
   const token = getCookie('access_token');
   // const [, addTask, removeTask] = useProcessManager();
 
@@ -77,11 +79,8 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
           <br />
           <br />
           <div style={{ fontSize: '1.375rem' }}>
-            <div style={{ margin: '0 0 16px 0' }}>
-
-            </div>
-            <div style={{ margin: '0 0 16px 0' }}>
-            </div>
+            <div style={{ margin: '0 0 16px 0' }}></div>
+            <div style={{ margin: '0 0 16px 0' }}></div>
           </div>
         </>,
       );
@@ -126,6 +125,9 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
           () => {
             taskTransform?.('경고', '미리보기', applyProps);
             push(taskSearch?.('MemorialApply', applyProps));
+            setTimeout(() => {
+              setFocus('추모관');
+            }, 150);
           },
         );
       }

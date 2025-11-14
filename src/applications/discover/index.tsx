@@ -19,6 +19,29 @@ const Discover = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
   const [, setFocus] = useAtom(focusAtom);
   const Apps = useApps();
   const visibleApps = Apps.filter((app: TaskType) => app.visible);
+  const [displayWidth, setDisplayWidth] = React.useState<number>(0);
+  const [displayLeft, setDisplayLeft] = React.useState<number>(0);
+
+  React.useEffect(() => {
+    const container = document.getElementById('cursorContainer');
+    if (!container) return;
+
+    const updateDimensions = () => {
+      const bounds = container.getBoundingClientRect();
+      setDisplayWidth(bounds.width);
+      setDisplayLeft(bounds.left);
+    };
+
+    updateDimensions();
+
+    const resizeObserver = new ResizeObserver(updateDimensions);
+    resizeObserver.observe(container);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, []);
+
   return (
     <>
       {/* <Seori /> */}
@@ -42,10 +65,12 @@ const Discover = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
           </_.AppContainer>
         );
       })}
-      <TaskBar
-        backUpFocus={backUpFocus}
-        setBackUpFocus={setBackUpFocus}
-      />
+      <div style={{ position: 'fixed', bottom: 0, left: `${displayLeft}px`, width: `${displayWidth}px`, zIndex: 998 }}>
+        <TaskBar
+          backUpFocus={backUpFocus}
+          setBackUpFocus={setBackUpFocus}
+        />
+      </div>
     </>
   );
 };

@@ -18,7 +18,7 @@ const GameFrame = styled.iframe`
 
 const RhythmGame = () => {
   // Use R2 URL if configured (for production), fallback to local path (for development)
-  const gameUrl = import.meta.env.VITE_UNITY_GAME_URL || '/unity/Project_HG/index.html';
+  const gameUrl = 'https://rhythm.windeath44.wiki/';
 
   return (
     <Container>
