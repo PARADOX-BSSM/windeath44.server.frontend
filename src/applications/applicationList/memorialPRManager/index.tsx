@@ -2,7 +2,7 @@ import * as _ from './style';
 import { useAtomValue } from 'jotai';
 import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer';
 import { alerterAtom } from '@/atoms/alerter';
-import Choten from '@/assets/profile/choten.svg';
+import Seori from '@/assets/sulkkagi/black_stone.svg';
 import MemorialBtn from '@/applications/components/memorialBtn';
 import { useGetMemorialPullRequestsQuery } from '@/api/memorial/getMemorialPullRequests';
 import {
@@ -96,14 +96,14 @@ const MemorialPRManager = ({
       });
 
       // 3. 성공 시 알림 및 목록 새로고침
-      setAlert?.(Choten, <>수정 요청이 성공적으로 병합되었습니다!</>, () => {
+      setAlert?.(Seori, <>수정 요청이 성공적으로 병합되었습니다!</>, () => {
         taskTransform?.('경고', '');
         refetchPullRequests(); // PR 목록 새로고침
       });
     } catch (error: any) {
       // 에러 처리
       setAlert?.(
-        Choten,
+        Seori,
         <>
           수정 요청 병합 중 오류가 발생했습니다.
           <br />
@@ -122,14 +122,14 @@ const MemorialPRManager = ({
       await rejectMutation.mutateAsync(memorialPullRequestId);
 
       // 성공 시 알림 및 목록 새로고침
-      setAlert?.(Choten, <>수정 요청이 거절되었습니다.</>, () => {
+      setAlert?.(Seori, <>수정 요청이 거절되었습니다.</>, () => {
         taskTransform?.('경고', '');
         refetchPullRequests(); // PR 목록 새로고침
       });
     } catch (error: any) {
       // 에러 처리
       setAlert?.(
-        Choten,
+        Seori,
         <>
           수정 요청 거절 중 오류가 발생했습니다.
           <br />
@@ -146,7 +146,7 @@ const MemorialPRManager = ({
   useEffect(() => {
     if (pullRequestsError) {
       setAlert?.(
-        Choten,
+        Seori,
         <>
           수정 요청을 가져오는 중 오류가 발생했습니다.
           <br />
@@ -171,7 +171,6 @@ const MemorialPRManager = ({
                   <_.Title>수정 요청 관리</_.Title>
                   <_.Subtitle>로딩 중...</_.Subtitle>
                 </_.LeftHeader>
-                <_.BackButton onClick={() => pop()}>돌아가기</_.BackButton>
               </_.InnerHeader>
             </_.Header>
           </_.ContentContainer>
@@ -190,7 +189,6 @@ const MemorialPRManager = ({
                 <_.Title>수정 요청 관리</_.Title>
                 <_.Subtitle>{memorialName}의 수정 요청을 관리합니다</_.Subtitle>
               </_.LeftHeader>
-              <_.BackButton onClick={() => pop()}>돌아가기</_.BackButton>
             </_.InnerHeader>
           </_.Header>
 
@@ -227,7 +225,7 @@ const MemorialPRManager = ({
               <_.MemorialListBox>
                 <_.MemorialList>
                   {pullRequests.length === 0 ? (
-                    <_.EmptyMessage>아직 P수정 요청이 없습니다.</_.EmptyMessage>
+                    <_.EmptyMessage>아직 수정 요청이 없습니다.</_.EmptyMessage>
                   ) : (
                     pullRequests
                       .filter(

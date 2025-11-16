@@ -20,8 +20,7 @@ export const useTaskTransformFunction = () => {
     if (!ready) return;
 
     const taskTransform = (fromTask: string, toTask: string, props?: any) => {
-      // const from = Apps.find(app => app.name === fromTask);
-      const from = taskSearch?.(fromTask);
+      const from = taskSearch?.(fromTask, props);
       const to = taskSearch?.(toTask, props);
 
       if (to) addTask(to);
@@ -29,5 +28,5 @@ export const useTaskTransformFunction = () => {
     };
 
     setTaskTransformerAtom(() => taskTransform);
-  }, [Apps]);
+  }, [Apps, taskSearch]);
 };

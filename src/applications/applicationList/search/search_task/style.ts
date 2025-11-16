@@ -6,7 +6,7 @@ export const styles = styled.div`
   height: 100%;
   padding: 0;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   background: var(--light-primary-color);
   box-shadow:
     -1px -1px 0px 0px var(--primary-black) inset,
@@ -16,14 +16,14 @@ export const styles = styled.div`
   color: var(--primary-black);
   border: none;
   cursor: none;
-  gap: 0.5rem;
+  gap: 8px;
 `;
 
 export const Button = styled.div`
   display: flex;
   width: 1rem;
   height: 100%;
-  padding: 0 0.25rem;
+  padding: 0 4px;
   flex-direction: column;
   justify-content: center;
   background: var(--light-primary-color);
@@ -39,15 +39,16 @@ export const Button = styled.div`
 
 export const search = styled.div`
   box-sizing: border-box;
-  width: 100%;
   height: 100%;
 `;
 
 export const search_main = styled.div`
-  padding: 30px;
+  padding: 48px 32px;
   display: flex;
+  flex: 1;
+  justify-content: flex-start;
   flex-direction: column;
-  gap: 16px;
+  gap: 32px;
 `;
 
 export const black = styled.div`

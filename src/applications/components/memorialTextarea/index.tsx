@@ -5,6 +5,7 @@ import { useAtom, useAtomValue } from 'jotai';
 import { inputContent } from '@/atoms/inputManager';
 import Help from '@/assets/help.svg';
 import { taskTransformerAtom } from '@/atoms/taskTransformer.ts';
+import { CURSOR_IMAGES, setCursorImage } from '@/lib/setCursorImg';
 
 interface PropsType {
   btnText?: string;
@@ -48,6 +49,12 @@ const MemorialTextarea = ({
             src={Help}
             alt={'help'}
             onClick={handleClickOpen}
+            onMouseEnter={() => {
+              setCursorImage(CURSOR_IMAGES.hand);
+            }}
+            onMouseLeave={() => {
+              setCursorImage(CURSOR_IMAGES.default);
+            }}
           />
         </_.TitleContainer>
         <_.CommitAreaContainer>
@@ -55,10 +62,24 @@ const MemorialTextarea = ({
             value={contentIn.content}
             onChange={(e) => setContentIn((prev) => ({ ...prev, content: e.target.value }))}
             readOnly={isReadonly}
+            onMouseEnter={() => {
+              setCursorImage(CURSOR_IMAGES.drag);
+            }}
+            onMouseLeave={() => {
+              setCursorImage(CURSOR_IMAGES.default);
+            }}
           ></_.CommitArea>
         </_.CommitAreaContainer>
       </_.Container>
-      {isPerson && memorialId ? <MergeBtn text={btnText} memorialId={memorialId} characterId={characterId} /> : <></>}
+      {isPerson && btnText ? (
+        <MergeBtn
+          text={btnText}
+          memorialId={memorialId || 0}
+          characterId={characterId}
+        />
+      ) : (
+        <></>
+      )}
     </>
   );
 };

@@ -1,6 +1,6 @@
 import { user } from '@/config';
 import { useMutation } from '@tanstack/react-query';
-import api from '@/api/axiosInstance.ts';
+import axios from 'axios';
 interface SignUpParams {
   name: string;
   userId: string;
@@ -23,16 +23,16 @@ export const signUp = async ({
     password: pw,
   };
   try {
-    const response = await api.post(`${user}/register`, data, {
+    const response = await axios.post(`${user}/register`, data, {
       headers: { 'Content-Type': 'application/json' },
     });
-// console.log(JSON.stringify(response.data));
+    // console.log(JSON.stringify(response.data));
     changeToLogIn();
     return true;
   } catch (error: any) {
     console.error(error);
     if (error.response?.data) {
-// console.log(`회원가입 실패: ${JSON.stringify(error.response.data)}`);
+      // console.log(`회원가입 실패: ${JSON.stringify(error.response.data)}`);
     }
     throw error;
   }

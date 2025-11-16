@@ -1,4 +1,4 @@
-import { Suspense, lazy } from 'react';
+import { Suspense, lazy, useState } from 'react';
 import { TaskType } from '@/modules/typeModule.tsx';
 import { useAtom } from 'jotai';
 import { isLogInedAtom } from '@/atoms/windowManager.ts';
@@ -11,12 +11,17 @@ import setting from '@/assets/appIcons/setting.svg';
 import search from '@/assets/appIcons/search.svg';
 import trashBin from '@/assets/appIcons/empty_bin.svg';
 import chatbot from '@/assets/appIcons/ChatBot.svg';
+import chatbotRejection from '@/assets/appIcons/ChatBotRejection.svg';
 import game from '@/assets/appIcons/game.svg';
 import sulkkagi from '@/assets/sulkkagi/black_stone.svg';
+import community from '@/assets/appIcons/community.svg';
+import book from '@/assets/appIcons/book.svg';
+import memorial from '@/assets/appIcons/memorial.svg';
 
 import Sulkkagi from '../applicationList/sulkkagi';
 import SulkkagiApproach from '../applicationList/sulkkagiApproach';
 import SulkkagiMenu from '../applicationList/sulkkagiMenu';
+import { getCookie } from '@/api/auth/cookie.ts';
 
 // lazy를 이용한 어플리케이션 컴포넌트 로드
 const Terminal = lazy(() => import('@/applications/applicationList/terminal/index.tsx'));
@@ -29,6 +34,9 @@ const MemorialCommit = lazy(
 );
 const MemorialPreview = lazy(
   () => import('@/applications/applicationList/memorialPreview/index.tsx'),
+);
+const MemorialEdit = lazy(
+  () => import('@/applications/applicationList/memorialApplicationEdit/index.tsx'),
 );
 
 const AnimationSelect = lazy(
@@ -68,6 +76,8 @@ const AdminApp = lazy(() => import('@/applications/applicationList/adminApp/inde
 
 const GameApp = lazy(() => import('@/applications/applicationList/game/index.tsx'));
 
+const RhythmGame = lazy(() => import('@/applications/applicationList/rhythmGame/index.tsx'));
+
 const MemorialChief = lazy(() => import('@/applications/applicationList/memorialChief/index.tsx'));
 
 const MemorialPRManager = lazy(
@@ -85,19 +95,42 @@ const MemorialConflictResolve = lazy(
 const MemorialViewer = lazy(
   () => import('@/applications/applicationList/memorialViewer/index.tsx'),
 );
+const MyComputerApproach = lazy(
+  () => import('@/applications/applicationList/myComputerApproach/index.tsx'),
+);
+
+const MemorialApplicationList = lazy(
+  () => import('@/applications/applicationList/memorialApplicationList/index.tsx'),
+);
+
+const MemorialApplicationListMain = lazy(
+  () => import('@/applications/applicationList/memorialApplicationListMain/index.tsx'),
+);
+
+const MemorialApplicationListApproach = lazy(
+  () => import('@/applications/applicationList/memorialApplicationListApproach/index.tsx'),
+);
+
+const MemorialApplicationViewer = lazy(
+  () => import('@/applications/applicationList/memorialApplicationViewer/index.tsx'),
+);
+
+const Notification = lazy(() => import('@/applications/applicationList/notification/index.tsx'));
+
+const NotificationViewer = lazy(
+  () => import('@/applications/applicationList/notificationViewer/index.tsx'),
+);
 
 const CommunityApproach = lazy(
   () => import('@/applications/applicationList/communityApproach/index.tsx'),
 );
-const Community = lazy(
-  ()=> import('@/applications/applicationList/community/index.tsx'),
-);
-const CommunityPost = lazy(
-  ()=> import('@/applications/applicationList/communityPost/index.tsx'),
-);
+const Community = lazy(() => import('@/applications/applicationList/community/index.tsx'));
+
+const CommunityPost = lazy(() => import('@/applications/applicationList/communityPost/index.tsx'));
+
 const CommunityPostWrite = lazy(
-  ()=>import('@/applications/applicationList/communityPostWrite/index.tsx')
-)
+  () => import('@/applications/applicationList/communityPostWrite/index.tsx'),
+);
 
 const Judgement = lazy(() => import('@/applications/applicationList/judgement/index.tsx'));
 
@@ -108,6 +141,11 @@ const JudgementApproach = lazy(
 const Judgement_Vote = lazy(() => import('@/applications/applicationList/vote/index.tsx'));
 
 const JudgementChat = lazy(() => import('@/applications/applicationList/judgementChat/index.tsx'));
+
+const Settings = lazy(() => import('@/applications/applicationList/settings/index.tsx'));
+const ReconfirmAlert = lazy(
+  () => import('@/applications/applicationList/reconfirmAlert/index.tsx'),
+);
 
 //Application Import 형식 예시
 /*
@@ -130,6 +168,8 @@ const JudgementChat = lazy(() => import('@/applications/applicationList/judgemen
 const useApps = (): TaskType[] => {
   const [isLogIned, setIsLogIned] = useAtom(isLogInedAtom);
   const [taskList, addTask, removeTask] = useProcessManager();
+  const token = getCookie('access_token');
+  const [isNotGuest, SetIsNotGuest] = useState<string | null>(token);
 
   const { logIn, signUp, emailChack, auth, passwordChange } = getTaskCreators(
     setIsLogIned,
@@ -194,9 +234,9 @@ const useApps = (): TaskType[] => {
       appSetup: {
         Image: 'default',
         minWidth: 600,
-        minHeight: 300,
-        setUpWidth: 800,
-        setUpHeight: 360,
+        minHeight: 400,
+        setUpWidth: 950,
+        setUpHeight: 500,
       },
       visible: false,
     },
@@ -232,6 +272,8 @@ const useApps = (): TaskType[] => {
             push={undefined}
             pop={undefined}
             top={undefined}
+            memorialId={0}
+            characterId={0}
           />
         </Suspense>
       ),
@@ -240,7 +282,7 @@ const useApps = (): TaskType[] => {
       name: '추모관 뷰어',
       layer: undefined,
       appSetup: {
-        Image: 'default',
+        Image: search,
         minWidth: 580,
         minHeight: 420,
         setUpWidth: 890,
@@ -267,7 +309,7 @@ const useApps = (): TaskType[] => {
       name: '추모관 기록',
       layer: undefined,
       appSetup: {
-        Image: 'default',
+        Image: search,
         minWidth: 580,
         minHeight: 420,
         setUpWidth: 890,
@@ -291,7 +333,7 @@ const useApps = (): TaskType[] => {
       name: '추모관 수정',
       layer: undefined,
       appSetup: {
-        Image: 'default',
+        Image: search,
         minWidth: 580,
         minHeight: 420,
         setUpWidth: 890,
@@ -377,7 +419,7 @@ const useApps = (): TaskType[] => {
       name: '절하기',
       layer: undefined,
       appSetup: {
-        Image: 'default',
+        Image: search,
         minWidth: 580,
         minHeight: 420,
         setUpWidth: 850,
@@ -419,11 +461,11 @@ const useApps = (): TaskType[] => {
       name: '애니메이션 선택',
       layer: undefined,
       appSetup: {
-        Image: 'default',
-        minWidth: 60 * 16,
-        minHeight: 55 * 16,
-        setUpWidth: 60 * 16,
-        setUpHeight: 55 * 16,
+        Image: search,
+        minWidth: 360,
+        minHeight: 480,
+        setUpWidth: 400,
+        setUpHeight: 500,
       },
       visible: false,
     },
@@ -438,11 +480,11 @@ const useApps = (): TaskType[] => {
       name: '도움말',
       layer: undefined,
       appSetup: {
-        Image: 'default',
-        minWidth: 960,
-        minHeight: 880,
-        setUpWidth: 60 * 16,
-        setUpHeight: 55 * 16,
+        Image: setting,
+        minWidth: 400,
+        minHeight: 300,
+        setUpWidth: 680,
+        setUpHeight: 480,
       },
       visible: false,
     },
@@ -476,7 +518,7 @@ const useApps = (): TaskType[] => {
       name: '미리보기',
       layer: undefined,
       appSetup: {
-        Image: 'default',
+        Image: setting,
         minWidth: 580,
         minHeight: 420,
         setUpWidth: 890,
@@ -487,12 +529,37 @@ const useApps = (): TaskType[] => {
     {
       component: (
         <Suspense fallback={null}>
-          <TeachingChatBot />
+          <MemorialEdit
+            stack={[]}
+            push={undefined}
+            pop={undefined}
+            top={undefined}
+            memorialApplicationId={0}
+          />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2255,
+      name: '추모관 신청 수정',
+      layer: undefined,
+      appSetup: {
+        Image: search,
+        minWidth: 580,
+        minHeight: 420,
+        setUpWidth: 890,
+        setUpHeight: 577,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <TeachingChatBot chatbotId={1} />
         </Suspense>
       ),
       type: 'App',
       id: 2235,
-      name: '챗봇 학습',
+      name: '빙의',
       layer: undefined,
       appSetup: {
         Image: setting,
@@ -514,7 +581,7 @@ const useApps = (): TaskType[] => {
       name: '분신사바',
       layer: undefined,
       appSetup: {
-        Image: chatbot,
+        Image: isNotGuest ? chatbot : chatbotRejection,
         minWidth: 340,
         minHeight: 500,
         setUpWidth: 800,
@@ -592,9 +659,9 @@ const useApps = (): TaskType[] => {
       appSetup: {
         Image: sulkkagi,
         minWidth: 750,
-        minHeight: 750,
+        minHeight: 780,
         setUpWidth: 800,
-        setUpHeight: 800,
+        setUpHeight: 790,
       },
       visible: false,
     },
@@ -740,77 +807,96 @@ const useApps = (): TaskType[] => {
       name: '추모관 수정 요청 뷰어',
       layer: undefined,
       appSetup: {
-        Image: 'default',
+        Image: search,
         minWidth: 800,
         minHeight: 600,
         setUpWidth: 1100,
         setUpHeight: 800,
       },
       visible: false,
-    },{
-        component: <Suspense fallback={null}>
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
           <CommunityApproach />
-        </Suspense>,
-        type: "App",
-        id: 2246,
-        name: '커뮤니티',
-        layer: undefined,
-        appSetup:{
-          Image : 'default',
-          minWidth : 700,
-          minHeight : 700,
-          setUpWidth : 800,
-          setUpHeight : 562,
-        },
-        visible: true,
-      },{
-        component: <Suspense fallback={null}><Community
-          stack={[]}
-          push={undefined}
-          pop={undefined}
-          top={undefined}
-        /></Suspense>,
-        type: "App",
-        id: 2247,
-        name: 'communityMain',
-        layer: undefined,
-        appSetup:{
-          Image : 'default',
-          minWidth : 700,
-          minHeight : 700,
-          setUpWidth : 800,
-          setUpHeight : 562,
-        },
-        visible: false,
-      },{
-        component: <Suspense fallback={null}><CommunityPost /></Suspense>,
-        type: "App",
-        id: 2248,
-        name: 'communityPost',
-        layer: undefined,
-        appSetup:{
-          Image : 'default',
-          minWidth : 700,
-          minHeight : 700,
-          setUpWidth : 800,
-          setUpHeight : 562,
-        },
-        visible: false,
-      },{
-        component: <Suspense fallback={null}><CommunityPostWrite /></Suspense>,
-        type: "App",
-        id: 2249,
-        name: '게시글 작성',
-        layer: undefined,
-        appSetup:{
-          Image : 'default',
-          minWidth : 700,
-          minHeight : 700,
-          setUpWidth : 800,
-          setUpHeight : 562,
-        },
-        visible: false,
-      },{
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2246,
+      name: '커뮤니티',
+      layer: undefined,
+      appSetup: {
+        Image: community,
+        minWidth: 700,
+        minHeight: 562,
+        setUpWidth: 800,
+        setUpHeight: 562,
+      },
+      visible: true,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <Community
+            stack={[]}
+            push={undefined}
+            pop={undefined}
+            top={undefined}
+          />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2247,
+      name: 'communityMain',
+      layer: undefined,
+      appSetup: {
+        Image: 'default',
+        minWidth: 700,
+        minHeight: 562,
+        setUpWidth: 800,
+        setUpHeight: 562,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <CommunityPost />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2248,
+      name: 'communityPost',
+      layer: undefined,
+      appSetup: {
+        Image: 'default',
+        minWidth: 700,
+        minHeight: 562,
+        setUpWidth: 800,
+        setUpHeight: 562,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <CommunityPostWrite />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2249,
+      name: '게시글 작성',
+      layer: undefined,
+      appSetup: {
+        Image: 'default',
+        minWidth: 700,
+        minHeight: 562,
+        setUpWidth: 800,
+        setUpHeight: 562,
+      },
+      visible: false,
+    },
+    {
       component: <Suspense fallback={null}>{<Judgement />}</Suspense>,
       type: 'App',
       id: 3001,
@@ -819,7 +905,7 @@ const useApps = (): TaskType[] => {
       appSetup: {
         Image: 'defalut',
         minWidth: 700,
-        minHeight: 700,
+        minHeight: 562,
         setUpWidth: 800,
         setUpHeight: 562,
       },
@@ -834,7 +920,7 @@ const useApps = (): TaskType[] => {
       appSetup: {
         Image: 'defalut',
         minWidth: 700,
-        minHeight: 700,
+        minHeight: 562,
         setUpWidth: 800,
         setUpHeight: 562,
       },
@@ -849,11 +935,11 @@ const useApps = (): TaskType[] => {
       appSetup: {
         Image: 'defalut',
         minWidth: 700,
-        minHeight: 700,
+        minHeight: 562,
         setUpWidth: 800,
         setUpHeight: 562,
       },
-      visible: true,
+      visible: false,
     },
     {
       component: <Suspense fallback={null}>{<JudgementChat />}</Suspense>,
@@ -864,11 +950,227 @@ const useApps = (): TaskType[] => {
       appSetup: {
         Image: 'defalut',
         minWidth: 700,
-        minHeight: 700,
+        minHeight: 562,
         setUpWidth: 800,
         setUpHeight: 562,
       },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <RhythmGame />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2246,
+      name: '리듬게임',
+      layer: undefined,
+      appSetup: {
+        Image: game,
+        minWidth: 800,
+        minHeight: 600,
+        setUpWidth: 1288,
+        setUpHeight: 770,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <MyComputerApproach />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2247,
+      name: '추모관 수정 요청',
+      layer: undefined,
+      appSetup: {
+        Image: search,
+        minWidth: 600,
+        minHeight: 500,
+        setUpWidth: 900,
+        setUpHeight: 650,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <MemorialApplicationList
+            stack={[]}
+            push={undefined}
+            pop={undefined}
+            top={undefined}
+          />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2248,
+      name: '내 추모관 신청',
+      layer: undefined,
+      appSetup: {
+        Image: search,
+        minWidth: 580,
+        minHeight: 420,
+        setUpWidth: 890,
+        setUpHeight: 577,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <MemorialApplicationListMain
+            stack={[]}
+            push={undefined}
+            pop={undefined}
+            top={undefined}
+          />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2249,
+      name: 'memorialApplicationListMain',
+      layer: undefined,
+      appSetup: {
+        Image: search,
+        minWidth: 580,
+        minHeight: 420,
+        setUpWidth: 890,
+        setUpHeight: 577,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <Settings />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2254,
+      name: '설정',
+      layer: undefined,
+      appSetup: {
+        Image: setting,
+        minWidth: 600,
+        minHeight: 400,
+        setUpWidth: 700,
+        setUpHeight: 500,
+      },
       visible: true,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <MemorialApplicationListApproach
+            window={{}}
+            setWindow={() => {}}
+            setUpHeight={577}
+            setUpWidth={890}
+          />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2250,
+      name: '추모관 신청 목록',
+      layer: undefined,
+      appSetup: {
+        Image: memorial,
+        minWidth: 580,
+        minHeight: 420,
+        setUpWidth: 890,
+        setUpHeight: 577,
+      },
+      visible: true,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <MemorialApplicationViewer
+            stack={[]}
+            push={undefined}
+            pop={undefined}
+            top={undefined}
+            memorialApplicationId={0}
+          />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2251,
+      name: '추모관 신청 뷰어',
+      layer: undefined,
+      appSetup: {
+        Image: search,
+        minWidth: 800,
+        minHeight: 600,
+        setUpWidth: 1100,
+        setUpHeight: 800,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <Notification />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2252,
+      name: '공지사항',
+      layer: undefined,
+      appSetup: {
+        Image: book,
+        minWidth: 600,
+        minHeight: 400,
+        setUpWidth: 800,
+        setUpHeight: 600,
+      },
+      visible: true,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <NotificationViewer />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2253,
+      name: '공지사항 뷰어',
+      layer: undefined,
+      appSetup: {
+        Image: book,
+        minWidth: 600,
+        minHeight: 400,
+        setUpWidth: 800,
+        setUpHeight: 480,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <ReconfirmAlert
+            icon=""
+            text={<></>}
+            confirmText=""
+            onClick={() => undefined}
+          />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2256,
+      name: '재확인',
+      layer: undefined,
+      appSetup: {
+        Image: setting,
+        minWidth: 690,
+        minHeight: 250,
+        setUpWidth: 690,
+        setUpHeight: 250,
+      },
+      visible: false,
     },
   ];
 

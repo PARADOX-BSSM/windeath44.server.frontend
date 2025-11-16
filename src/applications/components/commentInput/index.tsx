@@ -1,36 +1,92 @@
-import React from "react";
+import React from 'react';
 import * as _ from './style';
 import ProfileImg from '@/assets/profile/choten.svg';
 import Emoticon from '@/assets/community/emoticon.svg';
-import CommunityBtn from "../communityBtn";
+import CommunityBtn from '../communityBtn';
+import { useState } from 'react';
+import { usePostCommentCreate } from '@/api/community/postCommentCreate';
+import Seori from '@/assets/sulkkagi/black_stone.svg';
+import { alerterAtom } from '@/atoms/alerter';
+import { useAtomValue } from 'jotai';
+import { taskTransformerAtom } from '@/atoms/taskTransformer';
 
-interface PostsProps {
-    name: string;
-    id: string;
-    profileImage: string;
-    onClick?: (() => void) | ((e: React.MouseEvent<HTMLButtonElement>) => Promise<void> | void);
+interface CommentInputProps {
+  name?: string;
+  userId?: string;
+  postId: number;
+  profile?: string;
+  parentCommentId?: number | null;
 }
-const Posts : React.FC<PostsProps> = ({ name, id, profileImage, onClick })=>{
-    return(
-        <_.Post>
-            <_.Line></_.Line>
-            <_.ProfileImg imgUrl={profileImage||ProfileImg} />
-            <_.PostMain>
-                <_.PostInfo>
-                    <_.Name>{name}</_.Name>
-                    <_.UserId>@{id}</_.UserId>
-                </_.PostInfo>
-                <_.CommentMain>
-                    <_.InputArea>
-                        <_.Input type="text" placeholder="자유롭게 의견을 작성해보세요!" />
-                        <_.Icon src={Emoticon} />
-                    </_.InputArea>
-                    
-                    <CommunityBtn name="게시" type='submit' onClick={onClick} />
-                </_.CommentMain>
-            </_.PostMain>
-        </_.Post>
-    )
-}
+const CommentInput: React.FC<CommentInputProps> = ({
+  name = '게스트',
+  userId = 'guest_user',
+  postId,
+  profile = '',
+  parentCommentId,
+}) => {
+  const postCreateCommentMutation = usePostCommentCreate();
+  const taskTransform = useAtomValue(taskTransformerAtom);
+  const setAlert = useAtomValue(alerterAtom);
 
-export default Posts;
+  const createComment = () => {
+    postCreateCommentMutation.mutate(
+      {
+        post_id: postId,
+        user_id: userId,
+        body: commentInput,
+        parentCommentId: parentCommentId,
+      },
+      {
+        onSuccess: () => {
+          console.log('댓글 작성 완료');
+        },
+
+        onError: () => {
+          if (setAlert) {
+            setAlert(Seori, <>댓글이 작성되지 않았습니다.</>, () => {
+              taskTransform?.('경고', '');
+            });
+          }
+        },
+      },
+    );
+  };
+
+  const [commentInput, setCommentInput] = useState<string>('');
+
+  return (
+    <_.Post>
+      <_.Line></_.Line>
+      <_.ProfileImg imgUrl={profile || ProfileImg} />
+      <_.PostMain>
+        <_.PostInfo>
+          <_.Name>{name}</_.Name>
+          <_.UserId>@{userId}</_.UserId>
+        </_.PostInfo>
+        <_.CommentMain>
+          <_.InputArea>
+            <_.Input
+              type="text"
+              placeholder={
+                parentCommentId
+                  ? '자유롭게 대댓글을 작성해보세요!'
+                  : '자유롭게 의견을 작성해보세요!'
+              }
+              value={commentInput}
+              onChange={(e) => setCommentInput(e.target.value)}
+            />
+            <_.Icon src={Emoticon} />
+          </_.InputArea>
+
+          <CommunityBtn
+            name="게시"
+            type="submit"
+            onClick={createComment}
+          />
+        </_.CommentMain>
+      </_.PostMain>
+    </_.Post>
+  );
+};
+
+export default CommentInput;

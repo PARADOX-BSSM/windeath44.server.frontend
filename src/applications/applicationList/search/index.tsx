@@ -3,11 +3,11 @@ import * as _ from '@/applications/applicationList/search/style.ts';
 import Folder from '@/assets/search/folder.svg';
 import Search_task from '@/applications/applicationList/search/search_task';
 import Viewer from '@/applications/applicationList/search/viewer';
-import { useGetIntegratedCharactersQuery } from '@/api/anime/getCharactersByIntegratedSearching';
+import { useGetIntegratedCharactersOffsetQuery } from '@/api/anime/getCharactersByIntegratedOffsetSearching';
 import { fetchAnimesPage } from '@/api/anime/getAnimes';
-import { useQuery } from '@tanstack/react-query';
-import api from '@/api/axiosInstance';
-import { memorial } from '@/config';
+import { useGetMemorialsCharacterFilteredQuery } from '@/api/memorial/getMemorialsCharacterFiltered';
+import MemorialBtn from '@/applications/components/memorialBtn';
+import { set } from '@/applications/utility/signUp/style';
 
 type Character = { characterId: number; [k: string]: any };
 type AnimeItem = { animeId: number; [k: string]: any };
@@ -51,18 +51,27 @@ const Search = () => {
   const debouncedAni = useDebounce(ani, 500);
   const debouncedName = useDebounce(name, 500);
 
-  // 페이지네이션 (cursor 기반)
-  const [cursorId, setCursorId] = useState<number | undefined>(undefined);
+  // 페이지네이션
+  // const [cursorId, setCursorId] = useState<number | undefined>(undefined);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [maxPage, setMaxPage] = useState(1);
+  const [size, setSize] = useState(5);
 
   // ------ 파라미터 정규화 ------
   const deathParam = useMemo(() => (fillDeath === '모두' ? undefined : fillDeath), [fillDeath]);
-  const nameParam = useMemo(() => (debouncedName.trim() ? debouncedName.trim() : undefined), [debouncedName]);
-  const aniParam = useMemo(() => (debouncedAni.trim() ? debouncedAni.trim() : undefined), [debouncedAni]);
+  const nameParam = useMemo(
+    () => (debouncedName.trim() ? debouncedName.trim() : undefined),
+    [debouncedName],
+  );
+  const aniParam = useMemo(
+    () => (debouncedAni.trim() ? debouncedAni.trim() : undefined),
+    [debouncedAni],
+  );
 
   // 새 검색 조건이 생기면 커서 리셋
-  useEffect(() => {
-    setCursorId(undefined);
-  }, [nameParam, deathParam, aniParam]);
+  // useEffect(() => {
+  //   setCursorId(undefined);
+  // }, [nameParam, deathParam, aniParam]);
 
   // ------ 애니 이름 -> 애니 ID 조회 (검색어 있을 때만) ------
   const [animesResp, setAnimesResp] = useState<any>(null);
@@ -79,7 +88,7 @@ const Search = () => {
       setIsAnimesLoading(true);
       setIsAnimesError(false);
       try {
-        const resp = await fetchAnimesPage({ size: 50, animeName: aniParam });
+        const resp = await fetchAnimesPage({ size: size, animeName: aniParam });
         if (!aborted) setAnimesResp(resp);
       } catch (e) {
         if (!aborted) setIsAnimesError(true);
@@ -88,6 +97,7 @@ const Search = () => {
       }
     };
     run();
+
     return () => {
       aborted = true;
     };
@@ -103,45 +113,37 @@ const Search = () => {
   }, [animesResp, aniParam]);
 
   // ------ 1) 통합 캐릭터 검색 (항상 실행: 비어 있으면 전체 결과) ------
-  const { data: integrated, isLoading: isIntegratedLoading, isError: isIntegratedError } = useGetIntegratedCharactersQuery({
+  const {
+    data: integrated,
+    isLoading: isIntegratedLoading,
+    isError: isIntegratedError,
+  } = useGetIntegratedCharactersOffsetQuery({
     name: nameParam, // 비어있으면 sanitize에서 제거 → 전체
     animeId: animeIdParam, // undefined면 제거 → 전체
     deathReason: deathParam, // undefined면 제거 → 전체
-    size: 100,
-    cursorId,
+    size: size,
+    page: pageNumber - 1,
     memorialState: 'MEMORIALIZING',
   });
 
   const normalized = useMemo(() => {
     const p = integrated as any;
 
-    // console.log('Normalizing integrated data:', p);
+    console.log('Normalizing integrated data:', p);
 
     let values = [];
 
-    // 다양한 응답 구조 처리
-    if (p?.data?.data && Array.isArray(p.data.data)) {
-      values = p.data.data; // { data: { data: [...] } }
-    } else if (p?.values && Array.isArray(p.values)) {
-      values = p.values; // { values: [...] }
-    } else if (p?.data?.values && Array.isArray(p.data.values)) {
-      values = p.data.values; // { data: { values: [...] } }
-    } else if (Array.isArray(p?.data)) {
-      values = p.data; // { data: [...] }
-    } else if (Array.isArray(p)) {
-      values = p; // [...]
+    if (p?.data?.values && Array.isArray(p?.data?.values)) {
+      values = p.data?.values;
     }
 
-    const next =
-      (typeof p?.nextCursorId === 'number' && p.nextCursorId) ??
-      (typeof p?.data?.nextCursorId === 'number' && p.data.nextCursorId) ??
-      (typeof p?.data?.data?.nextCursorId === 'number' && p.data.data.nextCursorId) ??
-      undefined;
+    const total = p?.data?.total;
+    setMaxPage(total ? Math.ceil(total / size) : 1);
 
-    // console.log('Normalized values:', values, 'nextCursorId:', next);
+    console.log('Normalized values:', values, 'total:', total, 'maxPage:', maxPage);
 
-    return { values, nextCursorId: next };
-  }, [integrated]);
+    return { values, total };
+  }, [integrated, pageNumber]);
 
   const characters = normalized.values as Character[];
 
@@ -151,40 +153,23 @@ const Search = () => {
     [characters],
   );
 
-  // useEffect(() => {
-  //   console.log(characters);
-  // }, [characters]);
-
   // queryKey 안정화: 정렬된 복사본 사용
-  const characterKey = useMemo(
-    () => characterIds,
-    [characterIds],
-  );
+  const characterKey = useMemo(() => characterIds, [characterIds]);
 
   // ------ 2) 캐릭터 ID로 추모관 목록 조회 ------
   const {
     data: memorialsResp,
     isLoading: isMemorialLoading,
     isError: isMemorialError,
-  } = useQuery({
-    queryKey: ['memorials', 'recently-updated', 1, characterKey],
-    enabled: characterKey.length > 0 && !isAnimesLoading && (!aniParam || animeIdParam !== undefined),
-    queryFn: async () => {
-      const resp = await api.post(
-        `${memorial}/character-filtered`,
-        { orderBy: 'recently-updated', page: 1, characters: characterKey },
-        { withCredentials: true },
-      );
-      return resp.data as {
-        message: string;
-        data: { memorialId: number; characterId: number }[];
-      };
-    },
-    staleTime: 30_000,
-    gcTime: 5 * 60_000,
+  } = useGetMemorialsCharacterFilteredQuery({
+    orderBy: 'recently-updated',
+    page: 1,
+    characters: characterKey,
+    enabled:
+      characterKey.length > 0 && !isAnimesLoading && (!aniParam || animeIdParam !== undefined),
   });
 
-  const memorials = memorialsResp?.data ?? [];
+  const memorials = memorialsResp?.data?.values ?? [];
 
   // useEffect(() => {
   //   console.log('Search - Characters:', characters.length, 'Memorials:', memorials.length);
@@ -198,18 +183,18 @@ const Search = () => {
   // }, [memorials, characters, isAnimesLoading, isMemorialLoading, isAnimesError, isMemorialError, isIntegratedLoading, isIntegratedError, nameParam, animeIdParam, deathParam, integrated, characterIds, characterKey, aniParam]);
 
   // 레이아웃 관찰
-  useEffect(() => {
-    const el = wrapperRef.current;
-    if (!el) return;
-    const ro = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        const next = entry.contentRect.height >= 412;
-        setIsColumn((prev) => (prev === next ? prev : next));
-      }
-    });
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
+  // useEffect(() => {
+  //   const el = wrapperRef.current;
+  //   if (!el) return;
+  //   const ro = new ResizeObserver((entries) => {
+  //     for (const entry of entries) {
+  //       const next = entry.contentRect.height >= 412;
+  //       setIsColumn((prev) => (prev === next ? prev : next));
+  //     }
+  //   });
+  //   ro.observe(el);
+  //   return () => ro.disconnect();
+  // }, []);
 
   return (
     <_.main>
@@ -227,10 +212,77 @@ const Search = () => {
             setName={setName}
           />
 
-          <Viewer
-            characters={characters}
-            memorials={memorials}
-          />
+          <_.PagingContainer>
+            <Viewer
+              isMemorialLoading={isMemorialLoading}
+              characters={characters}
+              memorials={memorials}
+            />
+            <_.Paging>
+              <MemorialBtn
+                name="1"
+                selected={false}
+                type="menu"
+                onClick={() => {
+                  setPageNumber(1);
+                }}
+                active={true}
+                width="32px"
+                height="32px"
+                fontSize="16px"
+              />
+              <_.PagingGap>...</_.PagingGap>
+              <MemorialBtn
+                name={`${pageNumber - 1}`}
+                selected={false}
+                type={pageNumber === 1 ? 'hidden' : 'menu'}
+                onClick={() => {
+                  setPageNumber(pageNumber - 1);
+                }}
+                active={true}
+                width="32px"
+                height="32px"
+                fontSize="16px"
+              />
+              <MemorialBtn
+                name={`${pageNumber}`}
+                selected={true}
+                type="menu"
+                onClick={() => {
+                  setPageNumber(pageNumber);
+                }}
+                active={true}
+                width="32px"
+                height="32px"
+                fontSize="16px"
+              />
+              <MemorialBtn
+                name={`${pageNumber + 1}`}
+                selected={false}
+                type={pageNumber === maxPage ? 'hidden' : 'menu'}
+                onClick={() => {
+                  setPageNumber(pageNumber + 1);
+                }}
+                active={true}
+                width="32px"
+                height="32px"
+                fontSize="16px"
+              />
+              <_.PagingGap>...</_.PagingGap>
+              <MemorialBtn
+                name={`${maxPage}`}
+                selected={false}
+                type="menu"
+                onClick={() => {
+                  setPageNumber(maxPage);
+                }}
+                active={true}
+                width="32px"
+                height="32px"
+                fontSize="16px"
+              />
+            </_.Paging>
+          </_.PagingContainer>
         </_.search_task>
 
         <_.object>

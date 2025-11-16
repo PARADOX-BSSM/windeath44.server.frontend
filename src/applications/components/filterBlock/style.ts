@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 export const filter_block = styled.div`
   position: relative;
   width: 100%;
-  height: 100%;
+  height: fit-content;
 `;
 
 export const black = styled.div`

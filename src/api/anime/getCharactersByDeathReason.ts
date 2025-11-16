@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import api from '@/api/axiosInstance';
 import { anime } from '@/config';
+import axios from 'axios';
 
 interface FetchCharactersParams {
   deathReason?: string;
@@ -9,7 +9,7 @@ interface FetchCharactersParams {
 }
 
 export const fetchCharacters = async ({ deathReason, cursorId, size }: FetchCharactersParams) => {
-  const response = await api.get(`${anime}/characters/search/death-reason`, {
+  const response = await axios.get(`${anime}/characters/search/death-reason`, {
     params: { deathReason, cursorId, size },
   });
   return response.data;

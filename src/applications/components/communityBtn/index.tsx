@@ -8,13 +8,7 @@ interface PropsType {
   type?: string;
 }
 
-const CommunityBtn = ({
-  name,
-  selected = false,
-  onClick,
-  type = 'none',
-}: PropsType) => {
-
+const CommunityBtn = ({ name, selected = false, onClick, type = 'none' }: PropsType) => {
   if (type === 'submit') {
     return (
       <_.SubmitActive

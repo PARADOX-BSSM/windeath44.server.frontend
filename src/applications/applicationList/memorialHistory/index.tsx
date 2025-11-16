@@ -6,8 +6,22 @@ import { useGetMemorialPullRequestsQuery } from '@/api/memorial/getMemorialPullR
 import { useGetUsersQuery } from '@/api/user/getUsers';
 import { alerterAtom } from '@/atoms/alerter';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
-import Choten from '@/assets/profile/choten.svg';
+import Seori from '@/assets/sulkkagi/black_stone.svg';
 import { useEffect, useMemo } from 'react';
+
+// 날짜 포맷팅 함수
+const formatDate = (dateString: string) => {
+  const d = new Date(dateString);
+  const Y = d.getFullYear();
+  const M = String(d.getMonth() + 1).padStart(2, '0');
+  const D = String(d.getDate()).padStart(2, '0');
+  let h = d.getHours();
+  const m = String(d.getMinutes()).padStart(2, '0');
+  const ampm = h >= 12 ? '오후' : '오전';
+  if (h > 12) h -= 12;
+  if (h === 0) h = 12;
+  return `${Y}-${M}-${D}. ${ampm} ${h}:${m}`;
+};
 
 interface dataStructureProps {
   stack: any[];
@@ -72,7 +86,7 @@ const MemorailHistory = ({
   useEffect(() => {
     if (pullRequestsError) {
       setAlert?.(
-        Choten,
+        Seori,
         <>
           수정 기록을 가져오는 중 오류가 발생했습니다.
           <br />
@@ -88,7 +102,7 @@ const MemorailHistory = ({
   useEffect(() => {
     if (usersError) {
       setAlert?.(
-        Choten,
+        Seori,
         <>
           사용자 정보를 가져오는 중 오류가 발생했습니다.
           <br />
@@ -109,7 +123,7 @@ const MemorailHistory = ({
             <_.InnerHeader>
               <_.LeftHeader>
                 <_.Title>{characterName}</_.Title>
-                <_.SubTitle>최근 수정: {lastModified}</_.SubTitle>
+                <_.SubTitle>최근 수정: {formatDate(lastModified)}</_.SubTitle>
               </_.LeftHeader>
               <_.GoToBackBtn
                 onClick={() => {

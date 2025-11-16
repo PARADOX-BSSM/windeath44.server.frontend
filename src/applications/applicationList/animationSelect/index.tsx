@@ -20,7 +20,7 @@ interface Anime {
 const AnimationSelect: React.FC = () => {
   const taskSearch = useAtomValue(taskSearchAtom);
   const [, setInputValue] = useAtom(inputPortage);
-  const [, , removeTask] = useProcessManager();
+  const [taskList, , removeTask] = useProcessManager();
 
   const [name, setName] = useState<string>('');
 
@@ -85,7 +85,7 @@ const AnimationSelect: React.FC = () => {
                   anime: animation.name,
                   animeId: animation.animeId,
                 }));
-                const task = taskSearch?.('애니메이션 선택');
+                const task = taskList.find((t) => t.name === '애니메이션 선택');
                 if (task) removeTask(task);
               }}
             >

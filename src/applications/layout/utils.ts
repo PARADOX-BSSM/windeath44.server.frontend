@@ -1,5 +1,4 @@
-import { toNumber } from "@/modules/typeModule.tsx";
-
+import { toNumber } from '@/modules/typeModule.tsx';
 
 export function getCorner(cursorVec: number[], window: React.CSSProperties) {
   const [x, y] = cursorVec;
@@ -14,15 +13,15 @@ export function getCorner(cursorVec: number[], window: React.CSSProperties) {
 
 export function widthCondition(corner: [boolean, boolean, boolean]) {
   const [nearRight, nearLeft, nearBottom] = corner;
-  return ((nearRight && nearBottom) || (nearLeft && nearBottom) || nearRight || nearLeft);
+  return (nearRight && nearBottom) || (nearLeft && nearBottom) || nearRight || nearLeft;
 }
 export function heightCondition(corner: [boolean, boolean, boolean]) {
   const [nearRight, nearLeft, nearBottom] = corner;
-  return ((nearRight && nearBottom) || (nearLeft && nearBottom) || nearBottom);
+  return (nearRight && nearBottom) || (nearLeft && nearBottom) || nearBottom;
 }
 export function leftCondition(corner: [boolean, boolean, boolean]) {
   const [, nearLeft, nearBottom] = corner;
-  return ((nearLeft && nearBottom) || nearLeft);
+  return (nearLeft && nearBottom) || nearLeft;
 }
 
 export type DragParams = {
@@ -30,8 +29,10 @@ export type DragParams = {
 };
 
 export interface ApplicationProps {
+  uid?: number;
+  instanceId?: string;
   name: string;
-  type: "App" | "Shell";
+  type: 'App' | 'Shell';
   appSetup: {
     minWidth: number;
     minHeight: number;

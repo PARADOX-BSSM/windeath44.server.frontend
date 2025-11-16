@@ -3,18 +3,20 @@ import Logo from '@/assets/windeath44.svg';
 import Choten from '@/assets/profile/choten.svg';
 import Inputs from '@/applications/components/inputs';
 import { useAtom, useAtomValue } from 'jotai';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useLogIn } from '@/api/auth/logIn';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
 import MemorialBtn from '@/applications/components/memorialBtn';
 import { isLogInedAtom } from '@/atoms/windowManager';
 import { alerterAtom } from '@/atoms/alerter';
 import { AxiosError } from 'axios';
+import Loading from '@/applications/components/loading';
 type Props = {
   changeToSignUp: () => void;
   changeToEmailCheck: () => void;
+  changeToFindId: () => void;
 };
-const LogIn = ({ changeToSignUp, changeToEmailCheck }: Props) => {
+const LogIn = ({ changeToSignUp, changeToEmailCheck , changeToFindId}: Props) => {
   const [userId, setUserId] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const logInMutation = useLogIn();
@@ -45,40 +47,25 @@ const LogIn = ({ changeToSignUp, changeToEmailCheck }: Props) => {
     e.preventDefault();
     const id = userId;
     if (id.length === 0) {
-      setAlert?.(
-        Choten,
-        <>
-          아이디가 잘못되었습니다.
-          <br />
-          다시 입력해 주세요.
-        </>,
-        () => {
-          taskTransform?.('경고', '');
-        },
-      );
+      setAlert?.(Choten, <>아이디를 입력하지 않았습니다.</>, () => {
+        taskTransform?.('경고', '');
+      });
       return;
     }
     if (password.length === 0) {
-      setAlert?.(
-        Choten,
-        <>
-          비밀번호가 잘못되었습니다.
-          <br />
-          다시 입력해 주세요.
-        </>,
-        () => {
-          taskTransform?.('경고', '');
-        },
-      );
+      setAlert?.(Choten, <>비밀번호를 입력하지 않았습니다.</>, () => {
+        taskTransform?.('경고', '');
+      });
       return;
     }
     logInMutation.mutate(
       { id, password },
       {
-        onSuccess: (token) => {
+        onSuccess: () => {
           // console.log('로그인 성공 토큰 :', token);
           setIsLogIned('true');
-          taskTransform?.('LogIn', '');
+          taskTransform?.('로그인', '');
+          window.location.reload();
         },
         onError: (error) => {
           console.error('로그인 실패', error);
@@ -127,15 +114,17 @@ const LogIn = ({ changeToSignUp, changeToEmailCheck }: Props) => {
     );
   };
 
-  useEffect(() => {
-    localStorage.setItem('isLogIned', isLogIned);
-  }, [isLogIned]);
-
   const buttonWidth = '144px';
   const buttonHeight = '42px';
   const buttonFontSize = '20px';
   return (
     <_.tempMain>
+      {logInMutation.isPending && (
+        <Loading
+          text="로그인 중..."
+          overlay={true}
+        />
+      )}
       <_.tempImage>
         <img
           src={Logo}
@@ -157,8 +146,8 @@ const LogIn = ({ changeToSignUp, changeToEmailCheck }: Props) => {
           <MemorialBtn
             name="손님으로 입장"
             onClick={() => {
-              setIsLogIned('guest');
-              taskTransform?.('LogIn', '');
+              setIsLogIned('true');
+              taskTransform?.('로그인', '');
             }}
             type="submit"
             width={buttonWidth}
@@ -169,6 +158,15 @@ const LogIn = ({ changeToSignUp, changeToEmailCheck }: Props) => {
           <MemorialBtn
             name="회원가입"
             onClick={() => changeToSignUp()}
+            type="submit"
+            width={buttonWidth}
+            height={buttonHeight}
+            fontSize={buttonFontSize}
+            active={true}
+          />
+          <MemorialBtn
+            name="아이디 찾기"
+            onClick={() => changeToFindId()}
             type="submit"
             width={buttonWidth}
             height={buttonHeight}
