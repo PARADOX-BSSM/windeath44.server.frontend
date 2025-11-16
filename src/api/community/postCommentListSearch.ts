@@ -5,7 +5,7 @@ import api from '../axiosInstance';
 
 interface commentData {
   message: string;
-  comments: {
+  data: {
     commentId: number;
     postId: number;
     userId: string;

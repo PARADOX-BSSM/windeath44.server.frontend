@@ -98,7 +98,7 @@ const CommunityPost = ({ stack, push, pop, top, postId }: postProps) => {
             postId={postId}
             profile={currentUser?.profile}
           />
-          {postCommentsData.data?.comments?.map((data) => (
+          {postCommentsData.data?.data?.map((data) => (
             <Comment
               user={{ name: data.name, userId: data.userId, profile: data.profile }}
               post={{
@@ -111,17 +111,6 @@ const CommunityPost = ({ stack, push, pop, top, postId }: postProps) => {
               }}
             />
           ))}
-          <Comment
-            user={{ name: '방태양', userId: 'noah_byte', profile: '' }}
-            post={{
-              postId: 1,
-              commentId: 1,
-              body: '아니 이건 진짜 아니지. 살려내라.',
-              likesCount: 12,
-              createdAt: '',
-              updatedAt: '',
-            }}
-          />
         </_.PostArea>
       </_.Main>
       <JudgementPreview />
