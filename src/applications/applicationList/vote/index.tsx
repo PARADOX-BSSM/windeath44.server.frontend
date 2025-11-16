@@ -6,6 +6,15 @@ import balance_right from '@/assets/judgement/balance_right.png';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { Event_Count, Event_Past, Open_Vote, Sep_window } from './state_manage';
 import MemorialBtn from '@/applications/components/memorialBtn';
+import heart from '@/assets/community/heart_fill.svg';
+import empty_heart from '@/assets/community/heart_line.svg';
+import {
+  usedeleteJudgementLike,
+  usegetJudgementLike,
+  usepostJudgementLike,
+} from '@/api/judgement/judgementLike';
+import { judgement } from '@/config';
+import { useGetVote, usePostVote } from '@/api/judgement/judgementVote';
 
 interface VoteProps {
   stack: any[];
@@ -13,8 +22,9 @@ interface VoteProps {
   pop: any;
   top: any;
 
-  aName: string;
-  cName: string;
+  judgement_id: number;
+  a_name: string;
+  c_name: string;
   img: string;
   like: number;
   vote: number;
@@ -28,20 +38,33 @@ const Judgement_Vote = ({
   pop,
   top,
   like,
-  aName,
-  cName,
+  judgement_id,
+  a_name,
+  c_name,
   vote,
   heaven_count,
   hell_count,
   img,
 }: VoteProps) => {
+  useEffect(() => {
+    getLike({ judgement_id });
+  }, []);
+
   const [isHeaven, setIsHeaven] = useState(false);
   const [isHell, setIsHell] = useState(false);
+  const [currentHeart, setHeart] = useState(empty_heart);
 
   const count = useAtomValue(Event_Count);
   const count_p = useAtomValue(Event_Past);
   const set_count_p = useSetAtom(Event_Past);
   const Set_open_vote = useSetAtom(Open_Vote);
+
+  const { mutate: postLike } = usepostJudgementLike();
+  const { mutate: deleteLike } = usedeleteJudgementLike();
+  const { mutate: getLike } = usegetJudgementLike();
+
+  const { mutate: postVote } = usePostVote();
+  const { mutate: getVote } = useGetVote();
 
   useEffect(() => {
     if (count != count_p) {
@@ -52,6 +75,7 @@ const Judgement_Vote = ({
 
   useEffect(() => {
     Set_open_vote(true);
+    getVote({ judgement_id });
   }, []);
 
   return (
@@ -115,6 +139,8 @@ const Judgement_Vote = ({
             fontSize="26px"
             selected={isHeaven}
             onClick={() => {
+              console.log(isHeaven);
+              postVote({ judgement_id: judgement_id, is_heaven: isHeaven });
               setIsHeaven(true);
               setIsHell(false);
             }}
@@ -128,6 +154,8 @@ const Judgement_Vote = ({
             fontSize="26px"
             selected={isHell}
             onClick={() => {
+              console.log(isHeaven);
+              postVote({ judgement_id: judgement_id, is_heaven: isHeaven });
               setIsHell(true);
               setIsHeaven(false);
             }}
@@ -139,8 +167,20 @@ const Judgement_Vote = ({
             <_.Profile src={img} />
           </_.Profile_Div>
           <_.Name_Div>
-            <_.CName>{cName}</_.CName>
-            <_.AName>{aName}</_.AName>
+            <_.CName>{c_name}</_.CName>
+            <_.AName>{a_name}</_.AName>
+            <_.Interact>
+              <_.LikeImg
+                src={currentHeart}
+                onClick={() => {
+                  currentHeart === heart
+                    ? deleteLike({ judgement_id })
+                    : postLike({ judgement_id });
+                  setHeart(currentHeart === heart ? empty_heart : heart);
+                }}
+              ></_.LikeImg>
+              <_.LikeText>{like}</_.LikeText>
+            </_.Interact>
           </_.Name_Div>
         </_.Info>
       </_.Main_Display>

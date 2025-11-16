@@ -9,8 +9,8 @@ import { useEffect } from 'react';
 interface JudgementObjProps {
   judgement_id: number;
   rank: number;
-  cName: string;
-  aName: string;
+  c_name: string;
+  a_name: string;
   img: string | undefined;
   like: number;
   vote: number;
@@ -25,8 +25,8 @@ interface JudgementObjProps {
 const Judgement_Object = ({
   judgement_id,
   rank,
-  cName,
-  aName,
+  c_name,
+  a_name,
   img,
   like,
   vote,
@@ -57,8 +57,9 @@ const Judgement_Object = ({
     pop: pop,
     top: top,
 
-    aName: aName,
-    cName: cName,
+    judgement_id: judgement_id,
+    a_name: a_name,
+    c_name: c_name,
     img: img,
     like: like,
     vote: vote,
@@ -71,8 +72,8 @@ const Judgement_Object = ({
       <_.Left>
         <MainInfo
           rank={rank}
-          cName={cName}
-          aName={aName}
+          cName={c_name}
+          aName={a_name}
           img={img}
           like={like}
           voteNum={vote}

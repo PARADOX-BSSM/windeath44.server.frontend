@@ -6,6 +6,7 @@ import FilterBlock from '@/applications/components/filterBlock/index.tsx';
 import JudgementChatObj from '@/applications/components/judgementChatObj/index.tsx';
 import { useAtomValue } from 'jotai';
 import { chat_num, select_chat } from '@/applications/components/judgementChatObj/state_manager.ts';
+import { useGetJudgementChats } from '@/api/judgement/judgementChat.ts';
 
 const sort = ['최신', '인기'];
 
@@ -14,15 +15,30 @@ interface judgementChatProps {
 }
 
 const JudgementChat = ({ judgement_id }: judgementChatProps) => {
+  const [ChatList, setChatList] = useState([]);
+  const { mutate: getChats, data } = useGetJudgementChats();
+
+  useEffect(() => {
+    getChats(
+      { judgement_id },
+      {
+        onSuccess: (data) => {
+          console.log(data.data);
+          setChatList(data.data);
+        },
+      },
+    );
+  }, []);
+
   const chat_list = ChatList.sort((a, b) => {
-    const aKey = a.parent_id ?? a.id; // parent_id가 null이면 id 사용
-    const bKey = b.parent_id ?? b.id;
+    const aKey = a.parentCommentId ?? a.commentId; // parent_id가 null이면 id 사용
+    const bKey = b.parentCommentId ?? b.commentId;
 
     // 1차 기준: parent_id 또는 id
     if (aKey !== bKey) return aKey - bKey;
 
     // 2차 기준: id (같은 그룹 내에서 id 오름차순)
-    return a.id - b.id;
+    return a.commentId - b.commentId;
   });
 
   const scroll_ref = useRef(null);
@@ -70,20 +86,20 @@ const JudgementChat = ({ judgement_id }: judgementChatProps) => {
             {chat_list
               .filter(
                 (item) =>
-                  (judgement_id === item.judgement_id && item.parent_id == null) ||
-                  selected === item.parent_id,
+                  (judgement_id === item.judgmentId && item.parentCommentId == null) ||
+                  selected === item.parentCommentId,
               )
               .map((item) => {
                 return (
                   <JudgementChatObj
-                    user_id={item.user_id}
-                    user_name={item.user_name}
-                    id={item.id}
+                    user_id={item.userId}
+                    user_name={item.name}
+                    id={item.commentId}
                     body={item.body}
                     profile={item.profile}
-                    likes_count={item.likes_count}
-                    parent_comment_id={item.parent_id}
-                    child_chat={item.child_chat}
+                    likes_count={item.likesCount}
+                    parent_comment_id={item.parentCommentId}
+                    child_chat={0}
                   />
                 );
               })}

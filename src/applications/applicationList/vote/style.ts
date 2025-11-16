@@ -76,6 +76,25 @@ export const AName = styled.div`
   font-size: 15px;
 `;
 
+export const Interact = styled.div`
+  width: 100%;
+  padding-top: 4px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+`;
+
+export const LikeImg = styled.img`
+  width: 24px;
+  height: 24px;
+
+  z-index: 100;
+`;
+
+export const LikeText = styled.div`
+  font-family: DOSSaemmul;
+`;
+
 /*===============================================================================*/
 
 export const Main_Vote_Live = styled.div`
