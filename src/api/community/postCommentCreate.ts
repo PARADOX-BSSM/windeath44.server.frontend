@@ -46,6 +46,7 @@ const postCommentCreate = async ({
       {
         headers: {
           'user-id': user_id,
+          'Content-Type': 'application/json',
         },
       },
     );

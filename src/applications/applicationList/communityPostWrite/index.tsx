@@ -9,6 +9,7 @@ import Seori from '@/assets/sulkkagi/black_stone.svg';
 import { alerterAtom } from '@/atoms/alerter';
 import { useAtomValue } from 'jotai';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
+import { transform } from 'typescript';
 
 interface postData {
   postId?: string;
@@ -32,10 +33,20 @@ const CommunityPostWrite: React.FC = ({ postId, defaultTitle, defaultBody }: pos
   }, []);
 
   const postCreate = () => {
-    /*if (!currentUserId) {
-      console.log('유저 정보가 없습니다');
+    if (!currentUserId && setAlert) {
+      setAlert(
+        Seori,
+        <>
+          유저 정보를 찾아올 수 없습니다.
+          <br />
+          잠시 후 다시 시도해주세요.
+        </>,
+        () => {
+          taskTransform?.('경고', '');
+        },
+      );
       return;
-    }*/
+    }
 
     postCreateMutation.mutate(
       {

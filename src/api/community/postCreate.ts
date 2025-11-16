@@ -29,9 +29,12 @@ const postCreate = async ({
   });
   try {
     const response: AxiosResponse = await api.post(`${community}/posts`, data, {
-      headers: { 'user-id': user_id },
+      headers: {
+        'user-id': 'user_id',
+        'Content-Type': 'application/json',
+      },
     });
-    return true;
+    return response;
   } catch (error: any) {
     if (error.response?.data) {
       console.log(`게시글 작성 실패: ${JSON.stringify(error.response.data)}`);
@@ -48,7 +51,6 @@ export const usePostCreate = () => {
     },
     onError: (error) => {
       console.error('게시글 작성 실패:', error);
-      alert('게시글 작성에 실패했습니다');
     },
   });
 };
