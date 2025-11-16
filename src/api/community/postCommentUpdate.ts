@@ -26,8 +26,6 @@ interface PostCommentUpdateResponse {
 }
 const postCommentUpdate = async ({ postId, commentId, body }: PostCommentUpdateInterface) => {
   const data = {
-    postId: postId,
-    commentId: commentId,
     body: body,
   };
   try {
@@ -45,7 +43,7 @@ const postCommentUpdate = async ({ postId, commentId, body }: PostCommentUpdateI
   }
 };
 
-export const usePostUpdate = () => {
+export const usePostCommentUpdate = () => {
   return useMutation({
     mutationFn: postCommentUpdate,
     onSuccess: () => {

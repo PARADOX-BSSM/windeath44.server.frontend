@@ -13,7 +13,7 @@ interface IsPostCommentLikedResponse {
 const isPostCommentLiked = async (commentId: number, userId: string) => {
   try {
     const response: AxiosResponse<IsPostCommentLikedResponse> = await api.get(
-      `${community}/posts/commnets/${commentId}/likes`,
+      `${community}/posts/comments/${commentId}/likes`,
       {
         headers: {
           'user-id': userId,

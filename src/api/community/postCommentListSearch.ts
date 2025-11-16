@@ -11,7 +11,7 @@ interface commentData {
     userId: string;
     name: string;
     profile: string;
-    parantsCommentId?: number | null;
+    parentCommentId?: number | null;
     body: string;
     createdAt: string;
     updatedAt: string;

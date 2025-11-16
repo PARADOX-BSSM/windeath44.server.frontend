@@ -41,7 +41,7 @@ const postCommentCreate = async ({
 
   try {
     const response: AxiosResponse<ApiResponse> = await api.post(
-      `${community}/posts/${post_id}/comment`,
+      `${community}/posts/${post_id}/comments`,
       data,
       {
         headers: {
