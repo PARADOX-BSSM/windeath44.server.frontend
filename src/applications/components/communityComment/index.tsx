@@ -106,7 +106,6 @@ const Posts: React.FC<PostsProps> = ({ user, post, refetchComments }) => {
 
     commentUpdateMutation.mutate(
       {
-        postId: post.postId,
         commentId: post.commentId,
         body: editedBody,
       },

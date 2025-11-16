@@ -4,7 +4,6 @@ import { community } from '@/config';
 import api from '../axiosInstance';
 
 interface PostCommentUpdateInterface {
-  postId: number;
   commentId: number;
   body: string;
 }
@@ -24,13 +23,13 @@ interface PostCommentUpdateResponse {
     likesCount: number;
   };
 }
-const postCommentUpdate = async ({ postId, commentId, body }: PostCommentUpdateInterface) => {
+const postCommentUpdate = async ({ commentId, body }: PostCommentUpdateInterface) => {
   const data = {
     body: body,
   };
   try {
     const response: AxiosResponse<PostCommentUpdateResponse> = await api.patch(
-      `${community}/posts/${postId}/comments/${commentId}`,
+      `${community}/posts/comments/${commentId}`,
       data,
     );
     console.log(data);

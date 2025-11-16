@@ -30,7 +30,6 @@ interface ApiResponse {
 
 const postCommentCreate = async ({
   post_id,
-  user_id,
   body,
   parentCommentId,
 }: PostCommentCreateInterface) => {
