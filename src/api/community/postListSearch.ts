@@ -41,8 +41,6 @@ const postListSearch = async ({ title, isBlind, characterId, status }: postListS
       `${community}/posts/list`,
       data,
     );
-    console.log('API 요청 데이터:', data);
-    console.log('API 응답 데이터:', response.data);
     return response.data;
   } catch (error: any) {
     if (error.response?.data) {

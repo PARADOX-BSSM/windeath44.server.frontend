@@ -14,7 +14,7 @@ const postLike = async ({ post_id, user_id }: postLike) => {
       {},
       {
         headers: {
-          'user-id': user_id,
+          'user-id': 'user_id',
         },
       },
     );

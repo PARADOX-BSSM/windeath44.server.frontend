@@ -11,6 +11,7 @@ import { usePostCommentDelete } from '@/api/community/postCommentDelete';
 import { usePostCommentLike } from '@/api/community/postCommentLike';
 import { usePostCommentLikeDelete } from '@/api/community/postCommentLikeDelete';
 import { useIsPostCommentLiked } from '@/api/community/isPostCommentLiked';
+import { usePostCommentUpdate } from '@/api/community/postCommentUpdate';
 import { alerterAtom } from '@/atoms/alerter';
 import { useAtomValue } from 'jotai';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
@@ -31,8 +32,9 @@ interface Post {
 interface PostsProps {
   user: User;
   post: Post;
+  refetchComments: () => void;
 }
-const Posts: React.FC<PostsProps> = ({ user, post }) => {
+const Posts: React.FC<PostsProps> = ({ user, post, refetchComments }) => {
   const { name, userId, profile = '' } = user;
   const { commentId, body, likesCount, createdAt, updatedAt } = post;
   const [isOpen, setIsOpen] = useState(false);
@@ -46,6 +48,7 @@ const Posts: React.FC<PostsProps> = ({ user, post }) => {
   const { mutate: getUser, data: userData } = useGetUserMutation();
   const currentUserId = userData?.data?.userId;
   const commentDeleteMutation = usePostCommentDelete();
+  const commentUpdateMutation = usePostCommentUpdate();
   const commentLikeMutation = usePostCommentLike();
   const commentLikeDeleteMutation = usePostCommentLikeDelete();
 
@@ -91,19 +94,60 @@ const Posts: React.FC<PostsProps> = ({ user, post }) => {
     setEditedBody(body);
   };
 
-  const handleEditSave = () => {};
+  const handleEditSave = () => {
+    if (!editedBody.trim()) {
+      if (setAlert) {
+        setAlert(Seori, <>댓글 내용을 입력해주세요.</>, () => {
+          taskTransform?.('경고', '');
+        });
+      }
+      return;
+    }
+
+    commentUpdateMutation.mutate(
+      {
+        postId: post.postId,
+        commentId: post.commentId,
+        body: editedBody,
+      },
+      {
+        onSuccess: () => {
+          setIsEditing(false);
+          refetchComments();
+        },
+        onError: (error) => {
+          console.error('댓글 수정 실패:', error);
+          if (setAlert) {
+            setAlert(
+              Seori,
+              <>
+                댓글이 수정되지 않았습니다.
+                <br />
+                잠시 후 다시 시도해주세요
+              </>,
+              () => {
+                taskTransform?.('경고', '');
+              },
+            );
+          }
+        },
+      },
+    );
+  };
 
   const handleDelete = () => {
     if (setAlert) {
       setAlert(Seori, <>댓글을 삭제하시겠습니까?</>, () => {
-        if (!post.commentId || !post.commentId) {
+        if (!post.postId || !post.commentId) {
           console.log('게시글 ID, 혹은 댓글 ID가 없습니다');
           return;
         }
         commentDeleteMutation.mutate(
           { post_id: post.postId, comment_id: post.commentId },
           {
-            onSuccess: () => {},
+            onSuccess: () => {
+              refetchComments();
+            },
             onError: (error) => {
               console.error('댓글 삭제 실패:', error);
               setAlert(

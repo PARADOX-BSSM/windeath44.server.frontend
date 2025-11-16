@@ -12,7 +12,7 @@ const postLikeDelete = async ({ post_id, user_id }: postLikeDeleteInterface) => 
   try {
     const response: AxiosResponse = await api.delete(`${community}/posts/${post_id}/likes`, {
       headers: {
-        'user-id': user_id,
+        'user-id': 'user_id',
       },
     });
     return response.data;

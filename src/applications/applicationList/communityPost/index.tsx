@@ -32,7 +32,7 @@ const CommunityPost = ({ stack, push, pop, top, postId }: postProps) => {
   };
 
   const { data } = usePostSingleSearch(postId);
-  const postCommentsData = usePostCommentListSearch(postId);
+  const { data: postCommentsData, refetch: refetchComments } = usePostCommentListSearch(postId);
   const getUserMutation = useGetUserMutation();
   const token = getCookie('access_token');
 
@@ -98,8 +98,9 @@ const CommunityPost = ({ stack, push, pop, top, postId }: postProps) => {
             postId={postId}
             profile={currentUser?.profile}
           />
-          {postCommentsData.data?.data?.map((data) => (
+          {postCommentsData?.data?.map((data) => (
             <Comment
+              key={data.commentId}
               user={{ name: data.name, userId: data.userId, profile: data.profile }}
               post={{
                 postId: data.postId,
@@ -109,6 +110,7 @@ const CommunityPost = ({ stack, push, pop, top, postId }: postProps) => {
                 createdAt: data.createdAt,
                 updatedAt: data.updatedAt,
               }}
+              refetchComments={refetchComments}
             />
           ))}
         </_.PostArea>

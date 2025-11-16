@@ -16,7 +16,7 @@ const isPostCommentLiked = async (commentId: number, userId: string) => {
       `${community}/posts/comments/${commentId}/likes`,
       {
         headers: {
-          'user-id': userId,
+          'user-id': 'userId',
         },
       },
     );
