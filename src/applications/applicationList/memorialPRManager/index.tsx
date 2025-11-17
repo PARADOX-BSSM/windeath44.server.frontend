@@ -13,6 +13,32 @@ import {
 import { useRejectMemorialPullRequestMutation } from '@/api/memorial/rejectMemorialPullRequest';
 import { useState, useEffect } from 'react';
 
+// 날짜 포맷팅 함수
+const formatDate = (dateString: string) => {
+  const d = new Date(dateString);
+  const Y = d.getFullYear();
+  const M = String(d.getMonth() + 1).padStart(2, '0');
+  const D = String(d.getDate()).padStart(2, '0');
+  let h = d.getHours();
+  const m = String(d.getMinutes()).padStart(2, '0');
+  const ampm = h >= 12 ? '오후' : '오전';
+  if (h > 12) h -= 12;
+  if (h === 0) h = 12;
+  return `${Y}-${M}-${D}. ${ampm} ${h}:${m}`;
+};
+
+// PR 상태 변환 함수
+const translatePRState = (state: string): string => {
+  const stateMap: Record<string, string> = {
+    APPROVED: '승인됨',
+    STORED: '저장됨',
+    RESOLVED: '해결됨',
+    REJECTED: '거절됨',
+    PENDING: '대기중',
+  };
+  return stateMap[state] || state;
+};
+
 interface dataStructureProps {
   stack: any[];
   push: any;
@@ -248,8 +274,8 @@ const MemorialPRManager = ({
                             </_.MemorialName>
                             <_.MemorialDetails>
                               <_.DetailText>사용자: {pr.userId}</_.DetailText>
-                              <_.DetailText>상태: {pr.state}</_.DetailText>
-                              <_.DetailText>수정일: {pr.updatedAt}</_.DetailText>
+                              <_.DetailText>상태: {translatePRState(pr.state)}</_.DetailText>
+                              <_.DetailText>수정일: {formatDate(pr.updatedAt)}</_.DetailText>
                             </_.MemorialDetails>
                           </_.MemorialInfo>
 
