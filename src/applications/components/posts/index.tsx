@@ -91,7 +91,9 @@ const Posts = ({ user, post }: PostsProps) => {
           return;
         }
         postDeleteMutation.mutate(post.postId, {
-          onSuccess: () => {},
+          onSuccess: () => {
+            taskTransform?.('경고', '');
+          },
           onError: (error) => {
             console.error('게시글 삭제 실패:', error);
             if (setAlert) {

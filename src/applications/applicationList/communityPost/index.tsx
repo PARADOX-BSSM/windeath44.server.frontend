@@ -15,6 +15,7 @@ import { useGetUserMutation } from '@/api/user/getUser';
 import { getCookie } from '@/api/auth/cookie';
 import { useEffect, useState } from 'react';
 
+//todo: 스켈레톤(마법진)만들어서 전체 랜더링 되기 전에 안 띄울 수 있게
 interface postProps {
   stack: any[];
   push: any;
