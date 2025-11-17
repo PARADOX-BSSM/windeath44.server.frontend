@@ -48,7 +48,7 @@ const MemorialPRDetail = ({
               <_.InfoTitle>저장 정보</_.InfoTitle>
               <_.InfoGrid>
                 <_.InfoItem>
-                  <_.InfoLabel>커밋 ID:</_.InfoLabel>
+                  <_.InfoLabel>저장 ID:</_.InfoLabel>
                   <_.InfoValue>{commitData.memorialCommitId}</_.InfoValue>
                 </_.InfoItem>
                 <_.InfoItem>
