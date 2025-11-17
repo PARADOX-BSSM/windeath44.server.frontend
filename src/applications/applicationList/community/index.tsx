@@ -15,8 +15,9 @@ import { getCookie } from '@/api/auth/cookie.ts';
 import { alerterAtom } from '@/atoms/alerter';
 
 enum sortOption {
-  Latest = '최신순',
-  Popular = '인기순',
+  normal = '기본순',
+  latest = '최신순',
+  popular = '인기순',
 }
 interface User {
   name: string;
@@ -43,7 +44,7 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
   const postListSearchMutation = usePostListSearch();
 
   const [isOpen, setIsOpen] = useState(false);
-  const [sort, setSort] = useState(sortOption.Latest);
+  const [sort, setSort] = useState(sortOption.normal);
   const [active, setActive] = useState('humor');
   const [search, setSearch] = useState('');
   const [postData, setPostData] = useState<any[]>([]);
@@ -99,10 +100,22 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
   const taskSearch = useAtomValue(taskSearchAtom);
   const setAlert = useAtomValue(alerterAtom);
 
-  const sortOp: string[] = [sortOption.Latest, sortOption.Popular];
-  const sortChange = (value: any) => {
+  const mod: string[] = [sortOption.normal, sortOption.latest, sortOption.popular];
+  const modTogle = (value: any) => {
     setSort(value);
     setIsOpen(false);
+    postListSearchMutation.mutate(
+      { status: 'PUBLISHED', mod: sort },
+      {
+        onError: () => {
+          if (setAlert) {
+            setAlert(Seori, <>게시글이 제대로 불러와지지 않았습니다.</>, () =>
+              taskTransform?.('경고', ''),
+            );
+          }
+        },
+      },
+    );
   };
 
   const refetchPosts = () => {
@@ -171,8 +184,8 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
               option={sort}
               isOpen={isOpen}
               onClick={() => setIsOpen(!isOpen)}
-              list={sortOp}
-              onChange={sortChange}
+              list={mod}
+              onChange={modTogle}
             />
           </_.sortInput>
         </_.Header>
