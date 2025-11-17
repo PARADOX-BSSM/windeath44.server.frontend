@@ -120,7 +120,7 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
       );
       return;
     } else if (taskTransform) {
-      taskTransform('', '게시글 작성');
+      return taskTransform('', '게시글 작성');
     }
   };
 
@@ -132,27 +132,21 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
         <_.Header>
           <_.ButtonArea>
             <CommunityBtn
-              name="유머글"
+              name="게시글"
               selected={active === 'humor'}
               onClick={() => setActive('humor')}
-              type="menu"
-            />
-            <CommunityBtn
-              name="인기글"
-              selected={active == 'popular'}
-              onClick={() => setActive('popular')}
-              type="menu"
-            />
-            <CommunityBtn
-              name="검색"
-              selected={active == 'search'}
-              onClick={() => setActive('search')}
               type="menu"
             />
             <CommunityBtn
               name="게시글 작성"
               selected={false}
               onClick={postCreateClick}
+              type="menu"
+            />
+            <CommunityBtn
+              name="검색"
+              selected={active == 'search'}
+              onClick={() => setActive('search')}
               type="menu"
             />
           </_.ButtonArea>

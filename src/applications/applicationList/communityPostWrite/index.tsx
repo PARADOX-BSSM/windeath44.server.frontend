@@ -9,7 +9,6 @@ import Seori from '@/assets/sulkkagi/black_stone.svg';
 import { alerterAtom } from '@/atoms/alerter';
 import { useAtomValue } from 'jotai';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
-import { transform } from 'typescript';
 
 interface postData {
   postId?: string;
@@ -60,6 +59,9 @@ const CommunityPostWrite: React.FC = ({ postId, defaultTitle, defaultBody }: pos
           console.log('게시글 작성 완료');
           setTitle('');
           setBody('');
+          if (taskTransform) {
+            taskTransform('게시글 작성', '');
+          }
         },
         onError: () => {
           if (setAlert) {
