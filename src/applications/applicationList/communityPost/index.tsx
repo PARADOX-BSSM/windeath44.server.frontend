@@ -106,6 +106,7 @@ const CommunityPost = ({ stack, push, pop, top, postId }: postProps) => {
               likesCount: data?.data.likesCount || 0,
               commentCount: data?.data.commentCount || 0,
             }}
+            postDelete={() => push(taskSearch?.('communityMain', stackProps))}
           />
           <CommentInput
             name={currentUser?.name}

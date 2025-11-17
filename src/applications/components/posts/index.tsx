@@ -33,9 +33,10 @@ interface Post {
 interface PostsProps {
   user: User;
   post: Post;
+  postDelete: () => void;
 }
 
-const Posts = ({ user, post }: PostsProps) => {
+const Posts = ({ user, post, postDelete }: PostsProps) => {
   const parsedContent = parseCustomContent([], post.body);
   const [isOpen, setIsOpen] = useState(false);
   const [isLike, setIsLike] = useState(false);
@@ -93,6 +94,7 @@ const Posts = ({ user, post }: PostsProps) => {
         postDeleteMutation.mutate(post.postId, {
           onSuccess: () => {
             taskTransform?.('경고', '');
+            postDelete();
           },
           onError: (error) => {
             console.error('게시글 삭제 실패:', error);
