@@ -32,7 +32,7 @@ const CommunityPost = ({ stack, push, pop, top, postId }: postProps) => {
     top: top,
   };
 
-  const { data, isLoading: isPostLoading } = usePostSingleSearch(postId);
+  const { data, isLoading: isPostLoading, refetch: refetchPost } = usePostSingleSearch(postId);
   const {
     data: postCommentsData,
     refetch: refetchComments,
@@ -107,6 +107,7 @@ const CommunityPost = ({ stack, push, pop, top, postId }: postProps) => {
               commentCount: data?.data.commentCount || 0,
             }}
             postDelete={() => push(taskSearch?.('communityMain', stackProps))}
+            refetchPost={refetchPost}
           />
           <CommentInput
             name={currentUser?.name}

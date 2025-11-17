@@ -105,6 +105,21 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
     setIsOpen(false);
   };
 
+  const refetchPosts = () => {
+    postListSearchMutation.mutate(
+      { status: 'PUBLISHED' },
+      {
+        onError: () => {
+          if (setAlert) {
+            setAlert(Seori, <>게시글이 제대로 불러와지지 않았습니다.</>, () =>
+              taskTransform?.('경고', ''),
+            );
+          }
+        },
+      },
+    );
+  };
+
   const postCreateClick = () => {
     if (!token && setAlert) {
       setAlert(
@@ -120,7 +135,7 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
       );
       return;
     } else if (taskTransform) {
-      return taskTransform('', '게시글 작성');
+      return taskTransform('', '게시글 작성', { refetchPosts });
     }
   };
 

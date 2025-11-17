@@ -34,9 +34,10 @@ interface PostsProps {
   user: User;
   post: Post;
   postDelete: () => void;
+  refetchPost: () => void;
 }
 
-const Posts = ({ user, post, postDelete }: PostsProps) => {
+const Posts = ({ user, post, postDelete, refetchPost }: PostsProps) => {
   const parsedContent = parseCustomContent([], post.body);
   const [isOpen, setIsOpen] = useState(false);
   const [isLike, setIsLike] = useState(false);
@@ -122,7 +123,10 @@ const Posts = ({ user, post, postDelete }: PostsProps) => {
       postLikeDeleteMutation.mutate(
         { post_id: post.postId, user_id: user.userId },
         {
-          onSuccess: () => setIsLike(false),
+          onSuccess: () => {
+            setIsLike(false);
+            refetchPost();
+          },
           onError: () => {},
         },
       );
@@ -130,7 +134,10 @@ const Posts = ({ user, post, postDelete }: PostsProps) => {
       postLikeMutation.mutate(
         { post_id: post.postId, user_id: user.userId },
         {
-          onSuccess: () => setIsLike(true),
+          onSuccess: () => {
+            setIsLike(true);
+            refetchPost();
+          },
           onError: () => {},
         },
       );

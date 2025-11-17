@@ -14,9 +14,10 @@ interface postData {
   postId?: string;
   defaultTitle?: string;
   defaultBody?: string;
+  refetchPosts?: () => void;
 }
 
-const CommunityPostWrite: React.FC = ({ postId, defaultTitle, defaultBody }: postData) => {
+const CommunityPostWrite: React.FC<postData> = ({ postId, defaultTitle, defaultBody, refetchPosts }: postData) => {
   const postCreateMutation = usePostCreate();
   const { mutate: getUser, data: userData } = useGetUserMutation();
   const currentUserId = userData?.data?.userId;
@@ -59,6 +60,9 @@ const CommunityPostWrite: React.FC = ({ postId, defaultTitle, defaultBody }: pos
           console.log('게시글 작성 완료');
           setTitle('');
           setBody('');
+          if (refetchPosts) {
+            refetchPosts();
+          }
           if (taskTransform) {
             taskTransform('게시글 작성', '');
           }
