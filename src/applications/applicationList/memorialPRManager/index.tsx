@@ -210,14 +210,14 @@ const MemorialPRManager = ({
           </_.StatsContainer>
 
           <_.PullRequestsContainer>
-            <_.ListTitle>Pull Requests</_.ListTitle>
+            <_.ListTitle>수정 요청 리스트</_.ListTitle>
             {isPullRequestsLoading ||
             getPullRequestDiffMutation.isPending ||
             mergeMutation.isPending ||
             rejectMutation.isPending ? (
               <_.LoadingText>
                 {isPullRequestsLoading && '수정 요청 로딩 중...'}
-                {getPullRequestDiffMutation.isPending && 'PR Diff 조회 중...'}
+                {getPullRequestDiffMutation.isPending && '수정 요청 변경사항 조회 중...'}
                 {mergeMutation.isPending && '수정 요청 병합 중...'}
                 {rejectMutation.isPending && '수정 요청 거절 중...'}
               </_.LoadingText>
@@ -244,7 +244,7 @@ const MemorialPRManager = ({
                                 handleViewPRDetail(pr.memorialPullRequestId, pr.memorialCommit)
                               }
                             >
-                              PR #{pr.memorialPullRequestId}
+                              수정 요청 #{pr.memorialPullRequestId}
                             </_.MemorialName>
                             <_.MemorialDetails>
                               <_.DetailText>사용자: {pr.userId}</_.DetailText>
