@@ -5,7 +5,12 @@ import api from '../axiosInstance';
 
 const postDelete = async (post_id: number) => {
   try {
-    const response: AxiosResponse = await api.delete(`${community}/posts/${post_id}`);
+    const response: AxiosResponse = await api.delete(`${community}/posts/${post_id}`, {
+      headers: {
+        'user-id': 'user_id',
+        role: '',
+      },
+    });
     return response.data;
   } catch (error: any) {
     if (error.response?.data) {

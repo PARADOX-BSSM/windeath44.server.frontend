@@ -11,6 +11,12 @@ const postCommentDelete = async ({ post_id, comment_id }: postCommentDeleteInter
   try {
     const response: AxiosResponse = await api.delete(
       `${community}/posts/${post_id}/comments/${comment_id}`,
+      {
+        headers: {
+          'user-id': 'user_id',
+          role: '',
+        },
+      },
     );
     return response.data;
   } catch (error) {

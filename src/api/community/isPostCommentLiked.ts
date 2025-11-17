@@ -5,9 +5,7 @@ import api from '../axiosInstance';
 
 interface IsPostCommentLikedResponse {
   message: string;
-  data: {
-    isLiked: boolean;
-  };
+  data: boolean;
 }
 
 const isPostCommentLiked = async (commentId: number, userId: string) => {

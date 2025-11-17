@@ -31,6 +31,12 @@ const postCommentUpdate = async ({ commentId, body }: PostCommentUpdateInterface
     const response: AxiosResponse<PostCommentUpdateResponse> = await api.patch(
       `${community}/posts/comments/${commentId}`,
       data,
+      {
+        headers: {
+          'user-id': 'user_id',
+          role: '',
+        },
+      },
     );
     console.log(data);
     return response.data;

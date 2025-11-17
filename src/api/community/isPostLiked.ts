@@ -5,9 +5,7 @@ import api from '../axiosInstance';
 
 interface IsPostLikedResponse {
   message: string;
-  data: {
-    isLiked: boolean;
-  };
+  data: boolean;
 }
 
 const isPostLiked = async (postId: number, userId: string) => {
@@ -22,8 +20,8 @@ const isPostLiked = async (postId: number, userId: string) => {
     );
     return response.data;
   } catch (error) {
-    if (error instanceof Error) {
-      console.error('좋아요 상태 조회 실패:', error.message);
+    if (error) {
+      console.error('좋아요 상태 조회 실패:', error);
     }
     throw error;
   }

@@ -52,15 +52,15 @@ const Posts: React.FC<PostsProps> = ({ user, post, refetchComments }) => {
   const commentLikeMutation = usePostCommentLike();
   const commentLikeDeleteMutation = usePostCommentLikeDelete();
 
-  const { data: commentLikedData } = useIsPostCommentLiked(post.commentId, currentUserId || '');
+  const { data: commentLikedData } = useIsPostCommentLiked(commentId, currentUserId || '');
 
   useEffect(() => {
     getUser();
   }, [getUser]);
 
   useEffect(() => {
-    if (commentLikedData?.data.isLiked) {
-      setIsLike(commentLikedData.data.isLiked);
+    if (commentLikedData?.data) {
+      setIsLike(commentLikedData.data);
     }
   }, [commentLikedData]);
 

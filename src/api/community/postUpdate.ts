@@ -41,6 +41,12 @@ const postUpdate = async ({ postId, title, body, status, isBlind }: PostUpdateIn
     const response: AxiosResponse<PostUpdateResponse> = await api.patch(
       `${community}/posts/${postId}`,
       data,
+      {
+        headers: {
+          'user-id': 'user_id',
+          role: '',
+        },
+      },
     );
     console.log(data);
     return response.data;

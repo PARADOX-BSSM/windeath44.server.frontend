@@ -72,8 +72,8 @@ const Posts = ({ user, post }: PostsProps) => {
   }, [isOpen]);
 
   useEffect(() => {
-    if (likedData?.data.isLiked) {
-      setIsLike(likedData.data.isLiked);
+    if (likedData?.data) {
+      setIsLike(likedData.data);
     }
   }, [likedData]);
 
