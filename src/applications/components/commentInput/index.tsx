@@ -16,6 +16,7 @@ interface CommentInputProps {
   postId: number;
   profile?: string;
   parentCommentId?: number | null;
+  refetchComments?: () => void;
 }
 const CommentInput: React.FC<CommentInputProps> = ({
   name = '게스트',
@@ -23,6 +24,7 @@ const CommentInput: React.FC<CommentInputProps> = ({
   postId,
   profile = '',
   parentCommentId,
+  refetchComments,
 }) => {
   const postCreateCommentMutation = usePostCommentCreate();
   const taskTransform = useAtomValue(taskTransformerAtom);
@@ -39,6 +41,10 @@ const CommentInput: React.FC<CommentInputProps> = ({
       {
         onSuccess: () => {
           console.log('댓글 작성 완료');
+          setCommentInput('');
+          if (refetchComments) {
+            refetchComments();
+          }
         },
 
         onError: () => {

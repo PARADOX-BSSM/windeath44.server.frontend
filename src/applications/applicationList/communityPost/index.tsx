@@ -97,6 +97,7 @@ const CommunityPost = ({ stack, push, pop, top, postId }: postProps) => {
             userId={currentUser?.userId}
             postId={postId}
             profile={currentUser?.profile}
+            refetchComments={refetchComments}
           />
           {postCommentsData?.data?.map((data) => (
             <Comment
