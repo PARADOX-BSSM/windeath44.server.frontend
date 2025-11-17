@@ -17,10 +17,10 @@ export const useProcessManager = (): [
   TaskType[],
   (task: TaskType, position?: Position) => void,
   (task: TaskType) => void,
-  (positions: Record<string, Position>, index?: number) => void
+  (positions: Record<string, Position>, index?: number) => void,
 ] => {
   const [globalTaskList, setGlobalTaskList] = useAtom(taskManagerAtom);
-  const [virtualTaskLists, ] = useAtom(virtualTaskListsAtom);
+  const [virtualTaskLists] = useAtom(virtualTaskListsAtom);
   const [virtualTaskList, addVirtualTask, removeVirtualTask] = useVirtualProcessManager();
   const [, setLastTaskList] = useAtom(lastTaskListAtom);
   const [windowPositions, setWindowPositions] = useAtom(windowPositionsAtom);
@@ -28,11 +28,8 @@ export const useProcessManager = (): [
   const [desktopIndex] = useAtom(virtualDesktopIndexAtom);
 
   const isInitialMount = useRef(true);
-  const setVirtualWindowPosition = (
-    positions: Record<string, Position>,
-    index?: number
-  ) => {
-    setVirtualWindowPositions(prev => {
+  const setVirtualWindowPosition = (positions: Record<string, Position>, index?: number) => {
+    setVirtualWindowPositions((prev) => {
       const targetIndex = index ?? desktopIndex;
       const updated = [...prev];
       updated[targetIndex] = { ...updated[targetIndex], ...positions };
@@ -41,9 +38,10 @@ export const useProcessManager = (): [
   };
   // 데스크탑 전환 시 위치 복원
   useEffect(() => {
-    if(desktopIndex !== undefined) setWindowPositions({ ...(virtualWindowPositions[desktopIndex] || {}) });
+    if (desktopIndex !== undefined)
+      setWindowPositions({ ...(virtualWindowPositions[desktopIndex] || {}) });
     setWindowPositions(virtualWindowPositions[desktopIndex]);
-  }, [desktopIndex, virtualWindowPositions[desktopIndex]]);;
+  }, [desktopIndex, virtualWindowPositions[desktopIndex]]);
 
   // Task 저장 (lastTaskList)
   useEffect(() => {
@@ -53,25 +51,29 @@ export const useProcessManager = (): [
     }
 
     const excludedPages = [
-      'MemorialApply','추모관 수정','미리보기','로그인','회원가입',
-      '이메일 인증','인증코드 입력','비밀번호 재설정',
-      '공지사항','공지사항 뷰어',
+      'MemorialApply',
+      '추모관 수정',
+      '미리보기',
+      '로그인',
+      '회원가입',
+      '이메일 인증',
+      '인증코드 입력',
+      '비밀번호 재설정',
+      '공지사항',
+      '공지사항 뷰어',
+      '경고',
     ];
-    
+
     const savedTasks: SavedTaskType[][] = virtualTaskLists.map((tasks, idx) =>
       tasks
-        .filter(
-          (t) =>
-            !t.instanceId &&
-            !excludedPages.includes(t.name)
-        )
+        .filter((t) => !t.instanceId && !excludedPages.includes(t.name))
         .map((t) => ({
           type: t.type,
           id: t.id,
           name: t.name,
           position: virtualWindowPositions[idx]?.[t.name],
           desktopIndex: idx,
-        }))
+        })),
     );
 
     setLastTaskList(savedTasks);
@@ -79,7 +81,9 @@ export const useProcessManager = (): [
 
   const addTask = (task: TaskType) => {
     if (task.type === 'Shell') {
-      setGlobalTaskList(prev => prev.some(t => t.name === task.name) ? prev : [...prev, task]);
+      setGlobalTaskList((prev) =>
+        prev.some((t) => t.name === task.name) ? prev : [...prev, task],
+      );
     } else {
       addVirtualTask(task);
     }
@@ -87,7 +91,7 @@ export const useProcessManager = (): [
 
   const removeTask = (task: TaskType) => {
     if (task.type === 'Shell') {
-      setGlobalTaskList(prev => prev.filter(t => t.name !== task.name));
+      setGlobalTaskList((prev) => prev.filter((t) => t.name !== task.name));
     } else {
       removeVirtualTask(task);
     }
@@ -102,7 +106,7 @@ export const useVirtualProcessManager = (): [
   TaskType[],
   (task: TaskType) => void,
   (task: TaskType) => void,
-  (task: TaskType, index: number) => void
+  (task: TaskType, index: number) => void,
 ] => {
   const [desktopIndex] = useAtom(virtualDesktopIndexAtom);
   const [virtualTaskLists, setVirtualTaskLists] = useAtom(virtualTaskListsAtom);
@@ -110,10 +114,10 @@ export const useVirtualProcessManager = (): [
   const taskList = virtualTaskLists[desktopIndex] || [];
 
   const addTaskToDesktop = (task: TaskType, index: number) => {
-    setVirtualTaskLists(prev => {
+    setVirtualTaskLists((prev) => {
       const updated = [...prev];
       const targetList = updated[index] || [];
-      if (targetList.some(t => t.name === task.name)) return prev;
+      if (targetList.some((t) => t.name === task.name && t.name !== '추모관 뷰어')) return prev;
       updated[index] = [...targetList, task];
       return updated;
     });
@@ -122,11 +126,11 @@ export const useVirtualProcessManager = (): [
   const addTask = (task: TaskType) => addTaskToDesktop(task, desktopIndex);
 
   const removeTask = (task: TaskType) => {
-    setVirtualTaskLists(prev => {
+    setVirtualTaskLists((prev) => {
       const updated = [...prev];
       const currentList = updated[desktopIndex] || [];
-      updated[desktopIndex] = currentList.filter(
-        (item) => item.instanceId ? item.instanceId !== task.instanceId : item.name !== task.name
+      updated[desktopIndex] = currentList.filter((item) =>
+        item.instanceId ? item.instanceId !== task.instanceId : item.name !== task.name,
       );
       return updated;
     });
