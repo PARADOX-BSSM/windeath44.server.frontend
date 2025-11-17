@@ -6,12 +6,39 @@ import Seori from '@/assets/sulkkagi/black_stone.svg';
 import MemorialBtn from '@/applications/components/memorialBtn';
 import { useGetMemorialPullRequestsQuery } from '@/api/memorial/getMemorialPullRequests';
 import {
-  useCheckMergeableMutation,
+  useGetPullRequestDiffMutation,
   useMergeMemorialPullRequestMutation,
   useResolveMemorialPullRequestMutation,
 } from '@/api/memorial/mergeMemorialPullRequest';
 import { useRejectMemorialPullRequestMutation } from '@/api/memorial/rejectMemorialPullRequest';
 import { useState, useEffect } from 'react';
+import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
+
+// 날짜 포맷팅 함수
+const formatDate = (dateString: string) => {
+  const d = new Date(dateString);
+  const Y = d.getFullYear();
+  const M = String(d.getMonth() + 1).padStart(2, '0');
+  const D = String(d.getDate()).padStart(2, '0');
+  let h = d.getHours();
+  const m = String(d.getMinutes()).padStart(2, '0');
+  const ampm = h >= 12 ? '오후' : '오전';
+  if (h > 12) h -= 12;
+  if (h === 0) h = 12;
+  return `${Y}-${M}-${D}. ${ampm} ${h}:${m}`;
+};
+
+// PR 상태 변환 함수
+const translatePRState = (state: string): string => {
+  const stateMap: Record<string, string> = {
+    APPROVED: '승인됨',
+    STORED: '저장됨',
+    RESOLVED: '해결됨',
+    REJECTED: '거절됨',
+    PENDING: '대기중',
+  };
+  return stateMap[state] || state;
+};
 
 interface dataStructureProps {
   stack: any[];
@@ -44,7 +71,7 @@ const MemorialPRManager = ({
   const pullRequests = pullRequestsData?.data || [];
 
   // 병합 관련 mutations
-  const checkMergeableMutation = useCheckMergeableMutation();
+  const getPullRequestDiffMutation = useGetPullRequestDiffMutation();
   const mergeMutation = useMergeMemorialPullRequestMutation();
   const rejectMutation = useRejectMemorialPullRequestMutation();
 
@@ -56,13 +83,18 @@ const MemorialPRManager = ({
   };
 
   // PR 상세보기 함수 - 새로운 태스크 push
-  const handleViewPRDetail = (memorialPullRequestId: number, commitData: any) => {
+  const handleViewPRDetail = (
+    memorialPullRequestId: number,
+    commitData: any,
+    characterId: number,
+  ) => {
     push(
       taskSearch?.('memorialPRDetail', {
         ...stackProps,
         prId: memorialPullRequestId,
         commitData: commitData,
         memorialName: memorialName,
+        characterId: characterId,
       }),
     );
   };
@@ -70,14 +102,14 @@ const MemorialPRManager = ({
   // PR 병합 처리 함수
   const handleMergePullRequest = async (memorialPullRequestId: number) => {
     try {
-      // 1. 먼저 mergeable인지 확인
-      const mergeableResult = await checkMergeableMutation.mutateAsync({
+      // 1. 먼저 PR Diff 조회 및 충돌 확인
+      const diffResult = await getPullRequestDiffMutation.mutateAsync({
         memorialPullRequestId,
       });
 
-      if (!mergeableResult.data?.mergeable) {
+      if (diffResult.data?.hasConflicts) {
         // 충돌이 있는 경우 - 충돌 해결 태스크로 이동
-        const conflict = mergeableResult.data?.conflict || '알 수 없는 충돌';
+        const conflict = diffResult.data?.diffContent || '알 수 없는 충돌';
 
         push(
           taskSearch?.('memorialConflictResolve', {
@@ -210,14 +242,14 @@ const MemorialPRManager = ({
           </_.StatsContainer>
 
           <_.PullRequestsContainer>
-            <_.ListTitle>Pull Requests</_.ListTitle>
+            <_.ListTitle>수정 요청 리스트</_.ListTitle>
             {isPullRequestsLoading ||
-            checkMergeableMutation.isPending ||
+            getPullRequestDiffMutation.isPending ||
             mergeMutation.isPending ||
             rejectMutation.isPending ? (
               <_.LoadingText>
                 {isPullRequestsLoading && '수정 요청 로딩 중...'}
-                {checkMergeableMutation.isPending && '병합 가능 여부 확인 중...'}
+                {getPullRequestDiffMutation.isPending && '수정 요청 변경사항 조회 중...'}
                 {mergeMutation.isPending && '수정 요청 병합 중...'}
                 {rejectMutation.isPending && '수정 요청 거절 중...'}
               </_.LoadingText>
@@ -239,17 +271,23 @@ const MemorialPRManager = ({
                         <_.MemorialItem key={pr.memorialPullRequestId}>
                           <_.MemorialInfo>
                             <_.MemorialName
-                              style={{ cursor: 'pointer', color: '#E774DD' }}
+                              style={{ color: '#E774DD' }}
                               onClick={() =>
-                                handleViewPRDetail(pr.memorialPullRequestId, pr.memorialCommit)
+                                handleViewPRDetail(
+                                  pr.memorialPullRequestId,
+                                  pr.memorialCommit,
+                                  pr.memorial.characterId,
+                                )
                               }
+                              onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                              onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
                             >
-                              PR #{pr.memorialPullRequestId}
+                              수정 요청 #{pr.memorialPullRequestId}
                             </_.MemorialName>
                             <_.MemorialDetails>
                               <_.DetailText>사용자: {pr.userId}</_.DetailText>
-                              <_.DetailText>상태: {pr.state}</_.DetailText>
-                              <_.DetailText>수정일: {pr.updatedAt}</_.DetailText>
+                              <_.DetailText>상태: {translatePRState(pr.state)}</_.DetailText>
+                              <_.DetailText>수정일: {formatDate(pr.updatedAt)}</_.DetailText>
                             </_.MemorialDetails>
                           </_.MemorialInfo>
 
@@ -260,21 +298,21 @@ const MemorialPRManager = ({
                               type="submit"
                               active={
                                 pr.state === 'PENDING' &&
-                                !checkMergeableMutation.isPending &&
+                                !getPullRequestDiffMutation.isPending &&
                                 !mergeMutation.isPending
                               }
-                              width="50px"
-                              height="32px"
-                              fontSize="12px"
+                              width="80px"
+                              height="40px"
+                              fontSize="16px"
                             />
                             <MemorialBtn
                               name="거절"
                               onClick={() => handleRejectPullRequest(pr.memorialPullRequestId)}
                               type="submit"
                               active={pr.state === 'PENDING' && !rejectMutation.isPending}
-                              width="50px"
-                              height="32px"
-                              fontSize="12px"
+                              width="80px"
+                              height="40px"
+                              fontSize="16px"
                             />
                           </_.ButtonContainer>
                         </_.MemorialItem>
