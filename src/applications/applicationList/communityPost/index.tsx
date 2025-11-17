@@ -14,8 +14,8 @@ import { usePostCommentListSearch } from '@/api/community/postCommentListSearch'
 import { useGetUserMutation } from '@/api/user/getUser';
 import { getCookie } from '@/api/auth/cookie';
 import { useEffect, useState } from 'react';
+import Loading from '@/applications/components/loading';
 
-//todo: 스켈레톤(마법진)만들어서 전체 랜더링 되기 전에 안 띄울 수 있게
 interface postProps {
   stack: any[];
   push: any;
@@ -32,8 +32,12 @@ const CommunityPost = ({ stack, push, pop, top, postId }: postProps) => {
     top: top,
   };
 
-  const { data } = usePostSingleSearch(postId);
-  const { data: postCommentsData, refetch: refetchComments } = usePostCommentListSearch(postId);
+  const { data, isLoading: isPostLoading } = usePostSingleSearch(postId);
+  const {
+    data: postCommentsData,
+    refetch: refetchComments,
+    isLoading: isCommentsLoading,
+  } = usePostCommentListSearch(postId);
   const getUserMutation = useGetUserMutation();
   const token = getCookie('access_token');
 
@@ -42,9 +46,11 @@ const CommunityPost = ({ stack, push, pop, top, postId }: postProps) => {
     userId: string;
     profile?: string;
   } | null>(null);
+  const [isUserLoading, setIsUserLoading] = useState(true);
 
   useEffect(() => {
     if (token) {
+      setIsUserLoading(true);
       getUserMutation.mutate(undefined, {
         onSuccess: (response: any) => {
           setCurrentUser({
@@ -52,12 +58,14 @@ const CommunityPost = ({ stack, push, pop, top, postId }: postProps) => {
             userId: response.data?.userId || 'user',
             profile: response.data?.profile,
           });
+          setIsUserLoading(false);
         },
         onError: () => {
           setCurrentUser({
             name: '사용자',
             userId: 'userId',
           });
+          setIsUserLoading(false);
         },
       });
     } else {
@@ -65,12 +73,18 @@ const CommunityPost = ({ stack, push, pop, top, postId }: postProps) => {
         name: '게스트',
         userId: 'guest_user',
       });
+      setIsUserLoading(false);
     }
   }, [token]);
 
   const taskSearch = useAtomValue(taskSearchAtom);
   const taskTransform = useAtomValue(taskTransformerAtom);
   const setAlert = useAtomValue(alerterAtom);
+
+  // 모든 필수 데이터 로딩 체크
+  if (isPostLoading || isCommentsLoading || isUserLoading) {
+    return <Loading />;
+  }
 
   return (
     <_.Container>
