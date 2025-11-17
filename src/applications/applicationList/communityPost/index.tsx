@@ -81,6 +81,17 @@ const CommunityPost = ({ stack, push, pop, top, postId }: postProps) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
   const setAlert = useAtomValue(alerterAtom);
 
+  const postEdit = () => {
+    if (taskTransform) {
+      taskTransform('', '게시글 작성', {
+        postId: postId,
+        defaultTitle: data?.data.title,
+        defaultBody: data?.data.body,
+        refetchPosts: refetchPost,
+      });
+    }
+  };
+
   // 모든 필수 데이터 로딩 체크
   if (isPostLoading || isCommentsLoading || isUserLoading) {
     return <Loading />;
@@ -108,6 +119,7 @@ const CommunityPost = ({ stack, push, pop, top, postId }: postProps) => {
             }}
             postDelete={() => push(taskSearch?.('communityMain', stackProps))}
             refetchPost={refetchPost}
+            postEdit={postEdit}
           />
           <CommentInput
             name={currentUser?.name}

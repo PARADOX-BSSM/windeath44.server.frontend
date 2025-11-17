@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import CommunityBtn from '@/applications/components/communityBtn';
 import ChevronIcon from '@/assets/community/chevron-left.svg';
 import { usePostCreate } from '@/api/community/postCreate';
+import { usePostUpdate } from '@/api/community/postUpdate';
 import { useGetUserMutation } from '@/api/user/getUser';
 import Seori from '@/assets/sulkkagi/black_stone.svg';
 import { alerterAtom } from '@/atoms/alerter';
@@ -11,19 +12,25 @@ import { useAtomValue } from 'jotai';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
 
 interface postData {
-  postId?: string;
+  postId?: number;
   defaultTitle?: string;
   defaultBody?: string;
   refetchPosts?: () => void;
 }
 
-const CommunityPostWrite: React.FC<postData> = ({ postId, defaultTitle, defaultBody, refetchPosts }: postData) => {
+const CommunityPostWrite: React.FC<postData> = ({
+  postId,
+  defaultTitle,
+  defaultBody,
+  refetchPosts,
+}: postData) => {
   const postCreateMutation = usePostCreate();
+  const postUpdateMutation = usePostUpdate();
   const { mutate: getUser, data: userData } = useGetUserMutation();
   const currentUserId = userData?.data?.userId;
   const [loadPage, setLoadPage] = useState(false);
-  const [title, setTitle] = useState('');
-  const [body, setBody] = useState('');
+  const [title, setTitle] = useState(defaultTitle || '');
+  const [body, setBody] = useState(defaultBody || '');
 
   const taskTransform = useAtomValue(taskTransformerAtom);
   const setAlert = useAtomValue(alerterAtom);
@@ -33,6 +40,15 @@ const CommunityPostWrite: React.FC<postData> = ({ postId, defaultTitle, defaultB
   }, []);
 
   const postCreate = () => {
+    if (!title.trim() || !body.trim()) {
+      if (setAlert) {
+        setAlert(Seori, <>제목과 내용을 모두 입력해주세요.</>, () => {
+          taskTransform?.('경고', '');
+        });
+      }
+      return;
+    }
+
     if (!currentUserId && setAlert) {
       setAlert(
         Seori,
@@ -48,34 +64,66 @@ const CommunityPostWrite: React.FC<postData> = ({ postId, defaultTitle, defaultB
       return;
     }
 
-    postCreateMutation.mutate(
-      {
-        user_id: 'testid',
-        title: title,
-        body: body,
-        status: 'PUBLISHED',
-      },
-      {
-        onSuccess: () => {
-          console.log('게시글 작성 완료');
-          setTitle('');
-          setBody('');
-          if (refetchPosts) {
-            refetchPosts();
-          }
-          if (taskTransform) {
-            taskTransform('게시글 작성', '');
-          }
+    // 게시글 수정
+    if (postId) {
+      postUpdateMutation.mutate(
+        {
+          postId: postId,
+          title: title,
+          body: body,
+          status: 'PUBLISHED',
+          isBlind: false,
         },
-        onError: () => {
-          if (setAlert) {
-            setAlert(Seori, <>게시글이 작성되지 않았습니다.</>, () => {
-              taskTransform?.('경고', '');
-            });
-          }
+        {
+          onSuccess: () => {
+            console.log('게시글 수정 완료');
+            if (refetchPosts) {
+              refetchPosts();
+            }
+            if (taskTransform) {
+              taskTransform('게시글 작성', '');
+            }
+          },
+          onError: () => {
+            if (setAlert) {
+              setAlert(Seori, <>게시글이 수정되지 않았습니다.</>, () => {
+                taskTransform?.('경고', '');
+              });
+            }
+          },
         },
-      },
-    );
+      );
+    } else {
+      // 게시글 작성
+      postCreateMutation.mutate(
+        {
+          user_id: 'testid',
+          title: title,
+          body: body,
+          status: 'PUBLISHED',
+        },
+        {
+          onSuccess: () => {
+            console.log('게시글 작성 완료');
+            setTitle('');
+            setBody('');
+            if (refetchPosts) {
+              refetchPosts();
+            }
+            if (taskTransform) {
+              taskTransform('게시글 작성', '');
+            }
+          },
+          onError: () => {
+            if (setAlert) {
+              setAlert(Seori, <>게시글이 작성되지 않았습니다.</>, () => {
+                taskTransform?.('경고', '');
+              });
+            }
+          },
+        },
+      );
+    }
   };
   return (
     <_.Container>

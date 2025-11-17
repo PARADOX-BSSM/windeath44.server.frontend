@@ -35,9 +35,10 @@ interface PostsProps {
   post: Post;
   postDelete: () => void;
   refetchPost: () => void;
+  postEdit?: () => void;
 }
 
-const Posts = ({ user, post, postDelete, refetchPost }: PostsProps) => {
+const Posts = ({ user, post, postDelete, refetchPost, postEdit }: PostsProps) => {
   const parsedContent = parseCustomContent([], post.body);
   const [isOpen, setIsOpen] = useState(false);
   const [isLike, setIsLike] = useState(false);
@@ -83,7 +84,12 @@ const Posts = ({ user, post, postDelete, refetchPost }: PostsProps) => {
     setIsOpen(!isOpen);
   };
 
-  const handleEdit = () => {};
+  const handleEdit = () => {
+    if (postEdit) {
+      postEdit();
+    }
+    setIsOpen(false);
+  };
 
   const handleDelete = () => {
     if (setAlert) {
