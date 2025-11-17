@@ -201,7 +201,9 @@ const Posts: React.FC<PostsProps> = ({ user, post, refetchComments }) => {
           <_.PostInfo>
             <_.Name>{name}</_.Name>
             <_.UserId>@{userId}</_.UserId>
-            <_.Edited>{createdAt !== updatedAt ? '(수정됨)' : ''}</_.Edited>
+            <_.Edited>
+              {createdAt.slice(0, -9) !== updatedAt.slice(0, -9) ? '(수정됨)' : ''}
+            </_.Edited>
           </_.PostInfo>
           {isOwner && (
             <_.KebabContainer ref={menuRef}>

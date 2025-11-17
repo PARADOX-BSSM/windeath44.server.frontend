@@ -16,7 +16,7 @@ const isPostCommentLiked = async (commentId: number, userId: string) => {
       `${community}/posts/comments/${commentId}/likes`,
       {
         headers: {
-          'user-id': 'userId',
+          'user-id': 'user_id',
         },
       },
     );
@@ -31,7 +31,7 @@ const isPostCommentLiked = async (commentId: number, userId: string) => {
 
 export const useIsPostCommentLiked = (commentId: number, userId: string) => {
   return useQuery({
-    queryKey: ['commentLike', commentId, userId],
+    queryKey: ['commentLike', commentId],
     queryFn: () => isPostCommentLiked(commentId, userId),
     staleTime: 5 * 60 * 1000, // 5분 동안 fresh 상태 유지
     gcTime: 10 * 60 * 1000, // 10분 동안 캐시 유지
