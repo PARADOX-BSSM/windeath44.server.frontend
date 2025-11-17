@@ -139,13 +139,15 @@ const Posts: React.FC<PostsProps> = ({ user, post, refetchComments }) => {
       setAlert(Seori, <>댓글을 삭제하시겠습니까?</>, () => {
         if (!post.postId || !post.commentId) {
           console.log('게시글 ID, 혹은 댓글 ID가 없습니다');
+          taskTransform?.('경고', '');
           return;
         }
         commentDeleteMutation.mutate(
-          { post_id: post.postId, comment_id: post.commentId },
+          { comment_id: post.commentId },
           {
             onSuccess: () => {
               refetchComments();
+              taskTransform?.('경고', '');
             },
             onError: (error) => {
               console.error('댓글 삭제 실패:', error);
