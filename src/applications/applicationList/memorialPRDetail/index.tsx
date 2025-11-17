@@ -45,7 +45,7 @@ const MemorialPRDetail = ({
 
           <_.PRDetailContainer>
             <_.InfoSection>
-              <_.InfoTitle>커밋 정보</_.InfoTitle>
+              <_.InfoTitle>저장 정보</_.InfoTitle>
               <_.InfoGrid>
                 <_.InfoItem>
                   <_.InfoLabel>커밋 ID:</_.InfoLabel>

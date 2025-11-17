@@ -6,7 +6,7 @@ import Seori from '@/assets/sulkkagi/black_stone.svg';
 import MemorialBtn from '@/applications/components/memorialBtn';
 import { useGetMemorialPullRequestsQuery } from '@/api/memorial/getMemorialPullRequests';
 import {
-  useCheckMergeableMutation,
+  useGetPullRequestDiffMutation,
   useMergeMemorialPullRequestMutation,
   useResolveMemorialPullRequestMutation,
 } from '@/api/memorial/mergeMemorialPullRequest';
@@ -44,7 +44,7 @@ const MemorialPRManager = ({
   const pullRequests = pullRequestsData?.data || [];
 
   // 병합 관련 mutations
-  const checkMergeableMutation = useCheckMergeableMutation();
+  const getPullRequestDiffMutation = useGetPullRequestDiffMutation();
   const mergeMutation = useMergeMemorialPullRequestMutation();
   const rejectMutation = useRejectMemorialPullRequestMutation();
 
@@ -70,14 +70,14 @@ const MemorialPRManager = ({
   // PR 병합 처리 함수
   const handleMergePullRequest = async (memorialPullRequestId: number) => {
     try {
-      // 1. 먼저 mergeable인지 확인
-      const mergeableResult = await checkMergeableMutation.mutateAsync({
+      // 1. 먼저 PR Diff 조회 및 충돌 확인
+      const diffResult = await getPullRequestDiffMutation.mutateAsync({
         memorialPullRequestId,
       });
 
-      if (!mergeableResult.data?.mergeable) {
+      if (diffResult.data?.hasConflicts) {
         // 충돌이 있는 경우 - 충돌 해결 태스크로 이동
-        const conflict = mergeableResult.data?.conflict || '알 수 없는 충돌';
+        const conflict = diffResult.data?.diffContent || '알 수 없는 충돌';
 
         push(
           taskSearch?.('memorialConflictResolve', {
@@ -212,12 +212,12 @@ const MemorialPRManager = ({
           <_.PullRequestsContainer>
             <_.ListTitle>Pull Requests</_.ListTitle>
             {isPullRequestsLoading ||
-            checkMergeableMutation.isPending ||
+            getPullRequestDiffMutation.isPending ||
             mergeMutation.isPending ||
             rejectMutation.isPending ? (
               <_.LoadingText>
                 {isPullRequestsLoading && '수정 요청 로딩 중...'}
-                {checkMergeableMutation.isPending && '병합 가능 여부 확인 중...'}
+                {getPullRequestDiffMutation.isPending && 'PR Diff 조회 중...'}
                 {mergeMutation.isPending && '수정 요청 병합 중...'}
                 {rejectMutation.isPending && '수정 요청 거절 중...'}
               </_.LoadingText>
@@ -260,7 +260,7 @@ const MemorialPRManager = ({
                               type="submit"
                               active={
                                 pr.state === 'PENDING' &&
-                                !checkMergeableMutation.isPending &&
+                                !getPullRequestDiffMutation.isPending &&
                                 !mergeMutation.isPending
                               }
                               width="50px"
