@@ -10,7 +10,7 @@ export const Container = styled.div`
   gap: 12px;
   align-self: stretch;
   overflow: hidden;
-  background: var(--LightPrimary, #FFD3FB);
+  background: var(--LightPrimary, #ffd3fb);
 `;
 
 export const InnerContainer = styled.div`
@@ -21,7 +21,7 @@ export const InnerContainer = styled.div`
   flex: 1 0 0;
   align-self: stretch;
   overflow: hidden;
-  background: #FFF;
+  background: #fff;
   border: 1px solid black;
   overflow-y: auto;
   overflow-x: hidden;
@@ -62,7 +62,7 @@ export const LeftHeader = styled.div`
 
 export const Title = styled.h2`
   align-self: stretch;
-  color: #2E2E2E;
+  color: #2e2e2e;
   font-family: Galmuri11;
   font-size: 36px;
   font-style: normal;
@@ -72,7 +72,7 @@ export const Title = styled.h2`
 `;
 
 export const Subtitle = styled.p`
-  color: #2E2E2E;
+  color: #2e2e2e;
   font-family: Galmuri11;
   font-size: 16px;
   font-style: normal;
@@ -82,7 +82,7 @@ export const Subtitle = styled.p`
 `;
 
 export const BackButton = styled.p`
-  color: var(--Stroke, #E774DD);
+  color: var(--Stroke, #e774dd);
   text-align: right;
   font-family: Galmuri11;
   font-size: 20px;
@@ -109,11 +109,11 @@ export const StatItem = styled.div`
   align-items: center;
   gap: 8px;
   border: 1px solid #000;
-  background: #FFF;
+  background: #fff;
 `;
 
 export const StatNumber = styled.div`
-  color: #2E2E2E;
+  color: #2e2e2e;
   text-align: center;
   font-family: Galmuri11;
   font-size: 32px;
@@ -123,7 +123,7 @@ export const StatNumber = styled.div`
 `;
 
 export const StatLabel = styled.div`
-  color: #2E2E2E;
+  color: #2e2e2e;
   text-align: center;
   font-family: Galmuri11;
   font-size: 14px;
@@ -145,7 +145,7 @@ export const PullRequestsContainer = styled.div`
 export const ListTitle = styled.h3`
   height: 31px;
   align-self: stretch;
-  color: #2E2E2E;
+  color: #2e2e2e;
   font-family: Galmuri11;
   font-size: 24px;
   font-style: normal;
@@ -177,7 +177,7 @@ export const MemorialList = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 1px;
-  background: rgba(0, 0, 0, 0.20);
+  background: rgba(0, 0, 0, 0.2);
 `;
 
 export const EmptyMessage = styled.div`
@@ -187,8 +187,8 @@ export const EmptyMessage = styled.div`
   text-align: center;
   padding: 40px;
   width: 100%;
-  background: #F9F9F9;
-  border: 1px solid #DDD;
+  background: #f9f9f9;
+  border: 1px solid #ddd;
 `;
 
 export const MemorialItem = styled.div`
@@ -197,7 +197,7 @@ export const MemorialItem = styled.div`
   justify-content: space-between;
   align-items: center;
   align-self: stretch;
-  background: #FFF;
+  background: #fff;
   border: 1px solid #000;
 `;
 
@@ -210,13 +210,20 @@ export const MemorialInfo = styled.div`
 `;
 
 export const MemorialName = styled.h4`
-  color: #2E2E2E;
+  color: #2e2e2e;
+  cursor: none;
   font-family: Galmuri11;
   font-size: 20px;
   font-style: normal;
+  text-decoration: underline;
   font-weight: 400;
   line-height: normal;
   margin: 0;
+
+  &:hover {
+    cursor: none;
+    text-decoration: none;
+  }
 `;
 
 export const MemorialDetails = styled.div`
@@ -249,9 +256,9 @@ export const ConflictResolveContainer = styled.div`
   align-items: center;
   gap: 20px;
   align-self: stretch;
-  border-top: 2px solid #FF6B6B;
+  border-top: 2px solid #ff6b6b;
   margin-top: 20px;
-  background: #FFF9F9;
+  background: #fff9f9;
 `;
 
 export const ConflictInfo = styled.div`
@@ -263,19 +270,19 @@ export const ConflictInfo = styled.div`
 `;
 
 export const ConflictLabel = styled.div`
-  color: #2E2E2E;
+  color: #2e2e2e;
   font-family: Galmuri11;
   font-size: 16px;
   font-weight: 400;
 `;
 
 export const ConflictText = styled.div`
-  color: #FF6B6B;
+  color: #ff6b6b;
   font-family: Galmuri11;
   font-size: 14px;
   padding: 10px;
-  background: #FFF;
-  border: 1px solid #FF6B6B;
+  background: #fff;
+  border: 1px solid #ff6b6b;
   border-radius: 4px;
   white-space: pre-wrap;
 `;
@@ -289,7 +296,7 @@ export const ResolveInputContainer = styled.div`
 `;
 
 export const ResolveLabel = styled.div`
-  color: #2E2E2E;
+  color: #2e2e2e;
   font-family: Galmuri11;
   font-size: 16px;
   font-weight: 400;
@@ -299,14 +306,14 @@ export const ResolveTextarea = styled.textarea`
   font-family: Galmuri11;
   font-size: 14px;
   padding: 10px;
-  border: 1px solid #DDD;
+  border: 1px solid #ddd;
   border-radius: 4px;
   resize: vertical;
   min-height: 200px;
 
   &:focus {
     outline: none;
-    border-color: #E774DD;
+    border-color: #e774dd;
   }
 `;
 
@@ -325,9 +332,9 @@ export const PRDetailContainer = styled.div`
   align-items: center;
   gap: 20px;
   align-self: stretch;
-  border-top: 2px solid #4299E1;
+  border-top: 2px solid #4299e1;
   margin-top: 20px;
-  background: #F0F8FF;
+  background: #f0f8ff;
 `;
 
 export const PRDetailInfo = styled.div`
@@ -339,12 +346,12 @@ export const PRDetailInfo = styled.div`
 `;
 
 export const PRContentBox = styled.div`
-  color: #2E2E2E;
+  color: #2e2e2e;
   font-family: Galmuri11;
   font-size: 14px;
   padding: 15px;
-  background: #FFF;
-  border: 1px solid #4299E1;
+  background: #fff;
+  border: 1px solid #4299e1;
   border-radius: 4px;
   white-space: pre-wrap;
   line-height: 1.6;
