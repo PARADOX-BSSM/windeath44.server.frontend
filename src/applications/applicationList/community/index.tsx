@@ -152,7 +152,38 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
     }
   };
 
-  const searchHandle = () => {};
+  const searchHandle = () => {
+    if (!search.trim()) {
+      if (setAlert) {
+        setAlert(Seori, <>검색어를 입력해주세요.</>, () => {
+          taskTransform?.('경고', '');
+        });
+      }
+      return;
+    }
+
+    postListSearchMutation.mutate(
+      { status: 'PUBLISHED', title: search },
+      {
+        onSuccess: () => {
+          console.log('검색 완료');
+        },
+        onError: () => {
+          if (setAlert) {
+            setAlert(Seori, <>게시글 검색에 실패했습니다.</>, () => {
+              taskTransform?.('경고', '');
+            });
+          }
+        },
+      },
+    );
+  };
+
+  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      searchHandle();
+    }
+  };
 
   return (
     <_.Container>
@@ -199,6 +230,7 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
               type="text"
               setValue={setSearch}
               placeHold="무엇이든 입력해보세요!"
+              onKeyDown={handleSearchKeyDown}
             />
             <MemorialBtn
               name="검색"
