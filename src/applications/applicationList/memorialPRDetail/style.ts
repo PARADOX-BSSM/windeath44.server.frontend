@@ -10,7 +10,7 @@ export const Container = styled.div`
   gap: 12px;
   align-self: stretch;
   overflow: hidden;
-  background: var(--LightPrimary, #FFD3FB);
+  background: var(--LightPrimary, #ffd3fb);
 `;
 
 export const InnerContainer = styled.div`
@@ -21,7 +21,7 @@ export const InnerContainer = styled.div`
   flex: 1 0 0;
   align-self: stretch;
   overflow: hidden;
-  background: #FFF;
+  background: #fff;
   border: 1px solid black;
   overflow-y: auto;
   overflow-x: hidden;
@@ -62,7 +62,7 @@ export const LeftHeader = styled.div`
 
 export const Title = styled.h2`
   align-self: stretch;
-  color: #2E2E2E;
+  color: #2e2e2e;
   font-family: Galmuri11;
   font-size: 36px;
   font-style: normal;
@@ -72,7 +72,7 @@ export const Title = styled.h2`
 `;
 
 export const Subtitle = styled.p`
-  color: #2E2E2E;
+  color: #2e2e2e;
   font-family: Galmuri11;
   font-size: 16px;
   font-style: normal;
@@ -82,14 +82,13 @@ export const Subtitle = styled.p`
 `;
 
 export const BackButton = styled.p`
-  color: var(--Stroke, #E774DD);
+  color: var(--Stroke, #e774dd);
   text-align: right;
   font-family: Galmuri11;
   font-size: 20px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
-  cursor: pointer;
   margin: 0;
 `;
 
@@ -109,11 +108,11 @@ export const InfoSection = styled.div`
   align-self: stretch;
   padding: 20px;
   border: 1px solid #000;
-  background: #F8F9FA;
+  background: #f8f9fa;
 `;
 
 export const InfoTitle = styled.h3`
-  color: #2E2E2E;
+  color: #2e2e2e;
   font-family: Galmuri11;
   font-size: 20px;
   font-style: normal;
@@ -145,7 +144,7 @@ export const InfoLabel = styled.span`
 `;
 
 export const InfoValue = styled.span`
-  color: #2E2E2E;
+  color: #2e2e2e;
   font-family: Galmuri11;
   font-size: 16px;
   font-style: normal;
@@ -162,7 +161,7 @@ export const ContentSection = styled.div`
 `;
 
 export const ContentTitle = styled.h3`
-  color: #2E2E2E;
+  color: #2e2e2e;
   font-family: Galmuri11;
   font-size: 24px;
   font-style: normal;
@@ -177,8 +176,8 @@ export const ContentBox = styled.div`
   max-height: 500px;
   padding: 20px;
   border: 1px solid #000;
-  background: #FFF;
-  color: #2E2E2E;
+  background: #fff;
+  color: #2e2e2e;
   font-family: Galmuri11;
   font-size: 14px;
   font-style: normal;

@@ -12,6 +12,7 @@ import {
 } from '@/api/memorial/mergeMemorialPullRequest';
 import { useRejectMemorialPullRequestMutation } from '@/api/memorial/rejectMemorialPullRequest';
 import { useState, useEffect } from 'react';
+import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
 
 // 날짜 포맷팅 함수
 const formatDate = (dateString: string) => {
@@ -82,13 +83,18 @@ const MemorialPRManager = ({
   };
 
   // PR 상세보기 함수 - 새로운 태스크 push
-  const handleViewPRDetail = (memorialPullRequestId: number, commitData: any) => {
+  const handleViewPRDetail = (
+    memorialPullRequestId: number,
+    commitData: any,
+    characterId: number,
+  ) => {
     push(
       taskSearch?.('memorialPRDetail', {
         ...stackProps,
         prId: memorialPullRequestId,
         commitData: commitData,
         memorialName: memorialName,
+        characterId: characterId,
       }),
     );
   };
@@ -265,10 +271,16 @@ const MemorialPRManager = ({
                         <_.MemorialItem key={pr.memorialPullRequestId}>
                           <_.MemorialInfo>
                             <_.MemorialName
-                              style={{ cursor: 'pointer', color: '#E774DD' }}
+                              style={{ color: '#E774DD' }}
                               onClick={() =>
-                                handleViewPRDetail(pr.memorialPullRequestId, pr.memorialCommit)
+                                handleViewPRDetail(
+                                  pr.memorialPullRequestId,
+                                  pr.memorialCommit,
+                                  pr.memorial.characterId,
+                                )
                               }
+                              onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                              onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
                             >
                               수정 요청 #{pr.memorialPullRequestId}
                             </_.MemorialName>
@@ -289,18 +301,18 @@ const MemorialPRManager = ({
                                 !getPullRequestDiffMutation.isPending &&
                                 !mergeMutation.isPending
                               }
-                              width="50px"
-                              height="32px"
-                              fontSize="12px"
+                              width="80px"
+                              height="40px"
+                              fontSize="16px"
                             />
                             <MemorialBtn
                               name="거절"
                               onClick={() => handleRejectPullRequest(pr.memorialPullRequestId)}
                               type="submit"
                               active={pr.state === 'PENDING' && !rejectMutation.isPending}
-                              width="50px"
-                              height="32px"
-                              fontSize="12px"
+                              width="80px"
+                              height="40px"
+                              fontSize="16px"
                             />
                           </_.ButtonContainer>
                         </_.MemorialItem>
