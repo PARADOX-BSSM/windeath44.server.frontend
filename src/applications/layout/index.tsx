@@ -39,6 +39,10 @@ const Application = (props: ApplicationProps) => {
   const [hasEnabledSave, setHasEnabledSave] = useState<boolean>(false);
   const [zIndex, setZIndex] = useState<number>(layer);
 
+  // 전체화면 백업용 상태
+  const [backupPosition, setBackupPosition] = useState<{ x: number; y: number } | null>(null);
+  const [backupSize, setBackupSize] = useState<{ width: number; height: number } | null>(null);
+
   useEffect(() => {
     console.log('isNotClick changed:', isNotClick);
   }, [isNotClick]);
@@ -158,12 +162,31 @@ const Application = (props: ApplicationProps) => {
   // 전체화면 처리
   useEffect(() => {
     if (isFullScreen) {
+      const container = document.getElementById('cursorContainer') as HTMLElement;
+      const bounds = container.getBoundingClientRect();
+
+      // 현재 상태 백업
+      setBackupPosition({ x: ui.position.x, y: ui.position.y });
+      setBackupSize({ width: ui.size.width, height: ui.size.height });
+
       // 전체화면 모드: 화면 전체를 차지하도록 설정
-      ui.setPosition({ x: 0, y: 0 });
+      ui.setPosition({ x: bounds.left / 16, y: bounds.top / 16 });
+
+      // calc 값을 실제 rem으로 계산
+      // height: 100vh - 48px(3rem) - 1.3rem = 100vh - 4.3rem을 rem으로 변환
+      const fullHeight = window.innerHeight / 16 - 3 - 0.25;
+      const fullWidth = bounds.width / 16 - 0.25;
+
       ui.setSize({
-        width: window.innerWidth / 16,
-        height: (window.innerHeight - 48) / 16, // 하단 taskbar 고려
+        height: fullHeight,
+        width: fullWidth,
       });
+    } else if (!isFullScreen && backupPosition && backupSize) {
+      // 전체화면 해제 시 백업된 상태로 복원
+      ui.setPosition(backupPosition);
+      ui.setSize(backupSize);
+      setBackupPosition(null);
+      setBackupSize(null);
     }
   }, [isFullScreen]);
 
@@ -175,10 +198,8 @@ const Application = (props: ApplicationProps) => {
           left: 0,
           top: 0,
           transform: `translate(${ui.position.x + ui.positionOffset.x}rem, ${ui.position.y + ui.positionOffset.y}rem)`,
-          height: isFullScreen
-            ? '100%'
-            : `${(ui.size.height + ui.sizeOffset.height).toString()}rem`,
-          width: isFullScreen ? '100%' : `${(ui.size.width + ui.sizeOffset.width).toString()}rem`,
+          height: `${(ui.size.height + ui.sizeOffset.height).toString()}rem`,
+          width: `${(ui.size.width + ui.sizeOffset.width).toString()}rem`,
           zIndex: zIndex,
           display: isMinimized ? 'none' : 'block',
           backgroundColor: 'white',
@@ -190,6 +211,7 @@ const Application = (props: ApplicationProps) => {
           <Resize.Header
             {...ui}
             title={windowName}
+            onDoubleClick={() => setIsFullScreen(!isFullScreen)}
           >
             <_.TitleContainer>
               <_.HeartImg
@@ -200,7 +222,7 @@ const Application = (props: ApplicationProps) => {
             </_.TitleContainer>
             <_.BtnContainer>
               <_.MinimizeButton
-                onMouseDown={(e) => {
+                onMouseDown={(e: React.MouseEvent<HTMLDivElement>) => {
                   e.stopPropagation();
                   setIsMinimized(!isMinimized);
                 }}
@@ -220,7 +242,7 @@ const Application = (props: ApplicationProps) => {
                 />
               </_.MinimizeButton>
               <_.FullScreenButton
-                onMouseDown={(e) => {
+                onMouseDown={(e: React.MouseEvent<HTMLDivElement>) => {
                   e.stopPropagation();
                   setIsFullScreen(!isFullScreen);
                 }}
@@ -240,7 +262,7 @@ const Application = (props: ApplicationProps) => {
                 />
               </_.FullScreenButton>
               <_.ExitButton
-                onMouseDown={(e) => {
+                onMouseDown={(e: React.MouseEvent<HTMLDivElement>) => {
                   e.stopPropagation();
                   props.removeTask(props.removeCompnent);
                   if (!isLogIned) {

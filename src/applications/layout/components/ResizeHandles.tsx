@@ -5,6 +5,7 @@ import type { useUI } from '../hooks/useUI';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
 import { isNotClickAtom } from '@/atoms/cursorState';
 import { useAtom } from 'jotai';
+import { on } from 'events';
 
 type Props = ReturnType<typeof useUI>;
 
@@ -38,12 +39,9 @@ export const Bottom: React.FC<Props> = ({ setSize, setSizeOffset }) => {
   );
 };
 
-export const Header: React.FC<Props & { title?: string; children?: React.ReactNode }> = ({
-  setPosition,
-  setPositionOffset,
-  title,
-  children,
-}) => {
+export const Header: React.FC<
+  Props & { title?: string; children?: React.ReactNode; onDoubleClick?: Function }
+> = ({ setPosition, setPositionOffset, title, children, onDoubleClick }) => {
   const [isNotClick, setIsNotClick] = useAtom(isNotClickAtom);
 
   const bind = useDrag(({ movement: [mx, my], last }) => {
@@ -68,6 +66,9 @@ export const Header: React.FC<Props & { title?: string; children?: React.ReactNo
       onMouseLeave={() => {
         setCursorImage(CURSOR_IMAGES.default);
         setIsNotClick(false);
+      }}
+      onDoubleClick={() => {
+        if (onDoubleClick) onDoubleClick();
       }}
     >
       {children || title}
