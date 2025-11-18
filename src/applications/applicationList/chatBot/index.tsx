@@ -322,7 +322,7 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
             </_.ProfileTop>
 
             <_.ContributorsSection>
-              <_.ContributorsTitle>챗봇 기여자</_.ContributorsTitle>
+              <_.ContributorsTitle>영매사 목록</_.ContributorsTitle>
               <_.ContributorsList>
                 {displayedContributors.map((contributor) => (
                   <_.ContributorAvatar
@@ -369,7 +369,7 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
               ))}
               {isLoading && (
                 <Loading
-                  text="답변을 기다리는 중입니다..."
+                  text="영혼과 이어지는 중입니다..."
                   imageSize="60px"
                 />
               )}
@@ -383,7 +383,7 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
                 type="text"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                placeholder={isLoading ? '답변을 기다리는 중입니다..' : '메시지 입력'}
+                placeholder={isLoading ? '영혼과 이어지는 중입니다...' : '메시지 입력'}
                 readOnly={isLoading}
                 onMouseEnter={() => setCursorImage(CURSOR_IMAGES.drag)}
                 onMouseOut={() => setCursorImage(CURSOR_IMAGES.default)}
