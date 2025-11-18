@@ -323,11 +323,28 @@ const Application = (props: ApplicationProps) => {
 
             {!isFullScreen && (
               <>
-                <Resize.RightSide {...ui} />
-                <Resize.RightCorner {...ui} />
-                <Resize.LeftSide {...ui} />
-                <Resize.LeftCorner {...ui} />
-                <Resize.Bottom {...ui} />
+                <Resize.RightSide
+                  {...ui}
+                  minWidth={props.appSetup?.minWidth}
+                />
+                <Resize.RightCorner
+                  {...ui}
+                  minWidth={props.appSetup?.minWidth}
+                  minHeight={props.appSetup?.minHeight}
+                />
+                <Resize.LeftSide
+                  {...ui}
+                  minWidth={props.appSetup?.minWidth}
+                />
+                <Resize.LeftCorner
+                  {...ui}
+                  minWidth={props.appSetup?.minWidth}
+                  minHeight={props.appSetup?.minHeight}
+                />
+                <Resize.Bottom
+                  {...ui}
+                  minHeight={props.appSetup?.minHeight}
+                />
               </>
             )}
           </_.BodyContainer>

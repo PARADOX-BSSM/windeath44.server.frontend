@@ -6,12 +6,15 @@ import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
 import { isNotClickAtom } from '@/atoms/cursorState';
 import { useAtom } from 'jotai';
 
-type Props = ReturnType<typeof useUI>;
+type Props = ReturnType<typeof useUI> & {
+  minWidth?: number;
+  minHeight?: number;
+};
 
-export const Bottom: React.FC<Props> = ({ setSize, setSizeOffset }) => {
+export const Bottom: React.FC<Props> = ({ setSize, setSizeOffset, size, minHeight }) => {
   const [isNotClick, setIsNotClick] = useAtom(isNotClickAtom);
 
-  const bind = useDrag(({ xy: [x, y], initial: [ix, iy], last }) => {
+  const bind = useDrag(({ xy: [, y], initial: [, iy], last }) => {
     const container = document.getElementById('cursorContainer');
     if (!container) return;
     const bounds = container.getBoundingClientRect();
@@ -22,13 +25,23 @@ export const Bottom: React.FC<Props> = ({ setSize, setSizeOffset }) => {
     // 제한된 movement 계산
     const my = constrainedY - iy;
 
+    // 최소 높이
+    const minH = minHeight ? minHeight / 16 : 10;
+
+    // 새로운 높이 계산
+    const newHeight = size.height + my / 16;
+    const constrainedHeight = Math.max(minH, newHeight);
+
     if (last) {
       // 드래그 끝: 최종 크기 적용
-      setSize((size) => ({ width: size.width, height: size.height + my / 16 }));
+      setSize({
+        width: size.width,
+        height: constrainedHeight,
+      });
       setSizeOffset({ width: 0, height: 0 });
     } else {
-      // 드래그 중: offset 업데이트
-      setSizeOffset({ width: 0, height: my / 16 });
+      // 드래그 중: offset 업데이트 (최소 높이 고려)
+      setSizeOffset({ width: 0, height: constrainedHeight - size.height });
     }
   });
 
@@ -133,6 +146,8 @@ export const LeftCorner: React.FC<Props> = ({
   size,
   positionOffset,
   sizeOffset,
+  minWidth,
+  minHeight,
 }) => {
   const [isNotClick, setIsNotClick] = useAtom(isNotClickAtom);
 
@@ -149,6 +164,10 @@ export const LeftCorner: React.FC<Props> = ({
     const mx = constrainedX - ix;
     const my = constrainedY - iy;
 
+    // 최소 크기
+    const minW = minWidth ? minWidth / 16 : 20;
+    const minH = minHeight ? minHeight / 16 : 10;
+
     // movement는 드래그 시작점부터의 누적 이동량
     const newLeft = position.x * 16 + mx;
     const newWidth = size.width * 16 - mx;
@@ -159,18 +178,37 @@ export const LeftCorner: React.FC<Props> = ({
     const constrainedLeft = Math.max(minLeft, Math.min(maxLeft, newLeft));
 
     // 제한된 위치로부터 역산한 크기
-    const constrainedWidth = size.width * 16 - (constrainedLeft - position.x * 16);
+    let constrainedWidth = size.width * 16 - (constrainedLeft - position.x * 16);
+
+    // 최소 너비 제한
+    if (constrainedWidth < minW * 16) {
+      constrainedWidth = minW * 16;
+    }
+
+    // 높이 계산 (최소 높이 적용)
+    const newHeight = size.height + my / 16;
+    const constrainedHeight = Math.max(minH, newHeight);
 
     if (last) {
       // 드래그 끝: 최종 위치와 크기 적용
-      setPosition({ x: constrainedLeft / 16, y: position.y });
-      setSize({ width: constrainedWidth / 16, height: size.height + my / 16 });
+      // 최소 너비 제한으로 인해 위치도 조정 필요
+      const finalLeft =
+        constrainedWidth === minW * 16
+          ? position.x + size.width - minW
+          : constrainedLeft / 16;
+      setPosition({ x: finalLeft, y: position.y });
+      setSize({
+        width: constrainedWidth / 16,
+        height: constrainedHeight,
+      });
       setPositionOffset({ x: 0, y: 0 });
       setSizeOffset({ width: 0, height: 0 });
     } else {
       // 드래그 중: offset만 업데이트
-      setPositionOffset({ x: (constrainedLeft - position.x * 16) / 16, y: 0 });
-      setSizeOffset({ width: (constrainedWidth - size.width * 16) / 16, height: my / 16 });
+      const finalLeft =
+        constrainedWidth === minW * 16 ? position.x + size.width - minW : constrainedLeft / 16;
+      setPositionOffset({ x: finalLeft - position.x, y: 0 });
+      setSizeOffset({ width: constrainedWidth / 16 - size.width, height: constrainedHeight - size.height });
     }
   });
 
@@ -200,10 +238,11 @@ export const LeftSide: React.FC<Props> = ({
   size,
   positionOffset,
   sizeOffset,
+  minWidth,
 }) => {
   const [isNotClick, setIsNotClick] = useAtom(isNotClickAtom);
 
-  const bind = useDrag(({ xy: [x, y], initial: [ix, iy], last }) => {
+  const bind = useDrag(({ xy: [x], initial: [ix], last }) => {
     const container = document.getElementById('cursorContainer');
     if (!container) return;
     const bounds = container.getBoundingClientRect();
@@ -213,6 +252,9 @@ export const LeftSide: React.FC<Props> = ({
 
     // 제한된 movement 계산
     const mx = constrainedX - ix;
+
+    // 최소 크기
+    const minW = minWidth ? minWidth / 16 : 20;
 
     // movement는 드래그 시작점부터의 누적 이동량
     const newLeft = position.x * 16 + mx;
@@ -224,18 +266,30 @@ export const LeftSide: React.FC<Props> = ({
     const constrainedLeft = Math.max(minLeft, Math.min(maxLeft, newLeft));
 
     // 제한된 위치로부터 역산한 크기
-    const constrainedWidth = size.width * 16 - (constrainedLeft - position.x * 16);
+    let constrainedWidth = size.width * 16 - (constrainedLeft - position.x * 16);
+
+    // 최소 너비 제한
+    if (constrainedWidth < minW * 16) {
+      constrainedWidth = minW * 16;
+    }
 
     if (last) {
       // 드래그 끝: 최종 위치와 크기 적용
-      setPosition({ x: constrainedLeft / 16, y: position.y });
+      // 최소 너비 제한으로 인해 위치도 조정 필요
+      const finalLeft =
+        constrainedWidth === minW * 16
+          ? position.x + size.width - minW
+          : constrainedLeft / 16;
+      setPosition({ x: finalLeft, y: position.y });
       setSize({ width: constrainedWidth / 16, height: size.height });
       setSizeOffset({ width: 0, height: 0 });
       setPositionOffset({ x: 0, y: 0 });
     } else {
       // 드래그 중: offset만 업데이트
-      setPositionOffset({ x: (constrainedLeft - position.x * 16) / 16, y: 0 });
-      setSizeOffset({ width: (constrainedWidth - size.width * 16) / 16, height: 0 });
+      const finalLeft =
+        constrainedWidth === minW * 16 ? position.x + size.width - minW : constrainedLeft / 16;
+      setPositionOffset({ x: finalLeft - position.x, y: 0 });
+      setSizeOffset({ width: constrainedWidth / 16 - size.width, height: 0 });
     }
   });
 
@@ -265,6 +319,8 @@ export const RightCorner: React.FC<Props> = ({
   size,
   positionOffset,
   sizeOffset,
+  minWidth,
+  minHeight,
 }) => {
   const [isNotClick, setIsNotClick] = useAtom(isNotClickAtom);
 
@@ -281,6 +337,10 @@ export const RightCorner: React.FC<Props> = ({
     const mx = constrainedX - ix;
     const my = constrainedY - iy;
 
+    // 최소 크기
+    const minW = minWidth ? minWidth / 16 : 20;
+    const minH = minHeight ? minHeight / 16 : 10;
+
     // 오른쪽 리사이즈: 위치는 고정, 크기만 증가
     const newWidth = size.width * 16 + mx;
 
@@ -293,13 +353,23 @@ export const RightCorner: React.FC<Props> = ({
       constrainedWidth = maxRight - position.x * 16;
     }
 
+    // 최소 너비 제한
+    constrainedWidth = Math.max(minW * 16, constrainedWidth);
+
+    // 높이 계산 (최소 높이 적용)
+    const newHeight = size.height + my / 16;
+    const constrainedHeight = Math.max(minH, newHeight);
+
     if (last) {
       // 드래그 끝: 최종 크기 적용
-      setSize({ width: constrainedWidth / 16, height: size.height + my / 16 });
+      setSize({
+        width: constrainedWidth / 16,
+        height: constrainedHeight,
+      });
       setSizeOffset({ width: 0, height: 0 });
     } else {
       // 드래그 중: offset만 업데이트
-      setSizeOffset({ width: (constrainedWidth - size.width * 16) / 16, height: my / 16 });
+      setSizeOffset({ width: (constrainedWidth - size.width * 16) / 16, height: constrainedHeight - size.height });
     }
   });
 
@@ -329,10 +399,11 @@ export const RightSide: React.FC<Props> = ({
   size,
   positionOffset,
   sizeOffset,
+  minWidth,
 }) => {
   const [isNotClick, setIsNotClick] = useAtom(isNotClickAtom);
 
-  const bind = useDrag(({ xy: [x, y], initial: [ix, iy], last }) => {
+  const bind = useDrag(({ xy: [x], initial: [ix], last }) => {
     const container = document.getElementById('cursorContainer');
     if (!container) return;
     const bounds = container.getBoundingClientRect();
@@ -342,6 +413,9 @@ export const RightSide: React.FC<Props> = ({
 
     // 제한된 movement 계산
     const mx = constrainedX - ix;
+
+    // 최소 크기
+    const minW = minWidth ? minWidth / 16 : 20;
 
     // 오른쪽 리사이즈: 위치는 고정, 크기만 증가
     const newWidth = size.width * 16 + mx;
@@ -354,6 +428,9 @@ export const RightSide: React.FC<Props> = ({
     if (rightEdge > maxRight) {
       constrainedWidth = maxRight - position.x * 16;
     }
+
+    // 최소 너비 제한
+    constrainedWidth = Math.max(minW * 16, constrainedWidth);
 
     if (last) {
       // 드래그 끝: 최종 크기 적용
