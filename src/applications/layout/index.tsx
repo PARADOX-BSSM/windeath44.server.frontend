@@ -1,6 +1,5 @@
 import * as _ from './style';
 import { Suspense, useEffect, useState } from 'react';
-import { useDrag } from 'react-use-gesture';
 import Exit from '@/assets/headerButton/exit.svg';
 import Full from '@/assets/headerButton/full.svg';
 import Min from '@/assets/headerButton/min.svg';
@@ -12,60 +11,41 @@ import {
   layerAtom,
   tabDownInterruptAtom,
 } from '@/atoms/windowManager.ts';
+import { isNotClickAtom } from '@/atoms/cursorState.ts';
 import { windowPositionsAtom } from '@/atoms/processManager.ts';
-import {
-  getCorner,
-  widthCondition,
-  heightCondition,
-  leftCondition,
-  ApplicationProps,
-} from './utils';
-
+import { ApplicationProps } from './utils';
 import React from 'react';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
 import { useProcessManager } from '@/hooks/processManager.tsx';
-
+import { useUI } from './hooks/useUI';
+import Resize from './components/ResizeHandles';
 const Application = (props: ApplicationProps) => {
   // jotai 상태 사용
-  const [layer, setLayer] = useAtom(layerAtom); // 창의 z-index(레이어)
-  const [focus, setFocus] = useAtom(focusAtom); // 현재 포커스된 창 이름 (전역)
-  const [tabDownInterrupt, setTabDownInterrupt] = useAtom(tabDownInterruptAtom); // 단축키 등으로 창 최소화 등 인터럽트 신호 (전역)
-  const [isLogIned, setIsLogIned] = useAtom(isLogInedAtom); // 로그인 여부 (전역)
-  const [windowPositions, setWindowPositions] = useAtom(windowPositionsAtom); // 창 위치 저장 (전역)
-  const [,,,setVirtualWindowPositions] = useProcessManager();
-  const [windowName, setWindowName] = useState<string>(props.name); // 현재 창 이름 (로컬)
+  const [layer, setLayer] = useAtom(layerAtom);
+  const [focus, setFocus] = useAtom(focusAtom);
+  const [tabDownInterrupt, setTabDownInterrupt] = useAtom(tabDownInterruptAtom);
+  const [isLogIned, setIsLogIned] = useAtom(isLogInedAtom);
+  const [windowPositions] = useAtom(windowPositionsAtom);
+  const [, , , setVirtualWindowPositions] = useProcessManager();
+  const [windowName, setWindowName] = useState<string>(props.name);
+  const [isNotClick, setIsNotClick] = useAtom(isNotClickAtom);
 
-  const setUpHeight = props.setUpHeight;
-  const setUpWidth = props.setUpWidth;
+  // UI 상태 관리
+  const ui = useUI();
+  const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
+  const [isMinimized, setIsMinimized] = useState<boolean>(false);
+  const [hasEnabledSave, setHasEnabledSave] = useState<boolean>(false);
+  const [zIndex, setZIndex] = useState<number>(layer);
 
-  // 초기값은 항상 기본값 사용
-  const windowProps: React.CSSProperties = {
-    position: 'absolute',
-    height: props.setUpHeight,
-    width: props.setUpWidth,
-    top: (20 * globalThis.innerHeight) / 100,
-    left: (30 * globalThis.innerWidth) / 100,
-    backgroundColor: '#fff',
-    zIndex: layer,
-    filter: 'dropShadow(gray 0px 0px 15px)',
-  };
-  const [window, setWindow] = useState<React.CSSProperties>(windowProps); // 현재 창의 상태 (위치, 크기, 스타일 등)
-  const [backupWindow, setBackupWindow] = useState<React.CSSProperties>(window); // 전체화면 진입 전 창의 상태 백업
-  const [cursor, setCursor] = useState<number[]>(props.cursorVec); // 커서 위치(컨테이너 기준)
-  const [beforeSizeParams, setBeforeSizeParams] = useState<number[]>([0, 0]); // 리사이즈 시작 시점의 좌표
-  const [beforeMoveParams, setBeforeMoveParams] = useState<number[]>([0, 0]); // 드래그 시작 시점의 좌표
-  const [isFirst, setIsFirst] = useState<boolean>(true); // 리사이즈 첫 진입 여부
-  const [isFullScreen, setIsFullScreen] = useState<boolean>(false); // 전체화면 여부
-  const [isMinimized, setIsMinimized] = useState<boolean>(false); // 최소화 여부
-  const [hasEnabledSave, setHasEnabledSave] = useState<boolean>(false); // 저장 활성화 여부
+  // 전체화면 백업용 상태
+  const [backupPosition, setBackupPosition] = useState<{ x: number; y: number } | null>(null);
+  const [backupSize, setBackupSize] = useState<{ width: number; height: number } | null>(null);
 
-  // 커서 위치 동기화 : props로 받은 커서 위치(props.cursorVec)를 로컬 상태(cursor)로 동기화
   useEffect(() => {
-    setBeforeMoveParams(cursor);
-    setCursor(props.cursorVec);
-  }, [props.cursorVec]);
+    console.log('isNotClick changed:', isNotClick);
+  }, [isNotClick]);
 
-  // 마운트 후 위치 복원 (초기 렌더링 후 짧은 딜레이)
+  // 마운트 후 위치 복원
   useEffect(() => {
     if (isFullScreen) {
       return;
@@ -73,25 +53,38 @@ const Application = (props: ApplicationProps) => {
 
     const savedPos = windowPositions[props.name];
     if (savedPos) {
-      console.log('[Application] Will restore position for', props.name, 'after delay');
+      console.log('[Application] Restoring position for', props.name, savedPos);
       const timer = setTimeout(() => {
-        console.log('[Application] Restoring position for', props.name, savedPos);
-        setWindow((prev) => ({
-          ...prev,
-          height: savedPos.height,
-          width: savedPos.width,
-          top: savedPos.top,
-          left: savedPos.left,
-        }));
-        // 복원 후 조금 더 기다렸다가 저장 활성화
+        // px를 rem으로 변환 (1rem = 16px)
+        ui.setPosition({
+          x: savedPos.left / 16,
+          y: savedPos.top / 16,
+        });
+        ui.setSize({
+          width: savedPos.width / 16,
+          height: savedPos.height / 16,
+        });
         setTimeout(() => {
           console.log('[Application] Enabling save for', props.name);
           setHasEnabledSave(true);
         }, 100);
-      }, 100); // 초기 렌더링 후 복원
+      }, 100);
       return () => clearTimeout(timer);
     } else {
-      // 저장된 위치가 없으면 바로 저장 활성화
+      // 초기 크기 설정 (px를 rem으로 변환)
+      const widthStr =
+        typeof props.setUpWidth === 'string' ? props.setUpWidth : String(props.setUpWidth);
+      const heightStr =
+        typeof props.setUpHeight === 'string' ? props.setUpHeight : String(props.setUpHeight);
+      const initialWidth = parseFloat(widthStr.replace('px', '')) / 16 || 30;
+      const initialHeight = parseFloat(heightStr.replace('px', '')) / 16 || 20;
+      ui.setSize({ width: initialWidth, height: initialHeight });
+
+      // 초기 위치 설정 (화면 중앙)
+      const centerX = (window.innerWidth / 16) * 0.3;
+      const centerY = (window.innerHeight / 16) * 0.2;
+      ui.setPosition({ x: centerX, y: centerY });
+
       const timer = setTimeout(() => {
         console.log('[Application] No saved position, enabling save for', props.name);
         setHasEnabledSave(true);
@@ -100,52 +93,54 @@ const Application = (props: ApplicationProps) => {
     }
   }, [props.name, windowPositions, isFullScreen]);
 
-  // 창의 위치/크기 저장 : window state가 변경될 때마다 localStorage에 저장
+  // 창의 위치/크기 저장
   useEffect(() => {
-    // 저장이 활성화되지 않았으면 무시
     if (!hasEnabledSave) {
       return;
     }
 
-    // 전체화면, 최소화, instanceId가 있는 동적 창은 저장하지 않음
     if (isFullScreen || isMinimized || props.instanceId || props.type !== 'App') {
       return;
     }
 
-    // 유효한 위치 정보가 있을 때만 저장
-    if (window.top !== undefined && window.left !== undefined && window.width && window.height) {
-      const position = {
-        top: Number(window.top),
-        left: Number(window.left),
-        width: Number(window.width),
-        height: Number(window.height),
-      };
+    // rem을 px로 변환하여 저장
+    const position = {
+      top: (ui.position.y + ui.positionOffset.y) * 16,
+      left: (ui.position.x + ui.positionOffset.x) * 16,
+      width: (ui.size.width + ui.sizeOffset.width) * 16,
+      height: (ui.size.height + ui.sizeOffset.height) * 16,
+    };
 
-      console.log('[Application] Saving position for', props.name, position);
-      setVirtualWindowPositions({[props.name]: position });
-    }
-  }, [window.top, window.left, window.width, window.height, isFullScreen, isMinimized, hasEnabledSave, props.instanceId, props.type, props.name, setWindowPositions]);
+    console.log('[Application] Saving position for', props.name, position);
+    setVirtualWindowPositions({ [props.name]: position });
+  }, [
+    ui.position.x,
+    ui.position.y,
+    ui.size.width,
+    ui.size.height,
+    isFullScreen,
+    isMinimized,
+    hasEnabledSave,
+    props.instanceId,
+    props.type,
+    props.name,
+  ]);
 
-  // UX 개선 : 현재 창이 클릭되면 focus를 현재 창으로 변경 (마운트 시에만)
+  // 포커스 설정 (마운트 시)
   useEffect(() => {
     if (!isMinimized && focus !== (props.instanceId || props.name)) {
-      // 초기 마운트 시에만 포커스 설정 (window 의존성 제거로 무한 루프 방지)
       setFocus(props.instanceId || props.name);
     }
-  }, []); // 빈 배열: 마운트 시에만 실행
+  }, []);
 
-  // 최소화 처리 : 최소화 시 창을 숨기고, 포커스를 "Discover"로 이동
+  // 최소화 처리
   useEffect(() => {
     if (isMinimized) {
-      setWindow((prev) => ({
-        ...prev,
-        display: 'none',
-      }));
       setFocus('Discover');
     }
   }, [isMinimized]);
 
-  // Tab 인터럽트 처리 : tabDownInterrupt가 내 창이면 최소화 후 인터럽트 상태 초기화
+  // Tab 인터럽트 처리
   useEffect(() => {
     if (tabDownInterrupt === (props.instanceId || props.name)) {
       setIsMinimized(true);
@@ -153,221 +148,208 @@ const Application = (props: ApplicationProps) => {
     }
   }, [tabDownInterrupt]);
 
-  // 포커스 관리 : 창이 최소화되지 않았고, 포커스가 내 창이 아니면 내 창으로 포커스 이동
+  // 포커스 관리 (레이어 조정)
   useEffect(() => {
     if (props.type !== 'Shell' && focus === (props.instanceId || props.name)) {
       setLayer(layer + 1);
       setIsMinimized(false);
-      setWindow((prev) => ({
-        ...prev,
-        display: undefined,
-        zIndex: layer,
-      }));
+      setZIndex(layer);
     }
   }, [focus]);
 
-  // 전체화면 처리 : 전체화면 진입 시 창 상태 백업 후 화면 전체로 확장, 해제 시 복원
+  // 전체화면 처리
   useEffect(() => {
     if (isFullScreen) {
       const container = document.getElementById('cursorContainer') as HTMLElement;
       const bounds = container.getBoundingClientRect();
-      setWindow((prev) => {
-        setBackupWindow(prev); // 현재 상태를 백업
-        return {
-          ...prev,
-          height: `calc(100vh - ${48 / 16}rem - 1.3rem)`,
-          width: `calc(${bounds.width}px - 1.3rem)`,
-          top: bounds.top,
-          left: bounds.left,
-          zIndex: layer - 1,
-          filter: undefined,
-        };
+
+      // 현재 상태 백업
+      setBackupPosition({ x: ui.position.x, y: ui.position.y });
+      setBackupSize({ width: ui.size.width, height: ui.size.height });
+
+      // 전체화면 모드: 화면 전체를 차지하도록 설정
+      ui.setPosition({ x: bounds.left / 16, y: bounds.top / 16 });
+
+      // calc 값을 실제 rem으로 계산
+      const fullHeight = window.innerHeight / 16 - 3 - 0.25;
+      const fullWidth = bounds.width / 16 - 0.25;
+
+      ui.setSize({
+        height: fullHeight,
+        width: fullWidth,
       });
-    } else if (!isFullScreen) {
-      setWindow(backupWindow);
+    } else if (!isFullScreen && backupPosition && backupSize) {
+      // 전체화면 해제 시 백업된 상태로 복원
+      ui.setPosition(backupPosition);
+      ui.setSize(backupSize);
+      setBackupPosition(null);
+      setBackupSize(null);
     }
   }, [isFullScreen]);
 
-  // 유틸 함수 사용
-  const corner = getCorner(props.cursorVec, window);
-
-  const sizeManager = useDrag((params) => {
-    if (
-      isFirst &&
-      !isFullScreen &&
-      (heightCondition(corner) || widthCondition(corner) || leftCondition(corner))
-    ) {
-      setWindow((prev) => {
-        const [nearRight] = corner;
-
-        // widthLimit 로직
-        const minWidth = (prev.minWidth as number) || props.appSetup.minWidth;
-        let newWidth = prev.width;
-        if (widthCondition(corner)) {
-          if ((prev.width as unknown as number) >= minWidth) {
-            if (nearRight) {
-              newWidth = Number(prev.width) + params.offset[0] - beforeSizeParams[0];
-            } else {
-              newWidth = Number(prev.width) - params.offset[0] + beforeSizeParams[0];
-            }
-          } else {
-            newWidth = minWidth;
-          }
-        }
-
-        // heightLimit 로직
-        const minHeight = (prev.minHeight as number) || props.appSetup.minHeight;
-        let newHeight = prev.height;
-        if (heightCondition(corner)) {
-          if ((prev.height as unknown as number) >= minHeight) {
-            newHeight = Number(prev.height) + params.offset[1] - beforeSizeParams[1];
-          } else {
-            newHeight = minHeight;
-          }
-        }
-
-        // leftLimit 로직
-        let newLeft = prev.left;
-        if (leftCondition(corner)) {
-          if ((prev.width as unknown as number) >= minWidth) {
-            newLeft = Number(prev.left) + params.offset[0] - beforeSizeParams[0];
-          }
-        }
-
-        return {
-          ...prev,
-          height: newHeight,
-          width: newWidth,
-          left: newLeft,
-          zIndex: layer - 1,
-        };
-      });
-    } else {
-      setIsFirst(false);
-    }
-    setBeforeSizeParams(params.offset);
-  });
-
-  const moveManager = useDrag(() => {
-    if (!isFullScreen) {
-      setWindow((prev) => {
-        let x = cursor[0];
-        let y = cursor[1];
-
-        // 새로운 위치 계산
-        let newLeft = Number(prev.left) + (x - beforeMoveParams[0]);
-        let newTop = Number(prev.top) + (y - beforeMoveParams[1]);
-
-        // 화면 경계 제한 (헤더가 최소 30px 이상 보이도록)
-        const minTop = 0; // 상단 경계
-        const maxTop = globalThis.innerHeight - 90; // 하단 경계 (헤더 높이 30px 고려)
-        const minLeft = -Number(prev.width) + 100; // 좌측 경계 (100px 정도는 보이도록)
-        const maxLeft = globalThis.innerWidth - 100; // 우측 경계
-        // 경계 내로 제한
-        newTop = Math.max(minTop, Math.min(maxTop, newTop));
-        newLeft = Math.max(minLeft, Math.min(maxLeft, newLeft));
-
-        return {
-          ...prev,
-          left: newLeft,
-          top: newTop,
-          zIndex: layer - 1,
-        };
-      });
-    }
-  });
-
   if (props.type === 'App') {
     return (
-      <_.Window
-        style={window}
+      <section
+        style={{
+          position: 'fixed',
+          left: 0,
+          top: 0,
+          transform: `translate(${ui.position.x + ui.positionOffset.x}rem, ${ui.position.y + ui.positionOffset.y}rem)`,
+          height: `${(ui.size.height + ui.sizeOffset.height).toString()}rem`,
+          width: `${(ui.size.width + ui.sizeOffset.width).toString()}rem`,
+          zIndex: zIndex,
+          display: isMinimized ? 'none' : 'block',
+          backgroundColor: 'white',
+          border: `3px solid #ff8ef6`,
+        }}
         onMouseDown={() => setFocus(props.instanceId || props.name)}
       >
-        <_.WindowHeader {...moveManager()} onDoubleClick={() => setIsFullScreen(!isFullScreen)}>
-          <_.TitleContainer>
-            <_.HeartImg
-              src={Heart}
-              draggable="false"
-            />
-            <_.Title>{windowName}</_.Title>
-          </_.TitleContainer>
-          <_.BtnContainer>
-            <_.MinimizeButton
-              onMouseDown={() => setIsMinimized(!isMinimized)}
-              isFocus={focus === (props.instanceId || props.name)}
-            >
-              <img
-                src={Min}
-                alt=""
+        <_.Window>
+          <Resize.Header
+            {...ui}
+            title={windowName}
+            onDoubleClick={() => setIsFullScreen(!isFullScreen)}
+          >
+            <_.TitleContainer>
+              <_.HeartImg
+                src={Heart}
                 draggable="false"
-                width="100%"
-                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
-                onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
               />
-            </_.MinimizeButton>
-            <_.FullScreenButton
-              onMouseDown={() => setIsFullScreen(!isFullScreen)}
-              isFocus={focus === (props.instanceId || props.name)}
-            >
-              <img
-                src={Full}
-                alt=""
-                draggable="false"
-                width="100%"
-                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
-                onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
-              />
-            </_.FullScreenButton>
+              <_.Title>{windowName}</_.Title>
+            </_.TitleContainer>
+            <_.BtnContainer>
+              <_.MinimizeButton
+                onMouseDown={(e: React.MouseEvent<HTMLDivElement>) => {
+                  e.stopPropagation();
+                  setIsMinimized(!isMinimized);
+                }}
+                isFocus={focus === (props.instanceId || props.name)}
+              >
+                <img
+                  src={Min}
+                  alt=""
+                  draggable="false"
+                  width="100%"
+                  onMouseEnter={() => {
+                    setCursorImage(CURSOR_IMAGES.hand);
+                  }}
+                  onMouseLeave={() => {
+                    setCursorImage(CURSOR_IMAGES.default);
+                  }}
+                />
+              </_.MinimizeButton>
+              <_.FullScreenButton
+                onMouseDown={(e: React.MouseEvent<HTMLDivElement>) => {
+                  e.stopPropagation();
+                  setIsFullScreen(!isFullScreen);
+                }}
+                isFocus={focus === (props.instanceId || props.name)}
+              >
+                <img
+                  src={Full}
+                  alt=""
+                  draggable="false"
+                  width="100%"
+                  onMouseEnter={() => {
+                    setCursorImage(CURSOR_IMAGES.hand);
+                  }}
+                  onMouseLeave={() => {
+                    setCursorImage(CURSOR_IMAGES.default);
+                  }}
+                />
+              </_.FullScreenButton>
+              <_.ExitButton
+                onMouseDown={(e: React.MouseEvent<HTMLDivElement>) => {
+                  e.stopPropagation();
+                  props.removeTask(props.removeCompnent);
+                  if (!isLogIned) {
+                    setIsLogIned('true');
+                  }
+                }}
+                isFocus={focus === (props.instanceId || props.name)}
+              >
+                <img
+                  src={Exit}
+                  alt=""
+                  width="100%"
+                  draggable="false"
+                  onMouseEnter={() => {
+                    setCursorImage(CURSOR_IMAGES.hand);
+                  }}
+                  onMouseLeave={() => {
+                    setCursorImage(CURSOR_IMAGES.default);
+                  }}
+                />
+              </_.ExitButton>
+            </_.BtnContainer>
+          </Resize.Header>
 
-            <_.ExitButton
-              onMouseDown={() => {
-                props.removeTask(props.removeCompnent);
-                if (!isLogIned) {
-                  setIsLogIned('true');
+          <_.BodyContainer windowType="framed">
+            <_.ContentContainer windowType="framed">
+              {(() => {
+                const original = props.children;
+                const internal = original.props.children as React.ReactElement;
+                const type = internal.type;
+
+                if (props.name === '추모관' || props.name.startsWith('추모관 뷰어')) {
+                  return (
+                    <Suspense fallback={null}>
+                      {React.createElement(type, {
+                        ...internal.props,
+                        window: {
+                          width: `${(ui.size.width + ui.sizeOffset.width) * 16}px`,
+                          height: `${(ui.size.height + ui.sizeOffset.height) * 16}px`,
+                        },
+                        setWindow: (newWindow: any) => {
+                          if (newWindow.width && newWindow.height) {
+                            ui.setSize({
+                              width: parseFloat(newWindow.width) / 16,
+                              height: parseFloat(newWindow.height) / 16,
+                            });
+                          }
+                        },
+                        setUpHeight: props.setUpHeight,
+                        setUpWidth: props.setUpWidth,
+                        props,
+                        setWindowName,
+                      })}
+                    </Suspense>
+                  );
+                } else {
+                  return props.children;
                 }
-              }}
-              isFocus={focus === (props.instanceId || props.name)}
-            >
-              <img
-                src={Exit}
-                alt=""
-                width="100%"
-                draggable="false"
-                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
-                onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
-              />
-            </_.ExitButton>
-          </_.BtnContainer>
-        </_.WindowHeader>
-        <_.WindowContent
-          {...sizeManager()}
-          onMouseUp={() => setIsFirst(true)}
-        >
-          {(() => {
-            const original = props.children;
-            const internal = original.props.children as React.ReactElement;
-            const type = internal.type;
+              })()}
+            </_.ContentContainer>
 
-            if (props.name === '추모관' || props.name.startsWith('추모관 뷰어')) {
-              return (
-                <Suspense fallback={null}>
-                  {React.createElement(type, {
-                    ...internal.props,
-                    window,
-                    setWindow,
-                    setUpHeight,
-                    setUpWidth,
-                    props,
-                    setWindowName,
-                  })}
-                </Suspense>
-              );
-            } else {
-              return props.children;
-            }
-          })()}
-        </_.WindowContent>
-      </_.Window>
+            {!isFullScreen && (
+              <>
+                <Resize.RightSide
+                  {...ui}
+                  minWidth={props.appSetup?.minWidth}
+                />
+                <Resize.RightCorner
+                  {...ui}
+                  minWidth={props.appSetup?.minWidth}
+                  minHeight={props.appSetup?.minHeight}
+                />
+                <Resize.LeftSide
+                  {...ui}
+                  minWidth={props.appSetup?.minWidth}
+                />
+                <Resize.LeftCorner
+                  {...ui}
+                  minWidth={props.appSetup?.minWidth}
+                  minHeight={props.appSetup?.minHeight}
+                />
+                <Resize.Bottom
+                  {...ui}
+                  minHeight={props.appSetup?.minHeight}
+                />
+              </>
+            )}
+          </_.BodyContainer>
+        </_.Window>
+      </section>
     );
   } else if (props.type === 'Shell') {
     return (
@@ -382,4 +364,5 @@ const Application = (props: ApplicationProps) => {
     );
   }
 };
+
 export default Application;
