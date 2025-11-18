@@ -63,10 +63,6 @@ export const PostTitle = styled.h3`
 `;
 export const PostContent = styled.p`
   font-size: 14px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 100%;
 `;
 export const Datetime = styled.p`
   color: #999;

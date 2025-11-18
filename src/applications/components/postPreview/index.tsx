@@ -27,6 +27,14 @@ const PostPreview: React.FC<PostsProps> = ({ user, post, onClick }) => {
   const { name, userId, profile = '' } = user;
   const { title, body, commentCount = 0, likesCount = 0, postImage = '', createdAt } = post;
 
+  const truncateText = (text: string, maxLength: number) => {
+    if (text.length <= maxLength) return text;
+    return text.slice(0, maxLength) + '...';
+  };
+
+  const truncatedTitle = truncateText(title, 30);
+  const truncatedBody = truncateText(body, 50);
+
   return (
     <_.Post onClick={() => onClick()}>
       <_.Main>
@@ -37,8 +45,8 @@ const PostPreview: React.FC<PostsProps> = ({ user, post, onClick }) => {
             <_.UserId>@{userId}</_.UserId>
           </_.PostInfo>
           <_.Content>
-            <_.PostTitle>{title}</_.PostTitle>
-            <_.PostContent>{body}</_.PostContent>
+            <_.PostTitle>{truncatedTitle}</_.PostTitle>
+            <_.PostContent>{truncatedBody}</_.PostContent>
           </_.Content>
           <_.Datetime>{createdAt}</_.Datetime>
           <_.PostInfo>
