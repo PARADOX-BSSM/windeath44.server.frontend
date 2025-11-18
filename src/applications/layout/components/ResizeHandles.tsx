@@ -82,7 +82,7 @@ export const LeftCorner: React.FC<Props> = ({
       className="draggable"
       {...bind()}
       style={{ left: 0 }}
-      onMouseEnter={() => setCursorImage(CURSOR_IMAGES.drag_135)}
+      onMouseEnter={() => setCursorImage(CURSOR_IMAGES.drag_45)}
       onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
     />
   );
@@ -136,7 +136,7 @@ export const RightCorner: React.FC<Props> = ({ setSize, setSizeOffset }) => {
       className="draggable"
       {...bind()}
       style={{ right: 0 }}
-      onMouseEnter={() => setCursorImage(CURSOR_IMAGES.drag_45)}
+      onMouseEnter={() => setCursorImage(CURSOR_IMAGES.drag_135)}
       onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
     />
   );

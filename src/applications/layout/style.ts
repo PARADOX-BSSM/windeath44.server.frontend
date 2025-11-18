@@ -3,7 +3,6 @@ import type { StyleContainerProps } from '@/modules/typeModule';
 
 // Window container
 export const Window = styled.article`
-  border: ${3 / 16}rem solid #ff8ef6;
   padding: 0.45rem;
   display: flex;
   flex-direction: column;
@@ -22,13 +21,14 @@ export const HeaderContainer = styled.button`
   top: 0;
   left: 0;
   right: 0;
-  height: 2rem;
+  height: 32px;
   background-color: #ffd3fb;
-  border: ${3 / 16}rem solid #e774dd;
+  border: 3px solid #e774dd;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0;
+  margin: 4px 4px 0 4px;
   cursor: none;
 `;
 
@@ -155,7 +155,7 @@ export const BodyContainer = styled('div', {
   shouldForwardProp: (prop) => prop !== 'windowType',
 })<StyleContainerProps>`
   position: absolute;
-  top: ${({ windowType }) => (windowType !== 'frameless' ? '2rem' : 0)};
+  top: ${({ windowType }) => (windowType !== 'frameless' ? '40px' : 0)};
   left: 0;
   right: 0;
   bottom: 0;
@@ -166,9 +166,9 @@ export const ContentContainer = styled('div', {
 })<StyleContainerProps>`
   position: absolute;
   top: 0;
-  left: ${({ windowType }) => (windowType !== 'frameless' ? '.5rem' : 0)};
-  right: ${({ windowType }) => (windowType !== 'frameless' ? '.5rem' : 0)};
-  bottom: ${({ windowType }) => (windowType !== 'frameless' ? '.5rem' : 0)};
-  border: solid ${3 / 16}rem #e774dd;
+  left: ${({ windowType }) => (windowType !== 'frameless' ? '4px' : 0)};
+  right: ${({ windowType }) => (windowType !== 'frameless' ? '4px' : 0)};
+  bottom: ${({ windowType }) => (windowType !== 'frameless' ? '4px' : 0)};
+  border: solid 3px #e774dd;
   box-sizing: border-box;
 `;

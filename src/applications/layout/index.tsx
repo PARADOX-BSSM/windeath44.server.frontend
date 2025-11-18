@@ -63,8 +63,10 @@ const Application = (props: ApplicationProps) => {
       return () => clearTimeout(timer);
     } else {
       // 초기 크기 설정 (px를 rem으로 변환)
-      const widthStr = typeof props.setUpWidth === 'string' ? props.setUpWidth : String(props.setUpWidth);
-      const heightStr = typeof props.setUpHeight === 'string' ? props.setUpHeight : String(props.setUpHeight);
+      const widthStr =
+        typeof props.setUpWidth === 'string' ? props.setUpWidth : String(props.setUpWidth);
+      const heightStr =
+        typeof props.setUpHeight === 'string' ? props.setUpHeight : String(props.setUpHeight);
       const initialWidth = parseFloat(widthStr.replace('px', '')) / 16 || 30;
       const initialHeight = parseFloat(heightStr.replace('px', '')) / 16 || 20;
       ui.setSize({ width: initialWidth, height: initialHeight });
@@ -166,10 +168,14 @@ const Application = (props: ApplicationProps) => {
           left: 0,
           top: 0,
           transform: `translate(${ui.position.x + ui.positionOffset.x}rem, ${ui.position.y + ui.positionOffset.y}rem)`,
-          height: isFullScreen ? '100%' : `${(ui.size.height + ui.sizeOffset.height).toString()}rem`,
+          height: isFullScreen
+            ? '100%'
+            : `${(ui.size.height + ui.sizeOffset.height).toString()}rem`,
           width: isFullScreen ? '100%' : `${(ui.size.width + ui.sizeOffset.width).toString()}rem`,
           zIndex: zIndex,
           display: isMinimized ? 'none' : 'block',
+          backgroundColor: 'white',
+          border: `3px solid #ff8ef6`,
         }}
         onMouseDown={() => setFocus(props.instanceId || props.name)}
       >
