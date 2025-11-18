@@ -3,10 +3,14 @@ import { useDrag } from 'react-use-gesture';
 import * as _ from '../style';
 import type { useUI } from '../hooks/useUI';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
+import { isNotClickAtom } from '@/atoms/cursorState';
+import { useAtom } from 'jotai';
 
 type Props = ReturnType<typeof useUI>;
 
 export const Bottom: React.FC<Props> = ({ setSize, setSizeOffset }) => {
+  const [isNotClick, setIsNotClick] = useAtom(isNotClickAtom);
+
   const bind = useDrag(({ movement: [, my], last }) => {
     if (last) {
       // 드래그 끝: 최종 크기 적용
@@ -22,8 +26,14 @@ export const Bottom: React.FC<Props> = ({ setSize, setSizeOffset }) => {
     <_.BottomContainer
       className="draggable"
       {...bind()}
-      onMouseEnter={() => setCursorImage(CURSOR_IMAGES.drag_vertical)}
-      onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+      onMouseEnter={() => {
+        setCursorImage(CURSOR_IMAGES.drag_vertical);
+        setIsNotClick(true);
+      }}
+      onMouseLeave={() => {
+        setCursorImage(CURSOR_IMAGES.default);
+        setIsNotClick(false);
+      }}
     />
   );
 };
@@ -34,6 +44,8 @@ export const Header: React.FC<Props & { title?: string; children?: React.ReactNo
   title,
   children,
 }) => {
+  const [isNotClick, setIsNotClick] = useAtom(isNotClickAtom);
+
   const bind = useDrag(({ movement: [mx, my], last }) => {
     if (last) {
       // 드래그 끝: 최종 위치 적용
@@ -49,8 +61,14 @@ export const Header: React.FC<Props & { title?: string; children?: React.ReactNo
     <_.HeaderContainer
       className="draggable"
       {...bind()}
-      onMouseEnter={() => setCursorImage(CURSOR_IMAGES.drag_move)}
-      onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+      onMouseEnter={() => {
+        setCursorImage(CURSOR_IMAGES.drag_move);
+        setIsNotClick(true);
+      }}
+      onMouseLeave={() => {
+        setCursorImage(CURSOR_IMAGES.default);
+        setIsNotClick(false);
+      }}
     >
       {children || title}
     </_.HeaderContainer>
@@ -63,6 +81,8 @@ export const LeftCorner: React.FC<Props> = ({
   setSize,
   setSizeOffset,
 }) => {
+  const [isNotClick, setIsNotClick] = useAtom(isNotClickAtom);
+
   const bind = useDrag(({ movement: [mx, my], last }) => {
     if (last) {
       // 드래그 끝: 최종 위치와 크기 적용
@@ -82,8 +102,14 @@ export const LeftCorner: React.FC<Props> = ({
       className="draggable"
       {...bind()}
       style={{ left: 0 }}
-      onMouseEnter={() => setCursorImage(CURSOR_IMAGES.drag_45)}
-      onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+      onMouseEnter={() => {
+        setCursorImage(CURSOR_IMAGES.drag_45);
+        setIsNotClick(true);
+      }}
+      onMouseLeave={() => {
+        setCursorImage(CURSOR_IMAGES.default);
+        setIsNotClick(false);
+      }}
     />
   );
 };
@@ -94,6 +120,8 @@ export const LeftSide: React.FC<Props> = ({
   setSize,
   setSizeOffset,
 }) => {
+  const [isNotClick, setIsNotClick] = useAtom(isNotClickAtom);
+
   const bind = useDrag(({ movement: [mx], last }) => {
     if (last) {
       // 드래그 끝: 최종 위치와 크기 적용
@@ -113,13 +141,21 @@ export const LeftSide: React.FC<Props> = ({
       className="draggable"
       {...bind()}
       style={{ left: 0 }}
-      onMouseEnter={() => setCursorImage(CURSOR_IMAGES.drag_horizontal)}
-      onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+      onMouseEnter={() => {
+        setCursorImage(CURSOR_IMAGES.drag_horizontal);
+        setIsNotClick(true);
+      }}
+      onMouseLeave={() => {
+        setCursorImage(CURSOR_IMAGES.default);
+        setIsNotClick(false);
+      }}
     />
   );
 };
 
 export const RightCorner: React.FC<Props> = ({ setSize, setSizeOffset }) => {
+  const [isNotClick, setIsNotClick] = useAtom(isNotClickAtom);
+
   const bind = useDrag(({ movement: [mx, my], last }) => {
     if (last) {
       // 드래그 끝: 최종 크기 적용
@@ -136,13 +172,21 @@ export const RightCorner: React.FC<Props> = ({ setSize, setSizeOffset }) => {
       className="draggable"
       {...bind()}
       style={{ right: 0 }}
-      onMouseEnter={() => setCursorImage(CURSOR_IMAGES.drag_135)}
-      onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+      onMouseEnter={() => {
+        setCursorImage(CURSOR_IMAGES.drag_135);
+        setIsNotClick(true);
+      }}
+      onMouseLeave={() => {
+        setCursorImage(CURSOR_IMAGES.default);
+        setIsNotClick(false);
+      }}
     />
   );
 };
 
 export const RightSide: React.FC<Props> = ({ setSize, setSizeOffset }) => {
+  const [isNotClick, setIsNotClick] = useAtom(isNotClickAtom);
+
   const bind = useDrag(({ movement: [mx], last }) => {
     if (last) {
       // 드래그 끝: 최종 크기 적용
@@ -159,8 +203,14 @@ export const RightSide: React.FC<Props> = ({ setSize, setSizeOffset }) => {
       className="draggable"
       {...bind()}
       style={{ right: 0 }}
-      onMouseEnter={() => setCursorImage(CURSOR_IMAGES.drag_horizontal)}
-      onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+      onMouseEnter={() => {
+        setCursorImage(CURSOR_IMAGES.drag_horizontal);
+        setIsNotClick(true);
+      }}
+      onMouseLeave={() => {
+        setCursorImage(CURSOR_IMAGES.default);
+        setIsNotClick(false);
+      }}
     />
   );
 };

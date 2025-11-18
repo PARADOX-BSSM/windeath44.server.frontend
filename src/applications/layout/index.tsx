@@ -11,6 +11,7 @@ import {
   layerAtom,
   tabDownInterruptAtom,
 } from '@/atoms/windowManager.ts';
+import { isNotClickAtom } from '@/atoms/cursorState.ts';
 import { windowPositionsAtom } from '@/atoms/processManager.ts';
 import { ApplicationProps } from './utils';
 import React from 'react';
@@ -18,6 +19,7 @@ import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
 import { useProcessManager } from '@/hooks/processManager.tsx';
 import { useUI } from './hooks/useUI';
 import Resize from './components/ResizeHandles';
+import { set } from '../utility/signUp/style';
 
 const Application = (props: ApplicationProps) => {
   // jotai 상태 사용
@@ -28,6 +30,7 @@ const Application = (props: ApplicationProps) => {
   const [windowPositions] = useAtom(windowPositionsAtom);
   const [, , , setVirtualWindowPositions] = useProcessManager();
   const [windowName, setWindowName] = useState<string>(props.name);
+  const [isNotClick, setIsNotClick] = useAtom(isNotClickAtom);
 
   // UI 상태 관리
   const ui = useUI();
@@ -35,6 +38,10 @@ const Application = (props: ApplicationProps) => {
   const [isMinimized, setIsMinimized] = useState<boolean>(false);
   const [hasEnabledSave, setHasEnabledSave] = useState<boolean>(false);
   const [zIndex, setZIndex] = useState<number>(layer);
+
+  useEffect(() => {
+    console.log('isNotClick changed:', isNotClick);
+  }, [isNotClick]);
 
   // 마운트 후 위치 복원
   useEffect(() => {
@@ -204,8 +211,12 @@ const Application = (props: ApplicationProps) => {
                   alt=""
                   draggable="false"
                   width="100%"
-                  onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
-                  onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+                  onMouseEnter={() => {
+                    setCursorImage(CURSOR_IMAGES.hand);
+                  }}
+                  onMouseLeave={() => {
+                    setCursorImage(CURSOR_IMAGES.default);
+                  }}
                 />
               </_.MinimizeButton>
               <_.FullScreenButton
@@ -220,8 +231,12 @@ const Application = (props: ApplicationProps) => {
                   alt=""
                   draggable="false"
                   width="100%"
-                  onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
-                  onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+                  onMouseEnter={() => {
+                    setCursorImage(CURSOR_IMAGES.hand);
+                  }}
+                  onMouseLeave={() => {
+                    setCursorImage(CURSOR_IMAGES.default);
+                  }}
                 />
               </_.FullScreenButton>
               <_.ExitButton
@@ -239,8 +254,12 @@ const Application = (props: ApplicationProps) => {
                   alt=""
                   width="100%"
                   draggable="false"
-                  onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
-                  onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+                  onMouseEnter={() => {
+                    setCursorImage(CURSOR_IMAGES.hand);
+                  }}
+                  onMouseLeave={() => {
+                    setCursorImage(CURSOR_IMAGES.default);
+                  }}
                 />
               </_.ExitButton>
             </_.BtnContainer>

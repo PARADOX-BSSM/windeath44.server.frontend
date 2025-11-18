@@ -25,6 +25,7 @@ import { useGetPublicNotificationsQuery } from '@/api/notification/getPublicNoti
 import { notificationAtom, notificationListAtom } from '@/atoms/notification';
 import { settingsAtom } from '@/atoms/settings.ts';
 import { DEFAULT_NOTIFICATIONS } from '@/data/notifications.ts';
+import { isNotClickAtom } from '@/atoms/cursorState.ts';
 
 const Application = lazy(() => import('@/applications/layout/index.tsx'));
 
@@ -42,6 +43,7 @@ const WindowManager = () => {
   const setNotification = useAtomValue(notificationAtom);
   const setNotificationList = useSetAtom(notificationListAtom);
   const [settings] = useAtom(settingsAtom);
+  const [isNotClick] = useAtom(isNotClickAtom);
 
   const [taskList, addTask, removeTask, setVirtualWindowPosition] = useProcessManager();
   const [, , , addTaskToDesktop] = useVirtualProcessManager();
@@ -339,6 +341,7 @@ const WindowManager = () => {
   useEffect(() => {
     const cursor = document.getElementById('cursor');
     if (!cursor) return;
+    if (isNotClick) return;
 
     const handleClick = () => {
       const [dx, dy] = dragOffset.current;
@@ -356,7 +359,7 @@ const WindowManager = () => {
 
     document.addEventListener('mousedown', handleClick);
     return () => document.removeEventListener('mousedown', handleClick);
-  }, []);
+  }, [isNotClick]);
 
   // Custom Hook 초기화 역할
   useTaskTransformFunction();
