@@ -19,8 +19,6 @@ import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
 import { useProcessManager } from '@/hooks/processManager.tsx';
 import { useUI } from './hooks/useUI';
 import Resize from './components/ResizeHandles';
-import { set } from '../utility/signUp/style';
-
 const Application = (props: ApplicationProps) => {
   // jotai 상태 사용
   const [layer, setLayer] = useAtom(layerAtom);
@@ -173,7 +171,6 @@ const Application = (props: ApplicationProps) => {
       ui.setPosition({ x: bounds.left / 16, y: bounds.top / 16 });
 
       // calc 값을 실제 rem으로 계산
-      // height: 100vh - 48px(3rem) - 1.3rem = 100vh - 4.3rem을 rem으로 변환
       const fullHeight = window.innerHeight / 16 - 3 - 0.25;
       const fullWidth = bounds.width / 16 - 0.25;
 
