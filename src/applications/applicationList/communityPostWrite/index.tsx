@@ -170,8 +170,9 @@ const CommunityPostWrite: React.FC<postData> = ({
 
       <_.BtnArea>
         <CommunityBtn
-          name="이미지 첨부"
+          name="도움말"
           type="submit"
+          onClick={() => taskTransform?.('', '도움말')}
         />
         {postId ? (
           <></>
