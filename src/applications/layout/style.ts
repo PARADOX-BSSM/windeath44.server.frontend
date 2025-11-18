@@ -29,7 +29,7 @@ export const HeaderContainer = styled.button`
   justify-content: space-between;
   align-items: center;
   padding: 0;
-  cursor: move;
+  cursor: none;
 `;
 
 // Header content containers
@@ -108,7 +108,7 @@ export const SideContainer = styled.button`
   background: transparent;
   border: none;
   &:hover {
-    cursor: col-resize;
+    cursor: none;
   }
 `;
 
@@ -125,13 +125,13 @@ const CornerContainer = styled.button`
 
 export const LeftCornerContainer = styled(CornerContainer)`
   &:hover {
-    cursor: nesw-resize;
+    cursor: none;
   }
 `;
 
 export const RightCornerContainer = styled(CornerContainer)`
   &:hover {
-    cursor: nwse-resize;
+    cursor: none;
   }
 `;
 
@@ -146,7 +146,7 @@ export const BottomContainer = styled.button`
   padding: 0;
   margin: 0;
   &:hover {
-    cursor: row-resize;
+    cursor: none;
   }
 `;
 

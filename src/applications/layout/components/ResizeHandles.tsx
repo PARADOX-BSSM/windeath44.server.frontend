@@ -2,6 +2,7 @@ import React from 'react';
 import { useDrag } from 'react-use-gesture';
 import * as _ from '../style';
 import type { useUI } from '../hooks/useUI';
+import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
 
 type Props = ReturnType<typeof useUI>;
 
@@ -21,6 +22,8 @@ export const Bottom: React.FC<Props> = ({ setSize, setSizeOffset }) => {
     <_.BottomContainer
       className="draggable"
       {...bind()}
+      onMouseEnter={() => setCursorImage(CURSOR_IMAGES.drag_vertical)}
+      onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
     />
   );
 };
@@ -46,6 +49,8 @@ export const Header: React.FC<Props & { title?: string; children?: React.ReactNo
     <_.HeaderContainer
       className="draggable"
       {...bind()}
+      onMouseEnter={() => setCursorImage(CURSOR_IMAGES.drag_move)}
+      onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
     >
       {children || title}
     </_.HeaderContainer>
@@ -77,6 +82,8 @@ export const LeftCorner: React.FC<Props> = ({
       className="draggable"
       {...bind()}
       style={{ left: 0 }}
+      onMouseEnter={() => setCursorImage(CURSOR_IMAGES.drag_135)}
+      onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
     />
   );
 };
@@ -106,6 +113,8 @@ export const LeftSide: React.FC<Props> = ({
       className="draggable"
       {...bind()}
       style={{ left: 0 }}
+      onMouseEnter={() => setCursorImage(CURSOR_IMAGES.drag_horizontal)}
+      onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
     />
   );
 };
@@ -127,6 +136,8 @@ export const RightCorner: React.FC<Props> = ({ setSize, setSizeOffset }) => {
       className="draggable"
       {...bind()}
       style={{ right: 0 }}
+      onMouseEnter={() => setCursorImage(CURSOR_IMAGES.drag_45)}
+      onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
     />
   );
 };
@@ -148,6 +159,8 @@ export const RightSide: React.FC<Props> = ({ setSize, setSizeOffset }) => {
       className="draggable"
       {...bind()}
       style={{ right: 0 }}
+      onMouseEnter={() => setCursorImage(CURSOR_IMAGES.drag_horizontal)}
+      onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
     />
   );
 };
