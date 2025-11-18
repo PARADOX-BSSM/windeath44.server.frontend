@@ -1,27 +1,26 @@
-import React, { useCallback } from 'react';
-import { useDrag } from 'react-use-drag';
+import React from 'react';
+import { useDrag } from 'react-use-gesture';
 import * as _ from '../style';
 import type { useUI } from '../hooks/useUI';
 
 type Props = ReturnType<typeof useUI>;
 
 export const Bottom: React.FC<Props> = ({ setSize, setSizeOffset }) => {
-  const onRelativePositionChange = useCallback(
-    (_x: number, y: number) => setSizeOffset({ width: 0, height: y / 16 }),
-    [setSizeOffset],
-  );
-  const onEnd = useCallback(
-    (_x: number, y: number) => {
-      setSize((size) => ({ width: size.width, height: size.height + y / 16 }));
+  const bind = useDrag(({ movement: [, my], last }) => {
+    if (last) {
+      // 드래그 끝: 최종 크기 적용
+      setSize((size) => ({ width: size.width, height: size.height + my / 16 }));
       setSizeOffset({ width: 0, height: 0 });
-    },
-    [setSize, setSizeOffset],
-  );
-  const { elementProps } = useDrag({ onRelativePositionChange, onEnd });
+    } else {
+      // 드래그 중: offset 업데이트
+      setSizeOffset({ width: 0, height: my / 16 });
+    }
+  });
+
   return (
     <_.BottomContainer
       className="draggable"
-      {...elementProps}
+      {...bind()}
     />
   );
 };
@@ -32,22 +31,21 @@ export const Header: React.FC<Props & { title?: string; children?: React.ReactNo
   title,
   children,
 }) => {
-  const onRelativePositionChange = useCallback(
-    (x: number, y: number) => setPositionOffset({ x: x / 16, y: y / 16 }),
-    [setPositionOffset],
-  );
-  const onEnd = useCallback(
-    (x: number, y: number) => {
-      setPosition((pos) => ({ x: pos.x + x / 16, y: pos.y + y / 16 }));
+  const bind = useDrag(({ movement: [mx, my], last }) => {
+    if (last) {
+      // 드래그 끝: 최종 위치 적용
+      setPosition((pos) => ({ x: pos.x + mx / 16, y: pos.y + my / 16 }));
       setPositionOffset({ x: 0, y: 0 });
-    },
-    [setPosition, setPositionOffset],
-  );
-  const { elementProps } = useDrag({ onRelativePositionChange, onEnd });
+    } else {
+      // 드래그 중: offset 업데이트
+      setPositionOffset({ x: mx / 16, y: my / 16 });
+    }
+  });
+
   return (
     <_.HeaderContainer
       className="draggable"
-      {...elementProps}
+      {...bind()}
     >
       {children || title}
     </_.HeaderContainer>
@@ -60,27 +58,24 @@ export const LeftCorner: React.FC<Props> = ({
   setSize,
   setSizeOffset,
 }) => {
-  const onRelativePositionChange = useCallback(
-    (x: number, y: number) => {
-      setPositionOffset({ x: x / 16, y: 0 });
-      setSizeOffset({ width: -(x / 16), height: y / 16 });
-    },
-    [setPositionOffset, setSizeOffset],
-  );
-  const onEnd = useCallback(
-    (x: number, y: number) => {
-      setPosition((position) => ({ x: position.x + x / 16, y: position.y }));
-      setSize((size) => ({ width: size.width - x / 16, height: size.height + y / 16 }));
+  const bind = useDrag(({ movement: [mx, my], last }) => {
+    if (last) {
+      // 드래그 끝: 최종 위치와 크기 적용
+      setPosition((position) => ({ x: position.x + mx / 16, y: position.y }));
+      setSize((size) => ({ width: size.width - mx / 16, height: size.height + my / 16 }));
       setPositionOffset({ x: 0, y: 0 });
       setSizeOffset({ width: 0, height: 0 });
-    },
-    [setPosition, setSize, setPositionOffset, setSizeOffset],
-  );
-  const { elementProps } = useDrag({ onRelativePositionChange, onEnd });
+    } else {
+      // 드래그 중: offset 업데이트
+      setPositionOffset({ x: mx / 16, y: 0 });
+      setSizeOffset({ width: -(mx / 16), height: my / 16 });
+    }
+  });
+
   return (
     <_.LeftCornerContainer
       className="draggable"
-      {...elementProps}
+      {...bind()}
       style={{ left: 0 }}
     />
   );
@@ -92,73 +87,66 @@ export const LeftSide: React.FC<Props> = ({
   setSize,
   setSizeOffset,
 }) => {
-  const onRelativePositionChange = useCallback(
-    (x: number) => {
-      setSizeOffset({ width: -(x / 16), height: 0 });
-      setPositionOffset({ x: x / 16, y: 0 });
-    },
-    [setSizeOffset, setPositionOffset],
-  );
-  const onEnd = useCallback(
-    (x: number) => {
-      setSize((size) => ({ width: size.width - x / 16, height: size.height }));
-      setPosition((position) => ({ x: position.x + x / 16, y: position.y }));
+  const bind = useDrag(({ movement: [mx], last }) => {
+    if (last) {
+      // 드래그 끝: 최종 위치와 크기 적용
+      setSize((size) => ({ width: size.width - mx / 16, height: size.height }));
+      setPosition((position) => ({ x: position.x + mx / 16, y: position.y }));
       setSizeOffset({ width: 0, height: 0 });
       setPositionOffset({ x: 0, y: 0 });
-    },
-    [setSize, setPosition, setSizeOffset, setPositionOffset],
-  );
-  const { elementProps } = useDrag({ onRelativePositionChange, onEnd });
+    } else {
+      // 드래그 중: offset 업데이트
+      setSizeOffset({ width: -(mx / 16), height: 0 });
+      setPositionOffset({ x: mx / 16, y: 0 });
+    }
+  });
+
   return (
     <_.SideContainer
       className="draggable"
-      {...elementProps}
+      {...bind()}
       style={{ left: 0 }}
     />
   );
 };
 
 export const RightCorner: React.FC<Props> = ({ setSize, setSizeOffset }) => {
-  const onRelativePositionChange = useCallback(
-    (x: number, y: number) => {
-      setSizeOffset({ width: x / 16, height: y / 16 });
-    },
-    [setSizeOffset],
-  );
-  const onEnd = useCallback(
-    (x: number, y: number) => {
-      setSize((size) => ({ width: size.width + x / 16, height: size.height + y / 16 }));
+  const bind = useDrag(({ movement: [mx, my], last }) => {
+    if (last) {
+      // 드래그 끝: 최종 크기 적용
+      setSize((size) => ({ width: size.width + mx / 16, height: size.height + my / 16 }));
       setSizeOffset({ width: 0, height: 0 });
-    },
-    [setSize, setSizeOffset],
-  );
-  const { elementProps } = useDrag({ onRelativePositionChange, onEnd });
+    } else {
+      // 드래그 중: offset 업데이트
+      setSizeOffset({ width: mx / 16, height: my / 16 });
+    }
+  });
+
   return (
     <_.RightCornerContainer
       className="draggable"
-      {...elementProps}
+      {...bind()}
       style={{ right: 0 }}
     />
   );
 };
 
 export const RightSide: React.FC<Props> = ({ setSize, setSizeOffset }) => {
-  const onRelativePositionChange = useCallback(
-    (x: number) => setSizeOffset({ width: x / 16, height: 0 }),
-    [setSizeOffset],
-  );
-  const onEnd = useCallback(
-    (x: number) => {
-      setSize((size) => ({ width: size.width + x / 16, height: size.height }));
+  const bind = useDrag(({ movement: [mx], last }) => {
+    if (last) {
+      // 드래그 끝: 최종 크기 적용
+      setSize((size) => ({ width: size.width + mx / 16, height: size.height }));
       setSizeOffset({ width: 0, height: 0 });
-    },
-    [setSize, setSizeOffset],
-  );
-  const { elementProps } = useDrag({ onRelativePositionChange, onEnd });
+    } else {
+      // 드래그 중: offset 업데이트
+      setSizeOffset({ width: mx / 16, height: 0 });
+    }
+  });
+
   return (
     <_.SideContainer
       className="draggable"
-      {...elementProps}
+      {...bind()}
       style={{ right: 0 }}
     />
   );
