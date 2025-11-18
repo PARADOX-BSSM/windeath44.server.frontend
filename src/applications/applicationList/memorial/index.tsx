@@ -479,7 +479,6 @@ const Memorial = ({
   const handleCommit = () => {
     if (!token && setAlert) {
       setAlert(
-        Seori,
         <>
           게스트는 추모관 수정이 불가합니다.
           <br />

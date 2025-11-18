@@ -1,5 +1,4 @@
 import ame from '@/assets/profile/ame.svg';
-import choten from '@/assets/profile/choten.svg';
 
 export const historyData = [
     {
@@ -11,7 +10,7 @@ export const historyData = [
         id: "winshine1034",
         editedAt: "2025-05-08 17:01:21",
         description: "대충 수정",
-        profileUrl: choten,
+        profileUrl: ame,
     },{
         id: "roena0516",
         editedAt: "2024-07-04 12:34:56",

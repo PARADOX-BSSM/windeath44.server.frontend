@@ -1,6 +1,5 @@
 import * as _ from './style';
 import ameImg from '@/assets/profile/ame.svg';
-import chotenImg from '@/assets/profile/choten.svg';
 import { useState } from 'react';
 import { setCursorImage, CURSOR_IMAGES } from 'lib/setCursorImg';
 
@@ -39,7 +38,7 @@ const Comment = ({
   onLikeToggle,
 }: PropsType) => {
   // console.log(idx);
-  const imgUrl = userProfile || (idx % 2 === 0 ? ameImg : chotenImg);
+  const imgUrl = userProfile || ameImg;
   const displayName = userName || userid;
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [replyContent, setReplyContent] = useState('');

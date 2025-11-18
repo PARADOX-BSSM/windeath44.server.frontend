@@ -1,7 +1,5 @@
 import * as _ from './style';
 import Logo from '@/assets/windeath44.svg';
-import Choten from '@/assets/profile/choten.svg';
-import Seori from '@/assets/sulkkagi/black_stone.svg';
 import { useEffect, useState } from 'react';
 import Inputs from '@/applications/components/inputs';
 import Loading from '@/applications/components/loading';
@@ -36,32 +34,31 @@ const SignUp = ({ changeToLogIn }: Props) => {
 
   const sendAuth = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (name.length == 0) {
-      setAlert?.(Choten, <>사용자 이름이 입력해 주세요.</>, () => {
+      setAlert?.(<>사용자 이름이 입력해 주세요.</>, () => {
         taskTransform?.('경고', '');
       });
       return;
     }
     if (userId.length == 0) {
-      setAlert?.(Choten, <>아이디를 입력해 주세요.</>, () => {
+      setAlert?.(<>아이디를 입력해 주세요.</>, () => {
         taskTransform?.('경고', '');
       });
       return;
     }
     if (userId.length < 6 || userId.length > 16) {
-      setAlert?.(Choten, <>아이디는 6~16자 이내로 입력해주세요.</>, () => {
+      setAlert?.(<>아이디는 6~16자 이내로 입력해주세요.</>, () => {
         taskTransform?.('경고', '');
       });
       return;
     }
     if (email.length == 0) {
-      setAlert?.(Choten, <>이메일을 입력해 주세요.</>, () => {
+      setAlert?.(<>이메일을 입력해 주세요.</>, () => {
         taskTransform?.('경고', '');
       });
       return;
     }
     if (!email.includes('@')) {
       setAlert?.(
-        Choten,
         <>
           이메일 형식이 잘못되었습니다.
           <br />
@@ -75,7 +72,6 @@ const SignUp = ({ changeToLogIn }: Props) => {
     }
     if (pw !== checkingPw) {
       setAlert?.(
-        Choten,
         <>
           비밀번호가 일치하지 않습니다.
           <br />
@@ -89,7 +85,6 @@ const SignUp = ({ changeToLogIn }: Props) => {
     }
     if (pw.length < 8 || pw.length > 20) {
       setAlert?.(
-        Choten,
         <>
           비밀번호는 8~20자 이내로 입력해주세요.
           <br />
@@ -105,7 +100,7 @@ const SignUp = ({ changeToLogIn }: Props) => {
       { name, userId, email, pw, changeToLogIn },
       {
         onSuccess: () => {
-          setAlert?.(Choten, <>회원가입이 완료되었습니다.</>, () => {
+          setAlert?.(<>회원가입이 완료되었습니다.</>, () => {
             taskTransform?.('경고', '');
           });
         },
@@ -113,7 +108,6 @@ const SignUp = ({ changeToLogIn }: Props) => {
           const axiosError = error as AxiosError;
           if (axiosError.response && axiosError.response.status === 400) {
             setAlert?.(
-              Seori,
               <>
                 이미 존재하는 이메일입니다.
                 <br />
@@ -125,7 +119,6 @@ const SignUp = ({ changeToLogIn }: Props) => {
             );
           } else {
             setAlert?.(
-              Choten,
               <>
                 회원가입 실패: 다시 시도해 주세요 <br /> 문의 : paradox.windeath44@gmail.com{' '}
               </>,
@@ -143,14 +136,13 @@ const SignUp = ({ changeToLogIn }: Props) => {
   const sendEmail = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (email.length == 0) {
-      setAlert?.(Choten, <>이메일을 입력해 주세요.</>, () => {
+      setAlert?.(<>이메일을 입력해 주세요.</>, () => {
         taskTransform?.('경고', '');
       });
       return;
     }
     if (!email.includes('@')) {
       setAlert?.(
-        Choten,
         <>
           이메일 형식이 잘못되었습니다.
           <br />
@@ -163,7 +155,7 @@ const SignUp = ({ changeToLogIn }: Props) => {
       return;
     }
     if (verity) {
-      setAlert?.(Choten, <>이미 인증을 하셨습니다.</>, () => {
+      setAlert?.(<>이미 인증을 하셨습니다.</>, () => {
         taskTransform?.('경고', '');
       });
       return;
@@ -174,12 +166,12 @@ const SignUp = ({ changeToLogIn }: Props) => {
         onSuccess: () => {
           setClick(true);
           setTimeLeft(180);
-          setAlert?.(Choten, <>이메일이 성공적으로 전송되었습니다.</>, () => {
+          setAlert?.(<>이메일이 성공적으로 전송되었습니다.</>, () => {
             taskTransform?.('경고', '');
           });
         },
         onError: () => {
-          setAlert?.(Choten, <>이메일 전송 실패: 다시 입력해 주세요!</>, () => {
+          setAlert?.(<>이메일 전송 실패: 다시 입력해 주세요!</>, () => {
             taskTransform?.('경고', '');
           });
         },
@@ -189,7 +181,7 @@ const SignUp = ({ changeToLogIn }: Props) => {
   const verifyCode = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (verity) {
-      setAlert?.(Choten, <>이미 인증을 하셨습니다.</>, () => {
+      setAlert?.(<>이미 인증을 하셨습니다.</>, () => {
         taskTransform?.('경고', '');
       });
       return;
@@ -200,13 +192,12 @@ const SignUp = ({ changeToLogIn }: Props) => {
           onSuccess: () => {
             // setClick(false);
             setVerity(true);
-            setAlert?.(Choten, <>인증이 완료되었습니다.</>, () => {
+            setAlert?.(<>인증이 완료되었습니다.</>, () => {
               taskTransform?.('경고', '');
             });
           },
           onError: () => {
             setAlert?.(
-              Choten,
               <>
                 인증 실패: 다시 입력해 주세요
                 <br /> 이미 회원이시라면 인증이 불가합니다.{' '}
@@ -219,7 +210,7 @@ const SignUp = ({ changeToLogIn }: Props) => {
         },
       );
     } else {
-      setAlert?.(Choten, <>인증코드 5자리를 입력하지 않았습니다.</>, () => {
+      setAlert?.(<>인증코드 5자리를 입력하지 않았습니다.</>, () => {
         taskTransform?.('경고', '');
       });
       return;

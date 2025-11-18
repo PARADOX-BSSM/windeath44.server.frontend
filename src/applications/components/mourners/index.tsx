@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { useAtomValue } from 'jotai';
 import { alerterAtom } from '@/atoms/alerter';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
-import Choten from '@/assets/profile/choten.svg';
 
 type bowData = {
   name: string;
@@ -26,7 +25,6 @@ const Mourners = ({ memorialId }: bowProps) => {
     mutationMemorialChiefs.mutate(undefined, {
       onError: () => {
         setAlert?.(
-          Choten,
           <>
             조문객 명단을 가져오는 중 문제가 발생했습니다.
             <br />
