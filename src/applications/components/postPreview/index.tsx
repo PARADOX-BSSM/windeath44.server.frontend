@@ -1,6 +1,6 @@
 import React from 'react';
 import * as _ from './style';
-import ProfileImg from '@/assets/profile/choten.svg';
+import Seori from '@/assets/seori/seori_mini.png';
 import Heart from '@/assets/community/heart_line.svg';
 import CommentIcon from '@/assets/community/comment.svg';
 
@@ -38,7 +38,7 @@ const PostPreview: React.FC<PostsProps> = ({ user, post, onClick }) => {
   return (
     <_.Post onClick={() => onClick()}>
       <_.Main>
-        <_.ProfileImg imgUrl={profile || ProfileImg} />
+        <_.ProfileImg imgUrl={profile || Seori} />
         <_.PostMain>
           <_.PostInfo>
             <_.Name>{name}</_.Name>

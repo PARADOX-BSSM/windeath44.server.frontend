@@ -8,7 +8,6 @@ import MoreComment from '@/applications/components/moreComment';
 import chevron from '@/assets/community/chevron-left.svg';
 import { useAtomValue } from 'jotai';
 import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer';
-import Seori from '@/assets/sulkkagi/black_stone.svg';
 import { alerterAtom } from '@/atoms/alerter';
 import { usePostSingleSearch } from '@/api/community/postSingleSearch';
 import {

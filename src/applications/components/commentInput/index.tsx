@@ -1,6 +1,5 @@
 import React from 'react';
 import * as _ from './style';
-import ProfileImg from '@/assets/profile/choten.svg';
 import Emoticon from '@/assets/community/emoticon.svg';
 import CommunityBtn from '../communityBtn';
 import { useState } from 'react';
@@ -50,11 +49,9 @@ const CommentInput: React.FC<CommentInputProps> = ({
         },
 
         onError: () => {
-          if (setAlert) {
-            setAlert(Seori, <>댓글이 작성되지 않았습니다.</>, () => {
-              taskTransform?.('경고', '');
-            });
-          }
+          setAlert?.(<>댓글이 작성되지 않았습니다.</>, () => {
+            taskTransform?.('경고', '');
+          });
         },
       },
     );
@@ -65,7 +62,7 @@ const CommentInput: React.FC<CommentInputProps> = ({
   return (
     <_.Post>
       <_.Line></_.Line>
-      {!parentCommentId && <_.ProfileImg imgUrl={profile || ProfileImg} />}
+      {!parentCommentId && <_.ProfileImg imgUrl={profile || Seori} />}
 
       <_.PostMain>
         {!parentCommentId && (

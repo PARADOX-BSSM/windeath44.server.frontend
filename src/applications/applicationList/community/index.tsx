@@ -9,7 +9,6 @@ import PostPreview from '@/applications/components/postPreview';
 import JudgementPreview from '@/applications/components/judgementPreview';
 import { useAtomValue } from 'jotai';
 import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer';
-import Seori from '@/assets/sulkkagi/black_stone.svg';
 import { usePostListSearch } from '@/api/community/postListSearch';
 import { getCookie } from '@/api/auth/cookie.ts';
 import { alerterAtom } from '@/atoms/alerter';
@@ -62,11 +61,9 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
       { status: 'PUBLISHED' },
       {
         onError: () => {
-          if (setAlert) {
-            setAlert(Seori, <>게시글이 제대로 불러와지지 않았습니다.</>, () =>
-              taskTransform?.('경고', ''),
-            );
-          }
+          setAlert?.(<>게시글이 제대로 불러와지지 않았습니다.</>, () =>
+            taskTransform?.('경고', ''),
+          );
         },
       },
     );
@@ -78,11 +75,9 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
         { status: 'PUBLISHED' },
         {
           onError: () => {
-            if (setAlert) {
-              setAlert(Seori, <>게시글이 제대로 불러와지지 않았습니다.</>, () =>
-                taskTransform?.('경고', ''),
-              );
-            }
+            setAlert?.(<>게시글이 제대로 불러와지지 않았습니다.</>, () =>
+              taskTransform?.('경고', ''),
+            );
           },
         },
       );
@@ -108,11 +103,9 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
       { status: 'PUBLISHED', mod: sort },
       {
         onError: () => {
-          if (setAlert) {
-            setAlert(Seori, <>게시글이 제대로 불러와지지 않았습니다.</>, () =>
-              taskTransform?.('경고', ''),
-            );
-          }
+          setAlert?.(<>게시글이 제대로 불러와지지 않았습니다.</>, () =>
+            taskTransform?.('경고', ''),
+          );
         },
       },
     );
@@ -123,11 +116,9 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
       { status: 'PUBLISHED' },
       {
         onError: () => {
-          if (setAlert) {
-            setAlert(Seori, <>게시글이 제대로 불러와지지 않았습니다.</>, () =>
-              taskTransform?.('경고', ''),
-            );
-          }
+          setAlert?.(<>게시글이 제대로 불러와지지 않았습니다.</>, () =>
+            taskTransform?.('경고', ''),
+          );
         },
       },
     );
@@ -136,7 +127,6 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
   const postCreateClick = () => {
     if (!token && setAlert) {
       setAlert(
-        Seori,
         <>
           게스트는 게시글 작성이 불가능 합니다.
           <br />
@@ -154,11 +144,9 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
 
   const searchHandle = () => {
     if (!search.trim()) {
-      if (setAlert) {
-        setAlert(Seori, <>검색어를 입력해주세요.</>, () => {
-          taskTransform?.('경고', '');
-        });
-      }
+      setAlert?.(<>검색어를 입력해주세요.</>, () => {
+        taskTransform?.('경고', '');
+      });
       return;
     }
 
@@ -169,11 +157,9 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
           console.log('검색 완료');
         },
         onError: () => {
-          if (setAlert) {
-            setAlert(Seori, <>게시글 검색에 실패했습니다.</>, () => {
-              taskTransform?.('경고', '');
-            });
-          }
+          setAlert?.(<>게시글 검색에 실패했습니다.</>, () => {
+            taskTransform?.('경고', '');
+          });
         },
       },
     );

@@ -6,7 +6,6 @@ import ChevronIcon from '@/assets/community/chevron-left.svg';
 import { usePostCreate } from '@/api/community/postCreate';
 import { usePostUpdate } from '@/api/community/postUpdate';
 import { useGetUserMutation } from '@/api/user/getUser';
-import Seori from '@/assets/sulkkagi/black_stone.svg';
 import { alerterAtom } from '@/atoms/alerter';
 import { useAtomValue } from 'jotai';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
@@ -41,17 +40,14 @@ const CommunityPostWrite: React.FC<postData> = ({
 
   const postCreate = () => {
     if (!title.trim() || !body.trim()) {
-      if (setAlert) {
-        setAlert(Seori, <>제목과 내용을 모두 입력해주세요.</>, () => {
-          taskTransform?.('경고', '');
-        });
-      }
+      setAlert?.(<>제목과 내용을 모두 입력해주세요.</>, () => {
+        taskTransform?.('경고', '');
+      });
       return;
     }
 
     if (!currentUserId && setAlert) {
       setAlert(
-        Seori,
         <>
           유저 정보를 찾아올 수 없습니다.
           <br />
@@ -85,11 +81,9 @@ const CommunityPostWrite: React.FC<postData> = ({
             }
           },
           onError: () => {
-            if (setAlert) {
-              setAlert(Seori, <>게시글이 수정되지 않았습니다.</>, () => {
-                taskTransform?.('경고', '');
-              });
-            }
+            setAlert?.(<>게시글이 수정되지 않았습니다.</>, () => {
+              taskTransform?.('경고', '');
+            });
           },
         },
       );
@@ -115,11 +109,9 @@ const CommunityPostWrite: React.FC<postData> = ({
             }
           },
           onError: () => {
-            if (setAlert) {
-              setAlert(Seori, <>게시글이 작성되지 않았습니다.</>, () => {
-                taskTransform?.('경고', '');
-              });
-            }
+            setAlert?.(<>게시글이 작성되지 않았습니다.</>, () => {
+              taskTransform?.('경고', '');
+            });
           },
         },
       );

@@ -2,7 +2,6 @@ import React from 'react';
 import * as _ from './style';
 import { useState, useRef, useEffect } from 'react';
 import Seori from '@/assets/seori/seori_mini.png';
-import ProfileImg from '@/assets/profile/choten.svg';
 import Heart from '@/assets/community/heart_line.svg';
 import HeartFill from '@/assets/community/heart_fill.svg';
 import KebabIcon from '@/assets/community/kebab_icon.svg';
@@ -41,6 +40,7 @@ interface PostsProps {
   onReplyClick?: () => void;
   showReplyForm?: boolean;
 }
+
 const Posts: React.FC<PostsProps> = ({
   user,
   post,
@@ -52,7 +52,7 @@ const Posts: React.FC<PostsProps> = ({
   onReplyClick,
   showReplyForm = false,
 }) => {
-  const { name, userId, profile = '' } = user;
+  const { name, userId, profile } = user;
   const { commentId, body, likesCount, createdAt, updatedAt } = post;
   const [isOpen, setIsOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -113,11 +113,9 @@ const Posts: React.FC<PostsProps> = ({
 
   const handleEditSave = () => {
     if (!editedBody.trim()) {
-      if (setAlert) {
-        setAlert(Seori, <>댓글 내용을 입력해주세요.</>, () => {
-          taskTransform?.('경고', '');
-        });
-      }
+      setAlert?.(<>댓글 내용을 입력해주세요.</>, () => {
+        taskTransform?.('경고', '');
+      });
       return;
     }
 
@@ -133,19 +131,16 @@ const Posts: React.FC<PostsProps> = ({
         },
         onError: (error) => {
           console.error('댓글 수정 실패:', error);
-          if (setAlert) {
-            setAlert(
-              Seori,
-              <>
-                댓글이 수정되지 않았습니다.
-                <br />
-                잠시 후 다시 시도해주세요
-              </>,
-              () => {
-                taskTransform?.('경고', '');
-              },
-            );
-          }
+          setAlert?.(
+            <>
+              댓글이 수정되지 않았습니다.
+              <br />
+              잠시 후 다시 시도해주세요
+            </>,
+            () => {
+              taskTransform?.('경고', '');
+            },
+          );
         },
       },
     );
@@ -153,7 +148,7 @@ const Posts: React.FC<PostsProps> = ({
 
   const handleDelete = () => {
     if (setAlert) {
-      setAlert(Seori, <>댓글을 삭제하시겠습니까?</>, () => {
+      setAlert(<>댓글을 삭제하시겠습니까?</>, () => {
         if (!post.postId || !post.commentId) {
           console.log('게시글 ID, 혹은 댓글 ID가 없습니다');
           taskTransform?.('경고', '');
@@ -169,7 +164,6 @@ const Posts: React.FC<PostsProps> = ({
             onError: (error) => {
               console.error('댓글 삭제 실패:', error);
               setAlert(
-                Seori,
                 <>
                   댓글이 삭제되지 않았습니다.
                   <br />
@@ -214,7 +208,7 @@ const Posts: React.FC<PostsProps> = ({
   return (
     <_.Post>
       <_.Line></_.Line>
-      <_.ProfileImg imgUrl={profile || ProfileImg} />
+      <_.ProfileImg imgUrl={profile || Seori} />
       <_.PostMain>
         <_.PostHeader>
           <_.PostInfo>

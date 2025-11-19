@@ -1,7 +1,6 @@
 import React from 'react';
 import * as _ from './style';
 import { useState, useRef, useEffect } from 'react';
-import ProfileImg from '@/assets/profile/choten.svg';
 import Heart from '@/assets/community/heart_line.svg';
 import HeartFill from '@/assets/community/heart_fill.svg';
 import CommentIcon from '@/assets/community/comment.svg';
@@ -94,7 +93,7 @@ const Posts = ({ user, post, postDelete, refetchPost, postEdit }: PostsProps) =>
 
   const handleDelete = () => {
     if (setAlert) {
-      setAlert(Seori, <>정말 삭제하시겠습니까?</>, () => {
+      setAlert(<>정말 삭제하시겠습니까?</>, () => {
         if (!post.postId) {
           console.log('게시글 ID가 없습니다');
           return;
@@ -108,7 +107,6 @@ const Posts = ({ user, post, postDelete, refetchPost, postEdit }: PostsProps) =>
             console.error('게시글 삭제 실패:', error);
             if (setAlert) {
               setAlert(
-                Seori,
                 <>
                   게시글이 삭제되지 않았습니다.
                   <br />
@@ -158,7 +156,7 @@ const Posts = ({ user, post, postDelete, refetchPost, postEdit }: PostsProps) =>
   return (
     <_.Post>
       <_.Main>
-        <_.ProfileImg imgUrl={user.profile || ProfileImg} />
+        <_.ProfileImg imgUrl={user.profile || Seori} />
         <_.PostMain>
           <_.PostInfo>
             <_.Name>{user.name}</_.Name>
