@@ -137,7 +137,6 @@ const Memorial = ({
         },
         onError: () => {
           setAlert?.(
-            Seori,
             <>
               댓글 작성 중 문제가 발생했습니다.
               <br />
@@ -158,7 +157,6 @@ const Memorial = ({
       {
         onError: () => {
           setAlert?.(
-            Seori,
             <>
               답글 작성 중 문제가 발생했습니다.
               <br />
@@ -179,7 +177,6 @@ const Memorial = ({
       {
         onError: () => {
           setAlert?.(
-            Seori,
             <>
               댓글 수정 중 문제가 발생했습니다.
               <br />
@@ -200,7 +197,6 @@ const Memorial = ({
       {
         onError: () => {
           setAlert?.(
-            Seori,
             <>
               댓글 삭제 중 문제가 발생했습니다.
               <br />
@@ -245,7 +241,6 @@ const Memorial = ({
       {
         onError: () => {
           setAlert?.(
-            Seori,
             <>
               추모글을 가져오는 중 문제가 발생했습니다.
               <br />
@@ -264,7 +259,6 @@ const Memorial = ({
     mutationMemorialGet.mutate(memorialId, {
       onError: () => {
         setAlert?.(
-          Seori,
           <>
             추모관 정보를 가져오는 중 문제가 발생했습니다.
             <br />
@@ -281,7 +275,6 @@ const Memorial = ({
       {
         onError: () => {
           setAlert?.(
-            Seori,
             <>
               추모글을 가져오는 중 문제가 발생했습니다.
               <br />
@@ -297,7 +290,6 @@ const Memorial = ({
     mutationGetCharacter.mutate(characterId, {
       onError: () => {
         setAlert?.(
-          Seori,
           <>
             캐릭터 정보를 가져오는 중 문제가 발생했습니다.
             <br />
@@ -312,11 +304,10 @@ const Memorial = ({
   }, []);
 
   useEffect(() => {
-    if (characterData.animeId) {
+    if (characterData?.animeId) {
       mutationAnimation.mutate(characterData.animeId, {
         onError: () => {
           setAlert?.(
-            Seori,
             <>
               애니메이션 정보를 가져오는 중 문제가 발생했습니다.
               <br />
@@ -329,7 +320,7 @@ const Memorial = ({
         },
       });
     }
-  }, [characterData.animeId]);
+  }, [characterData?.animeId]);
 
   // 창 제목 설정
   useEffect(() => {
@@ -341,10 +332,10 @@ const Memorial = ({
   // content가 변경될 때마다 파싱하여 목차 업데이트
   const parsedContent = useMemo(() => {
     const tempIndexData: string[] = [];
-    const result = parseCustomContent(tempIndexData, memorialData.content);
+    const result = parseCustomContent(tempIndexData, memorialData!.content);
     setIndexData(tempIndexData);
     return result;
-  }, [memorialData.content]);
+  }, [memorialData?.content]);
 
   // 사용자 정보 가져오기
   useEffect(() => {
@@ -395,8 +386,8 @@ const Memorial = ({
     mutationMemorialGet.isPending ||
     mutationGetCharacter.isPending ||
     mutaionGetMemorialComments.isPending ||
-    !characterData.characterId ||
-    !memorialData.memorialId
+    !characterData!.characterId ||
+    !memorialData!.memorialId
   ) {
     return <Loading />;
   }
@@ -421,16 +412,16 @@ const Memorial = ({
       );
     } else {
       setInputValue({
-        name: characterData.name,
-        deathReason: characterData.deathReason,
-        date: characterData.deathOfDay,
-        lifeCycle: characterData.lifeTime,
+        name: characterData?.name,
+        deathReason: characterData?.deathReason,
+        date: characterData?.deathOfDay,
+        lifeCycle: characterData?.lifeTime,
         anime: animation,
-        animeId: characterData.animeId,
-        age: characterData.age,
-        profileImage: characterData.imageUrl,
-        phrase: characterData.saying,
-        causeOfDeathDetails: characterData.causeOfDeathDetails || '',
+        animeId: characterData?.animeId,
+        age: characterData?.age,
+        profileImage: characterData?.imageUrl,
+        phrase: characterData?.saying,
+        causeOfDeathDetails: characterData?.causeOfDeathDetails || '',
       });
 
       // taskTransform으로 캐릭터 정보와 추모관 데이터 전달
@@ -451,15 +442,15 @@ const Memorial = ({
           <_.Section1>
             <_.Header>
               <_.TextContainer>
-                <_.Title>{characterData.name}</_.Title>
-                <_.Subtitle>최근 수정: {formatDate(memorialData.updatedAt)}</_.Subtitle>
+                <_.Title>{characterData?.name}</_.Title>
+                <_.Subtitle>최근 수정: {formatDate(memorialData?.updatedAt)}</_.Subtitle>
               </_.TextContainer>
               <_.History
                 onClick={() => {
                   taskTransform?.('', '추모관 기록', {
                     memorialId: memorialId,
-                    characterName: characterData.name,
-                    lastModified: memorialData.updatedAt,
+                    characterName: characterData?.name,
+                    lastModified: memorialData?.updatedAt,
                   });
                 }}
               >
@@ -469,7 +460,7 @@ const Memorial = ({
             </_.Header>
             <_.ContentContainer>
               <_.IndexWrapper>
-                <_.Quote>{characterData.saying}</_.Quote>
+                <_.Quote>{characterData?.saying}</_.Quote>
                 <_.Index>
                   <_.IndexTitle>목차</_.IndexTitle>
                   {indexData.map((item, idx) => {
