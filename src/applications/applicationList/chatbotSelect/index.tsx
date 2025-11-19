@@ -10,7 +10,6 @@ import { useGetCharacter, CharacterData } from '@/api/anime/getCharacter';
 import Hosino from '@/assets/character/hosino.svg';
 import { alerterAtom } from '@/atoms/alerter.ts';
 import { getCookie } from '@/api/auth/cookie.ts';
-import Choten from '@/assets/profile/choten.svg';
 import { useProcessManager } from '@/hooks/processManager.tsx';
 
 interface ChatbotItemProps {
@@ -76,7 +75,6 @@ const ChatbotSelect = () => {
     const task = taskSearch?.('분신사바');
     if (task) removeTask(task);
     setAlert(
-      Choten,
       <>
         게스트는 분신사바 기능을 이용할 수 없습니다.
         <br />

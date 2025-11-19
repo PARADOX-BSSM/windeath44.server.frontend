@@ -36,7 +36,6 @@ const Bow = ({ memorialId }: bowProps) => {
   const addBow = () => {
     if (!token && setAlert) {
       setAlert(
-        Seori,
         <>
           게스트는 절을 할 수 없습니다.
           <br />
@@ -56,7 +55,6 @@ const Bow = ({ memorialId }: bowProps) => {
             return `${Number(hours)}시 ${Number(minutes)}분`;
           };
           (setAlert ?? userId)(
-            Seori,
             <>
               아직 절을 할 수 없습니다
               <br />

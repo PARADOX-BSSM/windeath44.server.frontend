@@ -111,12 +111,11 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
     }
     if (idx === 2) {
       if (!token && setAlert) {
-        setAlert(Seori, <>게스트는 추모관 신청이 불가합니다.</>, () => {
+        setAlert(<>게스트는 추모관 신청이 불가합니다.</>, () => {
           taskTransform?.('경고', '');
         });
       } else if (setAlert) {
         setAlert(
-          Seori,
           <>
             최애의 사인에 부적합하다고 판단되는 추모관은
             <br />

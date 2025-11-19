@@ -27,7 +27,9 @@ import { useGetUserMutation } from '@/api/user/getUser';
 import { getCookie } from '@/api/auth/cookie.ts';
 import { ApplicationProps } from '@/applications/layout/utils';
 import axios from 'axios';
-import { user as userEndpoint } from '@/config';
+import { user as userEndpoint, memorial as memorialEndpoint } from '@/config';
+import { CURSOR_IMAGES, setCursorImage } from '@/lib/setCursorImg';
+import api from '@/api/axiosInstance';
 
 interface dataStructureProps {
   stack: any[];
@@ -70,7 +72,9 @@ const Memorial = ({
   const [content, setContent] = useState<string>('');
   const token = getCookie('access_token');
   const [indexData, setIndexData] = useState<string[]>([]);
-  const [userDataMap, setUserDataMap] = useState<Record<string, { name: string; profile: string }>>({});
+  const [userDataMap, setUserDataMap] = useState<Record<string, { name: string; profile: string }>>(
+    {},
+  );
   const [characterData, setCharacterData] = useState<CharacterData>({
     characterId: 0,
     animeId: 0,
@@ -126,27 +130,49 @@ const Memorial = ({
     e.preventDefault();
     if (!content.trim()) return;
 
+    const submittedContent = content;
+    setContent(''); // submit 직후 즉시 input 비우기
+
     mutationCommentWrite.mutate(
-      { memorialId, content },
+      { memorialId, content: submittedContent },
       {
-        onSuccess: () => {
-          setContent('');
-          mutaionGetMemorialComments.mutate(
-            { memorialId },
-            {
-              onError: () => {
-                setAlert?.(
-                  Seori,
-                  <>
-                    추모글을 가져오는 중 문제가 발생했습니다.
-                    <br />
-                    잠시 후 다시 시도해 주세요.
-                  </>,
-                  () => {
-                    taskTransform?.('경고', '');
-                  },
-                );
-              },
+        onSuccess: async () => {
+          // 서버가 생성된 댓글을 반환하지 않으므로, 직접 API 호출로 실제 ID 획득
+          // mutation을 사용하지 않고 직접 호출하여 전체 교체 방지
+          try {
+            const response = await api.get(`${memorialEndpoint}/comment/${memorialId}`, {
+              params: { size: 10 },
+            });
+            const serverComments = response.data.data.data;
+
+            // 임시 댓글(음수 ID)을 실제 댓글로 교체
+            setMemorialComment((prev) => {
+              return prev.map((comment) => {
+                if (comment.commentId < 0) {
+                  // content가 일치하는 서버 댓글 찾기
+                  const realComment = serverComments.find(
+                    (sc: MemorialCommentsData) =>
+                      sc.content === comment.content && sc.userId === comment.userId,
+                  );
+                  return realComment || comment;
+                }
+                return comment;
+              });
+            });
+          } catch (error) {
+            console.error('댓글 목록 조회 실패:', error);
+          }
+        },
+        onError: () => {
+          setContent(submittedContent); // 에러 시 입력했던 내용 복원
+          setAlert?.(
+            <>
+              댓글 작성 중 문제가 발생했습니다.
+              <br />
+              잠시 후 다시 시도해 주세요.
+            </>,
+            () => {
+              taskTransform?.('경고', '');
             },
           );
         },
@@ -158,23 +184,54 @@ const Memorial = ({
     mutationCommentWrite.mutate(
       { memorialId, content: replyContent, parentCommentId },
       {
-        onSuccess: () => {
-          mutaionGetMemorialComments.mutate(
-            { memorialId },
-            {
-              onError: () => {
-                setAlert?.(
-                  Seori,
-                  <>
-                    추모글을 가져오는 중 문제가 발생했습니다.
-                    <br />
-                    잠시 후 다시 시도해 주세요.
-                  </>,
-                  () => {
-                    taskTransform?.('경고', '');
-                  },
-                );
-              },
+        onSuccess: async () => {
+          // 서버가 생성된 댓글을 반환하지 않으므로, 직접 API 호출로 실제 ID 획득
+          try {
+            const response = await api.get(`${memorialEndpoint}/comment/${memorialId}`, {
+              params: { size: 10 },
+            });
+            const serverComments = response.data.data.data;
+
+            // 임시 답글(음수 ID)을 실제 답글로 교체
+            setMemorialComment((prev) => {
+              return prev.map((comment) => {
+                // 답글(children)에서 임시 댓글 찾기
+                if (comment.children && comment.children.length > 0) {
+                  const updatedChildren = comment.children.map((child) => {
+                    if (child.commentId < 0) {
+                      // 서버 댓글에서 부모 댓글 찾기
+                      const parentInServer = serverComments.find(
+                        (sc: MemorialCommentsData) => sc.commentId === comment.commentId,
+                      );
+                      if (parentInServer?.children) {
+                        // 부모의 children에서 content가 일치하는 답글 찾기
+                        const realReply = parentInServer.children.find(
+                          (rc: MemorialCommentsData) =>
+                            rc.content === child.content && rc.userId === child.userId,
+                        );
+                        return realReply || child;
+                      }
+                    }
+                    return child;
+                  });
+                  return { ...comment, children: updatedChildren };
+                }
+                return comment;
+              });
+            });
+          } catch (error) {
+            console.error('답글 목록 조회 실패:', error);
+          }
+        },
+        onError: () => {
+          setAlert?.(
+            <>
+              답글 작성 중 문제가 발생했습니다.
+              <br />
+              잠시 후 다시 시도해 주세요.
+            </>,
+            () => {
+              taskTransform?.('경고', '');
             },
           );
         },
@@ -186,29 +243,8 @@ const Memorial = ({
     mutationCommentUpdate.mutate(
       { commentId, content: editContent },
       {
-        onSuccess: () => {
-          mutaionGetMemorialComments.mutate(
-            { memorialId },
-            {
-              onError: () => {
-                setAlert?.(
-                  Seori,
-                  <>
-                    추모글을 가져오는 중 문제가 발생했습니다.
-                    <br />
-                    잠시 후 다시 시도해 주세요.
-                  </>,
-                  () => {
-                    taskTransform?.('경고', '');
-                  },
-                );
-              },
-            },
-          );
-        },
         onError: () => {
           setAlert?.(
-            Seori,
             <>
               댓글 수정 중 문제가 발생했습니다.
               <br />
@@ -227,29 +263,8 @@ const Memorial = ({
     mutationCommentDelete.mutate(
       { commentId },
       {
-        onSuccess: () => {
-          mutaionGetMemorialComments.mutate(
-            { memorialId },
-            {
-              onError: () => {
-                setAlert?.(
-                  Seori,
-                  <>
-                    추모글을 가져오는 중 문제가 발생했습니다.
-                    <br />
-                    잠시 후 다시 시도해 주세요.
-                  </>,
-                  () => {
-                    taskTransform?.('경고', '');
-                  },
-                );
-              },
-            },
-          );
-        },
         onError: () => {
           setAlert?.(
-            Seori,
             <>
               댓글 삭제 중 문제가 발생했습니다.
               <br />
@@ -268,26 +283,6 @@ const Memorial = ({
     mutationCommentLike.mutate(
       { commentId, isLiked },
       {
-        onSuccess: () => {
-          mutaionGetMemorialComments.mutate(
-            { memorialId },
-            {
-              onError: () => {
-                setAlert?.(
-                  Seori,
-                  <>
-                    추모글을 가져오는 중 문제가 발생했습니다.
-                    <br />
-                    잠시 후 다시 시도해 주세요.
-                  </>,
-                  () => {
-                    taskTransform?.('경고', '');
-                  },
-                );
-              },
-            },
-          );
-        },
         onError: () => {
           setAlert?.(
             Seori,
@@ -314,7 +309,6 @@ const Memorial = ({
       {
         onError: () => {
           setAlert?.(
-            Seori,
             <>
               추모글을 가져오는 중 문제가 발생했습니다.
               <br />
@@ -333,7 +327,6 @@ const Memorial = ({
     mutationMemorialGet.mutate(memorialId, {
       onError: () => {
         setAlert?.(
-          Seori,
           <>
             추모관 정보를 가져오는 중 문제가 발생했습니다.
             <br />
@@ -350,7 +343,6 @@ const Memorial = ({
       {
         onError: () => {
           setAlert?.(
-            Seori,
             <>
               추모글을 가져오는 중 문제가 발생했습니다.
               <br />
@@ -366,7 +358,6 @@ const Memorial = ({
     mutationGetCharacter.mutate(characterId, {
       onError: () => {
         setAlert?.(
-          Seori,
           <>
             캐릭터 정보를 가져오는 중 문제가 발생했습니다.
             <br />
@@ -381,11 +372,10 @@ const Memorial = ({
   }, []);
 
   useEffect(() => {
-    if (characterData.animeId) {
+    if (characterData?.animeId) {
       mutationAnimation.mutate(characterData.animeId, {
         onError: () => {
           setAlert?.(
-            Seori,
             <>
               애니메이션 정보를 가져오는 중 문제가 발생했습니다.
               <br />
@@ -398,7 +388,7 @@ const Memorial = ({
         },
       });
     }
-  }, [characterData.animeId]);
+  }, [characterData?.animeId]);
 
   // 창 제목 설정
   useEffect(() => {
@@ -410,10 +400,10 @@ const Memorial = ({
   // content가 변경될 때마다 파싱하여 목차 업데이트
   const parsedContent = useMemo(() => {
     const tempIndexData: string[] = [];
-    const result = parseCustomContent(tempIndexData, memorialData.content);
+    const result = parseCustomContent(tempIndexData, memorialData!.content);
     setIndexData(tempIndexData);
     return result;
-  }, [memorialData.content]);
+  }, [memorialData?.content]);
 
   // 사용자 정보 가져오기
   useEffect(() => {
@@ -464,8 +454,8 @@ const Memorial = ({
     mutationMemorialGet.isPending ||
     mutationGetCharacter.isPending ||
     mutaionGetMemorialComments.isPending ||
-    !characterData.characterId ||
-    !memorialData.memorialId
+    !characterData!.characterId ||
+    !memorialData!.memorialId
   ) {
     return <Loading />;
   }
@@ -479,7 +469,6 @@ const Memorial = ({
   const handleCommit = () => {
     if (!token && setAlert) {
       setAlert(
-        Seori,
         <>
           게스트는 추모관 수정이 불가합니다.
           <br />
@@ -491,16 +480,16 @@ const Memorial = ({
       );
     } else {
       setInputValue({
-        name: characterData.name,
-        deathReason: characterData.deathReason,
-        date: characterData.deathOfDay,
-        lifeCycle: characterData.lifeTime,
+        name: characterData?.name,
+        deathReason: characterData?.deathReason,
+        date: characterData?.deathOfDay,
+        lifeCycle: characterData?.lifeTime,
         anime: animation,
-        animeId: characterData.animeId,
-        age: characterData.age,
-        profileImage: characterData.imageUrl,
-        phrase: characterData.saying,
-        causeOfDeathDetails: characterData.causeOfDeathDetails || '',
+        animeId: characterData?.animeId,
+        age: characterData?.age,
+        profileImage: characterData?.imageUrl,
+        phrase: characterData?.saying,
+        causeOfDeathDetails: characterData?.causeOfDeathDetails || '',
       });
 
       // taskTransform으로 캐릭터 정보와 추모관 데이터 전달
@@ -521,15 +510,15 @@ const Memorial = ({
           <_.Section1>
             <_.Header>
               <_.TextContainer>
-                <_.Title>{characterData.name}</_.Title>
-                <_.Subtitle>최근 수정: {formatDate(memorialData.updatedAt)}</_.Subtitle>
+                <_.Title>{characterData?.name}</_.Title>
+                <_.Subtitle>최근 수정: {formatDate(memorialData?.updatedAt)}</_.Subtitle>
               </_.TextContainer>
               <_.History
                 onClick={() => {
                   taskTransform?.('', '추모관 기록', {
                     memorialId: memorialId,
-                    characterName: characterData.name,
-                    lastModified: memorialData.updatedAt,
+                    characterName: characterData?.name,
+                    lastModified: memorialData?.updatedAt,
                   });
                 }}
               >
@@ -539,7 +528,7 @@ const Memorial = ({
             </_.Header>
             <_.ContentContainer>
               <_.IndexWrapper>
-                <_.Quote>{characterData.saying}</_.Quote>
+                <_.Quote>{characterData?.saying}</_.Quote>
                 <_.Index>
                   <_.IndexTitle>목차</_.IndexTitle>
                   {indexData.map((item, idx) => {
@@ -622,6 +611,12 @@ const Memorial = ({
                         onChange={(e) => setContent(e.target.value)}
                         placeholder="추모글을 입력하세요."
                         maxLength={250}
+                        onMouseEnter={() => {
+                          setCursorImage(CURSOR_IMAGES.drag);
+                        }}
+                        onMouseLeave={() => {
+                          setCursorImage(CURSOR_IMAGES.default);
+                        }}
                       ></_.InputCommentText>
                       <_.CharCount>{content.length}/250</_.CharCount>
                     </form>

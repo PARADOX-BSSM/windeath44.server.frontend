@@ -87,8 +87,9 @@ export const useCommentWrite = (
       }
       console.error('댓글 작성 실패:', error);
     },
-    onSuccess: (data: any) => {
-      // console.log('댓글 작성 성공:', data);
+    onSuccess: () => {
+      // 서버가 생성된 댓글 데이터를 반환하지 않음 (data.data === null)
+      // memorial/index.tsx의 onSuccess에서 댓글 목록 재조회로 실제 ID 획득
     },
   });
 };

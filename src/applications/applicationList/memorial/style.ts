@@ -368,6 +368,7 @@ export const InputCommentText = styled.input`
   font-size: 12px;
   font-style: normal;
   font-weight: 400;
+  cursor: none;
   line-height: normal;
   border: none;
   background: none;

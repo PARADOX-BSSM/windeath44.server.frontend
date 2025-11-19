@@ -18,14 +18,14 @@ export const useAlerter = () => {
     return app.name === '경고';
   })[0];
 
-  const setAlert = (icon: string, text: string, onClick: () => void) => {
-    if (icon && text) {
+  const setAlert = (text: string, onClick: () => void) => {
+    if (text) {
       const original = foundTask.component;
       const internal = original.props.children as React.ReactElement;
       const type = internal.type;
 
       foundTask.component = (
-        <Suspense fallback={null}>{React.createElement(type, { icon, text, onClick })}</Suspense>
+        <Suspense fallback={null}>{React.createElement(type, { text, onClick })}</Suspense>
       );
 
       addTask(foundTask);
