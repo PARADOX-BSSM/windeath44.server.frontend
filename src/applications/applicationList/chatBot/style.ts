@@ -34,6 +34,7 @@ export const ProfileSection = styled.div`
   gap: 8px;
   flex: 1;
   overflow-y: auto;
+  overflow-x: visible;
   box-shadow:
     -1px -1px 0px 0px inset var(--chatbot-white),
     1px 1px 0px 0px inset var(--primary-black),
@@ -97,7 +98,9 @@ export const ContributorsList = styled.div`
   gap: 4px;
   max-width: 100%;
   max-height: 120px;
-  overflow-y: auto;
+  overflow: visible;
+  position: relative;
+  z-index: 1;
 
   &::-webkit-scrollbar {
     width: 4px;
@@ -117,11 +120,101 @@ export const ContributorsList = styled.div`
   }
 `;
 
+export const ContributorAvatarWrapper = styled.div`
+  position: relative;
+  display: block;
+  width: 28.125px;
+  height: 28.125px;
+  z-index: 1;
+
+  &:hover {
+    z-index: 10000;
+  }
+`;
+
 export const ContributorAvatar = styled.img`
   width: 28.125px;
   height: 28.125px;
   border: 1px solid var(--primary-black);
   object-fit: cover;
+  cursor: none;
+`;
+
+export const ContributorCard = styled.div<{ show: boolean }>`
+  position: absolute;
+  bottom: calc(100%);
+  left: 0;
+  background: var(--chatbot-white);
+  padding: 8px;
+  width: 200px;
+  box-shadow:
+    -1px -1px 0px 0px inset var(--chatbot-white),
+    1px 1px 0px 0px inset var(--primary-black),
+    -2px -2px 0px 0px inset var(--dark-primary-color),
+    2px 2px 0px 0px inset var(--dark-primary-color);
+  z-index: 10000;
+  display: ${({ show }) => (show ? 'block' : 'none')};
+  pointer-events: none;
+  max-height: 250px;
+  overflow-y: auto;
+  white-space: normal;
+  word-break: break-word;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: var(--light-primary-color);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--stroke);
+    border-radius: 2px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-black);
+  }
+`;
+
+export const ContributorCardUserId = styled.p`
+  font-family: 'Galmuri11', sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--primary-black);
+  margin: 0 0 6px 0;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--stroke);
+`;
+
+export const ContributorCardItem = styled.div`
+  margin-bottom: 6px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--light-primary-color);
+
+  &:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+`;
+
+export const ContributorCardQuestion = styled.p`
+  font-family: 'Galmuri11', sans-serif;
+  font-size: 10px;
+  color: var(--primary-black);
+  margin: 0 0 3px 0;
+  font-weight: bold;
+  line-height: 1.3;
+`;
+
+export const ContributorCardAnswer = styled.p`
+  font-family: 'Galmuri11', sans-serif;
+  font-size: 9px;
+  color: var(--stroke);
+  margin: 0;
+  line-height: 1.4;
 `;
 
 export const ContributorsCount = styled.p`

@@ -5,7 +5,7 @@ import { alerterAtom } from '@/atoms/alerter';
 import { taskTransformerAtom, taskSearchAtom } from '@/atoms/taskTransformer';
 import { useEffect, useMemo, useState } from 'react';
 import { useGetMyMemorialApplicationsQuery } from '@/api/memorial/getMyMemorialApplications';
-import { useGetUsersQuery } from '@/api/user/getUsers';
+import { useGetUsersQuery } from '@/api/user/getUsersByIds';
 import { useMemorialApplicationLikeMutation } from '@/api/memorial/memorialApplicationLike';
 import { useGetUserMutation } from '@/api/user/getUser';
 import {
