@@ -822,147 +822,6 @@ const useApps = (): TaskType[] => {
     {
       component: (
         <Suspense fallback={null}>
-          <CommunityApproach />
-        </Suspense>
-      ),
-      type: 'App',
-      id: 2246,
-      name: '커뮤니티',
-      layer: undefined,
-      appSetup: {
-        Image: community,
-        minWidth: 700,
-        minHeight: 562,
-        setUpWidth: 800,
-        setUpHeight: 562,
-      },
-      visible: true,
-    },
-    {
-      component: (
-        <Suspense fallback={null}>
-          <Community
-            stack={[]}
-            push={undefined}
-            pop={undefined}
-            top={undefined}
-          />
-        </Suspense>
-      ),
-      type: 'App',
-      id: 2247,
-      name: 'communityMain',
-      layer: undefined,
-      appSetup: {
-        Image: 'default',
-        minWidth: 700,
-        minHeight: 562,
-        setUpWidth: 800,
-        setUpHeight: 562,
-      },
-      visible: false,
-    },
-    {
-      component: (
-        <Suspense fallback={null}>
-          <CommunityPost />
-        </Suspense>
-      ),
-      type: 'App',
-      id: 2248,
-      name: 'communityPost',
-      layer: undefined,
-      appSetup: {
-        Image: 'default',
-        minWidth: 700,
-        minHeight: 562,
-        setUpWidth: 800,
-        setUpHeight: 562,
-      },
-      visible: false,
-    },
-    {
-      component: (
-        <Suspense fallback={null}>
-          <CommunityPostWrite />
-        </Suspense>
-      ),
-      type: 'App',
-      id: 2249,
-      name: '게시글 작성',
-      layer: undefined,
-      appSetup: {
-        Image: 'default',
-        minWidth: 700,
-        minHeight: 562,
-        setUpWidth: 800,
-        setUpHeight: 562,
-      },
-      visible: false,
-    },
-    {
-      component: <Suspense fallback={null}>{<Judgement />}</Suspense>,
-      type: 'App',
-      id: 3001,
-      name: '재판 목록',
-      layer: undefined,
-      appSetup: {
-        Image: 'defalut',
-        minWidth: 700,
-        minHeight: 562,
-        setUpWidth: 800,
-        setUpHeight: 562,
-      },
-      visible: false,
-    },
-    {
-      component: <Suspense fallback={null}>{<JudgementApproach />}</Suspense>,
-      type: 'App',
-      id: 3002,
-      name: '재판',
-      layer: undefined,
-      appSetup: {
-        Image: 'defalut',
-        minWidth: 700,
-        minHeight: 562,
-        setUpWidth: 800,
-        setUpHeight: 562,
-      },
-      visible: true,
-    },
-    {
-      component: <Suspense fallback={null}>{<Judgement_Vote />}</Suspense>,
-      type: 'App',
-      id: 3003,
-      name: '투표',
-      layer: undefined,
-      appSetup: {
-        Image: 'defalut',
-        minWidth: 700,
-        minHeight: 562,
-        setUpWidth: 800,
-        setUpHeight: 562,
-      },
-      visible: false,
-    },
-    {
-      component: <Suspense fallback={null}>{<JudgementChat />}</Suspense>,
-      type: 'App',
-      id: 3004,
-      name: '재판 댓글',
-      layer: undefined,
-      appSetup: {
-        Image: 'defalut',
-        minWidth: 700,
-        minHeight: 562,
-        setUpWidth: 800,
-        setUpHeight: 562,
-      },
-      visible: false,
-    },
-    {
-      component: (
-        <Suspense fallback={null}>
           <RhythmGame />
         </Suspense>
       ),
@@ -1201,6 +1060,147 @@ const useApps = (): TaskType[] => {
         minHeight: 600,
         setUpWidth: 1100,
         setUpHeight: 800,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <CommunityApproach />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2246,
+      name: '커뮤니티',
+      layer: undefined,
+      appSetup: {
+        Image: community,
+        minWidth: 700,
+        minHeight: 562,
+        setUpWidth: 800,
+        setUpHeight: 562,
+      },
+      visible: true,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <Community
+            stack={[]}
+            push={undefined}
+            pop={undefined}
+            top={undefined}
+          />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2247,
+      name: 'communityMain',
+      layer: undefined,
+      appSetup: {
+        Image: community,
+        minWidth: 700,
+        minHeight: 562,
+        setUpWidth: 800,
+        setUpHeight: 562,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <CommunityPost />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2248,
+      name: 'communityPost',
+      layer: undefined,
+      appSetup: {
+        Image: community,
+        minWidth: 700,
+        minHeight: 562,
+        setUpWidth: 800,
+        setUpHeight: 562,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <CommunityPostWrite />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2249,
+      name: '게시글 작성',
+      layer: undefined,
+      appSetup: {
+        Image: community,
+        minWidth: 700,
+        minHeight: 562,
+        setUpWidth: 800,
+        setUpHeight: 562,
+      },
+      visible: false,
+    },
+    {
+      component: <Suspense fallback={null}>{<Judgement />}</Suspense>,
+      type: 'App',
+      id: 3001,
+      name: '재판 목록',
+      layer: undefined,
+      appSetup: {
+        Image: community,
+        minWidth: 700,
+        minHeight: 562,
+        setUpWidth: 800,
+        setUpHeight: 562,
+      },
+      visible: false,
+    },
+    {
+      component: <Suspense fallback={null}>{<JudgementApproach />}</Suspense>,
+      type: 'App',
+      id: 3002,
+      name: '재판',
+      layer: undefined,
+      appSetup: {
+        Image: community,
+        minWidth: 700,
+        minHeight: 562,
+        setUpWidth: 800,
+        setUpHeight: 562,
+      },
+      visible: false,
+    },
+    {
+      component: <Suspense fallback={null}>{<Judgement_Vote />}</Suspense>,
+      type: 'App',
+      id: 3003,
+      name: '투표',
+      layer: undefined,
+      appSetup: {
+        Image: community,
+        minWidth: 700,
+        minHeight: 562,
+        setUpWidth: 800,
+        setUpHeight: 562,
+      },
+      visible: false,
+    },
+    {
+      component: <Suspense fallback={null}>{<JudgementChat />}</Suspense>,
+      type: 'App',
+      id: 3004,
+      name: '재판 댓글',
+      layer: undefined,
+      appSetup: {
+        Image: community,
+        minWidth: 700,
+        minHeight: 562,
+        setUpWidth: 800,
+        setUpHeight: 562,
       },
       visible: false,
     },
