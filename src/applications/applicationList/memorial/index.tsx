@@ -131,22 +131,17 @@ const Memorial = ({
       {
         onSuccess: () => {
           setContent('');
-          mutaionGetMemorialComments.mutate(
-            { memorialId },
-            {
-              onError: () => {
-                setAlert?.(
-                  Seori,
-                  <>
-                    추모글을 가져오는 중 문제가 발생했습니다.
-                    <br />
-                    잠시 후 다시 시도해 주세요.
-                  </>,
-                  () => {
-                    taskTransform?.('경고', '');
-                  },
-                );
-              },
+        },
+        onError: () => {
+          setAlert?.(
+            Seori,
+            <>
+              댓글 작성 중 문제가 발생했습니다.
+              <br />
+              잠시 후 다시 시도해 주세요.
+            </>,
+            () => {
+              taskTransform?.('경고', '');
             },
           );
         },
@@ -158,23 +153,16 @@ const Memorial = ({
     mutationCommentWrite.mutate(
       { memorialId, content: replyContent, parentCommentId },
       {
-        onSuccess: () => {
-          mutaionGetMemorialComments.mutate(
-            { memorialId },
-            {
-              onError: () => {
-                setAlert?.(
-                  Seori,
-                  <>
-                    추모글을 가져오는 중 문제가 발생했습니다.
-                    <br />
-                    잠시 후 다시 시도해 주세요.
-                  </>,
-                  () => {
-                    taskTransform?.('경고', '');
-                  },
-                );
-              },
+        onError: () => {
+          setAlert?.(
+            Seori,
+            <>
+              답글 작성 중 문제가 발생했습니다.
+              <br />
+              잠시 후 다시 시도해 주세요.
+            </>,
+            () => {
+              taskTransform?.('경고', '');
             },
           );
         },
@@ -186,26 +174,6 @@ const Memorial = ({
     mutationCommentUpdate.mutate(
       { commentId, content: editContent },
       {
-        onSuccess: () => {
-          mutaionGetMemorialComments.mutate(
-            { memorialId },
-            {
-              onError: () => {
-                setAlert?.(
-                  Seori,
-                  <>
-                    추모글을 가져오는 중 문제가 발생했습니다.
-                    <br />
-                    잠시 후 다시 시도해 주세요.
-                  </>,
-                  () => {
-                    taskTransform?.('경고', '');
-                  },
-                );
-              },
-            },
-          );
-        },
         onError: () => {
           setAlert?.(
             Seori,
@@ -227,26 +195,6 @@ const Memorial = ({
     mutationCommentDelete.mutate(
       { commentId },
       {
-        onSuccess: () => {
-          mutaionGetMemorialComments.mutate(
-            { memorialId },
-            {
-              onError: () => {
-                setAlert?.(
-                  Seori,
-                  <>
-                    추모글을 가져오는 중 문제가 발생했습니다.
-                    <br />
-                    잠시 후 다시 시도해 주세요.
-                  </>,
-                  () => {
-                    taskTransform?.('경고', '');
-                  },
-                );
-              },
-            },
-          );
-        },
         onError: () => {
           setAlert?.(
             Seori,
@@ -268,26 +216,6 @@ const Memorial = ({
     mutationCommentLike.mutate(
       { commentId, isLiked },
       {
-        onSuccess: () => {
-          mutaionGetMemorialComments.mutate(
-            { memorialId },
-            {
-              onError: () => {
-                setAlert?.(
-                  Seori,
-                  <>
-                    추모글을 가져오는 중 문제가 발생했습니다.
-                    <br />
-                    잠시 후 다시 시도해 주세요.
-                  </>,
-                  () => {
-                    taskTransform?.('경고', '');
-                  },
-                );
-              },
-            },
-          );
-        },
         onError: () => {
           setAlert?.(
             Seori,
