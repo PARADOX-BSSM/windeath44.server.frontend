@@ -9,7 +9,6 @@ import type { CharacterData } from '@/api/anime/getCharacter';
 import { parseCustomContent } from '@/lib/customTag/parseCustomContent.tsx';
 import { useGetAnimation } from '@/api/anime/getAnimation.ts';
 import ribbon from '@/assets/memorial_ribbon.svg';
-import Seori from '@/assets/sulkkagi/black_stone.svg';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
 
 interface dataStructureProps {
@@ -69,7 +68,6 @@ const MemorialPRPreview = ({
       mutationGetCharacter.mutate(characterId, {
         onError: () => {
           setAlert?.(
-            Seori,
             <>
               캐릭터 정보를 가져오는 중 오류가 발생했습니다.
               <br />
@@ -89,7 +87,6 @@ const MemorialPRPreview = ({
       mutationAnimation.mutate(characterData.animeId, {
         onError: () => {
           setAlert?.(
-            Seori,
             <>
               애니메이션 정보를 가져오는 중 오류가 발생했습니다.
               <br />

@@ -1,25 +1,15 @@
 import * as _ from './style';
 import { useAtomValue } from 'jotai';
-import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer';
+import { taskTransformerAtom } from '@/atoms/taskTransformer';
 import { alerterAtom } from '@/atoms/alerter';
-import Seori from '@/assets/sulkkagi/black_stone.svg';
 import MemorialBtn from '@/applications/components/memorialBtn';
 import { useGetMyChiefMemorialsQuery } from '@/api/memorial/getChiefMemorials';
-import { CharacterData } from '@/api/anime/getCharacter';
 import { useEffect, useMemo } from 'react';
 import Block from '@/../public/assets/cursor/cursor_block.svg';
-import { MemorialNoneIMesssege } from './style';
 import { useGetMemorialsByIdsQuery } from '@/api/memorial/getMemorialsByIds';
 import { useQuery } from '@tanstack/react-query';
 import axiosInstance from '@/api/axiosInstance';
 import { anime } from '@/config';
-
-interface dataStructureProps {
-  stack?: any[];
-  push?: any;
-  pop?: any;
-  top?: any;
-}
 
 // 캐릭터 정보를 가져오는 커스텀 hook
 const useCharacterInfo = (characterId: number) => {
@@ -96,8 +86,7 @@ const ChiefMemorialItem = ({
   );
 };
 
-const MemorialChief = ({ stack, push, pop, top }: dataStructureProps = {}) => {
-  const taskSearch = useAtomValue(taskSearchAtom);
+const MemorialChief = () => {
   const taskTransform = useAtomValue(taskTransformerAtom);
   const setAlert = useAtomValue(alerterAtom);
 
@@ -132,7 +121,6 @@ const MemorialChief = ({ stack, push, pop, top }: dataStructureProps = {}) => {
   useEffect(() => {
     if (error) {
       setAlert?.(
-        Seori,
         <>
           상주 추모관 목록을 가져오는 중 오류가 발생했습니다.
           <br />

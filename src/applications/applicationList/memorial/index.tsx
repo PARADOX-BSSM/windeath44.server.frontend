@@ -22,7 +22,6 @@ import { parseCustomContent } from '@/lib/customTag/parseCustomContent.tsx';
 import { useGetAnimation } from '@/api/anime/getAnimation.ts';
 import ribbon from '@/assets/memorial_ribbon.svg';
 import { inputPortage } from '@/atoms/inputManager.ts';
-import Seori from '@/assets/sulkkagi/black_stone.svg';
 import { useGetUserMutation } from '@/api/user/getUser';
 import { getCookie } from '@/api/auth/cookie.ts';
 import { ApplicationProps } from '@/applications/layout/utils';
@@ -285,7 +284,6 @@ const Memorial = ({
       {
         onError: () => {
           setAlert?.(
-            Seori,
             <>
               좋아요 처리 중 문제가 발생했습니다.
               <br />

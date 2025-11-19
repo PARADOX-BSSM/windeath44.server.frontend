@@ -1,12 +1,10 @@
 import * as _ from './style';
 import History from './components/history';
 import { useAtomValue } from 'jotai';
-import { taskSearchAtom } from '@/atoms/taskTransformer';
 import { useGetMemorialPullRequestsQuery } from '@/api/memorial/getMemorialPullRequests';
 import { useGetUsersQuery } from '@/api/user/getUsers';
 import { alerterAtom } from '@/atoms/alerter';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
-import Seori from '@/assets/sulkkagi/black_stone.svg';
 import { useEffect, useMemo } from 'react';
 
 // 날짜 포맷팅 함수
@@ -33,16 +31,7 @@ interface dataStructureProps {
   lastModified: string;
 }
 
-const MemorailHistory = ({
-  stack,
-  push,
-  pop,
-  top,
-  memorialId,
-  characterName,
-  lastModified,
-}: dataStructureProps) => {
-  const taskSearch = useAtomValue(taskSearchAtom);
+const MemorailHistory = ({ memorialId, characterName, lastModified }: dataStructureProps) => {
   const setAlert = useAtomValue(alerterAtom);
   const taskTransform = useAtomValue(taskTransformerAtom);
 
@@ -86,7 +75,6 @@ const MemorailHistory = ({
   useEffect(() => {
     if (pullRequestsError) {
       setAlert?.(
-        Seori,
         <>
           수정 기록을 가져오는 중 오류가 발생했습니다.
           <br />
@@ -102,7 +90,6 @@ const MemorailHistory = ({
   useEffect(() => {
     if (usersError) {
       setAlert?.(
-        Seori,
         <>
           사용자 정보를 가져오는 중 오류가 발생했습니다.
           <br />

@@ -1,10 +1,12 @@
 import { useAtom, useAtomValue } from 'jotai';
-import { virtualDesktopIndexAtom, virtualTaskListsAtom, virtualWindowPositionsAtom } from '@/atoms/processManager';
+import {
+  virtualDesktopIndexAtom,
+  virtualTaskListsAtom,
+  virtualWindowPositionsAtom,
+} from '@/atoms/processManager';
 import { alerterAtom } from '@/atoms/alerter';
-import Seori from '@/assets/sulkkagi/black_stone.svg';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
 import { useEffect, useState } from 'react';
-
 
 export const useVirtualDesktopManager = () => {
   const [isMaxError, setIsMaxError] = useState(false);
@@ -20,10 +22,9 @@ export const useVirtualDesktopManager = () => {
 
   const switchVirtualDesktop = (id: number) => setDesktopIndex(id);
 
-  useEffect(()=>{
-    if(!isMaxError) return;
+  useEffect(() => {
+    if (!isMaxError) return;
     setAlert?.(
-      Seori,
       <>
         가상 데스크탑은 최대 5개까지 생성할 수 있습니다.
         <br />
@@ -34,30 +35,24 @@ export const useVirtualDesktopManager = () => {
       },
     );
     setIsMaxError(false);
-  },[isMaxError, setAlert, taskTransform]);
+  }, [isMaxError, setAlert, taskTransform]);
 
-  useEffect(()=>{
-    if(!isMinError) return;
-    setAlert?.(
-      Seori,
-      <>
-        가상 데스크탑은 최소 1개 이상 존재해야 합니다.
-      </>,
-      () => {
-        taskTransform?.('경고', '');
-      },
-    );
+  useEffect(() => {
+    if (!isMinError) return;
+    setAlert?.(<>가상 데스크탑은 최소 1개 이상 존재해야 합니다.</>, () => {
+      taskTransform?.('경고', '');
+    });
     setIsMinError(false);
-  },[isMinError, setAlert, taskTransform]);
+  }, [isMinError, setAlert, taskTransform]);
 
   const addVirtualDesktop = () => {
-    if( virtualTaskLists.length >= 5 ) {
+    if (virtualTaskLists.length >= 5) {
       setIsMaxError(true);
       return;
     } // 최대 5개 데스크탑 제한
     setVirtualTaskLists([...virtualTaskLists, []]);
     setVirtualWindowPositions([...virtualWindowPositions, {}]);
-  }
+  };
 
   const deleteVirtualDesktop = () => {
     if (virtualTaskLists.length <= 1) {
@@ -65,11 +60,11 @@ export const useVirtualDesktopManager = () => {
       return;
     }
     const index = virtualTaskLists.length - 1;
-    setVirtualTaskLists(prev => prev.filter((_, i) => i !== index));
-    setVirtualWindowPositions(prev => prev.filter((_, i) => i !== index));
+    setVirtualTaskLists((prev) => prev.filter((_, i) => i !== index));
+    setVirtualWindowPositions((prev) => prev.filter((_, i) => i !== index));
 
     // 현재 인덱스 조정
-    setDesktopIndex(prev => {
+    setDesktopIndex((prev) => {
       if (index === prev) {
         // 삭제된 데스크탑이 현재 데스크탑이면
         return index > 0 ? index - 1 : 0;
@@ -86,7 +81,6 @@ export const useVirtualDesktopManager = () => {
     virtualCurrentDesktop,
     switchVirtualDesktop,
     addVirtualDesktop,
-    deleteVirtualDesktop
+    deleteVirtualDesktop,
   };
 };
-

@@ -15,7 +15,6 @@ import { useUploadImage } from '@/api/anime/uploadImage';
 import { alerterAtom } from '@/atoms/alerter';
 import { taskTransformerAtom, taskSearchAtom } from '@/atoms/taskTransformer';
 import { useProcessManager } from '@/hooks/processManager';
-import Seori from '@/assets/sulkkagi/black_stone.svg';
 import Loading from '@/applications/components/loading';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
 import FilterBlock from '@/applications/components/filterBlock';
@@ -115,7 +114,6 @@ const MemorialEdit = ({ stack, push, pop, top, memorialApplicationId }: dataStru
         onError: () => {
           setHasCharacterError(true);
           setAlert?.(
-            Seori,
             <>
               캐릭터 정보를 가져오는 중 문제가 발생했습니다.
               <br />
@@ -136,7 +134,6 @@ const MemorialEdit = ({ stack, push, pop, top, memorialApplicationId }: dataStru
       mutationAnimation.mutate(characterData.animeId, {
         onError: () => {
           setAlert?.(
-            Seori,
             <>
               애니메이션 정보를 가져오는 중 문제가 발생했습니다.
               <br />
@@ -238,56 +235,56 @@ const MemorialEdit = ({ stack, push, pop, top, memorialApplicationId }: dataStru
   // 수정 완료 핸들러
   const handleUpdate = () => {
     if (!inputValue.name || inputValue.name.trim() === '') {
-      setAlert?.(Seori, <>캐릭터 이름을 입력해주세요.</>, () => {
+      setAlert?.(<>캐릭터 이름을 입력해주세요.</>, () => {
         taskTransform?.('경고', '');
       });
       return;
     }
 
     if (!inputValue.age || inputValue.age === 0) {
-      setAlert?.(Seori, <>캐릭터 나이를 입력해주세요.</>, () => {
+      setAlert?.(<>캐릭터 나이를 입력해주세요.</>, () => {
         taskTransform?.('경고', '');
       });
       return;
     }
 
     if (!inputValue.date || inputValue.date.trim() === '') {
-      setAlert?.(Seori, <>사망 날짜를 입력해주세요.</>, () => {
+      setAlert?.(<>사망 날짜를 입력해주세요.</>, () => {
         taskTransform?.('경고', '');
       });
       return;
     }
 
     if (!inputValue.deathReason || inputValue.deathReason === '사인 선택') {
-      setAlert?.(Seori, <>사인을 선택해주세요.</>, () => {
+      setAlert?.(<>사인을 선택해주세요.</>, () => {
         taskTransform?.('경고', '');
       });
       return;
     }
 
     if (!inputValue.causeOfDeathDetails || inputValue.causeOfDeathDetails.trim() === '') {
-      setAlert?.(Seori, <>상세 사인을 입력해주세요.</>, () => {
+      setAlert?.(<>상세 사인을 입력해주세요.</>, () => {
         taskTransform?.('경고', '');
       });
       return;
     }
 
     if (!inputValue.anime || inputValue.anime.trim() === '') {
-      setAlert?.(Seori, <>애니메이션을 선택해주세요.</>, () => {
+      setAlert?.(<>애니메이션을 선택해주세요.</>, () => {
         taskTransform?.('경고', '');
       });
       return;
     }
 
     if (!inputValue.phrase || inputValue.phrase.trim() === '') {
-      setAlert?.(Seori, <>고인의 명언을 입력해주세요.</>, () => {
+      setAlert?.(<>고인의 명언을 입력해주세요.</>, () => {
         taskTransform?.('경고', '');
       });
       return;
     }
 
     if (!contentIn.content || contentIn.content.trim() === '') {
-      setAlert?.(Seori, <>추모관 내용을 작성해주세요.</>, () => {
+      setAlert?.(<>추모관 내용을 작성해주세요.</>, () => {
         taskTransform?.('경고', '');
       });
       return;
@@ -306,7 +303,6 @@ const MemorialEdit = ({ stack, push, pop, top, memorialApplicationId }: dataStru
           },
           onError: () => {
             setAlert?.(
-              Seori,
               <>
                 이미지 업로드 중 오류가 발생했습니다.
                 <br />
@@ -351,7 +347,7 @@ const MemorialEdit = ({ stack, push, pop, top, memorialApplicationId }: dataStru
             {
               onSuccess: () => {
                 // 둘 다 성공
-                setAlert?.(Seori, <>추모관 신청이 성공적으로 수정되었습니다.</>, () => {
+                setAlert?.(<>추모관 신청이 성공적으로 수정되었습니다.</>, () => {
                   taskTransform?.('경고', '');
 
                   // 미리보기 테스크 닫기
@@ -366,7 +362,6 @@ const MemorialEdit = ({ stack, push, pop, top, memorialApplicationId }: dataStru
               onError: (error) => {
                 console.error('신청 수정 중 오류:', error);
                 setAlert?.(
-                  Seori,
                   <>
                     추모관 신청 수정 중 오류가 발생했습니다.
                     <br />
@@ -383,7 +378,6 @@ const MemorialEdit = ({ stack, push, pop, top, memorialApplicationId }: dataStru
         onError: (error) => {
           console.error('캐릭터 수정 중 오류:', error);
           setAlert?.(
-            Seori,
             <>
               캐릭터 정보 수정 중 오류가 발생했습니다.
               <br />

@@ -432,6 +432,7 @@ export const ArticleTitle = styled.h1`
 export const ArticleContent = styled.div`
   display: flex;
   padding: 0 8px;
+  width: 100%;
   flex-direction: column;
   align-items: flex-start;
   gap: 20px;
