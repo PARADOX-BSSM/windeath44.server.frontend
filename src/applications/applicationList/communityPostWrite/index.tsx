@@ -5,10 +5,13 @@ import CommunityBtn from '@/applications/components/communityBtn';
 import ChevronIcon from '@/assets/community/chevron-left.svg';
 import { usePostCreate } from '@/api/community/postCreate';
 import { usePostUpdate } from '@/api/community/postUpdate';
+import { usePostListSearch } from '@/api/community/postListSearch';
+import { usePostDelete } from '@/api/community/postDelete';
 import { useGetUserMutation } from '@/api/user/getUser';
 import { alerterAtom } from '@/atoms/alerter';
 import { useAtomValue } from 'jotai';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
+import DraftPost from '@/applications/components/draftPost';
 
 interface postData {
   postId?: number;
@@ -25,11 +28,30 @@ const CommunityPostWrite: React.FC<postData> = ({
 }: postData) => {
   const postCreateMutation = usePostCreate();
   const postUpdateMutation = usePostUpdate();
+  const postListSearchMutation = usePostListSearch();
+  const postDeleteMutation = usePostDelete();
   const { mutate: getUser, data: userData } = useGetUserMutation();
   const currentUserId = userData?.data?.userId;
   const [loadPage, setLoadPage] = useState(false);
   const [title, setTitle] = useState(defaultTitle || '');
   const [body, setBody] = useState(defaultBody || '');
+  const [draftPosts, setDraftPosts] = useState<
+    Array<{
+      postId: number;
+      userId: string;
+      name: string;
+      profile: string | null;
+      title: string;
+      body: string;
+      status: string;
+      isBlind: boolean;
+      createdAt: string;
+      updatedAt: string;
+      viewsCount: number;
+      likesCount: number;
+      postCommentCount: number;
+    }>
+  >([]);
 
   const taskTransform = useAtomValue(taskTransformerAtom);
   const setAlert = useAtomValue(alerterAtom);
@@ -39,7 +61,12 @@ const CommunityPostWrite: React.FC<postData> = ({
   }, []);
 
   const postCreate = () => {
-    if (!title.trim() || !body.trim()) {
+    if (
+      typeof title !== 'string' ||
+      typeof body !== 'string' ||
+      !title.trim() ||
+      !body.trim()
+    ) {
       setAlert?.(<>제목과 내용을 모두 입력해주세요.</>, () => {
         taskTransform?.('경고', '');
       });
@@ -122,7 +149,7 @@ const CommunityPostWrite: React.FC<postData> = ({
       setAlert?.(<>임시저장 하시겠습니까?</>, () => {
         postCreateMutation.mutate(
           {
-            user_id: 'testid',
+            user_id: 'user_id',
             title: title,
             body: body,
             status: 'DRAFT',
@@ -144,9 +171,58 @@ const CommunityPostWrite: React.FC<postData> = ({
         );
         taskTransform?.('경고', '');
       });
+    } else {
+      postListSearchMutation.mutate(
+        {
+          user_id: 'user_id',
+          status: 'DRAFT',
+        },
+        {
+          onSuccess: (data) => {
+            setDraftPosts(data.data.posts);
+            setLoadPage(!loadPage);
+          },
+          onError: () => {
+            setAlert?.(<>게시글을 불러올 수 없습니다</>, () => {
+              taskTransform?.('경고', '');
+            });
+          },
+        },
+      );
+      return;
     }
     setLoadPage(!loadPage);
   };
+
+  const handleSelectDraft = (
+    postId: number,
+    draftTitle: string,
+    draftBody: string,
+  ) => {
+    setTitle(String(draftTitle || ''));
+    setBody(String(draftBody || ''));
+    setLoadPage(false);
+  };
+
+  const handleDeleteDraft = (postId: number) => {
+    setAlert?.(<>선택한 임시저장 게시글을 삭제하시겠습니까?</>, () => {
+      postDeleteMutation.mutate(postId, {
+        onSuccess: () => {
+          setDraftPosts((prev) => prev.filter((post) => post.postId !== postId));
+          setAlert?.(<>임시저장 게시글이 삭제되었습니다.</>, () => {
+            taskTransform?.('경고', '');
+          });
+        },
+        onError: () => {
+          setAlert?.(<>임시저장 게시글 삭제에 실패했습니다.</>, () => {
+            taskTransform?.('경고', '');
+          });
+        },
+      });
+      taskTransform?.('경고', '');
+    });
+  };
+
   return (
     <_.Container>
       {!loadPage ? (
@@ -174,18 +250,20 @@ const CommunityPostWrite: React.FC<postData> = ({
             임시저장 불러오기
           </_.Header>
           <_.PostArea>
-            {
-              <_.Post>
-                <_.PostText>
-                  <_.PostTitle>아니근데진짜</_.PostTitle>
-                  <_.PostContent>살려주라...</_.PostContent>
-                </_.PostText>
-                <_.PostBtnArea>
-                  <_.PostBtn>선택</_.PostBtn>
-                  <_.PostBtn>삭제</_.PostBtn>
-                </_.PostBtnArea>
-              </_.Post>
-            }
+            {draftPosts.length > 0 ? (
+              draftPosts.map((post) => (
+                <DraftPost
+                  key={post.postId}
+                  postId={post.postId}
+                  title={post.title}
+                  body={post.body}
+                  onSelect={handleSelectDraft}
+                  onDelete={handleDeleteDraft}
+                />
+              ))
+            ) : (
+              <_.NoDataMessage>임시저장된 게시글이 없습니다.</_.NoDataMessage>
+            )}
           </_.PostArea>
         </>
       )}
