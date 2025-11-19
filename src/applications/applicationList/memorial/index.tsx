@@ -27,8 +27,9 @@ import { useGetUserMutation } from '@/api/user/getUser';
 import { getCookie } from '@/api/auth/cookie.ts';
 import { ApplicationProps } from '@/applications/layout/utils';
 import axios from 'axios';
-import { user as userEndpoint } from '@/config';
+import { user as userEndpoint, memorial as memorialEndpoint } from '@/config';
 import { CURSOR_IMAGES, setCursorImage } from '@/lib/setCursorImg';
+import api from '@/api/axiosInstance';
 
 interface dataStructureProps {
   stack: any[];
@@ -132,8 +133,33 @@ const Memorial = ({
     mutationCommentWrite.mutate(
       { memorialId, content },
       {
-        onSuccess: () => {
+        onSuccess: async () => {
           setContent('');
+          // 서버가 생성된 댓글을 반환하지 않으므로, 직접 API 호출로 실제 ID 획득
+          // mutation을 사용하지 않고 직접 호출하여 전체 교체 방지
+          try {
+            const response = await api.get(`${memorialEndpoint}/comment/${memorialId}`, {
+              params: { size: 10 },
+            });
+            const serverComments = response.data.data.data;
+
+            // 임시 댓글(음수 ID)을 실제 댓글로 교체
+            setMemorialComment((prev) => {
+              return prev.map((comment) => {
+                if (comment.commentId < 0) {
+                  // content가 일치하는 서버 댓글 찾기
+                  const realComment = serverComments.find(
+                    (sc: MemorialCommentsData) =>
+                      sc.content === comment.content && sc.userId === comment.userId,
+                  );
+                  return realComment || comment;
+                }
+                return comment;
+              });
+            });
+          } catch (error) {
+            console.error('댓글 목록 조회 실패:', error);
+          }
         },
         onError: () => {
           setAlert?.(
@@ -155,6 +181,45 @@ const Memorial = ({
     mutationCommentWrite.mutate(
       { memorialId, content: replyContent, parentCommentId },
       {
+        onSuccess: async () => {
+          // 서버가 생성된 댓글을 반환하지 않으므로, 직접 API 호출로 실제 ID 획득
+          try {
+            const response = await api.get(`${memorialEndpoint}/comment/${memorialId}`, {
+              params: { size: 10 },
+            });
+            const serverComments = response.data.data.data;
+
+            // 임시 답글(음수 ID)을 실제 답글로 교체
+            setMemorialComment((prev) => {
+              return prev.map((comment) => {
+                // 답글(children)에서 임시 댓글 찾기
+                if (comment.children && comment.children.length > 0) {
+                  const updatedChildren = comment.children.map((child) => {
+                    if (child.commentId < 0) {
+                      // 서버 댓글에서 부모 댓글 찾기
+                      const parentInServer = serverComments.find(
+                        (sc: MemorialCommentsData) => sc.commentId === comment.commentId,
+                      );
+                      if (parentInServer?.children) {
+                        // 부모의 children에서 content가 일치하는 답글 찾기
+                        const realReply = parentInServer.children.find(
+                          (rc: MemorialCommentsData) =>
+                            rc.content === child.content && rc.userId === child.userId,
+                        );
+                        return realReply || child;
+                      }
+                    }
+                    return child;
+                  });
+                  return { ...comment, children: updatedChildren };
+                }
+                return comment;
+              });
+            });
+          } catch (error) {
+            console.error('답글 목록 조회 실패:', error);
+          }
+        },
         onError: () => {
           setAlert?.(
             <>

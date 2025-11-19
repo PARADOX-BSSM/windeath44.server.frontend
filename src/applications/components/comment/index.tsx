@@ -47,6 +47,7 @@ const Comment = ({
   // console.log(imgUrl);
 
   const isOwner = currentUserId === userid;
+  const isPending = commentId < 0; // 음수 ID는 임시 댓글 (아직 서버에 등록 중)
 
   const handleReplySubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -150,7 +151,7 @@ const Comment = ({
                     </>
                   )}
                 </div>
-                {isOwner && (
+                {isOwner && !isPending && (
                   <div style={{ display: 'flex', gap: '8px' }}>
                     <_.EditButton
                       onClick={() => setIsEditing(true)}
