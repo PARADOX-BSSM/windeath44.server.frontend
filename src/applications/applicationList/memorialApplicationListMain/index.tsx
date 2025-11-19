@@ -3,7 +3,6 @@ import Application from '../memorialApplicationList/components/application';
 import { useAtomValue } from 'jotai';
 import { alerterAtom } from '@/atoms/alerter';
 import { taskTransformerAtom, taskSearchAtom } from '@/atoms/taskTransformer';
-import Seori from '@/assets/sulkkagi/black_stone.svg';
 import { useEffect, useMemo, useState } from 'react';
 import { useGetMemorialApplicationsQuery } from '@/api/memorial/getMemorialApplications';
 import { useGetUsersQuery } from '@/api/user/getUsers';
@@ -116,7 +115,6 @@ const MemorialApplicationListMain = ({ stack, push, pop, top }: dataStructurePro
   useEffect(() => {
     if (applicationsError) {
       setAlert?.(
-        Seori,
         <>
           신청 목록을 가져오는 중 오류가 발생했습니다.
           <br />
@@ -132,7 +130,6 @@ const MemorialApplicationListMain = ({ stack, push, pop, top }: dataStructurePro
   useEffect(() => {
     if (usersError) {
       setAlert?.(
-        Seori,
         <>
           사용자 정보를 가져오는 중 오류가 발생했습니다.
           <br />
@@ -175,7 +172,7 @@ const MemorialApplicationListMain = ({ stack, push, pop, top }: dataStructurePro
           return { ...prev, approving: newApproving };
         });
 
-        setAlert?.(Seori, <>추모관 신청이 승인되었습니다.</>, () => {
+        setAlert?.(<>추모관 신청이 승인되었습니다.</>, () => {
           taskTransform?.('경고', '');
         });
       },
@@ -188,7 +185,6 @@ const MemorialApplicationListMain = ({ stack, push, pop, top }: dataStructurePro
         });
 
         setAlert?.(
-          Seori,
           <>
             승인 처리 중 오류가 발생했습니다.
             <br />
@@ -218,7 +214,7 @@ const MemorialApplicationListMain = ({ stack, push, pop, top }: dataStructurePro
   // 거절 사유 제출
   const handleRejectSubmit = () => {
     if (!rejectReason.trim()) {
-      setAlert?.(Seori, <>거절 사유를 입력해주세요.</>, () => {
+      setAlert?.(<>거절 사유를 입력해주세요.</>, () => {
         taskTransform?.('경고', '');
       });
       return;
@@ -248,7 +244,7 @@ const MemorialApplicationListMain = ({ stack, push, pop, top }: dataStructurePro
             return { ...prev, rejecting: newRejecting };
           });
 
-          setAlert?.(Seori, <>추모관 신청이 거절되었습니다.</>, () => {
+          setAlert?.(<>추모관 신청이 거절되었습니다.</>, () => {
             taskTransform?.('경고', '');
           });
           handleRejectModalClose();
@@ -262,7 +258,6 @@ const MemorialApplicationListMain = ({ stack, push, pop, top }: dataStructurePro
           });
 
           setAlert?.(
-            Seori,
             <>
               거절 처리 중 오류가 발생했습니다.
               <br />
@@ -310,7 +305,6 @@ const MemorialApplicationListMain = ({ stack, push, pop, top }: dataStructurePro
             ),
           );
           setAlert?.(
-            Seori,
             <>
               좋아요 처리 중 오류가 발생했습니다.
               <br />

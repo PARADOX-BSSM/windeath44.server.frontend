@@ -15,7 +15,6 @@ import { useGetUserMutation } from '@/api/user/getUser';
 import { useGetCharacter, CharacterData } from '@/api/anime/getCharacter';
 import { useProcessManager } from '@/hooks/processManager';
 import { useGetMemorialsCharacterFilteredQuery } from '@/api/memorial/getMemorialsCharacterFiltered';
-import seori from '@/assets/sulkkagi/black_stone.svg';
 
 interface Message {
   id: string;
@@ -222,7 +221,6 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
           const errorMessage = error?.response?.data?.message || '채팅 중 오류가 발생했습니다.';
 
           setAlert?.(
-            seori,
             <>
               {errorMessage}
               <br />
@@ -251,7 +249,6 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
 
     if (!Array.isArray(memorials) || memorials.length === 0) {
       setAlert?.(
-        seori,
         <>
           해당 캐릭터의 추모관을 찾을 수 없습니다.
           <br />
@@ -270,7 +267,6 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
 
     if (!firstMemorial || !firstMemorial.memorialId) {
       setAlert?.(
-        seori,
         <>
           추모관 데이터를 찾을 수 없습니다.
           <br />

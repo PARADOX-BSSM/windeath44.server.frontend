@@ -171,7 +171,7 @@ const MyComputer = () => {
   const handleSaveProfile = async () => {
     // 이름 유효성 검사
     if (editName.trim() === '') {
-      setAlert?.(Seori, <>이름을 입력해주세요.</>, () => {
+      setAlert?.(<>이름을 입력해주세요.</>, () => {
         taskTransform?.('경고', '');
       });
       return;
@@ -198,7 +198,7 @@ const MyComputer = () => {
       }
 
       // 성공 시
-      setAlert?.(Seori, <>프로필이 성공적으로 수정되었습니다.</>, () => {
+      setAlert?.(<>프로필이 성공적으로 수정되었습니다.</>, () => {
         taskTransform?.('경고', '');
       });
       setIsEditMode(false);
@@ -207,7 +207,7 @@ const MyComputer = () => {
       getUser(undefined as unknown as void);
     } catch (error) {
       console.error('프로필 수정 실패', error);
-      setAlert?.(Seori, <>프로필 수정 중 오류가 발생했습니다.</>, () => {
+      setAlert?.(<>프로필 수정 중 오류가 발생했습니다.</>, () => {
         taskTransform?.('경고', '');
       });
     }
@@ -262,7 +262,7 @@ const MyComputer = () => {
               },
               onError: (error) => {
                 console.error('로그아웃 실패', error);
-                setAlert?.(Seori, <>로그아웃 중 오류가 발생했습니다.</>, () => {
+                setAlert?.(<>로그아웃 중 오류가 발생했습니다.</>, () => {
                   taskTransform?.('경고', '');
                 });
               },
@@ -289,7 +289,7 @@ const MyComputer = () => {
         },
         onError: (error) => {
           console.error('계정탈퇴 실패', error);
-          setAlert?.(Seori, <>계정삭제 요청 중 오류가 발생했습니다.</>, () => {
+          setAlert?.(<>계정삭제 요청 중 오류가 발생했습니다.</>, () => {
             taskTransform?.('재확인', '');
             taskTransform?.('경고', '');
           });

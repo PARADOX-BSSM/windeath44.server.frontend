@@ -9,7 +9,6 @@ import type { CharacterData } from '@/api/anime/getCharacter';
 import { parseCustomContent } from '@/lib/customTag/parseCustomContent.tsx';
 import { useGetAnimation } from '@/api/anime/getAnimation.ts';
 import ribbon from '@/assets/memorial_ribbon.svg';
-import Seori from '@/assets/sulkkagi/black_stone.svg';
 import { useGetMemorialApplicationQuery } from '@/api/memorial/getMemorialApplication';
 import { index_data } from '../memorial/data';
 import { useGetUserMutation } from '@/api/user/getUser';
@@ -104,7 +103,6 @@ const MemorialApplicationViewer = ({
         onError: () => {
           setHasCharacterError(true);
           setAlert?.(
-            Seori,
             <>
               캐릭터 정보를 가져오는 중 문제가 발생했습니다.
               <br />
@@ -125,7 +123,6 @@ const MemorialApplicationViewer = ({
       mutationAnimation.mutate(characterData.animeId, {
         onError: () => {
           setAlert?.(
-            Seori,
             <>
               애니메이션 정보를 가져오는 중 문제가 발생했습니다.
               <br />
@@ -144,7 +141,6 @@ const MemorialApplicationViewer = ({
   useEffect(() => {
     if (applicationError) {
       setAlert?.(
-        Seori,
         <>
           신청 정보를 가져오는 중 오류가 발생했습니다.
           <br />
@@ -161,14 +157,13 @@ const MemorialApplicationViewer = ({
   const handleApprove = () => {
     approveMutation.mutate(memorialApplicationId, {
       onSuccess: () => {
-        setAlert?.(Seori, <>추모관 신청이 승인되었습니다.</>, () => {
+        setAlert?.(<>추모관 신청이 승인되었습니다.</>, () => {
           taskTransform?.('경고', '');
           pop(); // 승인 후 목록으로 돌아가기
         });
       },
       onError: () => {
         setAlert?.(
-          Seori,
           <>
             승인 처리 중 오류가 발생했습니다.
             <br />
@@ -198,7 +193,7 @@ const MemorialApplicationViewer = ({
   // 거절 사유 제출
   const handleRejectSubmit = () => {
     if (!rejectReason.trim()) {
-      setAlert?.(Seori, <>거절 사유를 입력해주세요.</>, () => {
+      setAlert?.(<>거절 사유를 입력해주세요.</>, () => {
         taskTransform?.('경고', '');
       });
       return;
@@ -208,7 +203,7 @@ const MemorialApplicationViewer = ({
       { id: memorialApplicationId, reason: rejectReason },
       {
         onSuccess: () => {
-          setAlert?.(Seori, <>추모관 신청이 거절되었습니다.</>, () => {
+          setAlert?.(<>추모관 신청이 거절되었습니다.</>, () => {
             taskTransform?.('경고', '');
             pop(); // 거절 후 목록으로 돌아가기
           });
@@ -216,7 +211,6 @@ const MemorialApplicationViewer = ({
         },
         onError: () => {
           setAlert?.(
-            Seori,
             <>
               거절 처리 중 오류가 발생했습니다.
               <br />
