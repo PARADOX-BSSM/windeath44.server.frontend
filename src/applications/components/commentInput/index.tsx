@@ -18,6 +18,7 @@ interface CommentInputProps {
   parentCommentId?: number | null;
   refetchComments?: () => void;
 }
+
 const CommentInput: React.FC<CommentInputProps> = ({
   name = '게스트',
   userId = 'guest_user',
@@ -63,12 +64,16 @@ const CommentInput: React.FC<CommentInputProps> = ({
   return (
     <_.Post>
       <_.Line></_.Line>
-      <_.ProfileImg imgUrl={profile || ProfileImg} />
+      {!parentCommentId && <_.ProfileImg imgUrl={profile || ProfileImg} />}
+
       <_.PostMain>
-        <_.PostInfo>
-          <_.Name>{name}</_.Name>
-          <_.UserId>@{userId}</_.UserId>
-        </_.PostInfo>
+        {!parentCommentId && (
+          <_.PostInfo>
+            <_.Name>{name}</_.Name>
+            <_.UserId>@{userId}</_.UserId>
+          </_.PostInfo>
+        )}
+
         <_.CommentMain>
           <_.InputArea>
             <_.Input

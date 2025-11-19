@@ -6,6 +6,7 @@ export const Post = styled.div`
   justify-content: flex-start;
   gap: 14px;
   background-color: #fff;
+  border-top: 1px solid #ccc;
 `;
 export const Main = styled.div`
   display: flex;
@@ -214,4 +215,20 @@ export const EditBtn = styled.button`
   font-weight: 400;
   line-height: normal;
   cursor: pointer;
+`;
+export const ReplyButton = styled.button`
+  background: none;
+  border: none;
+  color: #5f6368;
+  font-family: Galmuri11;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  cursor: pointer;
+  margin-left: 8px;
+
+  &:hover {
+    color: #9a5a95;
+  }
 `;

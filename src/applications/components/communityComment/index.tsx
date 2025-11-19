@@ -33,8 +33,24 @@ interface PostsProps {
   user: User;
   post: Post;
   refetchComments: () => void;
+  parentCommentId?: number | null;
+  currentUserName?: string;
+  currentUserId?: string;
+  currentUserProfile?: string;
+  onReplyClick?: () => void;
+  showReplyForm?: boolean;
 }
-const Posts: React.FC<PostsProps> = ({ user, post, refetchComments }) => {
+const Posts: React.FC<PostsProps> = ({
+  user,
+  post,
+  refetchComments,
+  parentCommentId = null,
+  currentUserName,
+  currentUserId,
+  currentUserProfile,
+  onReplyClick,
+  showReplyForm = false,
+}) => {
   const { name, userId, profile = '' } = user;
   const { commentId, body, likesCount, createdAt, updatedAt } = post;
   const [isOpen, setIsOpen] = useState(false);
@@ -46,13 +62,13 @@ const Posts: React.FC<PostsProps> = ({ user, post, refetchComments }) => {
   const setAlert = useAtomValue(alerterAtom);
 
   const { mutate: getUser, data: userData } = useGetUserMutation();
-  const currentUserId = userData?.data?.userId;
+  const loggedInUserId = userData?.data?.userId;
   const commentDeleteMutation = usePostCommentDelete();
   const commentUpdateMutation = usePostCommentUpdate();
   const commentLikeMutation = usePostCommentLike();
   const commentLikeDeleteMutation = usePostCommentLikeDelete();
 
-  const { data: commentLikedData } = useIsPostCommentLiked(commentId, currentUserId || '');
+  const { data: commentLikedData } = useIsPostCommentLiked(commentId, loggedInUserId || '');
 
   useEffect(() => {
     getUser();
@@ -191,7 +207,7 @@ const Posts: React.FC<PostsProps> = ({ user, post, refetchComments }) => {
   };
 
   // 로그인한 유저가 댓글 작성자인지 확인
-  // const isOwner = currentUserId && currentUserId === userId;
+  // const isOwner = loggedInUserId && loggedInUserId === userId;
   const isOwner = true; // 테스트용: 항상 수정/삭제 가능
 
   return (
@@ -251,6 +267,11 @@ const Posts: React.FC<PostsProps> = ({ user, post, refetchComments }) => {
             />
             {likesCount}
           </_.Icons>
+          {!parentCommentId && (
+            <_.ReplyButton onClick={onReplyClick}>
+              {showReplyForm ? '답글 닫기' : '답글'}
+            </_.ReplyButton>
+          )}
         </_.PostInfo>
       </_.PostMain>
     </_.Post>

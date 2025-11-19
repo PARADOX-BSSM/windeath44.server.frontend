@@ -5,10 +5,10 @@ export const Post = styled.div`
   padding: 12px 15px;
   justify-content: flex-start;
   gap: 14px;
-  border-bottom: 1px solid #ccc;
   background-color: #fff;
 `;
 export const Main = styled.div`
+  width: 100%;
   display: flex;
   align-items: flex-start;
   gap: 10px;
@@ -93,4 +93,3 @@ export const Icon = styled.img`
   height: 15px;
   aspect-ratio: 16/15;
 `;
-export const SubmitBtn = styled.button``;
