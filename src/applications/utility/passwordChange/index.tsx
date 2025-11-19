@@ -1,6 +1,5 @@
 import * as _ from './style';
 import Logo from '@/assets/windeath44.svg';
-import Choten from '@/assets/profile/choten.svg';
 import Inputs from '@/applications/components/inputs';
 import React, { useState } from 'react';
 import { useResetPassword } from '@/api/user/resetUserPassword.ts';
@@ -24,7 +23,6 @@ const PasswordChange = ({ changeToLogIn }: Props) => {
     e.preventDefault();
     if (!email || !password || !checkingPw) {
       setAlert?.(
-        Choten,
         <>
           빈 입력칸이 존재합니다.
           <br />
@@ -38,7 +36,6 @@ const PasswordChange = ({ changeToLogIn }: Props) => {
     }
     if (password !== checkingPw) {
       setAlert?.(
-        Choten,
         <>
           비밀번호가 일치하지 않습니다.
           <br />
@@ -58,7 +55,6 @@ const PasswordChange = ({ changeToLogIn }: Props) => {
         },
         onError: () => {
           setAlert?.(
-            Choten,
             <>비밀번호 재설정 중 오류가 발생했습니다!!<br />다시 시도해주세요!</>,
             () => {
               taskTransform?.('경고', '');

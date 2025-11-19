@@ -10,7 +10,6 @@ import { useGetCharacter, CharacterData } from '@/api/anime/getCharacter';
 import Hosino from '@/assets/character/hosino.svg';
 import { alerterAtom } from '@/atoms/alerter.ts';
 import { getCookie } from '@/api/auth/cookie.ts';
-import Choten from '@/assets/profile/choten.svg';
 import { useProcessManager } from '@/hooks/processManager.tsx';
 
 interface ChatbotItemProps {
@@ -19,9 +18,17 @@ interface ChatbotItemProps {
   description: string;
   isSelected: boolean;
   onClick: () => void;
+  onDoubleClick: () => void;
 }
 
-const ChatbotItem = ({ chatbot_id, name, description, isSelected, onClick }: ChatbotItemProps) => {
+const ChatbotItem = ({
+  chatbot_id,
+  name,
+  description,
+  isSelected,
+  onClick,
+  onDoubleClick,
+}: ChatbotItemProps) => {
   const [characterData, setCharacterData] = useState<CharacterData>(null);
   const getCharacterMutation = useGetCharacter(setCharacterData);
 
@@ -40,6 +47,7 @@ const ChatbotItem = ({ chatbot_id, name, description, isSelected, onClick }: Cha
     <_.TopContainerItem
       $isSelected={isSelected}
       onClick={onClick}
+      onDoubleClick={onDoubleClick}
       onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
       onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
     >
@@ -76,7 +84,6 @@ const ChatbotSelect = () => {
     const task = taskSearch?.('분신사바');
     if (task) removeTask(task);
     setAlert(
-      Choten,
       <>
         게스트는 분신사바 기능을 이용할 수 없습니다.
         <br />
@@ -104,6 +111,14 @@ const ChatbotSelect = () => {
               description={item.description as string}
               isSelected={selectedItem === item.chatbot_id.toString()}
               onClick={() => setSelectedItem(item.chatbot_id.toString())}
+              onDoubleClick={() => {
+                if (selectedItem !== null) {
+                  console.log('relocationToChatBot');
+                  taskTransform?.('분신사바', '분신사바 메인', {
+                    chatbotId: Number(selectedItem),
+                  });
+                }
+              }}
             />
           ))
         )}

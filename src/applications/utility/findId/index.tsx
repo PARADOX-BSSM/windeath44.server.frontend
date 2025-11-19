@@ -7,7 +7,6 @@ import { useAtomValue } from 'jotai';
 import { alerterAtom } from '@/atoms/alerter';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
 import { useSendUserId } from '@/api/auth/sendUserId.ts';
-import Seori from '@/assets/sulkkagi/black_stone.svg';
 import Loading from '@/applications/components/loading';
 
 interface Props {
@@ -23,7 +22,7 @@ const FindId = ({ changeToLogIn }: Props) => {
   const checkEmail = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (email.length === 0) {
-      setAlert?.(Seori, <>이메일을 입력해주세요.</>, () => {
+      setAlert?.(<>이메일을 입력해주세요.</>, () => {
         taskTransform?.('경고', '');
       });
       return;
@@ -31,7 +30,6 @@ const FindId = ({ changeToLogIn }: Props) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setAlert?.(
-        Seori,
         <>
           이메일 형식이 잘못되었습니다.
           <br />
@@ -49,7 +47,6 @@ const FindId = ({ changeToLogIn }: Props) => {
         onSuccess: () => {
           changeToLogIn();
           setAlert?.(
-            Seori,
             <>
               입력하신 이메일로 아이디를 발송했습니다.
               <br />
@@ -62,7 +59,6 @@ const FindId = ({ changeToLogIn }: Props) => {
         },
         onError: () => {
           setAlert?.(
-            Seori,
             <>
               이메일 전송에 실패했습니다.
               <br />

@@ -13,7 +13,8 @@ import { getCookie } from '@/api/auth/cookie.ts';
 import { useGetBowByUserId, useMemorialBow } from '@/api/memorial/memorialBow.ts';
 import { useGetUserMutation } from '@/api/user/getUser.ts';
 import Loading from '@/applications/components/loading';
-import Seori from '@/assets/sulkkagi/black_stone.svg';
+import { useMemorialChiefBows } from '@/api/memorial/getMemorialChiefs.ts';
+import type { BowData } from '@/modules/interface.ts';
 
 interface bowProps {
   memorialId: number;
@@ -23,9 +24,11 @@ const Bow = ({ memorialId }: bowProps) => {
   const [totalBow, setTotalBow] = useState<number | null>(null);
   const [memorialData, setMemorialData] = useState<memorialData>(null);
   const [characterData, setCharacterData] = useState<CharacterData>(null);
+  const [bowData, setBowData] = useState<BowData[]>();
   const mutationMemorialGetBowCount = useMemorialGetBowCount(setTotalBow);
   const mutationMemorialGet = useMemorialGet(setMemorialData);
   const mutationGetCharacter = useGetCharacter(setCharacterData);
+  const mutationMemorialChiefs = useMemorialChiefBows(setBowData, memorialId);
   const setAlert = useAtomValue(alerterAtom);
   const taskTransform = useAtomValue(taskTransformerAtom);
   const mutationMemorialBows = useGetBowByUserId();
@@ -36,7 +39,6 @@ const Bow = ({ memorialId }: bowProps) => {
   const addBow = () => {
     if (!token && setAlert) {
       setAlert(
-        Seori,
         <>
           게스트는 절을 할 수 없습니다.
           <br />
@@ -56,7 +58,6 @@ const Bow = ({ memorialId }: bowProps) => {
             return `${Number(hours)}시 ${Number(minutes)}분`;
           };
           (setAlert ?? userId)(
-            Seori,
             <>
               아직 절을 할 수 없습니다
               <br />
@@ -71,7 +72,6 @@ const Bow = ({ memorialId }: bowProps) => {
         onSuccess: () => {
           // 서버 응답 성공 시에만 UI 숫자 증가
           (setAlert ?? userId)(
-            Seori,
             <>
               절하기를 성공하였습니다.
               <br />
@@ -82,6 +82,12 @@ const Bow = ({ memorialId }: bowProps) => {
             },
           );
           setTotalBow((prev) => (prev ? prev + 1 : 1));
+          // 상주목록 revalidation
+          mutationMemorialChiefs.mutate(undefined, {
+            onError: () => {
+              console.error('상주목록 갱신 실패');
+            },
+          });
         },
       });
     }
@@ -98,7 +104,6 @@ const Bow = ({ memorialId }: bowProps) => {
           mutationGetCharacter.mutate(data.data.characterId, {
             onError: () => {
               setAlert?.(
-                Seori,
                 <>
                   캐릭터 정보를 가져오는 중 문제가 발생했습니다.
                   <br />
@@ -114,9 +119,23 @@ const Bow = ({ memorialId }: bowProps) => {
       },
       onError: () => {
         setAlert?.(
-          Seori,
           <>
             추모관 정보를 가져오는 중 문제가 발생했습니다.
+            <br />
+            잠시 후 다시 시도해 주세요.
+          </>,
+          () => {
+            taskTransform?.('경고', '');
+          },
+        );
+      },
+    });
+    // 상주목록 초기 로드
+    mutationMemorialChiefs.mutate(undefined, {
+      onError: () => {
+        setAlert?.(
+          <>
+            조문객 명단을 가져오는 중 문제가 발생했습니다.
             <br />
             잠시 후 다시 시도해 주세요.
           </>,
@@ -160,7 +179,7 @@ const Bow = ({ memorialId }: bowProps) => {
           </div>
         </_.bbow>
       </_.place>
-      <Mourners memorialId={memorialId} />
+      <Mourners bowData={bowData} />
     </_.main>
   );
 };

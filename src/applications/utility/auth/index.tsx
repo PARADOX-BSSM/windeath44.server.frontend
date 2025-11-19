@@ -1,7 +1,6 @@
 import React, { useRef, useState } from 'react';
 import * as _ from '@/applications/utility/auth/style.ts';
 import Logo from '@/assets/windeath44.svg';
-import Choten from '@/assets/profile/choten.svg';
 import { useChangeKeyValidation } from '@/api/auth/changeKeyValidation.ts';
 import MemorialBtn from '@/applications/components/memorialBtn';
 import { useAtomValue } from 'jotai';
@@ -38,7 +37,6 @@ const Auth = ({ changeToPassword, changeToEmailCheck }: Props) => {
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (code.length < inputLength) {
       setAlert?.(
-        Choten,
         <>
           인증코드가 잘못되었습니다.
           <br />
@@ -61,7 +59,6 @@ const Auth = ({ changeToPassword, changeToEmailCheck }: Props) => {
         },
         onError: () => {
           setAlert?.(
-            Choten,
             <>
               인증 코드 검증에 실패했습니다.
               <br />

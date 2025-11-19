@@ -1,6 +1,5 @@
 import * as _ from './style';
 import ameImg from '@/assets/profile/ame.svg';
-import chotenImg from '@/assets/profile/choten.svg';
 import { useState } from 'react';
 import { setCursorImage, CURSOR_IMAGES } from 'lib/setCursorImg';
 
@@ -39,7 +38,7 @@ const Comment = ({
   onLikeToggle,
 }: PropsType) => {
   // console.log(idx);
-  const imgUrl = userProfile || (idx % 2 === 0 ? ameImg : chotenImg);
+  const imgUrl = userProfile || ameImg;
   const displayName = userName || userid;
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [replyContent, setReplyContent] = useState('');
@@ -48,6 +47,7 @@ const Comment = ({
   // console.log(imgUrl);
 
   const isOwner = currentUserId === userid;
+  const isPending = commentId < 0; // 음수 ID는 임시 댓글 (아직 서버에 등록 중)
 
   const handleReplySubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -92,16 +92,38 @@ const Comment = ({
                 onChange={(e) => setEditContent(e.target.value)}
                 maxLength={250}
                 autoFocus
+                onMouseEnter={() => {
+                  setCursorImage(CURSOR_IMAGES.drag);
+                }}
+                onMouseLeave={() => {
+                  setCursorImage(CURSOR_IMAGES.default);
+                }}
               />
               <_.EditButtonGroup>
                 <_.CharCount>{editContent.length}/250</_.CharCount>
                 <_.EditCancelButton
                   type="button"
                   onClick={handleEditCancel}
+                  onMouseEnter={() => {
+                    setCursorImage(CURSOR_IMAGES.hand);
+                  }}
+                  onMouseLeave={() => {
+                    setCursorImage(CURSOR_IMAGES.default);
+                  }}
                 >
                   취소
                 </_.EditCancelButton>
-                <_.EditSubmitButton type="submit">완료</_.EditSubmitButton>
+                <_.EditSubmitButton
+                  type="submit"
+                  onMouseEnter={() => {
+                    setCursorImage(CURSOR_IMAGES.hand);
+                  }}
+                  onMouseLeave={() => {
+                    setCursorImage(CURSOR_IMAGES.default);
+                  }}
+                >
+                  완료
+                </_.EditSubmitButton>
               </_.EditButtonGroup>
             </_.EditForm>
           ) : (
@@ -129,7 +151,7 @@ const Comment = ({
                     </>
                   )}
                 </div>
-                {isOwner && (
+                {isOwner && !isPending && (
                   <div style={{ display: 'flex', gap: '8px' }}>
                     <_.EditButton
                       onClick={() => setIsEditing(true)}

@@ -2,18 +2,19 @@ import { useMutation } from '@tanstack/react-query';
 import api from '@/api/axiosInstance';
 import { memorial } from '@/config';
 
-// Mergeable 체크 API 타입
-export interface CheckMergeableRequest {
+// Pull Request Diff 조회 API 타입
+export interface GetPullRequestDiffRequest {
   memorialPullRequestId: number;
 }
 
-export interface CheckMergeableResponse {
+export interface GetPullRequestDiffResponse {
   message: string;
   data: {
     memorialPullRequestId: number;
-    latestMemorialPullRequestId: number | null;
-    mergeable: boolean;
-    conflict: string | null;
+    diffContent: string;
+    hasConflicts: boolean;
+    userId: string;
+    createdAt: string;
   };
 }
 
@@ -38,9 +39,9 @@ export interface ResolveResponse {
   data: any;
 }
 
-// Mergeable 체크 API
-export const checkMergeable = async (request: CheckMergeableRequest): Promise<CheckMergeableResponse> => {
-  const response = await api.post(`${memorial}/mergeable`, request, {});
+// Pull Request Diff 조회 API
+export const getPullRequestDiff = async (request: GetPullRequestDiffRequest): Promise<GetPullRequestDiffResponse> => {
+  const response = await api.get(`${memorial}/pull-request/${request.memorialPullRequestId}/diff`, {});
   return response.data;
 };
 
@@ -56,15 +57,15 @@ export const resolveMemorialPullRequest = async (request: ResolveRequest): Promi
   return response.data;
 };
 
-// Mergeable 체크 훅
-export const useCheckMergeableMutation = () => {
+// Pull Request Diff 조회 훅
+export const useGetPullRequestDiffMutation = () => {
   return useMutation({
-    mutationFn: checkMergeable,
+    mutationFn: getPullRequestDiff,
     onSuccess: (data) => {
-// console.log('Mergeable 체크 완료:', data);
+// console.log('PR Diff 조회 완료:', data);
     },
     onError: (error) => {
-      console.error('Mergeable 체크 실패:', error);
+      console.error('PR Diff 조회 실패:', error);
     },
   });
 };

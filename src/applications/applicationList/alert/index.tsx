@@ -3,14 +3,14 @@ import MemorialBtn from '@/applications/components/memorialBtn';
 import { useAtom } from 'jotai';
 import { focusAtom } from '@/atoms/windowManager.ts';
 import { useEffect } from 'react';
+import seori from '@/assets/sulkkagi/black_stone.svg';
 
 interface AlertProps {
-  icon: string;
   text: JSX.Element;
   onClick: () => any;
 }
 
-const Alert = ({ icon, text, onClick }: AlertProps) => {
+const Alert = ({ text, onClick }: AlertProps) => {
   const [, setFocus] = useAtom(focusAtom);
   useEffect(() => {
     setFocus('');
@@ -25,7 +25,7 @@ const Alert = ({ icon, text, onClick }: AlertProps) => {
         <_.container>
           <_.place>
             <_.icon
-              src={icon}
+              src={seori}
               alt="아이콘"
             ></_.icon>
             <_.text>{text}</_.text>

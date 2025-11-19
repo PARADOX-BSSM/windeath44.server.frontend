@@ -23,7 +23,7 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
   const [description, setDescription] = useState<JSX.Element | null>(
     <>
-      최애의 사인은 작품 내에서 사망한 애니메이션 캐릭터를 추모하는 공간입니다.
+      최애의 사인(死因)은 작품 내에서 사망한 애니메이션 캐릭터를 추모하는 공간입니다.
       <br />
       <br />
       오른쪽의 버튼을 눌러 계속 진행할 수 있습니다.
@@ -88,7 +88,7 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
     if (selectedIdx === 2) {
       setDescription(
         <>
-          "추모관 신청"에서 최애의 사인에 존재하지 않는 추모관을 신청할 수 있습니다.
+          "추모관 신청"에서 최애의 사인(死因)에 존재하지 않는 추모관을 신청할 수 있습니다.
           <br />
           <br />
           <div style={{ fontSize: '1.375rem' }}>
@@ -111,14 +111,13 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
     }
     if (idx === 2) {
       if (!token && setAlert) {
-        setAlert(Seori, <>게스트는 추모관 신청이 불가합니다.</>, () => {
+        setAlert(<>게스트는 추모관 신청이 불가합니다.</>, () => {
           taskTransform?.('경고', '');
         });
       } else if (setAlert) {
         setAlert(
-          Seori,
           <>
-            최애의 사인에 부적합하다고 판단되는 추모관은
+            최애의 사인(死因)에 부적합하다고 판단되는 추모관은
             <br />
             거절될 수 있습니다.
           </>,
@@ -138,7 +137,7 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
     <_.Container>
       <_.InnerContainer>
         <_.TextContainer>
-          <_.Title>최애의 사인</_.Title>
+          <_.Title>최애의 사인(死因)</_.Title>
           <_.Version>ver {version}</_.Version>
         </_.TextContainer>
         <_.MainContainer>

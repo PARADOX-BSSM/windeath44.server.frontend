@@ -9,7 +9,6 @@ import { useGetChatBotQuery } from '@/api/chatbot/getChatBot';
 import { useAtomValue } from 'jotai';
 import { alerterAtom } from '@/atoms/alerter';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
-import BlackSeori from '@/assets/sulkkagi/black_stone.svg';
 
 interface TeachingChatBotProps {
   chatbotId?: number;
@@ -48,12 +47,11 @@ const TeachingChatBot = ({ chatbotId = 1 }: TeachingChatBotProps) => {
         answer: inputValue,
       },
       {
-        onSuccess: (response) => {
+        onSuccess: () => {
           setInputValue('');
           const random = randomQuestion();
           setQuestion(dummyQuestion[random]);
-          // console.log(response);
-          setAlert?.(BlackSeori, <>캐릭터의 대사 한마디에 당신의 생명을 불어넣었습니다.</>, () => {
+          setAlert?.(<>캐릭터의 대사 한마디에 당신의 생명을 불어넣었습니다.</>, () => {
             taskTransform?.('경고', '');
           });
         },

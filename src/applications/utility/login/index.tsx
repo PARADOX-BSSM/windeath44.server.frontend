@@ -1,6 +1,5 @@
 import * as _ from './style';
 import Logo from '@/assets/windeath44.svg';
-import Choten from '@/assets/profile/choten.svg';
 import Inputs from '@/applications/components/inputs';
 import { useAtom, useAtomValue } from 'jotai';
 import { useState } from 'react';
@@ -47,13 +46,13 @@ const LogIn = ({ changeToSignUp, changeToEmailCheck , changeToFindId}: Props) =>
     e.preventDefault();
     const id = userId;
     if (id.length === 0) {
-      setAlert?.(Choten, <>아이디를 입력하지 않았습니다.</>, () => {
+      setAlert?.(<>아이디를 입력하지 않았습니다.</>, () => {
         taskTransform?.('경고', '');
       });
       return;
     }
     if (password.length === 0) {
-      setAlert?.(Choten, <>비밀번호를 입력하지 않았습니다.</>, () => {
+      setAlert?.(<>비밀번호를 입력하지 않았습니다.</>, () => {
         taskTransform?.('경고', '');
       });
       return;
@@ -73,7 +72,6 @@ const LogIn = ({ changeToSignUp, changeToEmailCheck , changeToFindId}: Props) =>
           if (axiosError.response) {
             if (axiosError.response.status === 404) {
               setAlert?.(
-                Choten,
                 <>
                   로그인에 실패했습니다.
                   <br />
@@ -85,7 +83,6 @@ const LogIn = ({ changeToSignUp, changeToEmailCheck , changeToFindId}: Props) =>
               );
             } else {
               setAlert?.(
-                Choten,
                 <>
                   로그인에 실패했습니다.
                   <br />
@@ -98,7 +95,6 @@ const LogIn = ({ changeToSignUp, changeToEmailCheck , changeToFindId}: Props) =>
             }
           } else {
             setAlert?.(
-              Choten,
               <>
                 로그인에 실패했습니다.
                 <br />

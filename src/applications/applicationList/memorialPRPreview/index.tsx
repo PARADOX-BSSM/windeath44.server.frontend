@@ -1,15 +1,15 @@
 import IndexMenu from '@/applications/components/indexMenu';
 import * as _ from './style';
-import { index_data } from '../memorial/data';
 import { useAtomValue } from 'jotai';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
 import { alerterAtom } from '@/atoms/alerter';
 import { useGetCharacter } from '@/api/anime/getCharacter.ts';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import type { CharacterData } from '@/api/anime/getCharacter';
 import { parseCustomContent } from '@/lib/customTag/parseCustomContent.tsx';
 import { useGetAnimation } from '@/api/anime/getAnimation.ts';
 import ribbon from '@/assets/memorial_ribbon.svg';
+import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
 
 interface dataStructureProps {
   stack: any[];
@@ -18,11 +18,23 @@ interface dataStructureProps {
   top: any;
   characterId: number;
   content: string;
+  userId: string;
+  prId: number;
 }
 
-const MemorialViewer = ({ stack, push, pop, top, characterId, content }: dataStructureProps) => {
+const MemorialPRPreview = ({
+  stack,
+  push,
+  pop,
+  top,
+  characterId,
+  content,
+  userId,
+  prId,
+}: dataStructureProps) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
   const setAlert = useAtomValue(alerterAtom);
+  const [indexData, setIndexData] = useState<string[]>([]);
 
   const [characterData, setCharacterData] = useState<CharacterData>({
     characterId: 0,
@@ -30,6 +42,7 @@ const MemorialViewer = ({ stack, push, pop, top, characterId, content }: dataStr
     name: '',
     lifeTime: 0,
     deathReason: '',
+    causeOfDeathDetails: '',
     imageUrl: '',
     bowCount: 0,
     age: 0,
@@ -42,29 +55,51 @@ const MemorialViewer = ({ stack, push, pop, top, characterId, content }: dataStr
   const [animation, setAnimation] = useState<string>('');
   const mutationAnimation = useGetAnimation(setAnimation);
 
+  // content가 변경될 때마다 파싱하여 목차 업데이트
+  const parsedContent = useMemo(() => {
+    const tempIndexData: string[] = [];
+    const result = parseCustomContent(tempIndexData, content);
+    setIndexData(tempIndexData);
+    return result;
+  }, [content]);
+
   useEffect(() => {
-    console.log('characterId', characterId);
     if (characterId) {
-      mutationGetCharacter.mutate(characterId);
-      mutationAnimation.mutate(characterId);
+      mutationGetCharacter.mutate(characterId, {
+        onError: () => {
+          setAlert?.(
+            <>
+              캐릭터 정보를 가져오는 중 오류가 발생했습니다.
+              <br />
+              잠시 후 다시 시도해주세요.
+            </>,
+            () => {
+              taskTransform?.('경고', '');
+            },
+          );
+        },
+      });
     }
   }, [characterId]);
 
-  // 에러 처리
   useEffect(() => {
-    if (mutationGetCharacter.isError) {
-      setAlert?.(
-        <>
-          캐릭터 정보를 가져오는 중 오류가 발생했습니다.
-          <br />
-          잠시 후 다시 시도해주세요.
-        </>,
-        () => {
-          taskTransform?.('경고', '');
+    if (characterData.animeId) {
+      mutationAnimation.mutate(characterData.animeId, {
+        onError: () => {
+          setAlert?.(
+            <>
+              애니메이션 정보를 가져오는 중 오류가 발생했습니다.
+              <br />
+              잠시 후 다시 시도해주세요.
+            </>,
+            () => {
+              taskTransform?.('경고', '');
+            },
+          );
         },
-      );
+      });
     }
-  }, [mutationGetCharacter.isError, setAlert, taskTransform]);
+  }, [characterData.animeId]);
 
   return (
     <_.Main>
@@ -74,9 +109,13 @@ const MemorialViewer = ({ stack, push, pop, top, characterId, content }: dataStr
             <_.Header>
               <_.TextContainer>
                 <_.Title>{characterData.name}</_.Title>
-                <_.Subtitle>수정 기록 보기</_.Subtitle>
+                <_.Subtitle>수정 요청 #{prId} 미리보기 (작성자: {userId})</_.Subtitle>
               </_.TextContainer>
-              <_.BackButton onClick={() => taskTransform?.('추모관 수정 요청 뷰어', '')}>
+              <_.BackButton
+                onClick={() => pop()}
+                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+              >
                 돌아가기
               </_.BackButton>
             </_.Header>
@@ -85,7 +124,7 @@ const MemorialViewer = ({ stack, push, pop, top, characterId, content }: dataStr
                 <_.Quote>{characterData.saying}</_.Quote>
                 <_.Index>
                   <_.IndexTitle>목차</_.IndexTitle>
-                  {index_data.map((item, idx) => {
+                  {indexData.map((item, idx) => {
                     return (
                       <IndexMenu
                         key={idx}
@@ -122,6 +161,14 @@ const MemorialViewer = ({ stack, push, pop, top, characterId, content }: dataStr
                       <_.Attribute>사망 원인</_.Attribute>
                       <_.Value>{characterData.deathReason}</_.Value>
                     </_.Row>
+                    <_.Row>
+                      <_.Attribute>상세 사인</_.Attribute>
+                      <_.Value>{characterData.causeOfDeathDetails}</_.Value>
+                    </_.Row>
+                    <_.Row>
+                      <_.Attribute>애니메이션</_.Attribute>
+                      <_.Value>{animation}</_.Value>
+                    </_.Row>
                   </_.Information>
                 </_.ProfileInnerContainer>
               </_.ProfileContainer>
@@ -133,7 +180,7 @@ const MemorialViewer = ({ stack, push, pop, top, characterId, content }: dataStr
                 {mutationGetCharacter.isPending ? (
                   <_.LoadingText>캐릭터 정보를 불러오는 중...</_.LoadingText>
                 ) : (
-                  parseCustomContent(index_data, content)
+                  parsedContent
                 )}
               </_.ArticleContent>
             </_.ArticleContainer>
@@ -144,4 +191,4 @@ const MemorialViewer = ({ stack, push, pop, top, characterId, content }: dataStr
   );
 };
 
-export default MemorialViewer;
+export default MemorialPRPreview;

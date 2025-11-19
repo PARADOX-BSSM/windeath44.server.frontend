@@ -83,7 +83,7 @@ export const Subtitle = styled.p`
   line-height: normal;
 `;
 
-export const History = styled.p`
+export const BackButton = styled.p`
   color: var(--Stroke, #e774dd);
   text-align: right;
   font-family: Galmuri11;
@@ -91,15 +91,8 @@ export const History = styled.p`
   font-style: normal;
   font-weight: 400;
   line-height: normal;
-`;
-
-export const DocumentUpdate = styled(History)`
-  text-decoration-line: underline;
-  text-decoration-style: solid;
-  text-decoration-skip-ink: auto;
-  text-decoration-thickness: auto;
-  text-underline-offset: auto;
-  text-underline-position: from-font;
+  cursor: pointer;
+  margin: 0;
 `;
 
 export const ContentContainer = styled.div`
@@ -120,37 +113,15 @@ export const IndexWrapper = styled.div`
 `;
 
 export const Quote = styled.h2`
-  position: relative;
   height: fit-content;
   align-self: stretch;
-  color: #4a4a4a;
-  font-family: 'Galmuri11', serif;
-  font-size: 28px;
-  font-style: italic;
-  font-weight: 500;
-  line-height: 1.5;
-  background-color: #f0f0f0;
-  padding: 30px 40px;
-  border-left: 5px solid #e774dd;
-  border-radius: 5px;
-  margin: 10px 0;
-
-  &::before {
-    content: '“';
-    position: absolute;
-    top: 10px;
-    left: 5px;
-    font-size: 40px;
-    color: #e774dd;
-  }
-
-  &::after {
-    content: '”';
-    position: absolute;
-    bottom: -10px;
-    font-size: 40px;
-    color: #e774dd;
-  }
+  color: #2e2e2e;
+  font-family: Galmuri11;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  display: flex;
 `;
 
 export const Index = styled.div`
@@ -196,13 +167,15 @@ export const PictureContainer = styled.div`
   gap: 10px;
   position: relative;
 `;
+
 export const Ribbon = styled.img`
   position: absolute;
   top: 0;
-  width: 144px;
+  width: 100%;
   z-index: 1;
 `;
-export const Picture = styled.div<{ imgUrl?: string }>`
+
+export const Picture = styled.div<{ imgUrl: string }>`
   display: flex;
   height: 200px;
   flex-direction: column;
@@ -215,16 +188,6 @@ export const Picture = styled.div<{ imgUrl?: string }>`
   background-position: center;
   width: 144px;
   flex-shrink: 0;
-`;
-
-export const Name = styled.p`
-  color: #2e2e2e;
-  text-align: center;
-  font-family: Galmuri11;
-  font-size: 24px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
 `;
 
 export const Information = styled.div`
@@ -279,137 +242,24 @@ export const Value = styled.div`
   line-height: normal;
 `;
 
-export const GotoBow = styled.button`
-  display: flex;
-  width: 260px;
-  height: 60px;
-  padding: 12px 24px;
-  justify-content: center;
-  align-items: center;
-  background: var(--LightPrimary, #ffd3fb);
-  box-shadow:
-    -1px -1px 0px 0px var(--Black, #2e2e2e) inset,
-    1px 1px 0px 0px #fff inset,
-    -2px -2px 0px 0px var(--DarkPrimary, #dcafdd) inset,
-    2px 2px 0px 0px var(--Secondary, #ffbbf5) inset;
-  color: var(--Black, #2e2e2e);
-  text-align: center;
-  font-family: Galmuri11;
-  font-size: 24px;
-  font-style: normal;
-  font-weight: 400;
-  border: none;
-`;
-
 export const Section2 = styled.section`
   display: flex;
-  width: 100%;
-  flex-direction: column;
-  align-items: center;
-  gap: 24px;
-`;
-
-export const CommentContainer = styled.div`
-  display: flex;
-  width: 100%;
-  padding: 10px 0;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
-`;
-
-export const CommentTitle = styled.p`
-  align-self: stretch;
-  color: #2e2e2e;
-  font-family: Galmuri11;
-  font-size: 32px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-`;
-
-export const CommentMain = styled.div`
-  display: flex;
-  height: 100%;
-  padding: 0 12px;
+  padding: 20px;
   flex-direction: column;
   align-items: flex-start;
+  gap: 20px;
   align-self: stretch;
-`;
-
-export const CommentMainInner = styled.div`
-  display: flex;
-  align-self: stretch;
-  padding: 1px 0;
-  flex-direction: column;
-  align-items: center;
-  gap: 1px;
-  flex: 1 0 0;
-  background: rgba(0, 0, 0, 0.2);
-`;
-
-export const InputComment = styled.div`
-  display: flex;
-  padding: 12px 16px;
-  align-items: center;
-  gap: 10px;
-  align-self: stretch;
-  background: #ffebfd;
-
-  & > form {
-    width: 100%;
-    display: flex;
-  }
-`;
-
-export const InputCommentText = styled.input`
-  font-family: Galmuri11;
-  font-size: 12px;
-  font-style: normal;
-  font-weight: 400;
-  cursor: none;
-  line-height: normal;
-  border: none;
-  background: none;
-  outline: none;
-  box-shadow: none;
-  padding: 0;
-  border-width: 0;
-  flex: 1;
-  &::placeholder {
-    color: var(--DarkPrimary, #dcafdd);
-  }
-`;
-
-export const CharCount = styled.span`
-  font-family: Galmuri11;
-  font-size: 10px;
-  color: var(--DarkPrimary, #dcafdd);
-  white-space: nowrap;
-  margin-left: 8px;
-`;
-
-export const LoadMoreButton = styled.button`
-  display: flex;
-  width: 100%;
-  padding: 12px 16px;
-  justify-content: center;
-  align-items: center;
   background: #fff;
-  border: none;
-  cursor: pointer;
-  color: var(--Stroke, #e774dd);
-  font-family: Galmuri11;
-  font-size: 12px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-  transition: background-color 0.2s;
+  min-height: 400px;
+`;
 
-  &:hover {
-    background: #f5f5f5;
-  }
+export const LoadingText = styled.div`
+  color: #666;
+  font-family: Galmuri11;
+  font-size: 16px;
+  text-align: center;
+  padding: 40px;
+  width: 100%;
 `;
 
 export const ArticleContainer = styled.div`
@@ -420,19 +270,9 @@ export const ArticleContainer = styled.div`
   gap: 20px;
 `;
 
-export const ArticleTitle = styled.h1`
-  color: var(--Stroke, #e774dd);
-  font-family: Galmuri11;
-  font-size: 32px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-`;
-
 export const ArticleContent = styled.div`
   display: flex;
   padding: 0 8px;
-  width: 100%;
   flex-direction: column;
   align-items: flex-start;
   gap: 20px;

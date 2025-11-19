@@ -3,7 +3,6 @@ import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
 import * as _ from './style';
 import ChatMessage from '@/applications/components/chatMessage';
 import Loading from '@/applications/components/loading';
-import Choten from '@/assets/profile/choten.svg';
 import Ame from '@/assets/profile/ame.svg';
 import Hosino from '@/assets/character/hosino.svg';
 import { useDoChat } from '@/api/chatbot/chat';
@@ -16,7 +15,7 @@ import { useGetUserMutation } from '@/api/user/getUser';
 import { useGetCharacter, CharacterData } from '@/api/anime/getCharacter';
 import { useProcessManager } from '@/hooks/processManager';
 import { useGetMemorialsCharacterFilteredQuery } from '@/api/memorial/getMemorialsCharacterFiltered';
-import seori from '@/assets/sulkkagi/black_stone.svg';
+import { useGetUsersQuery } from '@/api/user/getUsersByIds';
 
 interface Message {
   id: string;
@@ -26,10 +25,18 @@ interface Message {
   text: string;
 }
 
+interface WordSet {
+  question: string;
+  answer: string;
+  contributor: string;
+}
+
 interface Contributor {
   id: string;
   avatar: string;
   alt: string;
+  userId: string;
+  wordsets: WordSet[];
 }
 
 interface ChatBotProps {
@@ -41,8 +48,6 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
   const doChatMutation = useDoChat();
   const setAlert = useAtomValue(alerterAtom);
   const taskTransform = useAtomValue(taskTransformerAtom);
-  const taskSearch = useAtomValue(taskSearchAtom);
-  const [, addTask] = useProcessManager();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [messages, setMessages] = useState<Message[]>([]);
 
@@ -52,6 +57,7 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
 
   const [contributors, setContributors] = useState<Contributor[]>([]);
   const [showAllContributors, setShowAllContributors] = useState(false);
+  const [hoveredContributorId, setHoveredContributorId] = useState<string | null>(null);
   const [characterData, setCharacterData] = useState<CharacterData>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollToBottom = () => {
@@ -62,6 +68,10 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
   const { mutate: getUser, data: userData } = useGetUserMutation();
   const getCharacterMutation = useGetCharacter(setCharacterData);
   const mutationGetChatHistory = useGetChatbotHistory(setChatHistory, setHasNextHistory, false);
+
+  // contributor 유저 정보 가져오기
+  const contributorIds = getChatBot.data?.data?.contributor || [];
+  const { data: contributorsData } = useGetUsersQuery(contributorIds);
 
   // 캐릭터 ID로 추모관 조회
   const { data: memorialsData } = useGetMemorialsCharacterFilteredQuery({
@@ -156,20 +166,32 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
 
   useEffect(() => {
     const contributeData = getChatBot.data?.data?.contributor;
-    // console.log(contributeData);
+    const wordsetData = getChatBot.data?.data?.chatbot_wordset;
 
     if (contributeData && Array.isArray(contributeData) && contributeData.length > 0) {
-      const contributorList: Contributor[] = contributeData.map((name: string, index: number) => ({
-        id: (index + 1).toString(),
-        avatar: index % 2 === 0 ? Choten : Ame,
-        alt: name,
-      }));
+      // contributorsData가 있으면 프로필 이미지를 매핑
+      const contributorList: Contributor[] = contributeData.map((userId: string, index: number) => {
+        // contributorsData에서 해당 userId의 프로필 찾기
+        const userProfile = contributorsData?.data?.find((user) => user.userId === userId);
+
+        // 해당 contributor의 wordset 필터링
+        const userWordsets =
+          wordsetData?.filter((wordset: WordSet) => wordset.contributor === userId) || [];
+
+        return {
+          id: (index + 1).toString(),
+          avatar: userProfile?.profile || Ame, // 프로필이 있으면 사용, 없으면 기본 이미지
+          alt: userId,
+          userId: userId,
+          wordsets: userWordsets,
+        };
+      });
 
       setContributors(contributorList);
     } else {
       setContributors([]);
     }
-  }, [getChatBot.data]);
+  }, [getChatBot.data, contributorsData]);
 
   const addMessage = () => {
     if (!message.trim()) return;
@@ -223,7 +245,6 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
           const errorMessage = error?.response?.data?.message || '채팅 중 오류가 발생했습니다.';
 
           setAlert?.(
-            seori,
             <>
               {errorMessage}
               <br />
@@ -241,18 +262,11 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
   };
 
   const handleMemorialClick = () => {
-    console.log('Memorial click - Full memorialsData:', memorialsData);
-    console.log('Memorial click - Data structure:', JSON.stringify(memorialsData, null, 2));
-
     // API 응답 구조 확인: memorialsData?.data?.values 또는 memorialsData?.data
     const memorials = memorialsData?.data?.values || memorialsData?.data || [];
 
-    console.log('Memorial click - memorials array:', memorials);
-    console.log('Memorial click - memorials length:', memorials.length);
-
     if (!Array.isArray(memorials) || memorials.length === 0) {
       setAlert?.(
-        seori,
         <>
           해당 캐릭터의 추모관을 찾을 수 없습니다.
           <br />
@@ -267,11 +281,9 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
 
     // 첫 번째 추모관 사용 (캐릭터 ID로 필터링된 추모관)
     const firstMemorial = memorials[0];
-    console.log('First memorial object:', firstMemorial);
 
     if (!firstMemorial || !firstMemorial.memorialId) {
       setAlert?.(
-        seori,
         <>
           추모관 데이터를 찾을 수 없습니다.
           <br />
@@ -285,8 +297,6 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
     }
 
     const memorialId = firstMemorial.memorialId;
-
-    console.log('Opening memorial - memorialId:', memorialId, 'characterId:', chatbotId);
 
     // taskTransform 사용 (search/viewer와 동일한 방식)
     taskTransform?.('', '추모관 뷰어', {
@@ -322,14 +332,42 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
             </_.ProfileTop>
 
             <_.ContributorsSection>
-              <_.ContributorsTitle>챗봇 기여자</_.ContributorsTitle>
+              <_.ContributorsTitle>영매사 목록</_.ContributorsTitle>
               <_.ContributorsList>
                 {displayedContributors.map((contributor) => (
-                  <_.ContributorAvatar
+                  <_.ContributorAvatarWrapper
                     key={contributor.id}
-                    src={contributor.avatar}
-                    alt={contributor.alt}
-                  />
+                    onMouseEnter={() => {
+                      setHoveredContributorId(contributor.id);
+                      setCursorImage(CURSOR_IMAGES.hand);
+                    }}
+                    onMouseLeave={() => {
+                      setHoveredContributorId(null);
+                      setCursorImage(CURSOR_IMAGES.default);
+                    }}
+                  >
+                    <_.ContributorAvatar
+                      src={contributor.avatar}
+                      alt={contributor.alt}
+                    />
+                    <_.ContributorCard show={hoveredContributorId === contributor.id}>
+                      <_.ContributorCardUserId>@{contributor.userId}</_.ContributorCardUserId>
+                      {contributor.wordsets.length > 0 ? (
+                        contributor.wordsets.map((wordset, index) => (
+                          <_.ContributorCardItem key={index}>
+                            <_.ContributorCardQuestion>
+                              Q: {wordset.question}
+                            </_.ContributorCardQuestion>
+                            <_.ContributorCardAnswer>A: {wordset.answer}</_.ContributorCardAnswer>
+                          </_.ContributorCardItem>
+                        ))
+                      ) : (
+                        <_.ContributorCardAnswer>
+                          아직 등록된 질문/답변이 없습니다.
+                        </_.ContributorCardAnswer>
+                      )}
+                    </_.ContributorCard>
+                  </_.ContributorAvatarWrapper>
                 ))}
               </_.ContributorsList>
               {contributors.length > 5 && (
@@ -369,7 +407,7 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
               ))}
               {isLoading && (
                 <Loading
-                  text="답변을 기다리는 중입니다..."
+                  text="영혼과 이어지는 중입니다..."
                   imageSize="60px"
                 />
               )}
@@ -383,7 +421,7 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
                 type="text"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                placeholder={isLoading ? '답변을 기다리는 중입니다..' : '메시지 입력'}
+                placeholder={isLoading ? '영혼과 이어지는 중입니다...' : '메시지 입력'}
                 readOnly={isLoading}
                 onMouseEnter={() => setCursorImage(CURSOR_IMAGES.drag)}
                 onMouseOut={() => setCursorImage(CURSOR_IMAGES.default)}

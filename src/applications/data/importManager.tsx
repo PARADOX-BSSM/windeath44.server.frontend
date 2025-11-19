@@ -95,6 +95,10 @@ const MemorialConflictResolve = lazy(
 const MemorialViewer = lazy(
   () => import('@/applications/applicationList/memorialViewer/index.tsx'),
 );
+
+const MemorialPRPreview = lazy(
+  () => import('@/applications/applicationList/memorialPRPreview/index.tsx'),
+);
 const MyComputerApproach = lazy(
   () => import('@/applications/applicationList/myComputerApproach/index.tsx'),
 );
@@ -1169,6 +1173,34 @@ const useApps = (): TaskType[] => {
         minHeight: 250,
         setUpWidth: 690,
         setUpHeight: 250,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <MemorialPRPreview
+            stack={[]}
+            push={undefined}
+            pop={undefined}
+            top={undefined}
+            characterId={0}
+            content=""
+            userId=""
+            prId={0}
+          />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2257,
+      name: 'memorialPRPreview',
+      layer: undefined,
+      appSetup: {
+        Image: search,
+        minWidth: 800,
+        minHeight: 600,
+        setUpWidth: 1100,
+        setUpHeight: 800,
       },
       visible: false,
     },
