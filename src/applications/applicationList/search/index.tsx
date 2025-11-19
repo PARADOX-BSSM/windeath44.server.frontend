@@ -138,7 +138,7 @@ const Search = () => {
     }
 
     const total = p?.data?.total;
-    setMaxPage(total ? Math.ceil(total / size) : 1);
+    setMaxPage(total ? Math.ceil(total / size) : maxPage);
 
     console.log('Normalized values:', values, 'total:', total, 'maxPage:', maxPage);
 
