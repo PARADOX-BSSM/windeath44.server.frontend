@@ -91,16 +91,38 @@ const Comment = ({
                 onChange={(e) => setEditContent(e.target.value)}
                 maxLength={250}
                 autoFocus
+                onMouseEnter={() => {
+                  setCursorImage(CURSOR_IMAGES.drag);
+                }}
+                onMouseLeave={() => {
+                  setCursorImage(CURSOR_IMAGES.default);
+                }}
               />
               <_.EditButtonGroup>
                 <_.CharCount>{editContent.length}/250</_.CharCount>
                 <_.EditCancelButton
                   type="button"
                   onClick={handleEditCancel}
+                  onMouseEnter={() => {
+                    setCursorImage(CURSOR_IMAGES.hand);
+                  }}
+                  onMouseLeave={() => {
+                    setCursorImage(CURSOR_IMAGES.default);
+                  }}
                 >
                   취소
                 </_.EditCancelButton>
-                <_.EditSubmitButton type="submit">완료</_.EditSubmitButton>
+                <_.EditSubmitButton
+                  type="submit"
+                  onMouseEnter={() => {
+                    setCursorImage(CURSOR_IMAGES.hand);
+                  }}
+                  onMouseLeave={() => {
+                    setCursorImage(CURSOR_IMAGES.default);
+                  }}
+                >
+                  완료
+                </_.EditSubmitButton>
               </_.EditButtonGroup>
             </_.EditForm>
           ) : (

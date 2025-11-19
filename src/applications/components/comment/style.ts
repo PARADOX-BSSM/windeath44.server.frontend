@@ -204,6 +204,7 @@ export const EditForm = styled.form`
 
 export const EditInput = styled.input`
   font-family: Galmuri11;
+  cursor: none;
   font-size: 12px;
   font-style: normal;
   font-weight: 400;
@@ -236,7 +237,7 @@ export const EditCancelButton = styled.button`
   font-size: 10px;
   font-style: normal;
   font-weight: 400;
-  cursor: pointer;
+  cursor: none;
   padding: 4px 12px;
   border-radius: 4px;
 
@@ -249,11 +250,11 @@ export const EditSubmitButton = styled.button`
   background: var(--Stroke, #e774dd);
   border: none;
   color: #fff;
+  cursor: none;
   font-family: Galmuri11;
   font-size: 10px;
   font-style: normal;
   font-weight: 400;
-  cursor: pointer;
   padding: 4px 12px;
   border-radius: 4px;
 

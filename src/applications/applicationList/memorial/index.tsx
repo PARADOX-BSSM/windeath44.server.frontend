@@ -28,6 +28,7 @@ import { getCookie } from '@/api/auth/cookie.ts';
 import { ApplicationProps } from '@/applications/layout/utils';
 import axios from 'axios';
 import { user as userEndpoint } from '@/config';
+import { CURSOR_IMAGES, setCursorImage } from '@/lib/setCursorImg';
 
 interface dataStructureProps {
   stack: any[];
@@ -70,7 +71,9 @@ const Memorial = ({
   const [content, setContent] = useState<string>('');
   const token = getCookie('access_token');
   const [indexData, setIndexData] = useState<string[]>([]);
-  const [userDataMap, setUserDataMap] = useState<Record<string, { name: string; profile: string }>>({});
+  const [userDataMap, setUserDataMap] = useState<Record<string, { name: string; profile: string }>>(
+    {},
+  );
   const [characterData, setCharacterData] = useState<CharacterData>({
     characterId: 0,
     animeId: 0,
@@ -549,6 +552,12 @@ const Memorial = ({
                         onChange={(e) => setContent(e.target.value)}
                         placeholder="추모글을 입력하세요."
                         maxLength={250}
+                        onMouseEnter={() => {
+                          setCursorImage(CURSOR_IMAGES.drag);
+                        }}
+                        onMouseLeave={() => {
+                          setCursorImage(CURSOR_IMAGES.default);
+                        }}
                       ></_.InputCommentText>
                       <_.CharCount>{content.length}/250</_.CharCount>
                     </form>
