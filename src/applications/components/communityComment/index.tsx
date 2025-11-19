@@ -15,6 +15,7 @@ import { usePostCommentUpdate } from '@/api/community/postCommentUpdate';
 import { alerterAtom } from '@/atoms/alerter';
 import { useAtomValue } from 'jotai';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
+import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
 
 interface User {
   name: string;
@@ -225,7 +226,13 @@ const Posts: React.FC<PostsProps> = ({
           </_.PostInfo>
           {isOwner && (
             <_.KebabContainer ref={menuRef}>
-              <_.KebabBtn onClick={handleKebabClick}>
+              <_.KebabBtn
+                onClick={handleKebabClick}
+                onMouseDown={() => setCursorImage(CURSOR_IMAGES.click)}
+                onMouseUp={() => setCursorImage(CURSOR_IMAGES.hand)}
+                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+              >
                 <_.Icon
                   src={KebabIcon}
                   alt="메뉴"
@@ -233,8 +240,24 @@ const Posts: React.FC<PostsProps> = ({
               </_.KebabBtn>
               {isOpen && (
                 <_.ContextMenu>
-                  <_.MenuItem onClick={handleEdit}>수정</_.MenuItem>
-                  <_.MenuItem onClick={handleDelete}>삭제</_.MenuItem>
+                  <_.MenuItem
+                    onClick={handleEdit}
+                    onMouseDown={() => setCursorImage(CURSOR_IMAGES.click)}
+                    onMouseUp={() => setCursorImage(CURSOR_IMAGES.hand)}
+                    onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                    onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+                  >
+                    수정
+                  </_.MenuItem>
+                  <_.MenuItem
+                    onClick={handleDelete}
+                    onMouseDown={() => setCursorImage(CURSOR_IMAGES.click)}
+                    onMouseUp={() => setCursorImage(CURSOR_IMAGES.hand)}
+                    onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                    onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+                  >
+                    삭제
+                  </_.MenuItem>
                 </_.ContextMenu>
               )}
             </_.KebabContainer>
@@ -248,11 +271,31 @@ const Posts: React.FC<PostsProps> = ({
                 value={editedBody}
                 onChange={(e) => setEditedBody(e.target.value)}
                 placeholder="댓글을 수정하세요"
+                onMouseDown={() => setCursorImage(CURSOR_IMAGES.click)}
+                onMouseUp={() => setCursorImage(CURSOR_IMAGES.hand)}
+                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
               />
             </_.EditInputArea>
             <_.EditBtnGroup>
-              <_.EditBtn onClick={handleEditSave}>저장</_.EditBtn>
-              <_.EditBtn onClick={handleEditCancel}>취소</_.EditBtn>
+              <_.EditBtn
+                onClick={handleEditSave}
+                onMouseDown={() => setCursorImage(CURSOR_IMAGES.click)}
+                onMouseUp={() => setCursorImage(CURSOR_IMAGES.hand)}
+                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+              >
+                저장
+              </_.EditBtn>
+              <_.EditBtn
+                onClick={handleEditCancel}
+                onMouseDown={() => setCursorImage(CURSOR_IMAGES.click)}
+                onMouseUp={() => setCursorImage(CURSOR_IMAGES.hand)}
+                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+              >
+                취소
+              </_.EditBtn>
             </_.EditBtnGroup>
           </>
         ) : (
@@ -264,11 +307,21 @@ const Posts: React.FC<PostsProps> = ({
               src={isLike ? HeartFill : Heart}
               alt="PostHeart"
               onClick={likeHandle}
+              onMouseDown={() => setCursorImage(CURSOR_IMAGES.click)}
+              onMouseUp={() => setCursorImage(CURSOR_IMAGES.hand)}
+              onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+              onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
             />
             {likesCount}
           </_.Icons>
           {!parentCommentId && (
-            <_.ReplyButton onClick={onReplyClick}>
+            <_.ReplyButton
+              onClick={onReplyClick}
+              onMouseDown={() => setCursorImage(CURSOR_IMAGES.click)}
+              onMouseUp={() => setCursorImage(CURSOR_IMAGES.hand)}
+              onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+              onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+            >
               {showReplyForm ? '답글 닫기' : '답글'}
             </_.ReplyButton>
           )}

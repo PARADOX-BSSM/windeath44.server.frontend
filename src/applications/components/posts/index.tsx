@@ -16,6 +16,7 @@ import { useIsPostLiked } from '@/api/community/isPostLiked';
 import { useAtomValue } from 'jotai';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
 import { alerterAtom } from '@/atoms/alerter';
+import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
 
 interface User {
   name: string;
@@ -176,6 +177,10 @@ const Posts = ({ user, post, postDelete, refetchPost, postEdit }: PostsProps) =>
                 width="10px"
                 height="10px"
                 onClick={likeHandle}
+                onMouseDown={() => setCursorImage(CURSOR_IMAGES.click)}
+                onMouseUp={() => setCursorImage(CURSOR_IMAGES.hand)}
+                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
               />
               {post.likesCount}
             </_.Icons>
@@ -193,7 +198,13 @@ const Posts = ({ user, post, postDelete, refetchPost, postEdit }: PostsProps) =>
       </_.Main>
       {isOwner && (
         <_.KebabContainer ref={menuRef}>
-          <_.KebabBtn onClick={handleKebabClick}>
+          <_.KebabBtn
+            onClick={handleKebabClick}
+            onMouseDown={() => setCursorImage(CURSOR_IMAGES.click)}
+            onMouseUp={() => setCursorImage(CURSOR_IMAGES.hand)}
+            onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+            onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+          >
             <_.Icon
               src={KebabIcon}
               alt="메뉴"
@@ -201,8 +212,24 @@ const Posts = ({ user, post, postDelete, refetchPost, postEdit }: PostsProps) =>
           </_.KebabBtn>
           {isOpen && (
             <_.ContextMenu>
-              <_.MenuItem onClick={handleEdit}>수정</_.MenuItem>
-              <_.MenuItem onClick={handleDelete}>삭제</_.MenuItem>
+              <_.MenuItem
+                onClick={handleEdit}
+                onMouseDown={() => setCursorImage(CURSOR_IMAGES.click)}
+                onMouseUp={() => setCursorImage(CURSOR_IMAGES.hand)}
+                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+              >
+                수정
+              </_.MenuItem>
+              <_.MenuItem
+                onClick={handleDelete}
+                onMouseDown={() => setCursorImage(CURSOR_IMAGES.click)}
+                onMouseUp={() => setCursorImage(CURSOR_IMAGES.hand)}
+                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+              >
+                삭제
+              </_.MenuItem>
             </_.ContextMenu>
           )}
         </_.KebabContainer>

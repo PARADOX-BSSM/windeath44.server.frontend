@@ -13,6 +13,8 @@ const CommunityBtn = ({ name, selected = false, onClick, type = 'none' }: PropsT
     return (
       <_.SubmitActive
         onClick={onClick}
+        onMouseDown={() => setCursorImage(CURSOR_IMAGES.click)}
+        onMouseUp={() => setCursorImage(CURSOR_IMAGES.hand)}
         onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
         onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
       >
@@ -23,6 +25,8 @@ const CommunityBtn = ({ name, selected = false, onClick, type = 'none' }: PropsT
     return !selected ? (
       <_.Btn
         onClick={onClick}
+        onMouseDown={() => setCursorImage(CURSOR_IMAGES.click)}
+        onMouseUp={() => setCursorImage(CURSOR_IMAGES.hand)}
         onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
         onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
       >

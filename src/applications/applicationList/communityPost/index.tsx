@@ -21,6 +21,7 @@ import { useEffect, useState, Fragment } from 'react';
 import Loading from '@/applications/components/loading';
 import api from '@/api/axiosInstance';
 import { community } from '@/config';
+import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
 
 interface postProps {
   stack: any[];
@@ -157,7 +158,13 @@ const CommunityPost = ({ stack, push, pop, top, postId }: postProps) => {
     <_.Container>
       <_.Main>
         <_.Header>
-          <_.BtnIcon onClick={() => push(taskSearch?.('communityMain', stackProps))}>
+          <_.BtnIcon
+            onClick={() => push(taskSearch?.('communityMain', stackProps))}
+            onMouseDown={() => setCursorImage(CURSOR_IMAGES.click)}
+            onMouseUp={() => setCursorImage(CURSOR_IMAGES.hand)}
+            onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+            onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+          >
             <_.Icon src={chevron} />
           </_.BtnIcon>
           {data?.data.name || '사용자'}님의 게시글

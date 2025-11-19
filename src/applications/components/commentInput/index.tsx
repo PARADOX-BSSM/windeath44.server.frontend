@@ -9,6 +9,7 @@ import Seori from '@/assets/sulkkagi/black_stone.svg';
 import { alerterAtom } from '@/atoms/alerter';
 import { useAtomValue } from 'jotai';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
+import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
 
 interface CommentInputProps {
   name?: string;
@@ -85,8 +86,16 @@ const CommentInput: React.FC<CommentInputProps> = ({
               }
               value={commentInput}
               onChange={(e) => setCommentInput(e.target.value)}
+              onMouseDown={() => setCursorImage(CURSOR_IMAGES.click)}
+              onMouseUp={() => setCursorImage(CURSOR_IMAGES.hand)}
+              onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+              onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
             />
-            <_.Icon src={Emoticon} />
+            <_.Icon
+              src={Emoticon}
+              onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+              onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+            />
           </_.InputArea>
 
           <CommunityBtn
