@@ -2,7 +2,7 @@ import * as _ from './style';
 import History from './components/history';
 import { useAtomValue } from 'jotai';
 import { useGetMemorialPullRequestsQuery } from '@/api/memorial/getMemorialPullRequests';
-import { useGetUsersQuery } from '@/api/user/getUsers';
+import { useGetUsersQuery } from '@/api/user/getUsersByIds';
 import { alerterAtom } from '@/atoms/alerter';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
 import { useEffect, useMemo } from 'react';
