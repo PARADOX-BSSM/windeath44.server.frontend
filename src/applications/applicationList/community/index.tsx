@@ -50,8 +50,8 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
   const token = getCookie('access_token');
 
   useEffect(() => {
-    if (postListSearchMutation.isSuccess && postListSearchMutation.data?.data?.content) {
-      setPostData(postListSearchMutation.data.data.content);
+    if (postListSearchMutation.isSuccess && postListSearchMutation.data?.data?.posts) {
+      setPostData(postListSearchMutation.data.data.posts);
     }
   }, [postListSearchMutation.isSuccess, postListSearchMutation.data]);
 

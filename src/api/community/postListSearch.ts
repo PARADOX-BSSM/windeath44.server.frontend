@@ -4,6 +4,7 @@ import { community } from '@/config';
 import api from '../axiosInstance';
 
 interface postListSearchInterface {
+  user_id?: string;
   title?: string;
   isBlind?: boolean;
   characterId?: number;
@@ -13,7 +14,7 @@ interface postListSearchInterface {
 interface postListSearchResponse {
   message: string;
   data: {
-    content: {
+    posts: {
       postId: number;
       userId: string;
       name: string;
@@ -31,6 +32,7 @@ interface postListSearchResponse {
   };
 }
 const postListSearch = async ({
+  user_id,
   title,
   isBlind,
   characterId,
@@ -48,6 +50,11 @@ const postListSearch = async ({
     const response: AxiosResponse<postListSearchResponse> = await api.post(
       `${community}/posts/list`,
       data,
+      {
+        headers: {
+          user_id: user_id,
+        },
+      },
     );
     return response.data;
   } catch (error: any) {

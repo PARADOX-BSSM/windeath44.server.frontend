@@ -22,7 +22,7 @@ interface commentData {
 const postCommentListSearch = async (comment_id: number) => {
   try {
     const response: AxiosResponse<commentData> = await api.get(
-      `${community}/posts/comments/${comment_id}`,
+      `${community}/comments/${comment_id}/replies`,
     );
     return response.data;
   } catch (error: any) {
