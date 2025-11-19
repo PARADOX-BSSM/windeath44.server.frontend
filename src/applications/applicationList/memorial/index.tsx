@@ -130,11 +130,13 @@ const Memorial = ({
     e.preventDefault();
     if (!content.trim()) return;
 
+    const submittedContent = content;
+    setContent(''); // submit 직후 즉시 input 비우기
+
     mutationCommentWrite.mutate(
-      { memorialId, content },
+      { memorialId, content: submittedContent },
       {
         onSuccess: async () => {
-          setContent('');
           // 서버가 생성된 댓글을 반환하지 않으므로, 직접 API 호출로 실제 ID 획득
           // mutation을 사용하지 않고 직접 호출하여 전체 교체 방지
           try {
@@ -162,6 +164,7 @@ const Memorial = ({
           }
         },
         onError: () => {
+          setContent(submittedContent); // 에러 시 입력했던 내용 복원
           setAlert?.(
             <>
               댓글 작성 중 문제가 발생했습니다.
