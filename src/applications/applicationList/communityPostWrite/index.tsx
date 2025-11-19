@@ -117,6 +117,36 @@ const CommunityPostWrite: React.FC<postData> = ({
       );
     }
   };
+  const postDraft = () => {
+    if (title || body) {
+      setAlert?.(<>임시저장 하시겠습니까?</>, () => {
+        postCreateMutation.mutate(
+          {
+            user_id: 'testid',
+            title: title,
+            body: body,
+            status: 'DRAFT',
+          },
+          {
+            onSuccess: () => {
+              console.log('게시글 임시저장 완료');
+              setTitle('');
+              setBody('');
+              refetchPosts?.();
+              taskTransform?.('게시글 작성', '');
+            },
+            onError: () => {
+              setAlert?.(<>게시글이 작성되지 않았습니다.</>, () => {
+                taskTransform?.('경고', '');
+              });
+            },
+          },
+        );
+        taskTransform?.('경고', '');
+      });
+    }
+    setLoadPage(!loadPage);
+  };
   return (
     <_.Container>
       {!loadPage ? (
@@ -172,7 +202,7 @@ const CommunityPostWrite: React.FC<postData> = ({
           <CommunityBtn
             name="임시저장/불러오기"
             selected={loadPage}
-            onClick={() => setLoadPage(!loadPage)}
+            onClick={postDraft}
             type="menu"
           />
         )}
