@@ -142,7 +142,7 @@ export const ContributorAvatar = styled.img`
 
 export const ContributorCard = styled.div<{ show: boolean }>`
   position: absolute;
-  bottom: calc(100% + 8px);
+  bottom: calc(100%);
   left: 0;
   background: var(--chatbot-white);
   padding: 8px;

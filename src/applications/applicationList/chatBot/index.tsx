@@ -48,8 +48,6 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
   const doChatMutation = useDoChat();
   const setAlert = useAtomValue(alerterAtom);
   const taskTransform = useAtomValue(taskTransformerAtom);
-  const taskSearch = useAtomValue(taskSearchAtom);
-  const [, addTask] = useProcessManager();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [messages, setMessages] = useState<Message[]>([]);
 
@@ -264,14 +262,8 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
   };
 
   const handleMemorialClick = () => {
-    console.log('Memorial click - Full memorialsData:', memorialsData);
-    console.log('Memorial click - Data structure:', JSON.stringify(memorialsData, null, 2));
-
     // API 응답 구조 확인: memorialsData?.data?.values 또는 memorialsData?.data
     const memorials = memorialsData?.data?.values || memorialsData?.data || [];
-
-    console.log('Memorial click - memorials array:', memorials);
-    console.log('Memorial click - memorials length:', memorials.length);
 
     if (!Array.isArray(memorials) || memorials.length === 0) {
       setAlert?.(
@@ -289,7 +281,6 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
 
     // 첫 번째 추모관 사용 (캐릭터 ID로 필터링된 추모관)
     const firstMemorial = memorials[0];
-    console.log('First memorial object:', firstMemorial);
 
     if (!firstMemorial || !firstMemorial.memorialId) {
       setAlert?.(
@@ -306,8 +297,6 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
     }
 
     const memorialId = firstMemorial.memorialId;
-
-    console.log('Opening memorial - memorialId:', memorialId, 'characterId:', chatbotId);
 
     // taskTransform 사용 (search/viewer와 동일한 방식)
     taskTransform?.('', '추모관 뷰어', {
