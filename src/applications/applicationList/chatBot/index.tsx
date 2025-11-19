@@ -15,6 +15,7 @@ import { useGetUserMutation } from '@/api/user/getUser';
 import { useGetCharacter, CharacterData } from '@/api/anime/getCharacter';
 import { useProcessManager } from '@/hooks/processManager';
 import { useGetMemorialsCharacterFilteredQuery } from '@/api/memorial/getMemorialsCharacterFiltered';
+import { useGetUsersQuery } from '@/api/user/getUsersByIds';
 
 interface Message {
   id: string;
@@ -60,6 +61,10 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
   const { mutate: getUser, data: userData } = useGetUserMutation();
   const getCharacterMutation = useGetCharacter(setCharacterData);
   const mutationGetChatHistory = useGetChatbotHistory(setChatHistory, setHasNextHistory, false);
+
+  // contributor 유저 정보 가져오기
+  const contributorIds = getChatBot.data?.data?.contributor || [];
+  const { data: contributorsData } = useGetUsersQuery(contributorIds);
 
   // 캐릭터 ID로 추모관 조회
   const { data: memorialsData } = useGetMemorialsCharacterFilteredQuery({
@@ -154,20 +159,25 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
 
   useEffect(() => {
     const contributeData = getChatBot.data?.data?.contributor;
-    // console.log(contributeData);
 
     if (contributeData && Array.isArray(contributeData) && contributeData.length > 0) {
-      const contributorList: Contributor[] = contributeData.map((name: string, index: number) => ({
-        id: (index + 1).toString(),
-        avatar: Ame,
-        alt: name,
-      }));
+      // contributorsData가 있으면 프로필 이미지를 매핑
+      const contributorList: Contributor[] = contributeData.map((userId: string, index: number) => {
+        // contributorsData에서 해당 userId의 프로필 찾기
+        const userProfile = contributorsData?.data?.find((user) => user.userId === userId);
+
+        return {
+          id: (index + 1).toString(),
+          avatar: userProfile?.profile || Ame, // 프로필이 있으면 사용, 없으면 기본 이미지
+          alt: userId,
+        };
+      });
 
       setContributors(contributorList);
     } else {
       setContributors([]);
     }
-  }, [getChatBot.data]);
+  }, [getChatBot.data, contributorsData]);
 
   const addMessage = () => {
     if (!message.trim()) return;
