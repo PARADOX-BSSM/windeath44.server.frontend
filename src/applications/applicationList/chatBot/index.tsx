@@ -25,10 +25,18 @@ interface Message {
   text: string;
 }
 
+interface WordSet {
+  question: string;
+  answer: string;
+  contributor: string;
+}
+
 interface Contributor {
   id: string;
   avatar: string;
   alt: string;
+  userId: string;
+  wordsets: WordSet[];
 }
 
 interface ChatBotProps {
@@ -51,6 +59,7 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
 
   const [contributors, setContributors] = useState<Contributor[]>([]);
   const [showAllContributors, setShowAllContributors] = useState(false);
+  const [hoveredContributorId, setHoveredContributorId] = useState<string | null>(null);
   const [characterData, setCharacterData] = useState<CharacterData>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollToBottom = () => {
@@ -159,6 +168,7 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
 
   useEffect(() => {
     const contributeData = getChatBot.data?.data?.contributor;
+    const wordsetData = getChatBot.data?.data?.chatbot_wordset;
 
     if (contributeData && Array.isArray(contributeData) && contributeData.length > 0) {
       // contributorsData가 있으면 프로필 이미지를 매핑
@@ -166,10 +176,16 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
         // contributorsData에서 해당 userId의 프로필 찾기
         const userProfile = contributorsData?.data?.find((user) => user.userId === userId);
 
+        // 해당 contributor의 wordset 필터링
+        const userWordsets =
+          wordsetData?.filter((wordset: WordSet) => wordset.contributor === userId) || [];
+
         return {
           id: (index + 1).toString(),
           avatar: userProfile?.profile || Ame, // 프로필이 있으면 사용, 없으면 기본 이미지
           alt: userId,
+          userId: userId,
+          wordsets: userWordsets,
         };
       });
 
@@ -330,11 +346,39 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
               <_.ContributorsTitle>영매사 목록</_.ContributorsTitle>
               <_.ContributorsList>
                 {displayedContributors.map((contributor) => (
-                  <_.ContributorAvatar
+                  <_.ContributorAvatarWrapper
                     key={contributor.id}
-                    src={contributor.avatar}
-                    alt={contributor.alt}
-                  />
+                    onMouseEnter={() => {
+                      setHoveredContributorId(contributor.id);
+                      setCursorImage(CURSOR_IMAGES.hand);
+                    }}
+                    onMouseLeave={() => {
+                      setHoveredContributorId(null);
+                      setCursorImage(CURSOR_IMAGES.default);
+                    }}
+                  >
+                    <_.ContributorAvatar
+                      src={contributor.avatar}
+                      alt={contributor.alt}
+                    />
+                    <_.ContributorCard show={hoveredContributorId === contributor.id}>
+                      <_.ContributorCardUserId>@{contributor.userId}</_.ContributorCardUserId>
+                      {contributor.wordsets.length > 0 ? (
+                        contributor.wordsets.map((wordset, index) => (
+                          <_.ContributorCardItem key={index}>
+                            <_.ContributorCardQuestion>
+                              Q: {wordset.question}
+                            </_.ContributorCardQuestion>
+                            <_.ContributorCardAnswer>A: {wordset.answer}</_.ContributorCardAnswer>
+                          </_.ContributorCardItem>
+                        ))
+                      ) : (
+                        <_.ContributorCardAnswer>
+                          아직 등록된 질문/답변이 없습니다.
+                        </_.ContributorCardAnswer>
+                      )}
+                    </_.ContributorCard>
+                  </_.ContributorAvatarWrapper>
                 ))}
               </_.ContributorsList>
               {contributors.length > 5 && (
