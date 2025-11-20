@@ -1,12 +1,12 @@
 import styled from '@emotion/styled';
 
-export const Post = styled.div`
+export const Post = styled.div<{ isReply?: boolean }>`
   display: flex;
   padding: 12px 15px;
   justify-content: flex-start;
   gap: 14px;
   background-color: #fff;
-  border-top: 1px solid #ccc;
+  ${(props) => (props.isReply ? `padding-left: 40px` : `border-top: 1px solid #ccc;`)}
 `;
 export const Main = styled.div`
   display: flex;

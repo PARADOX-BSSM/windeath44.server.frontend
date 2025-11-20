@@ -46,9 +46,6 @@ const Posts: React.FC<PostsProps> = ({
   post,
   refetchComments,
   parentCommentId = null,
-  currentUserName,
-  currentUserId,
-  currentUserProfile,
   onReplyClick,
   showReplyForm = false,
 }) => {
@@ -206,7 +203,7 @@ const Posts: React.FC<PostsProps> = ({
   const isOwner = true; // 테스트용: 항상 수정/삭제 가능
 
   return (
-    <_.Post>
+    <_.Post isReply={!!parentCommentId}>
       <_.Line></_.Line>
       <_.ProfileImg imgUrl={profile || Seori} />
       <_.PostMain>
@@ -215,7 +212,7 @@ const Posts: React.FC<PostsProps> = ({
             <_.Name>{name}</_.Name>
             <_.UserId>@{userId}</_.UserId>
             <_.Edited>
-              {createdAt.slice(0, -9) !== updatedAt.slice(0, -9) ? '(수정됨)' : ''}
+              {createdAt.slice(0, 19) !== updatedAt.slice(0, 19) ? '(수정됨)' : ''}
             </_.Edited>
           </_.PostInfo>
           {isOwner && (

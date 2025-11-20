@@ -102,7 +102,7 @@ const CommunityPost = ({ stack, push, pop, top, postId }: postProps) => {
         parentComments.map(async (parent) => {
           try {
             const repliesResponse = await api.get(
-              `${community}/posts/comments/${parent.commentId}`,
+              `${community}/posts/comments/${parent.commentId}/replies`,
             );
             const repliesData = repliesResponse.data.data;
             const replies: CommentData[] = Array.isArray(repliesData) ? repliesData : [];
