@@ -11,7 +11,7 @@ import { alerterAtom, reconfirmAlerterAtom } from '@/atoms/alerter';
 import { isLogInedAtom } from '@/atoms/windowManager';
 import { useDeleteAccount } from '@/api/user/deleteAccount';
 import { useGetUserMutation } from '@/api/user/getUser';
-import { deleteCookie } from '@/api/auth/cookie';
+import { deleteCookie, getCookie } from '@/api/auth/cookie';
 import Seori from '@/assets/sulkkagi/black_stone.svg';
 import { useEffect } from 'react';
 
@@ -20,21 +20,29 @@ const Settings = () => {
   const taskTransform = useAtomValue(taskTransformerAtom);
   const setAlert = useAtomValue(alerterAtom);
   const setConfirmAlert = useAtomValue(reconfirmAlerterAtom);
-  const [isLogIned, setIsLogIned] = useAtom(isLogInedAtom);
+  const [, setIsLogIned] = useAtom(isLogInedAtom);
   const deleteAccountMutation = useDeleteAccount();
   const { mutate: getUser, data: userData } = useGetUserMutation();
+  const token = getCookie('access_token');
 
   useEffect(() => {
-    if (isLogIned === 'true') {
+    if (token) {
       getUser();
     }
-  }, [isLogIned, getUser]);
+  }, [token, getUser]);
 
   const handleDeleteAccount = () => {
-    if (isLogIned !== 'true') {
-      setAlert?.(<>로그인 후 이용할 수 있습니다.</>, () => {
-        taskTransform?.('경고', '');
-      });
+    if (!token) {
+      setAlert?.(
+        <>
+          게스트는 탈퇴 기능을 이용할 수 없습니다.
+          <br />
+          로그인 후 사용 가능합니다.
+        </>,
+        () => {
+          taskTransform?.('경고', '');
+        },
+      );
       return;
     }
 
