@@ -21,6 +21,7 @@ const Discover = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
   const visibleApps = Apps.filter((app: TaskType) => app.visible);
   const [displayWidth, setDisplayWidth] = React.useState<number>(0);
   const [displayLeft, setDisplayLeft] = React.useState<number>(0);
+  const [selectedApp, setSelectedApp] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     const container = document.getElementById('cursorContainer');
@@ -52,6 +53,8 @@ const Discover = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
             key={Application.name}
             className="app-button"
             style={{ zIndex: '0' }}
+            isSelected={selectedApp === Application.name}
+            onClick={() => setSelectedApp(Application.name)}
           >
             <_.AppBtn
               url={Application.appSetup?.Image}
@@ -65,7 +68,15 @@ const Discover = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
           </_.AppContainer>
         );
       })}
-      <div style={{ position: 'fixed', bottom: 0, left: `${displayLeft}px`, width: `${displayWidth}px`, zIndex: 998 }}>
+      <div
+        style={{
+          position: 'fixed',
+          bottom: 0,
+          left: `${displayLeft}px`,
+          width: `${displayWidth}px`,
+          zIndex: 998,
+        }}
+      >
         <TaskBar
           backUpFocus={backUpFocus}
           setBackUpFocus={setBackUpFocus}
