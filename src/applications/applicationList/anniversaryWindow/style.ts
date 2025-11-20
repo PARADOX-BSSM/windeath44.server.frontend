@@ -23,6 +23,11 @@ export const Main_Text = styled.div`
     line-height: normal;
     display: inline-block;
 
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
     &:hover {
         color: #9A5A95;
     }
@@ -32,3 +37,4 @@ export const CharacterName = styled.span`
     display: inline-block;
     animation: ${slideIn} 0.5s ease-in-out;
 `;
+

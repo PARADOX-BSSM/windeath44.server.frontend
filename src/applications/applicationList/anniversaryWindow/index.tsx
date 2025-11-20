@@ -45,8 +45,9 @@ const customWindow={...window, top:10, left:885 }
     }
 
     const renderAnniversaryText = () => {
-        if (isLoading) return "오늘은 _ _ _의 기일입니다.";
-        if (isError) return "기일 정보를 불러올 수 없습니다.";
+        if (isLoading) return "오늘의 기일자를 조회중입니다.";
+        if (isError) return "오늘의 기일자 정보를 불러올 수 없습니다.";
+        
         if (!anniversaryData || !Array.isArray(anniversaryData) || anniversaryData.length === 0) return "오늘은 기일이 없습니다.";
 
         const characterName = getCharacterName();
