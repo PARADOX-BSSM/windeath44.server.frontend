@@ -39,6 +39,12 @@ export const NickNameContainer = styled.div`
   gap: 8px;
 `;
 
+export const NameWithBadge = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 2px;
+`;
+
 export const Content = styled.p`
   color: var(--Black, #2e2e2e);
   font-family: Galmuri11;
@@ -74,19 +80,12 @@ export const UserId = styled.p`
   margin: 0;
 `;
 
-export const VerifiedBadge = styled.span`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+export const VerifiedBadge = styled.img`
   width: 14px;
   height: 14px;
-  background: var(--Stroke, #e774dd);
-  border-radius: 50%;
-  color: #fff;
-  font-size: 8px;
-  font-weight: bold;
-  line-height: 1;
-  margin-left: 4px;
+  margin-left: 0;
+  display: inline-block;
+  vertical-align: middle;
 `;
 
 export const ReplyButton = styled.button`

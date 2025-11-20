@@ -1,5 +1,6 @@
 import * as _ from './style';
 import ameImg from '@/assets/profile/ame.svg';
+import verificationBadge from '@/assets/verification.png';
 import { useState } from 'react';
 import { setCursorImage, CURSOR_IMAGES } from 'lib/setCursorImg';
 
@@ -84,10 +85,15 @@ const Comment = ({
         <_.TextBox>
           <_.NickNameContainer>
             {userName && (
-              <>
+              <_.NameWithBadge>
                 <_.NickName>{displayName}</_.NickName>
-                {isOfficial && <_.VerifiedBadge>✓</_.VerifiedBadge>}
-              </>
+                {isOfficial && (
+                  <_.VerifiedBadge
+                    src={verificationBadge}
+                    alt="인증 뱃지"
+                  />
+                )}
+              </_.NameWithBadge>
             )}
             <_.UserId>@{userid}</_.UserId>
           </_.NickNameContainer>
