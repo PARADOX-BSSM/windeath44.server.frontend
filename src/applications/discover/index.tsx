@@ -43,6 +43,28 @@ const Discover = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
     };
   }, []);
 
+  // 빈 공간 클릭 시 선택 해제
+  React.useEffect(() => {
+    const handleShellClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      // app-button 클래스를 가진 요소나 그 자식이 아닌 경우에만 선택 해제
+      if (!target.closest('.app-button')) {
+        setSelectedApp(null);
+      }
+    };
+
+    const shell = document.querySelector('.shell');
+    if (shell) {
+      shell.addEventListener('click', handleShellClick);
+    }
+
+    return () => {
+      if (shell) {
+        shell.removeEventListener('click', handleShellClick);
+      }
+    };
+  }, []);
+
   return (
     <>
       {/* <Seori /> */}
