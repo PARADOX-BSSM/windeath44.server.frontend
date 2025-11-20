@@ -3,7 +3,8 @@ import styled from '@emotion/styled';
 export const AppContainer = styled.div<{ isSelected?: boolean }>`
   width: 100%;
   height: 100%;
-  background-color: ${({ isSelected }) => (isSelected ? 'blue' : 'transparent')};
+  background-color: ${({ isSelected }) => (isSelected ? '#FFD3FB70' : 'transparent')};
+  box-shadow: ${({ isSelected }) => (isSelected ? '0 0 0 2px #FFD3FB' : 'none')};
 `;
 
 export const AppBtn = styled.div<{ url?: string }>`
