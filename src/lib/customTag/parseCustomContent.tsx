@@ -54,7 +54,10 @@ export const parseCustomContent = (root: string[], content: string): React.React
       if (videoUrl.includes('youtube.com/watch?v=')) {
         // 일반 링크: https://www.youtube.com/watch?v=VIDEO_ID
         embedUrl = videoUrl.replace('watch?v=', 'embed/').split('&')[0];
-      } else if (videoUrl.includes('youtube.com/shorts/') || videoUrl.includes('youtu.be/shorts/')) {
+      } else if (
+        videoUrl.includes('youtube.com/shorts/') ||
+        videoUrl.includes('youtu.be/shorts/')
+      ) {
         // 쇼츠 링크: https://www.youtube.com/shorts/VIDEO_ID 또는 https://youtu.be/shorts/VIDEO_ID
         const videoId = videoUrl.split('/shorts/')[1].split('?')[0];
         embedUrl = `https://www.youtube.com/embed/${videoId}`;
@@ -64,7 +67,7 @@ export const parseCustomContent = (root: string[], content: string): React.React
         embedUrl = `https://www.youtube.com/embed/${videoId}`;
       } else {
         // 이미 embed 형식이거나 다른 형식
-        embedUrl = videoUrl;
+        embedUrl = '';
       }
 
       elements.push(
