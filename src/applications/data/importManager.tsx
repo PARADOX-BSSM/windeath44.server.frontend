@@ -13,10 +13,13 @@ import trashBin from '@/assets/appIcons/empty_bin.svg';
 import chatbot from '@/assets/appIcons/ChatBot.svg';
 import game from '@/assets/appIcons/game.svg';
 import sulkkagi from '@/assets/sulkkagi/black_stone.svg';
+import skeleton from '@/assets/skeleton.png';
 
 import Sulkkagi from '../applicationList/sulkkagi';
 import SulkkagiApproach from '../applicationList/sulkkagiApproach';
 import SulkkagiMenu from '../applicationList/sulkkagiMenu';
+import AnniversaryWindow from '../applicationList/anniversaryWindow';
+import NotificationApproach from '../applicationList/NotificationWindow3';
 
 // lazy를 이용한 어플리케이션 컴포넌트 로드
 const Terminal = lazy(() => import('@/applications/applicationList/terminal/index.tsx'));
@@ -85,6 +88,20 @@ const MemorialConflictResolve = lazy(
 const MemorialViewer = lazy(
   () => import('@/applications/applicationList/memorialViewer/index.tsx'),
 );
+
+
+const NotificationWindow3 = lazy(
+  () => import('@/applications/applicationList/NotificationWindow3'),
+);
+
+const MemorialWindow = lazy(
+  () => import('@/applications/applicationList/memorialWindow'),
+);
+
+const DeadWindow = lazy(
+  () => import('@/applications/applicationList/deadWindow'),
+);
+
 
 //Application Import 형식 예시
 /*
@@ -162,6 +179,7 @@ const useApps = (): TaskType[] => {
       component: (
         <Suspense fallback={null}>
           <Search />
+          
         </Suspense>
       ),
       type: 'App',
@@ -725,7 +743,117 @@ const useApps = (): TaskType[] => {
       },
       visible: false,
     },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <NotificationWindow3></NotificationWindow3>
+        </Suspense>
+      ),
+      type: 'App',
+      id: 9999,
+      name: '기일 상세',
+      layer: undefined,
+      appSetup: {
+        Image: skeleton,
+        minWidth: 800,
+        minHeight: 80,
+        setUpWidth: 370,
+        setUpHeight: 289,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <NotificationApproach></NotificationApproach>
+        </Suspense>
+      ),
+      type: 'App',
+      id: 10000,
+      name: '알림접근',
+      layer: undefined,
+      appSetup: {
+        Image: 'default',
+        minWidth: 800,
+        minHeight: 80,
+        setUpWidth: 370,
+        setUpHeight: 280,
+      },
+      visible: true,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <AnniversaryWindow
+            window={{}}
+            setWindow={() => undefined}
+            stack={[]}
+            push={undefined}
+            pop={undefined}
+            top={undefined}
+          />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 10001,
+      name: '오늘의 기일',
+      layer: undefined,
+      appSetup: {
+        Image: 'default',
+        minWidth: 800,
+        minHeight: 80,
+        setUpWidth: 370,
+        setUpHeight: 280,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <MemorialWindow
+            window={{}}
+            setWindow={() => undefined}
+          />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 10002,
+      name: '추모관 알림',
+      layer: undefined,
+      appSetup: {
+        Image: 'default',
+        minWidth: 800,
+        minHeight: 80,
+        setUpWidth: 370,
+        setUpHeight: 280,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <DeadWindow
+            window={{}}
+            setWindow={() => undefined}
+          />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 10003,
+      name: '고인 알림',
+      layer: undefined,
+      appSetup: {
+        Image: 'default',
+        minWidth: 800,
+        minHeight: 80,
+        setUpWidth: 370,
+        setUpHeight: 280,
+      },
+      visible: false,
+    },
   ];
+  
+  
 
   return baseApps;
 };

@@ -5,6 +5,8 @@ import Exit from '@/assets/headerButton/exit.svg';
 import Full from '@/assets/headerButton/full.svg';
 import Min from '@/assets/headerButton/min.svg';
 import Heart from '@/assets/headerButton/heart.svg';
+import scal from '@/assets/NotificationImg/scal.svg';
+import flower from '@/assets/NotificationImg/flower.svg'
 import { useAtom } from 'jotai';
 import {
   isLogInedAtom,
@@ -52,6 +54,7 @@ const Application = (props: ApplicationProps) => {
   const [isFirst, setIsFirst] = useState<boolean>(true); // 리사이즈 첫 진입 여부
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false); // 전체화면 여부
   const [isMinimized, setIsMinimized] = useState<boolean>(false); // 최소화 여부
+  const [isNotification, setIsNotification] = useState<boolean>(false);
 
   // 커서 위치 동기화 : props로 받은 커서 위치(props.cursorVec)를 로컬 상태(cursor)로 동기화
   useEffect(() => {
@@ -76,7 +79,7 @@ const Application = (props: ApplicationProps) => {
       setFocus('Discover');
     }
   }, [isMinimized]);
-
+  
   // Tab 인터럽트 처리 : tabDownInterrupt가 내 창이면 최소화 후 인터럽트 상태 초기화
   useEffect(() => {
     if (tabDownInterrupt === props.name) {
@@ -117,6 +120,14 @@ const Application = (props: ApplicationProps) => {
       setWindow(backupWindow);
     }
   }, [isFullScreen]);
+
+ //로그인 시 알림창 생성
+  useEffect(() => {
+    if (tabDownInterrupt === props.name) {
+      setIsMinimized(true);
+      setTabDownInterrupt('empty');
+    }
+  }, [tabDownInterrupt]);
 
   // 유틸 함수 사용
   const corner = getCorner(props.cursorVec, window);
@@ -199,14 +210,23 @@ const Application = (props: ApplicationProps) => {
       >
         <_.WindowHeader {...moveManager()}>
           <_.TitleContainer>
-            <_.HeartImg
-              src={Heart}
-              draggable="false"
-            />
+            {props.setUpHeight>=81?
+              <_.HeartImg
+                src={props.name=="오늘의 기일" ? scal : Heart}
+                draggable='false'
+              />
+              :
+
+              <_.HeartImg
+                src={props.name=="오늘의 추모관" ? flower:Heart}
+                draggable='false'
+              />
+          }
+
             <_.Title>{props.name}</_.Title>
           </_.TitleContainer>
           <_.BtnContainer>
-            <_.MinimizeButton
+            {(props.name == '오늘의 기일') || (props.name == '오늘의 추모관') || (props.name == '오늘의 고인') || (props.name == '기일 상세') ? null : <_.MinimizeButton
               onMouseDown={() => setIsMinimized(!isMinimized)}
               isFocus={focus === props.name}
             >
@@ -218,8 +238,9 @@ const Application = (props: ApplicationProps) => {
                 onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
                 onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
               />
-            </_.MinimizeButton>
-            <_.FullScreenButton
+            </_.MinimizeButton> }
+
+            {(props.name == '오늘의 기일') || (props.name == '오늘의 추모관') || (props.name == '오늘의 고인') || (props.name == '기일 상세') ? null : <_.FullScreenButton
               onMouseDown={() => setIsFullScreen(!isFullScreen)}
               isFocus={focus === props.name}
             >
@@ -231,7 +252,9 @@ const Application = (props: ApplicationProps) => {
                 onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
                 onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
               />
-            </_.FullScreenButton>
+            </_.FullScreenButton>}
+            
+            
 
             <_.ExitButton
               onMouseDown={() => {
@@ -269,7 +292,51 @@ const Application = (props: ApplicationProps) => {
                   {React.createElement(type, { window, setWindow, setUpHeight, setUpWidth })}
                 </Suspense>
               );
-            } else {
+            }
+            else if (props.name === '오늘의 기일') {
+              return (
+                <Suspense fallback={null}>
+                  {React.createElement(type, { window, setWindow })}
+                </Suspense>
+              );
+            } 
+            else if (props.name === '오늘의 추모관') {
+              return (
+                <Suspense fallback={null}>
+                  {React.createElement(type, { window, setWindow })}
+                </Suspense>
+              );
+            } 
+            else if (props.name === '오늘의 고인') {
+              return (
+                <Suspense fallback={null}>
+                  {React.createElement(type, { window, setWindow })}
+                </Suspense>
+              );
+            } 
+            else if (props.name === '오늘') {
+              return (
+                <Suspense fallback={null}>
+                  {React.createElement(type, { window, setWindow })}
+                </Suspense>
+              );
+            }
+            else if (props.name === '알림접근') {
+              return (
+                <Suspense fallback={null}>
+                  {React.createElement(type, { window, setWindow })}
+                </Suspense>
+              );
+            }
+            else if (props.name === '기일 상세') {
+              return (
+                <Suspense fallback={null}>
+                  {React.createElement(type, { window, setWindow })}
+                </Suspense>
+              );
+            }
+
+            else {
               return props.children;
             }
           })()}
@@ -288,5 +355,6 @@ const Application = (props: ApplicationProps) => {
       </_.Shell>
     );
   }
+  
 };
 export default Application;

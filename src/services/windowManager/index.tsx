@@ -1,6 +1,6 @@
 import * as _ from './style.ts';
 import { useEffect, useState, Suspense, lazy, useRef } from 'react';
-import { useAtom } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import {
   isLogInedAtom,
   focusAtom,
@@ -17,8 +17,12 @@ import { useTaskSearchFunction } from '@/hooks/taskSearch.tsx';
 import { useAlerter } from '@/hooks/alerter.tsx';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg.tsx';
 import { useDrag } from 'react-use-gesture';
+import { taskTransformerAtom } from '@/atoms/taskTransformer.ts';
 
 const Application = lazy(() => import('@/applications/layout/index.tsx'));
+const AnniversaryWindow = lazy(() => import('@/applications/applicationList/anniversaryWindow/index.tsx'));
+const MemorialWindow = lazy(() => import('@/applications/applicationList/memorialWindow/index.tsx'));
+const DeadWindow = lazy(() => import('@/applications/applicationList/deadWindow/index.tsx'));
 
 const WindowManager = () => {
   const [cursorVec, setCursorVec] = useState<number[]>([0, 0, 0, 0]);
@@ -56,12 +60,14 @@ const WindowManager = () => {
     const selection = window.getSelection();
     return selection && selection.type === 'Range' && selection.toString().trim().length > 0;
   };
+
   // 포커스가 바뀔 때마다
   useEffect(() => {
     if (focus !== 'Observer') {
       setStartOption(false);
     }
   }, [focus]);
+
   useEffect(() => {
     //초기 기본 설정
     // localStorage.setItem('isLogIned', isLogIned);
@@ -81,8 +87,72 @@ const WindowManager = () => {
         appSetup: undefined,
         visible: false,
       };
+
+      const anniversaryTask: TaskType = {
+        component: (
+          <Suspense fallback={null}>
+            <AnniversaryWindow />
+          </Suspense>
+        ),
+        type: 'App',
+        id: 9996,
+        name: '오늘의 기일',
+        layer: undefined,
+        appSetup: {
+          Image: 'default',
+          minWidth: 800,
+          minHeight: 81,
+          setUpWidth: 370,
+          setUpHeight: 81,
+        },
+        visible: false,
+      };
+
+      const memorialTask: TaskType = {
+        component: (
+          <Suspense fallback={null}>
+            <MemorialWindow />
+          </Suspense>
+        ),
+        type: 'App',
+        id: 9997,
+        name: '오늘의 추모관',
+        layer: undefined,
+        appSetup: {
+          Image: 'default',
+          minWidth: 800,
+          minHeight: 80,
+          setUpWidth: 370,
+          setUpHeight: 80,
+        },
+        visible: false,
+      };
+
+      const deadTask: TaskType = {
+        component: (
+          <Suspense fallback={null}>
+            <DeadWindow />
+          </Suspense>
+        ),
+        type: 'App',
+        id: 9998,
+        name: '오늘의 고인',
+        layer: undefined,
+        appSetup: {
+          Image: 'default',
+          minWidth: 800,
+          minHeight: 80,
+          setUpWidth: 370,
+          setUpHeight: 80,
+        },
+        visible: false,
+      };
+
       setTimeout(() => {
         addTask(discover);
+        addTask(anniversaryTask);
+        addTask(memorialTask);
+        addTask(deadTask);
       }, 200);
     } else {
       setTimeout(() => {
