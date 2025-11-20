@@ -5,6 +5,7 @@ import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
 import radioButtonSelected from '@/assets/radio/selected.svg';
 import radioButtonUnselected from '@/assets/radio/unselected.svg';
 import checkIcon from '@/assets/checkbox/check.svg';
+import MemorialBtn from '@/applications/components/memorialBtn';
 
 const Settings = () => {
   const [settings, setSettings] = useAtom(settingsAtom);
@@ -35,7 +36,11 @@ const Settings = () => {
                       >
                         <_.RadioButtonIcon>
                           <img
-                            src={settings[item.key] === option.value ? radioButtonSelected : radioButtonUnselected}
+                            src={
+                              settings[item.key] === option.value
+                                ? radioButtonSelected
+                                : radioButtonUnselected
+                            }
                             alt={`${option.label} radio`}
                             draggable={false}
                           />
@@ -62,7 +67,13 @@ const Settings = () => {
                         onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
                       >
                         <_.CheckboxContainer>
-                          {Boolean(settings[item.key]) && <_.CheckIcon src={checkIcon} alt="check" draggable={false} />}
+                          {Boolean(settings[item.key]) && (
+                            <_.CheckIcon
+                              src={checkIcon}
+                              alt="check"
+                              draggable={false}
+                            />
+                          )}
                         </_.CheckboxContainer>
                         <_.LabelText>{item.label}</_.LabelText>
                         <_.HiddenInput
@@ -71,6 +82,26 @@ const Settings = () => {
                           onChange={() => handleCheckboxToggle(item.key)}
                         />
                       </_.Label>
+                    </_.Input>
+                  );
+                }
+
+                if (item.type === 'button') {
+                  return (
+                    <_.Input key={itemIndex}>
+                      <MemorialBtn
+                        type="submit"
+                        name={item.label}
+                        onClick={() => {
+                          if (item.onClick) {
+                            item.onClick();
+                          }
+                        }}
+                        active={true}
+                        width={item.width || '80px'}
+                        height="36px"
+                        fontSize="16px"
+                      />
                     </_.Input>
                   );
                 }
