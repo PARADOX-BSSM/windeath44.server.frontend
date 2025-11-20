@@ -18,9 +18,17 @@ interface ChatbotItemProps {
   description: string;
   isSelected: boolean;
   onClick: () => void;
+  onDoubleClick: () => void;
 }
 
-const ChatbotItem = ({ chatbot_id, name, description, isSelected, onClick }: ChatbotItemProps) => {
+const ChatbotItem = ({
+  chatbot_id,
+  name,
+  description,
+  isSelected,
+  onClick,
+  onDoubleClick,
+}: ChatbotItemProps) => {
   const [characterData, setCharacterData] = useState<CharacterData>(null);
   const getCharacterMutation = useGetCharacter(setCharacterData);
 
@@ -39,6 +47,7 @@ const ChatbotItem = ({ chatbot_id, name, description, isSelected, onClick }: Cha
     <_.TopContainerItem
       $isSelected={isSelected}
       onClick={onClick}
+      onDoubleClick={onDoubleClick}
       onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
       onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
     >
@@ -102,6 +111,14 @@ const ChatbotSelect = () => {
               description={item.description as string}
               isSelected={selectedItem === item.chatbot_id.toString()}
               onClick={() => setSelectedItem(item.chatbot_id.toString())}
+              onDoubleClick={() => {
+                if (selectedItem !== null) {
+                  console.log('relocationToChatBot');
+                  taskTransform?.('분신사바', '분신사바 메인', {
+                    chatbotId: Number(selectedItem),
+                  });
+                }
+              }}
             />
           ))
         )}
