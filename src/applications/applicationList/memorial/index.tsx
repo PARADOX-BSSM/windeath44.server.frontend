@@ -29,6 +29,7 @@ import axios from 'axios';
 import { user as userEndpoint, memorial as memorialEndpoint } from '@/config';
 import { CURSOR_IMAGES, setCursorImage } from '@/lib/setCursorImg';
 import api from '@/api/axiosInstance';
+import { memorialViewerListAtom } from '@/atoms/memorialManager';
 
 interface dataStructureProps {
   stack: any[];
@@ -39,6 +40,7 @@ interface dataStructureProps {
   characterId: number;
   props?: ApplicationProps;
   setWindowName?: (name: string) => void;
+  instanceId?: string;
 }
 // 날짜 포맷팅 함수
 const formatDate = (dateString: string) => {
@@ -63,11 +65,13 @@ const Memorial = ({
   characterId,
   props,
   setWindowName,
+  instanceId,
 }: dataStructureProps) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
   const taskSearch = useAtomValue(taskSearchAtom);
   const setAlert = useAtomValue(alerterAtom);
   const [, setInputValue] = useAtom(inputPortage);
+  const [, setViewerList] = useAtom(memorialViewerListAtom);
   const [content, setContent] = useState<string>('');
   const token = getCookie('access_token');
   const [indexData, setIndexData] = useState<string[]>([]);
@@ -394,6 +398,40 @@ const Memorial = ({
       setWindowName?.(`추모관 뷰어 - ${characterData.name}`);
     }
   }, [characterData, setWindowName]);
+
+  // 마운트 시 리스트에 추가, 언마운트 시 제거
+  useEffect(() => {
+    if (!instanceId) {
+      console.warn('Memorial: instanceId is undefined');
+      return;
+    }
+
+    setViewerList((prev) => [
+      ...prev,
+      {
+        instanceId,
+        windowName: '추모관 뷰어',
+        characterId,
+      },
+    ]);
+
+    return () => {
+      setViewerList((prev) => prev.filter((v) => v.instanceId !== instanceId));
+    };
+  }, [instanceId, characterId, setViewerList]);
+
+  // characterData.name이 로드되면 리스트의 windowName 업데이트
+  useEffect(() => {
+    if (instanceId && characterData?.name) {
+      setViewerList((prev) =>
+        prev.map((v) =>
+          v.instanceId === instanceId
+            ? { ...v, windowName: `추모관 뷰어 - ${characterData.name}` }
+            : v
+        )
+      );
+    }
+  }, [instanceId, characterData?.name, setViewerList]);
 
   // content가 변경될 때마다 파싱하여 목차 업데이트
   const parsedContent = useMemo(() => {

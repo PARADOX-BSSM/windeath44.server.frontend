@@ -312,6 +312,7 @@ const Application = (props: ApplicationProps) => {
                         setUpWidth: props.setUpWidth,
                         props,
                         setWindowName,
+                        instanceId: props.instanceId,
                       })}
                     </Suspense>
                   );
