@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import * as _ from "./style.ts"
 import {setCursorImage,CURSOR_IMAGES} from '@/lib/setCursorImg'
 import { useGetCharacterIdsByAnniversary } from '@/api/notification/getCharacterIdsByAnniversary';
+import { useAtomValue } from 'jotai';
+import { taskTransformerAtom } from '@/atoms/taskTransformer';
 
 interface Today_Anniversary {
     window: React.CSSProperties;
@@ -12,8 +14,14 @@ interface Today_Anniversary {
 
 const anniversaryWindow = ({window,setWindow}:Today_Anniversary) => {
 
+// API 호출: 오늘의 기일 데이터 조회
 const { data: anniversaryData, isLoading, isError } = useGetCharacterIdsByAnniversary();
+
+// 현재 캐러셀에서 보여줄 인덱스 관리
 const [currentIndex, setCurrentIndex] = useState(0);
+
+// taskTransform: 추모관으로 이동하기 위한 함수
+const taskTransform = useAtomValue(taskTransformerAtom);
 
 const customWindow={...window, top:10, left:885 }
     useEffect(()=>{setWindow(customWindow)},[])
@@ -45,10 +53,35 @@ const customWindow={...window, top:10, left:885 }
         return `오늘은 ${characterName}의 기일입니다.`;
     }
 
+    // 알림창 클릭 시 해당 고인의 추모관으로 이동하는 함수
+    const handleNavigateToMemorial = () => {
+        // 데이터가 없거나 로딩 중이거나 에러인 경우 클릭 이벤트 무시
+        if (!anniversaryData || !Array.isArray(anniversaryData) || anniversaryData.length === 0 || isLoading || isError) {
+            return;
+        }
+
+        // 현재 보여지고 있는 고인 데이터 가져오기
+        const currentCharacter = anniversaryData[currentIndex];
+
+        // 고인의 ID와 이름 추출
+        const characterId = currentCharacter?.id || currentCharacter?.characterId;
+        const characterName = currentCharacter?.name || currentCharacter?.characterName;
+
+        // characterId가 있을 때만 추모관으로 이동
+        if (characterId && taskTransform) {
+            taskTransform('', '추모관 뷰어', {
+                characterId: characterId,
+                characterName: characterName,
+            });
+        }
+    }
+
     return (
         <_.Main
-            onMouseEnter={() => setCursorImage(CURSOR_IMAGES.default)}
+            onClick={handleNavigateToMemorial}
+            onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
             onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+            style={{ cursor: 'pointer' }}
         >
             <_.Main_Text>
                 {renderAnniversaryText()}

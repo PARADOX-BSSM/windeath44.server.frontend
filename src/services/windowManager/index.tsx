@@ -22,7 +22,7 @@ import { taskTransformerAtom } from '@/atoms/taskTransformer.ts';
 const Application = lazy(() => import('@/applications/layout/index.tsx'));
 const AnniversaryWindow = lazy(() => import('@/applications/applicationList/anniversaryWindow/index.tsx'));
 const MemorialWindow = lazy(() => import('@/applications/applicationList/memorialWindow/index.tsx'));
-const DeadWindow = lazy(() => import('@/applications/applicationList/deadWindow/index.tsx'));
+const MournerWindow = lazy(() => import('@/applications/applicationList/mournerWindow/index.tsx'));
 
 const WindowManager = () => {
   const [cursorVec, setCursorVec] = useState<number[]>([0, 0, 0, 0]);
@@ -128,10 +128,10 @@ const WindowManager = () => {
         visible: false,
       };
 
-      const deadTask: TaskType = {
+      const mournerTask: TaskType = {
         component: (
           <Suspense fallback={null}>
-            <DeadWindow />
+            <MournerWindow />
           </Suspense>
         ),
         type: 'App',
@@ -152,7 +152,7 @@ const WindowManager = () => {
         addTask(discover);
         addTask(anniversaryTask);
         addTask(memorialTask);
-        addTask(deadTask);
+        addTask(mournerTask);
       }, 200);
     } else {
       setTimeout(() => {

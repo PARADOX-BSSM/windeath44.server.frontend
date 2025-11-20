@@ -98,8 +98,8 @@ const MemorialWindow = lazy(
   () => import('@/applications/applicationList/memorialWindow'),
 );
 
-const DeadWindow = lazy(
-  () => import('@/applications/applicationList/deadWindow'),
+const MournerWindow = lazy(
+  () => import('@/applications/applicationList/mournerWindow'),
 );
 
 
@@ -832,7 +832,7 @@ const useApps = (): TaskType[] => {
     {
       component: (
         <Suspense fallback={null}>
-          <DeadWindow
+          <MournerWindow
             window={{}}
             setWindow={() => undefined}
           />
