@@ -43,6 +43,16 @@ const Comment = ({
   // console.log(idx);
   const imgUrl = userProfile || ameImg;
   const displayName = userName || userid;
+
+  // official 계정의 경우 userid에서 1,2,4번째 요소만 추출
+  const displayUserId =
+    isOfficial && userid.startsWith('official-windeath44-')
+      ? (() => {
+          const parts = userid.split('-');
+          return `${parts[0]}-${parts[1]}-${parts[3]}`;
+        })()
+      : userid;
+
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [replyContent, setReplyContent] = useState('');
   const [isEditing, setIsEditing] = useState(false);
@@ -95,7 +105,7 @@ const Comment = ({
                 )}
               </_.NameWithBadge>
             )}
-            <_.UserId>@{userid}</_.UserId>
+            <_.UserId>@{displayUserId}</_.UserId>
           </_.NickNameContainer>
           {isEditing ? (
             <_.EditForm onSubmit={handleEditSubmit}>
