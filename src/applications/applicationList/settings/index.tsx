@@ -46,8 +46,23 @@ const Settings = () => {
       return;
     }
 
+    // userData가 로드되지 않은 경우 처리
+    if (!userData?.data?.userId) {
+      setAlert?.(
+        <>
+          사용자 정보를 불러오는 중입니다.
+          <br />
+          잠시 후 다시 시도해주세요.
+        </>,
+        () => {
+          taskTransform?.('경고', '');
+        },
+      );
+      return;
+    }
+
     setConfirmAlert?.(Seori, '탈퇴', () => {
-      deleteAccountMutation.mutate(userData?.data?.userId, {
+      deleteAccountMutation.mutate(userData.data.userId, {
         onSuccess: () => {
           taskTransform?.('재확인', '');
           setIsLogIned('false');
