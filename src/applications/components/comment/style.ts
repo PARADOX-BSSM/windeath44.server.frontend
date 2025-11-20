@@ -74,6 +74,21 @@ export const UserId = styled.p`
   margin: 0;
 `;
 
+export const VerifiedBadge = styled.span`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  background: var(--Stroke, #e774dd);
+  border-radius: 50%;
+  color: #fff;
+  font-size: 8px;
+  font-weight: bold;
+  line-height: 1;
+  margin-left: 4px;
+`;
+
 export const ReplyButton = styled.button`
   background: none;
   border: none;

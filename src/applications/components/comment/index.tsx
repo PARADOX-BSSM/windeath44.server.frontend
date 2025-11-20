@@ -15,6 +15,7 @@ interface PropsType {
   isLiked: boolean;
   userName?: string;
   userProfile?: string;
+  isOfficial?: boolean;
   onReplySubmit?: (commentId: number, content: string) => void;
   onEditSubmit?: (commentId: number, content: string) => void;
   onDeleteSubmit?: (commentId: number) => void;
@@ -32,6 +33,7 @@ const Comment = ({
   isLiked,
   userName,
   userProfile,
+  isOfficial,
   onReplySubmit,
   onEditSubmit,
   onDeleteSubmit,
@@ -81,7 +83,12 @@ const Comment = ({
         <_.ProfileImg imgUrl={imgUrl} />
         <_.TextBox>
           <_.NickNameContainer>
-            {userName && <_.NickName>{displayName}</_.NickName>}
+            {userName && (
+              <>
+                <_.NickName>{displayName}</_.NickName>
+                {isOfficial && <_.VerifiedBadge>✓</_.VerifiedBadge>}
+              </>
+            )}
             <_.UserId>@{userid}</_.UserId>
           </_.NickNameContainer>
           {isEditing ? (
