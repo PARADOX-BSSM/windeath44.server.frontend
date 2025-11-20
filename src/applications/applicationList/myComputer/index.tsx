@@ -276,27 +276,27 @@ const MyComputer = () => {
       />
     );
   };
-  const handleDeleteAccount = () => {
-    setConfirmAlert?.(Seori, '탈퇴', () => {
-      deleteAccountMutation.mutate(userData?.data?.userId, {
-        onSuccess: () => {
-          taskTransform?.('재확인', '');
-          setIsLogIned('false');
-          sessionStorage.setItem('hasBootedSession', 'false');
-          localStorage.removeItem('isLogIned');
-          deleteCookie('access_token');
-          location.reload();
-        },
-        onError: (error) => {
-          console.error('계정탈퇴 실패', error);
-          setAlert?.(<>계정삭제 요청 중 오류가 발생했습니다.</>, () => {
-            taskTransform?.('재확인', '');
-            taskTransform?.('경고', '');
-          });
-        },
-      });
-    });
-  };
+  // const handleDeleteAccount = () => {
+  //   setConfirmAlert?.(Seori, '탈퇴', () => {
+  //     deleteAccountMutation.mutate(userData?.data?.userId, {
+  //       onSuccess: () => {
+  //         taskTransform?.('재확인', '');
+  //         setIsLogIned('false');
+  //         sessionStorage.setItem('hasBootedSession', 'false');
+  //         localStorage.removeItem('isLogIned');
+  //         deleteCookie('access_token');
+  //         location.reload();
+  //       },
+  //       onError: (error) => {
+  //         console.error('계정탈퇴 실패', error);
+  //         setAlert?.(<>계정삭제 요청 중 오류가 발생했습니다.</>, () => {
+  //           taskTransform?.('재확인', '');
+  //           taskTransform?.('경고', '');
+  //         });
+  //       },
+  //     });
+  //   });
+  // };
 
   const isLoggedIn = loggedIn;
   const isUserReady = !!(userData && userData.data && userData.data.name) && !isPending && !error;
