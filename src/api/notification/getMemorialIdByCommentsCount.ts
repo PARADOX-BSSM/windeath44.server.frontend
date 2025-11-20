@@ -6,7 +6,7 @@ import api from '../axiosInstance';
 
 const getMemorialIdByCommentsCount  = async() => {
     try {
-        const response: AxiosResponse =await api.get(`${memorial}/memorials/today-best`);
+        const response: AxiosResponse =await api.get(`${memorial}/today-best`);
         return response.data;
     }
     catch (error: any) {
