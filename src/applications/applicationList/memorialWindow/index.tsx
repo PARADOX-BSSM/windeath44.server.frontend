@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import * as _ from "./style.ts"
 import {setCursorImage,CURSOR_IMAGES} from '@/lib/setCursorImg'
-// import { useGetMemorialIdByCommentsCount } from '@/api/notification/getMemorialIdByCommentsCount';
+import { useGetMemorialIdByCommentsCount } from '@/api/notification/getMemorialIdByCommentsCount';
 
 interface Today_Deceased{
     window: React.CSSProperties;
@@ -10,19 +10,13 @@ interface Today_Deceased{
 
 const memorialWindow = ({window,setWindow}:Today_Deceased) => {
 
-// const { data: memorialData, isLoading, isError } = useGetMemorialIdByCommentsCount();
-// 목데이터 사용
-const memorialData = { characterName: "아카자" };
-const isLoading = false;
-const isError = false;
-
-
+const { data: memorialData, isLoading, isError } = useGetMemorialIdByCommentsCount();
 
 const customWindow={...window, top:114, left:885 }
     useEffect(()=>{setWindow(customWindow)},[])
 
     const getMemorialText = () => {
-        if (isLoading) return "오늘의 인기 추모관은 _ _ _ 입니다.";
+        if (isLoading) return "오늘의 인기 추모관을 조회중입니다.";
         if (isError) return "추모관 정보를 불러올 수 없습니다.";
         if (!memorialData) return "오늘의 인기 추모관이 없습니다.";
 
