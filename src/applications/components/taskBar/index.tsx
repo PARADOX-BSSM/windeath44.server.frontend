@@ -17,7 +17,7 @@ const TaskBar = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
   const [focus, setFocus] = useAtom(focusAtom);
   const [startOption, setStartOption] = useAtom(startOptionAtom);
   const filterWindow = taskList.filter(
-    (task) => task.name !== '오늘의 기일' && task.name !== '오늘의 추모관' && task.name !== '오늘의 고인' && task.name !== '기일 상세' && task.name !== '고인 알림' && task.name !== '추모관 알림' && task.name !== '기일 알림');
+    (task) => task.name !== '오늘의 기일' && task.name !== '오늘의 추모관' && task.name !== '오늘의 조문객' && task.name !== '기일 상세' && task.name !== '고인 알림' && task.name !== '추모관 알림' && task.name !== '기일 알림');
 
   return (
     <_.TTaskBar id="taskbarContainer">

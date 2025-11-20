@@ -226,7 +226,7 @@ const Application = (props: ApplicationProps) => {
             <_.Title>{props.name}</_.Title>
           </_.TitleContainer>
           <_.BtnContainer>
-            {(props.name == '오늘의 기일') || (props.name == '오늘의 추모관') || (props.name == '오늘의 고인') || (props.name == '기일 상세') ? null : <_.MinimizeButton
+            {(props.name == '오늘의 기일') || (props.name == '오늘의 추모관') || (props.name == '오늘의 조문객') || (props.name == '기일 상세') ? null : <_.MinimizeButton
               onMouseDown={() => setIsMinimized(!isMinimized)}
               isFocus={focus === props.name}
             >
@@ -240,7 +240,7 @@ const Application = (props: ApplicationProps) => {
               />
             </_.MinimizeButton> }
 
-            {(props.name == '오늘의 기일') || (props.name == '오늘의 추모관') || (props.name == '오늘의 고인') || (props.name == '기일 상세') ? null : <_.FullScreenButton
+            {(props.name == '오늘의 기일') || (props.name == '오늘의 추모관') || (props.name == '오늘의 조문객') || (props.name == '기일 상세') ? null : <_.FullScreenButton
               onMouseDown={() => setIsFullScreen(!isFullScreen)}
               isFocus={focus === props.name}
             >
@@ -307,7 +307,7 @@ const Application = (props: ApplicationProps) => {
                 </Suspense>
               );
             } 
-            else if (props.name === '오늘의 고인') {
+            else if (props.name === '오늘의 조문객') {
               return (
                 <Suspense fallback={null}>
                   {React.createElement(type, { window, setWindow })}

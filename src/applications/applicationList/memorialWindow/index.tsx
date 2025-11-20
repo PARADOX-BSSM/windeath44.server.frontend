@@ -16,6 +16,8 @@ const memorialData = { characterName: "아카자" };
 const isLoading = false;
 const isError = false;
 
+
+
 const customWindow={...window, top:114, left:885 }
     useEffect(()=>{setWindow(customWindow)},[])
 
@@ -33,5 +35,7 @@ const customWindow={...window, top:114, left:885 }
                 onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}><_.Main_Text>{getMemorialText()}</_.Main_Text></_.Main>
     );
 }
+
+
 
 export default memorialWindow

@@ -136,7 +136,7 @@ const WindowManager = () => {
         ),
         type: 'App',
         id: 9998,
-        name: '오늘의 고인',
+        name: '오늘의 조문객',
         layer: undefined,
         appSetup: {
           Image: 'default',
