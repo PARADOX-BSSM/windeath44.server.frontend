@@ -19,7 +19,7 @@ export const settingsAtom = atomWithStorage<SettingsState>('settings', {
 });
 
 // 설정 스키마 타입 정의
-export type SettingInputType = 'radio' | 'checkbox';
+export type SettingInputType = 'radio' | 'checkbox' | 'button';
 
 export interface RadioOption<T> {
   value: T;
@@ -31,6 +31,8 @@ export interface SettingItem<K extends keyof SettingsState = keyof SettingsState
   key: K;
   label: string;
   options?: RadioOption<SettingsState[K]>[];
+  onClick?: () => void;
+  width?: string;
 }
 
 export interface SettingSection {
@@ -61,6 +63,21 @@ export const settingsConfig: SettingSection[] = [
         type: 'checkbox',
         key: 'showBootNotification',
         label: '부팅 시 알림 표시',
+      },
+    ],
+  },
+  {
+    title: '계정',
+    items: [
+      {
+        type: 'button',
+        key: 'dummy' as keyof SettingsState, // 버튼에는 실제로 상태 키가 필요하지 않으므로 더미 키 사용
+        label: '탈퇴',
+        onClick: () => {
+          // 탈퇴 로직 구현
+          console.log('계정 탈퇴 처리');
+        },
+        width: '100px',
       },
     ],
   },

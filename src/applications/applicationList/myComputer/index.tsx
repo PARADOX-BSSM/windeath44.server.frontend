@@ -276,27 +276,27 @@ const MyComputer = () => {
       />
     );
   };
-  const handleDeleteAccount = () => {
-    setConfirmAlert?.(Seori, '탈퇴', () => {
-      deleteAccountMutation.mutate(userData?.data?.userId, {
-        onSuccess: () => {
-          taskTransform?.('재확인', '');
-          setIsLogIned('false');
-          sessionStorage.setItem('hasBootedSession', 'false');
-          localStorage.removeItem('isLogIned');
-          deleteCookie('access_token');
-          location.reload();
-        },
-        onError: (error) => {
-          console.error('계정탈퇴 실패', error);
-          setAlert?.(<>계정삭제 요청 중 오류가 발생했습니다.</>, () => {
-            taskTransform?.('재확인', '');
-            taskTransform?.('경고', '');
-          });
-        },
-      });
-    });
-  };
+  // const handleDeleteAccount = () => {
+  //   setConfirmAlert?.(Seori, '탈퇴', () => {
+  //     deleteAccountMutation.mutate(userData?.data?.userId, {
+  //       onSuccess: () => {
+  //         taskTransform?.('재확인', '');
+  //         setIsLogIned('false');
+  //         sessionStorage.setItem('hasBootedSession', 'false');
+  //         localStorage.removeItem('isLogIned');
+  //         deleteCookie('access_token');
+  //         location.reload();
+  //       },
+  //       onError: (error) => {
+  //         console.error('계정탈퇴 실패', error);
+  //         setAlert?.(<>계정삭제 요청 중 오류가 발생했습니다.</>, () => {
+  //           taskTransform?.('재확인', '');
+  //           taskTransform?.('경고', '');
+  //         });
+  //       },
+  //     });
+  //   });
+  // };
 
   const isLoggedIn = loggedIn;
   const isUserReady = !!(userData && userData.data && userData.data.name) && !isPending && !error;
@@ -387,19 +387,7 @@ const MyComputer = () => {
     <_.Container>
       <_.LeftContainer>
         <_.ProfileContainer>{renderProfileSection()}</_.ProfileContainer>
-        <_.ButtonSet>
-          {renderMemorialBtn()}
-          {loggedIn && (
-            <MemorialBtn
-              name="탈퇴"
-              onClick={handleDeleteAccount}
-              type="submit"
-              active={true}
-              width="116px"
-              fontSize="18px"
-            />
-          )}
-        </_.ButtonSet>
+        <_.ButtonSet>{renderMemorialBtn()}</_.ButtonSet>
       </_.LeftContainer>
       <_.Btn>
         <_.InnerItem>

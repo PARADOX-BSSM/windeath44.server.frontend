@@ -60,19 +60,19 @@ const ReconfirmAlert = ({ icon, confirmText, onClick }: ReconfirmAlertProps) => 
 
           <_.btnContainer>
             <MemorialBtn
-              name={'확인'}
+              name={'취소'}
               type="submit"
               active={true}
-              onClick={handleConfirm}
+              onClick={handleOff}
               width="144px"
               height="42px"
               fontSize="20px"
             />
             <MemorialBtn
-              name={'취소'}
+              name={'확인'}
               type="submit"
               active={true}
-              onClick={handleOff}
+              onClick={handleConfirm}
               width="144px"
               height="42px"
               fontSize="20px"

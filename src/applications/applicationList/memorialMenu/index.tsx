@@ -17,7 +17,7 @@ interface dataStructureProps {
   top: any;
 }
 
-const btnList = ['추모관', '', '추모관 신청'];
+const btnList = ['추모관 신청', '추모관 신청 목록', ''];
 
 const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
@@ -57,37 +57,6 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
     if (selectedIdx === 0) {
       setDescription(
         <>
-          "추모관"에서 다양한 캐릭터의 추모관을 찾아볼 수 있습니다.
-          <br />
-          <br />
-          <div style={{ fontSize: '1.375rem' }}>
-            <div style={{ margin: '0 0 16px 0' }}>
-              * 추모관에서 다른 사람들과 함께 캐릭터에 대한 기억을 나눠볼 수 있습니다.
-            </div>
-            <div style={{ margin: '0 0 16px 0' }}>* 추모관에서 추모글을 작성해보세요.</div>
-            <div style={{ margin: '0 0 16px 0' }}>
-              * 추모관에서 다양한 활동을 통해 캐릭터를 기릴 수 있습니다.
-            </div>
-          </div>
-        </>,
-      );
-    }
-    if (selectedIdx === 1) {
-      setDescription(
-        <>
-          추후 업데이트 될 기능입니다.
-          <br />
-          <br />
-          <div style={{ fontSize: '1.375rem' }}>
-            <div style={{ margin: '0 0 16px 0' }}></div>
-            <div style={{ margin: '0 0 16px 0' }}></div>
-          </div>
-        </>,
-      );
-    }
-    if (selectedIdx === 2) {
-      setDescription(
-        <>
           "추모관 신청"에서 최애의 사인(死因)에 존재하지 않는 추모관을 신청할 수 있습니다.
           <br />
           <br />
@@ -100,16 +69,37 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
         </>,
       );
     }
+    if (selectedIdx === 1) {
+      setDescription(
+        <>
+          "추모관 신청 목록"에서 다른 사용자들이 신청한 추모관을 확인할 수 있습니다.
+          <br />
+          <br />
+          <div style={{ fontSize: '1.375rem' }}>
+            <div style={{ margin: '0 0 16px 0' }}>
+              * 마음에 드는 추모관에 좋아요를 누르면 승인될 확률이 높아집니다.
+            </div>
+          </div>
+        </>,
+      );
+    }
+    if (selectedIdx === 2) {
+      setDescription(
+        <>
+          추후 업데이트 될 기능입니다.
+          <br />
+          <br />
+          <div style={{ fontSize: '1.375rem' }}>
+            <div style={{ margin: '0 0 16px 0' }}></div>
+            <div style={{ margin: '0 0 16px 0' }}></div>
+          </div>
+        </>,
+      );
+    }
   }, [selectedIdx]);
 
   const moveTo = (idx: number | null) => {
     if (idx === 0) {
-      // console.log(taskSearch?.('Search', stackProps));
-      push(taskSearch?.('Search', stackProps));
-    }
-    if (idx === 1 && setAlert) {
-    }
-    if (idx === 2) {
       if (!token && setAlert) {
         setAlert(<>게스트는 추모관 신청이 불가합니다.</>, () => {
           taskTransform?.('경고', '');
@@ -130,6 +120,11 @@ const MemorialMenu = ({ stack, push, pop, top }: dataStructureProps) => {
           },
         );
       }
+    }
+    if (idx === 1) {
+      push(taskSearch?.('memorialApplicationListMain', applyProps));
+    }
+    if (idx === 2) {
     }
   };
 

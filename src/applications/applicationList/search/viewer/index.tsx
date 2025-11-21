@@ -1,12 +1,14 @@
 import * as _ from '@/applications/applicationList/search/viewer/style.ts';
 import MemorialWithIcon from '@/applications/components/memorialWithIcon';
 import myComputer from '@/assets/appIcons/my_computer.svg';
-import { taskTransformerAtom } from '@/atoms/taskTransformer';
-import { useAtom, useAtomValue } from 'jotai';
+import { taskTransformerAtom, taskSearchAtom } from '@/atoms/taskTransformer';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 // import { useEffect } from 'react';
-import { memorialIdAtom } from '@/atoms/memorialManager.ts';
+import { memorialIdAtom, memorialViewerListAtom } from '@/atoms/memorialManager.ts';
 import MemorialObject from '@/applications/components/memorialObject';
 import Loading from '@/applications/components/loading';
+import { virtualTaskListsAtom, virtualDesktopIndexAtom } from '@/atoms/processManager';
+import { focusAtom } from '@/atoms/windowManager';
 
 interface ViewerProps {
   isMemorialLoading?: boolean;
@@ -28,7 +30,13 @@ const Viewer = ({
   top,
 }: ViewerProps) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
+  const taskSearch = useAtomValue(taskSearchAtom);
+  const virtualTaskLists = useAtomValue(virtualTaskListsAtom);
+  const desktopIndex = useAtomValue(virtualDesktopIndexAtom);
+  const currentDesktopTasks = virtualTaskLists[desktopIndex] || [];
+  const memorialViewerList = useAtomValue(memorialViewerListAtom);
   const [memorialId, setMemorialId] = useAtom(memorialIdAtom);
+  const setFocus = useSetAtom(focusAtom);
 
   // useEffect(() => {
   //   console.log(characters);
@@ -41,7 +49,10 @@ const Viewer = ({
           <_.inputs>
             <_.List>
               {isMemorialLoading ? (
-                <Loading text="추모관 목록을 불러오는 중..." imageSize="100px" />
+                <Loading
+                  text="추모관 목록을 불러오는 중..."
+                  imageSize="100px"
+                />
               ) : (
                 characters?.map((character: any) => {
                   const relatedMemorials =
@@ -66,6 +77,16 @@ const Viewer = ({
                           //   targetMemorialId = relatedMemorials[0].memorialId;
                           //   setMemorialId(targetMemorialId);
                           // }
+
+                          const existingViewer = memorialViewerList.find(
+                            (v) => v.characterId === character.characterId,
+                          );
+
+                          if (existingViewer) {
+                            // 이미 열려있는 뷰어가 있으면 포커스 이동
+                            setFocus(existingViewer.instanceId);
+                            return;
+                          }
 
                           taskTransform?.('', '추모관 뷰어', {
                             memorialId: targetMemorialId,

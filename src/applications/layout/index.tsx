@@ -222,7 +222,7 @@ const Application = (props: ApplicationProps) => {
           height: `${(ui.size.height + ui.sizeOffset.height).toString()}rem`,
           width: `${(ui.size.width + ui.sizeOffset.width).toString()}rem`,
           zIndex: zIndex,
-          display: isMinimized ? 'none' : 'block',
+          display: isMinimized || !hasEnabledSave ? 'none' : 'block',
           backgroundColor: 'white',
           border: `3px solid #ff8ef6`,
         }}
@@ -335,6 +335,7 @@ const Application = (props: ApplicationProps) => {
                         setUpWidth: props.setUpWidth,
                         props,
                         setWindowName,
+                        instanceId: props.instanceId,
                       })}
                     </Suspense>
                   );
