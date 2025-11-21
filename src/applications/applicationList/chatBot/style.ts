@@ -142,7 +142,7 @@ export const PictureContainer = styled.div`
 `;
 export const Ribbon = styled.img`
   position: absolute;
-  top: 0;
+  top: -11px;
   width: 174px;
   z-index: 1;
 `;
