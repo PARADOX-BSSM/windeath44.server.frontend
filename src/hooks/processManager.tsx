@@ -1,5 +1,5 @@
 import { TaskType } from '@/modules/typeModule.tsx';
-import { useAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import {
   taskManagerAtom,
   lastTaskListAtom,
@@ -9,6 +9,7 @@ import {
   virtualWindowPositionsAtom,
   SavedTaskType,
 } from '@/atoms/processManager.ts';
+import { focusAtom } from '@/atoms/windowManager';
 import { useEffect, useRef } from 'react';
 
 type Position = { top: number; left: number; width: number; height: number };
@@ -26,6 +27,7 @@ export const useProcessManager = (): [
   const [windowPositions, setWindowPositions] = useAtom(windowPositionsAtom);
   const [virtualWindowPositions, setVirtualWindowPositions] = useAtom(virtualWindowPositionsAtom);
   const [desktopIndex] = useAtom(virtualDesktopIndexAtom);
+  const setFocus = useSetAtom(focusAtom);
 
   const isInitialMount = useRef(true);
   const setVirtualWindowPosition = (positions: Record<string, Position>, index?: number) => {
@@ -81,10 +83,22 @@ export const useProcessManager = (): [
 
   const addTask = (task: TaskType) => {
     if (task.type === 'Shell') {
-      setGlobalTaskList((prev) =>
-        prev.some((t) => t.name === task.name) ? prev : [...prev, task],
-      );
+      // Shell은 이미 있으면 포커스, 없으면 추가
+      const existingTask = globalTaskList.find((t) => t.name === task.name);
+      if (existingTask) {
+        setFocus(existingTask.instanceId || existingTask.name);
+        return;
+      }
+      setGlobalTaskList((prev) => [...prev, task]);
     } else {
+      // App은 현재 가상 데스크탑에서 확인
+      const existingTask = virtualTaskList.find(
+        (t) => t.name === task.name && t.name !== '추모관 뷰어',
+      );
+      if (existingTask) {
+        setFocus(existingTask.instanceId || existingTask.name);
+        return;
+      }
       addVirtualTask(task);
     }
   };
