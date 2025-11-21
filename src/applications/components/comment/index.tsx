@@ -1,5 +1,6 @@
 import * as _ from './style';
 import ameImg from '@/assets/profile/ame.svg';
+import verificationBadge from '@/assets/verification.png';
 import { useState } from 'react';
 import { setCursorImage, CURSOR_IMAGES } from 'lib/setCursorImg';
 
@@ -15,6 +16,7 @@ interface PropsType {
   isLiked: boolean;
   userName?: string;
   userProfile?: string;
+  isOfficial?: boolean;
   onReplySubmit?: (commentId: number, content: string) => void;
   onEditSubmit?: (commentId: number, content: string) => void;
   onDeleteSubmit?: (commentId: number) => void;
@@ -32,6 +34,7 @@ const Comment = ({
   isLiked,
   userName,
   userProfile,
+  isOfficial,
   onReplySubmit,
   onEditSubmit,
   onDeleteSubmit,
@@ -40,6 +43,16 @@ const Comment = ({
   // console.log(idx);
   const imgUrl = userProfile || ameImg;
   const displayName = userName || userid;
+
+  // official 계정의 경우 userid에서 1,2,4번째 요소만 추출
+  const displayUserId =
+    isOfficial && userid.startsWith('official-windeath44-')
+      ? (() => {
+          const parts = userid.split('-');
+          return `${parts[0]}-${parts[1]}-${parts[3]}`;
+        })()
+      : userid;
+
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [replyContent, setReplyContent] = useState('');
   const [isEditing, setIsEditing] = useState(false);
@@ -81,8 +94,18 @@ const Comment = ({
         <_.ProfileImg imgUrl={imgUrl} />
         <_.TextBox>
           <_.NickNameContainer>
-            {userName && <_.NickName>{displayName}</_.NickName>}
-            <_.UserId>@{userid}</_.UserId>
+            {userName && (
+              <_.NameWithBadge>
+                <_.NickName>{displayName}</_.NickName>
+                {isOfficial && (
+                  <_.VerifiedBadge
+                    src={verificationBadge}
+                    alt="인증 뱃지"
+                  />
+                )}
+              </_.NameWithBadge>
+            )}
+            <_.UserId>@{displayUserId}</_.UserId>
           </_.NickNameContainer>
           {isEditing ? (
             <_.EditForm onSubmit={handleEditSubmit}>
