@@ -101,20 +101,25 @@ const Discover = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
     const handleMouseMove = (e: MouseEvent) => {
       if (!isDragging || !selectionRect) return;
 
+      // cursorContainer 영역 내로 제한
+      const bounds = container.getBoundingClientRect();
+      const clampedX = Math.max(bounds.left, Math.min(bounds.right, e.clientX));
+      const clampedY = Math.max(bounds.top, Math.min(bounds.bottom, e.clientY));
+
       const newRect = {
         ...selectionRect,
-        currentX: e.clientX,
-        currentY: e.clientY,
+        currentX: clampedX,
+        currentY: clampedY,
       };
       setSelectionRect(newRect);
 
       // 선택 영역과 교차하는 앱들 찾기
-      const bounds = getSelectionBounds(newRect);
+      const selectionBounds = getSelectionBounds(newRect);
       const newSelectedApps = new Set<string>();
 
       appRefs.current.forEach((element, appName) => {
         const appRect = element.getBoundingClientRect();
-        if (isIntersecting(appRect, bounds)) {
+        if (isIntersecting(appRect, selectionBounds)) {
           newSelectedApps.add(appName);
         }
       });
