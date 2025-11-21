@@ -42,8 +42,8 @@ const AnimationSelect = lazy(
   () => import('@/applications/applicationList/animationSelect/index.tsx'),
 );
 
-const MemorialApproach = lazy(
-  () => import('@/applications/applicationList/memorialApproach/index.tsx'),
+const MemorialApplicationListApproach = lazy(
+  () => import('@/applications/applicationList/memorialApplicationListApproach/index.tsx'),
 );
 
 const Bow = lazy(() => import('@/applications/applicationList/bow/index.tsx'));
@@ -110,8 +110,8 @@ const MemorialApplicationListMain = lazy(
   () => import('@/applications/applicationList/memorialApplicationListMain/index.tsx'),
 );
 
-const MemorialApplicationListApproach = lazy(
-  () => import('@/applications/applicationList/memorialApplicationListApproach/index.tsx'),
+const MemorialApproach = lazy(
+  () => import('@/applications/applicationList/memorialApproach/index.tsx'),
 );
 
 const MemorialApplicationViewer = lazy(
@@ -187,19 +187,19 @@ const useApps = (): TaskType[] => {
     {
       component: (
         <Suspense fallback={null}>
-          <MemorialApproach />
+          <MemorialApplicationListApproach />
         </Suspense>
       ),
       type: 'App',
       id: 2221,
-      name: '추모관',
+      name: '추모관 신청',
       layer: undefined,
       appSetup: {
-        Image: search,
-        minWidth: 720,
-        minHeight: 450,
-        setUpWidth: 950,
-        setUpHeight: 500,
+        Image: memorial,
+        minWidth: 50 * 16,
+        minHeight: 30 * 16,
+        setUpWidth: 55 * 16,
+        setUpHeight: 35 * 16,
       },
       visible: true,
     },
@@ -214,7 +214,7 @@ const useApps = (): TaskType[] => {
       name: 'Search',
       layer: undefined,
       appSetup: {
-        Image: 'default',
+        Image: search,
         minWidth: 600,
         minHeight: 400,
         setUpWidth: 950,
@@ -235,7 +235,7 @@ const useApps = (): TaskType[] => {
       ),
       type: 'App',
       id: 2223,
-      name: 'memorialMenu',
+      name: 'memorialApplicationListMenu',
       layer: undefined,
       appSetup: {
         Image: 'default',
@@ -905,7 +905,7 @@ const useApps = (): TaskType[] => {
     {
       component: (
         <Suspense fallback={null}>
-          <MemorialApplicationListApproach
+          <MemorialApproach
             window={{}}
             setWindow={() => {}}
             setUpHeight={577}
@@ -915,14 +915,14 @@ const useApps = (): TaskType[] => {
       ),
       type: 'App',
       id: 2250,
-      name: '추모관 신청 목록',
+      name: '추모관',
       layer: undefined,
       appSetup: {
-        Image: memorial,
-        minWidth: 580,
-        minHeight: 420,
-        setUpWidth: 890,
-        setUpHeight: 577,
+        Image: search,
+        minWidth: 600,
+        minHeight: 400,
+        setUpWidth: 950,
+        setUpHeight: 500,
       },
       visible: true,
     },

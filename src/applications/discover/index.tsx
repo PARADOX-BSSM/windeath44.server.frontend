@@ -21,6 +21,7 @@ const Discover = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
   const visibleApps = Apps.filter((app: TaskType) => app.visible);
   const [displayWidth, setDisplayWidth] = React.useState<number>(0);
   const [displayLeft, setDisplayLeft] = React.useState<number>(0);
+  const [selectedApp, setSelectedApp] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     const container = document.getElementById('cursorContainer');
@@ -42,6 +43,28 @@ const Discover = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
     };
   }, []);
 
+  // 빈 공간 클릭 시 선택 해제
+  React.useEffect(() => {
+    const handleShellClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      // app-button 클래스를 가진 요소나 그 자식이 아닌 경우에만 선택 해제
+      if (!target.closest('.app-button')) {
+        setSelectedApp(null);
+      }
+    };
+
+    const shell = document.querySelector('.shell');
+    if (shell) {
+      shell.addEventListener('click', handleShellClick);
+    }
+
+    return () => {
+      if (shell) {
+        shell.removeEventListener('click', handleShellClick);
+      }
+    };
+  }, []);
+
   return (
     <>
       {/* <Seori /> */}
@@ -52,6 +75,8 @@ const Discover = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
             key={Application.name}
             className="app-button"
             style={{ zIndex: '0' }}
+            isSelected={selectedApp === Application.name}
+            onClick={() => setSelectedApp(Application.name)}
           >
             <_.AppBtn
               url={Application.appSetup?.Image}
@@ -65,7 +90,15 @@ const Discover = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
           </_.AppContainer>
         );
       })}
-      <div style={{ position: 'fixed', bottom: 0, left: `${displayLeft}px`, width: `${displayWidth}px`, zIndex: 998 }}>
+      <div
+        style={{
+          position: 'fixed',
+          bottom: 0,
+          left: `${displayLeft}px`,
+          width: `${displayWidth}px`,
+          zIndex: 998,
+        }}
+      >
         <TaskBar
           backUpFocus={backUpFocus}
           setBackUpFocus={setBackUpFocus}
