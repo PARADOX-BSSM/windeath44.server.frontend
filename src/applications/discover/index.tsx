@@ -1,13 +1,15 @@
-import { TaskType } from '@/modules/typeModule.tsx';
+import { useAtom } from 'jotai';
+import { focusAtom } from '@/atoms/windowManager'; 
+import { IconContainer } from '../layout/components/AppHandles';
+import { initializeGridAtom, resizeGridAtom, iconPositionsAtom } from '@/atoms/gridManager'; 
 import { useProcessManager } from '@/hooks/processManager';
 import useApps from '@/applications/data/importManager';
 import TaskBar from '@/applications/components/taskBar';
-import React, { useRef, useCallback } from 'react';
+import React, { useRef, useCallback, useEffect } from 'react';
 import Seori from '@/applications/seori';
 import * as _ from './style';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
-import { useAtom } from 'jotai';
-import { focusAtom } from '@/atoms/windowManager';
+import { TaskType } from '@/modules/typeModule.tsx';
 
 interface TaskBarProps {
   backUpFocus: string;
@@ -26,32 +28,47 @@ const Discover = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
   const [, setFocus] = useAtom(focusAtom);
   const Apps = useApps();
   const visibleApps = Apps.filter((app: TaskType) => app.visible);
+
+  const [, initializeGrid] = useAtom(initializeGridAtom);
+  const [, resizeGrid] = useAtom(resizeGridAtom);
+  const [iconPositions] = useAtom(iconPositionsAtom);
+
   const [displayWidth, setDisplayWidth] = React.useState<number>(0);
   const [displayLeft, setDisplayLeft] = React.useState<number>(0);
+  const containerRef = React.useRef<HTMLElement>(null);
   const [selectedApps, setSelectedApps] = React.useState<Set<string>>(new Set());
   const [isDragging, setIsDragging] = React.useState(false);
   const [selectionRect, setSelectionRect] = React.useState<SelectionRect | null>(null);
   const appRefs = useRef<Map<string, HTMLDivElement>>(new Map());
 
-  React.useEffect(() => {
-    const container = document.getElementById('cursorContainer');
+  useEffect(() => {
+    const container = containerRef.current;
     if (!container) return;
+    const appIds = visibleApps.map(app => app.name);
 
-    const updateDimensions = () => {
-      const bounds = container.getBoundingClientRect();
-      setDisplayWidth(bounds.width);
-      setDisplayLeft(bounds.left);
-    };
+    if (Object.keys(iconPositions).length === 0)
+      initializeGrid({ appIds, containerWidth: container.clientWidth, containerHeight: container.clientHeight });
 
-    updateDimensions();
 
-    const resizeObserver = new ResizeObserver(updateDimensions);
+    const resizeObserver = new ResizeObserver((entries) => {
+      const entry = entries.find(e => e.target === container);
+      if (entry) {
+        const { width, height } = entry.contentRect;
+        resizeGrid({ containerWidth: width, containerHeight: height });
+      }
+      const cursorContainer = document.getElementById('cursorContainer');
+      if (cursorContainer) {
+        const bounds = cursorContainer.getBoundingClientRect();
+        setDisplayWidth(bounds.width);
+        setDisplayLeft(bounds.left);
+      }
+    });
+
     resizeObserver.observe(container);
+    return () => resizeObserver.disconnect();
+  }, [initializeGrid, resizeGrid, iconPositions, visibleApps.length]);
 
-    return () => {
-      resizeObserver.disconnect();
-    };
-  }, []);
+  const visibleAndPlacedApps = visibleApps.filter(app => iconPositions[app.name]);
 
   // 두 사각형이 교차하는지 확인
   const isIntersecting = useCallback(
@@ -166,14 +183,19 @@ const Discover = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
   }, []);
 
   return (
-    <>
-      {/* <Seori /> */}
-      {visibleApps.map((Application: TaskType) => {
-        // console.log(Application.appSetup?.Image);
+    <section ref={containerRef} className="discover" style={{ position: "relative", width: '100%', height: '100%', overflow: 'hidden', margin: "1.5rem", boxSizing: "border-box" }}>
+      {visibleAndPlacedApps.map((Application: TaskType) => {
+        const position = iconPositions[Application.name];
         return (
-          <_.AppContainer
+          <IconContainer
             key={Application.name}
+            appId={Application.name}
+            position={position}
             className="app-button"
+            onDoubleClick={() => {
+              addTask(Application);
+              setFocus(Application.name);
+            }}
             style={{ zIndex: '0' }}
             isSelected={selectedApps.has(Application.name)}
             onClick={(e) => {
@@ -203,16 +225,14 @@ const Discover = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
           >
             <_.AppBtn
               url={Application.appSetup?.Image}
-              onDoubleClick={() => {
-                addTask(Application);
-              }}
               onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
               onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
-            ></_.AppBtn>
+            />
             <_.AppName>{Application.name}</_.AppName>
-          </_.AppContainer>
+          </IconContainer>
         );
       })}
+
       {/* 선택 사각형 */}
       {isDragging && selectionRect && (
         <_.SelectionBox
@@ -236,7 +256,8 @@ const Discover = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
           setBackUpFocus={setBackUpFocus}
         />
       </div>
-    </>
+    </section>
   );
 };
+
 export default Discover;
