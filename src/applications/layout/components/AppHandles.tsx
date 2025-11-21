@@ -9,6 +9,7 @@ type Props = {
   appId: string;
   position: Position;
   children?: React.ReactNode;
+  onClick?: React.MouseEventHandler<HTMLDivElement>;
   onDoubleClick?: Function;
   className?: string;
   isSelected?: boolean;
@@ -21,6 +22,7 @@ export const IconContainer = forwardRef<HTMLDivElement, Props>(({
   onDoubleClick,
   appId,
   isSelected,
+  onClick
 }, ref) => {
   const [positionOffset, setPositionOffset] = useState<Position>({ x: 0, y: 0 });
   const [, updateIconPosition] = useAtom(updateIconPositionAtom);
@@ -72,6 +74,7 @@ export const IconContainer = forwardRef<HTMLDivElement, Props>(({
         top: renderTop,
         zIndex: 0,
       }}
+      onClick={onClick}
       onMouseEnter={() => setCursorImage(CURSOR_IMAGES.drag_move)}
       onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
       onDoubleClick={() => onDoubleClick?.()}
