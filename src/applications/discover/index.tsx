@@ -10,6 +10,7 @@ import Seori from '@/applications/seori';
 import * as _ from './style';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
 import { TaskType } from '@/modules/typeModule.tsx';
+import { isNotClickAtom } from '@/atoms/cursorState';
 
 interface TaskBarProps {
   backUpFocus: string;
@@ -32,6 +33,7 @@ const Discover = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
   const [, initializeGrid] = useAtom(initializeGridAtom);
   const [, resizeGrid] = useAtom(resizeGridAtom);
   const [iconPositions] = useAtom(iconPositionsAtom);
+  const [isNotClick, ] = useAtom(isNotClickAtom);
 
   const [displayWidth, setDisplayWidth] = React.useState<number>(0);
   const [displayLeft, setDisplayLeft] = React.useState<number>(0);
@@ -183,7 +185,7 @@ const Discover = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
   }, []);
 
   return (
-    <section ref={containerRef} className="discover" style={{ position: "relative", width: '100%', height: '100%', overflow: 'hidden', margin: "1.5rem", boxSizing: "border-box" }}>
+    <section ref={containerRef} className="discover" style={{ position: "relative", width: '100%', height: '100%', margin: "1.5rem", boxSizing: "border-box" }}>
       {visibleAndPlacedApps.map((Application: TaskType) => {
         const position = iconPositions[Application.name];
         return (
@@ -234,7 +236,7 @@ const Discover = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
       })}
 
       {/* 선택 사각형 */}
-      {isDragging && selectionRect && (
+      {isDragging && selectionRect && !isNotClick && (
         <_.SelectionBox
           left={Math.min(selectionRect.startX, selectionRect.currentX)}
           top={Math.min(selectionRect.startY, selectionRect.currentY)}
