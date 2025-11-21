@@ -8,6 +8,8 @@ import * as _ from './style';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
 import { useAtom } from 'jotai';
 import { focusAtom } from '@/atoms/windowManager';
+import { IconContainer } from '../layout/components/AppHandles';
+import { useIcon } from '../layout/hooks/useIcon';
 
 interface TaskBarProps {
   backUpFocus: string;
@@ -43,15 +45,16 @@ const Discover = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
   }, []);
 
   return (
-    <>
+    <section style={{position: "relative"}}>
       {/* <Seori /> */}
       {visibleApps.map((Application: TaskType) => {
         // console.log(Application.appSetup?.Image);
+        const icon = useIcon();
         return (
-          <_.AppContainer
+          <IconContainer
             key={Application.name}
             className="app-button"
-            style={{ zIndex: '0' }}
+            {...icon}
           >
             <_.AppBtn
               url={Application.appSetup?.Image}
@@ -62,7 +65,7 @@ const Discover = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
               onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
             ></_.AppBtn>
             <_.AppName>{Application.name}</_.AppName>
-          </_.AppContainer>
+          </IconContainer>
         );
       })}
       <div style={{ position: 'fixed', bottom: 0, left: `${displayLeft}px`, width: `${displayWidth}px`, zIndex: 998 }}>
@@ -71,7 +74,7 @@ const Discover = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
           setBackUpFocus={setBackUpFocus}
         />
       </div>
-    </>
+    </section>
   );
 };
 export default Discover;
