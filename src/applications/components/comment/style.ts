@@ -39,6 +39,12 @@ export const NickNameContainer = styled.div`
   gap: 8px;
 `;
 
+export const NameWithBadge = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 2px;
+`;
+
 export const Content = styled.p`
   color: var(--Black, #2e2e2e);
   font-family: Galmuri11;
@@ -72,6 +78,14 @@ export const UserId = styled.p`
   font-weight: 400;
   line-height: normal;
   margin: 0;
+`;
+
+export const VerifiedBadge = styled.img`
+  width: 14px;
+  height: 14px;
+  margin-left: 0;
+  display: inline-block;
+  vertical-align: middle;
 `;
 
 export const ReplyButton = styled.button`

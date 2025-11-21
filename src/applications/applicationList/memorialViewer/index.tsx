@@ -20,7 +20,14 @@ interface dataStructureProps {
   content: string;
 }
 
-const MemorialViewer = ({ stack, push, pop, top, characterId, content }: dataStructureProps) => {
+const MemorialViewer = ({
+  stack,
+  push,
+  pop,
+  top,
+  characterId,
+  content,
+}: dataStructureProps) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
   const setAlert = useAtomValue(alerterAtom);
 
@@ -43,7 +50,6 @@ const MemorialViewer = ({ stack, push, pop, top, characterId, content }: dataStr
   const mutationAnimation = useGetAnimation(setAnimation);
 
   useEffect(() => {
-    console.log('characterId', characterId);
     if (characterId) {
       mutationGetCharacter.mutate(characterId);
       mutationAnimation.mutate(characterId);

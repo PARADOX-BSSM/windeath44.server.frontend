@@ -54,6 +54,7 @@ export const btnContainer = styled.div`
   width: 100%;
   height: 100%;
   justify-content: center;
+  gap: 24px;
 `;
 export const inputSet = styled.p`
   width: 100%;
