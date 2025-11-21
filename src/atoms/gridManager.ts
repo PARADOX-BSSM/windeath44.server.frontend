@@ -5,8 +5,8 @@ export type Position = { x: number; y: number };
 export type IconPositions = Record<string, Position>;
 export type GridAvailability = boolean[][];
 
-const GRID_WIDTH = 5 * 16; // 80px
-const GRID_HEIGHT = 6 * 16; // 96px
+const GRID_WIDTH = 5.5 * 16; // 80px
+const GRID_HEIGHT = 6.5 * 16; // 96px
 const GRID_GAP = 1 * 16; // 16px
 export const CELL_W = GRID_WIDTH + GRID_GAP; // 96px
 export const CELL_H = GRID_HEIGHT + GRID_GAP; // 112px

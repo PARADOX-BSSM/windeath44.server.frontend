@@ -1,9 +1,9 @@
 import { useDrag } from "react-use-gesture";
 import { CURSOR_IMAGES, setCursorImage } from "@/lib/setCursorImg";
 import * as _ from "@/applications/discover/style";
-import React, { useState } from "react";
 import { useAtom } from 'jotai';
 import { updateIconPositionAtom, CELL_W, CELL_H, Position } from '@/atoms/gridManager'; 
+import React, { useState, forwardRef } from "react";
 
 type Props = {
   appId: string;
@@ -11,19 +11,20 @@ type Props = {
   children?: React.ReactNode;
   onDoubleClick?: Function;
   className?: string;
+  isSelected?: boolean;
 };
 
-export const IconContainer: React.FC<Props> = ({
+export const IconContainer = forwardRef<HTMLDivElement, Props>(({
   position,
   children,
   className,
   onDoubleClick,
-  appId
-}) => {
+  appId,
+  isSelected,
+}, ref) => {
   const [positionOffset, setPositionOffset] = useState<Position>({ x: 0, y: 0 });
-  
   const [, updateIconPosition] = useAtom(updateIconPositionAtom);
-  
+
   const bind = useDrag(({ xy: [x, y], initial: [ix, iy], last }) => {
     const container = document.querySelector(".discover"); 
     if (!container) return;
@@ -63,6 +64,7 @@ export const IconContainer: React.FC<Props> = ({
   return (
     <_.AppContainer
       {...bind()}
+      isSelected={isSelected}
       className={`draggable ${className}`}
       style={{
         position: "absolute",
@@ -73,8 +75,11 @@ export const IconContainer: React.FC<Props> = ({
       onMouseEnter={() => setCursorImage(CURSOR_IMAGES.drag_move)}
       onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
       onDoubleClick={() => onDoubleClick?.()}
+      ref={ref} // 이제 forwardRef로 전달됨
     >
       {children}
     </_.AppContainer>
   );
-};
+});
+
+IconContainer.displayName = "IconContainer";

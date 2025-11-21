@@ -1,4 +1,3 @@
-import React, { useEffect } from 'react';
 import { useAtom } from 'jotai';
 import { focusAtom } from '@/atoms/windowManager'; 
 import { IconContainer } from '../layout/components/AppHandles';
@@ -6,12 +5,11 @@ import { initializeGridAtom, resizeGridAtom, iconPositionsAtom } from '@/atoms/g
 import { useProcessManager } from '@/hooks/processManager';
 import useApps from '@/applications/data/importManager';
 import TaskBar from '@/applications/components/taskBar';
-import React, { useRef, useCallback } from 'react';
+import React, { useRef, useCallback, useEffect } from 'react';
 import Seori from '@/applications/seori';
 import * as _ from './style';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
 import { TaskType } from '@/modules/typeModule.tsx';
-import * as _ from './style';
 
 interface TaskBarProps {
   backUpFocus: string;
@@ -197,7 +195,7 @@ const Discover = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
             onDoubleClick={() => {
               addTask(Application);
               setFocus(Application.name);
-            }
+            }}
             style={{ zIndex: '0' }}
             isSelected={selectedApps.has(Application.name)}
             onClick={(e) => {
@@ -216,7 +214,7 @@ const Discover = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
                 // 일반 클릭: 단일 선택
                 setSelectedApps(new Set([Application.name]));
               }
-            }
+            }}
             ref={(el) => {
               if (el) {
                 appRefs.current.set(Application.name, el);
