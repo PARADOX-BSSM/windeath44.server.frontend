@@ -30,3 +30,20 @@ export const AppName = styled.p`
   -ms-user-select: none;
   user-select: none;
 `;
+
+export const SelectionBox = styled.div<{
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+}>`
+  position: fixed;
+  left: ${({ left }) => left}px;
+  top: ${({ top }) => top}px;
+  width: ${({ width }) => width}px;
+  height: ${({ height }) => height}px;
+  background-color: rgba(0, 120, 215, 0.3);
+  border: 1px solid rgba(0, 120, 215, 0.8);
+  pointer-events: none;
+  z-index: 9999;
+`;
