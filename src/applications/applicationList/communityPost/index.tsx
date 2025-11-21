@@ -10,17 +10,14 @@ import { useAtomValue } from 'jotai';
 import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer';
 import { alerterAtom } from '@/atoms/alerter';
 import { usePostSingleSearch } from '@/api/community/postSingleSearch';
-import {
-  usePostCommentSearchByPostId,
-  CommentData,
-} from '@/api/community/postCommentSearchByPostId';
+import { usePostCommentSearchByPostId } from '@/api/community/postCommentSearchByPostId';
 import { useGetUserMutation } from '@/api/user/getUser';
 import { getCookie } from '@/api/auth/cookie';
 import { useEffect, useState, Fragment } from 'react';
 import Loading from '@/applications/components/loading';
-import api from '@/api/axiosInstance';
-import { community } from '@/config';
+import { user as userEndpoint } from '@/config';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
+import axios from 'axios';
 
 interface postProps {
   stack: any[];
@@ -39,6 +36,11 @@ const CommunityPost = ({ stack, push, pop, top, postId }: postProps) => {
   };
 
   const { data, isLoading: isPostLoading, refetch: refetchPost } = usePostSingleSearch(postId);
+  const {
+    data: commentsData,
+    isLoading: isCommentsLoading,
+    refetch: refetchComments,
+  } = usePostCommentSearchByPostId(postId);
   const getUserMutation = useGetUserMutation();
   const token = getCookie('access_token');
 
@@ -48,9 +50,10 @@ const CommunityPost = ({ stack, push, pop, top, postId }: postProps) => {
     profile?: string;
   } | null>(null);
   const [isUserLoading, setIsUserLoading] = useState(true);
-  const [comments, setComments] = useState<CommentData[]>([]);
-  const [isCommentsLoading, setIsCommentsLoading] = useState(true);
   const [expandedReplies, setExpandedReplies] = useState<Record<string | number, boolean>>({});
+  const [userDataMap, setUserDataMap] = useState<Record<string, { name: string; profile: string }>>(
+    {},
+  );
 
   useEffect(() => {
     if (token) {
@@ -81,54 +84,56 @@ const CommunityPost = ({ stack, push, pop, top, postId }: postProps) => {
     }
   }, [token]);
 
-  // 초기 댓글 로딩
+  // 사용자 정보 가져오기
   useEffect(() => {
-    fetchComments();
-  }, [postId]);
+    const comments = commentsData?.data || [];
+    const userIds = new Set<string>();
+    if (data?.data?.userId) {
+      userIds.add(data.data.userId);
+    }
+
+    comments.forEach((comment) => {
+      userIds.add(comment.userId);
+      comment.children?.forEach((child) => {
+        userIds.add(child.userId);
+      });
+    });
+
+    const userIdArray = Array.from(userIds);
+    if (userIdArray.length === 0) return;
+
+    axios
+      .get(userEndpoint, {
+        params: { userIds: userIdArray },
+        paramsSerializer: (params) => {
+          const searchParams = new URLSearchParams();
+          params.userIds.forEach((id: string) => {
+            searchParams.append('userIds', id);
+          });
+          return searchParams.toString();
+        },
+      })
+      .then((response) => {
+        const users = response.data.data;
+        const userMap: Record<string, { name: string; profile: string }> = {};
+        users.forEach((user: any) => {
+          userMap[user.userId] = {
+            name: user.name,
+            profile: user.profile,
+          };
+        });
+        setUserDataMap(userMap);
+      })
+      .catch((error) => {
+        console.error('사용자 정보 가져오기 실패:', error);
+      });
+  }, [commentsData, data]);
 
   const taskSearch = useAtomValue(taskSearchAtom);
   const taskTransform = useAtomValue(taskTransformerAtom);
   const setAlert = useAtomValue(alerterAtom);
 
-  // 댓글 조회
-  const fetchComments = async () => {
-    try {
-      setIsCommentsLoading(true);
-
-      const response = await api.get(`${community}/posts/${postId}/comments`);
-      const parentComments: CommentData[] = response.data.data || [];
-
-      const commentsWithReplies = await Promise.all(
-        parentComments.map(async (parent) => {
-          try {
-            const repliesResponse = await api.get(
-              `${community}/posts/comments/${parent.commentId}/replies`,
-            );
-            const repliesData = repliesResponse.data.data;
-            const replies: CommentData[] = Array.isArray(repliesData) ? repliesData : [];
-
-            return {
-              ...parent,
-              children: replies,
-            };
-          } catch (error) {
-            console.error(`댓글 ${parent.commentId}의 대댓글 조회 실패:`, error);
-            return {
-              ...parent,
-              children: [],
-            };
-          }
-        }),
-      );
-
-      setComments(commentsWithReplies);
-    } catch (error) {
-      console.error('댓글 조회 실패:', error);
-      setComments([]);
-    } finally {
-      setIsCommentsLoading(false);
-    }
-  };
+  const comments = commentsData?.data || [];
 
   const postEdit = () => {
     if (taskTransform) {
@@ -166,11 +171,15 @@ const CommunityPost = ({ stack, push, pop, top, postId }: postProps) => {
           >
             <_.Icon src={chevron} />
           </_.BtnIcon>
-          {data?.data.name || '사용자'}님의 게시글
+          {userDataMap[data?.data?.userId || '']?.name || '사용자'}님의 게시글
         </_.Header>
         <_.PostArea>
           <Posts
-            user={{ name: data?.data.name || '사용자', userId: data?.data.userId || 'userId' }}
+            user={{
+              name: userDataMap[data?.data?.userId || '']?.name || '사용자',
+              userId: data?.data.userId || 'userId',
+              profile: userDataMap[data?.data?.userId || '']?.profile,
+            }}
             post={{
               postId: postId,
               title: data?.data.title || 'title',
@@ -188,7 +197,7 @@ const CommunityPost = ({ stack, push, pop, top, postId }: postProps) => {
             userId={currentUser?.userId}
             postId={postId}
             profile={currentUser?.profile}
-            refetchComments={fetchComments}
+            refetchComments={refetchComments}
           />
           {comments.map((comment) => {
             const replies = Array.isArray(comment.children) ? comment.children : [];
@@ -201,9 +210,9 @@ const CommunityPost = ({ stack, push, pop, top, postId }: postProps) => {
               <Fragment key={comment.commentId}>
                 <Comment
                   user={{
-                    name: comment.name,
+                    name: userDataMap[comment.userId]?.name || '사용자',
                     userId: comment.userId,
-                    profile: comment.profile,
+                    profile: userDataMap[comment.userId]?.profile,
                   }}
                   post={{
                     postId: comment.postId,
@@ -213,7 +222,7 @@ const CommunityPost = ({ stack, push, pop, top, postId }: postProps) => {
                     createdAt: comment.createdAt,
                     updatedAt: comment.updatedAt,
                   }}
-                  refetchComments={fetchComments}
+                  refetchComments={refetchComments}
                   parentCommentId={null}
                   currentUserName={currentUser?.name}
                   currentUserId={currentUser?.userId}
@@ -239,7 +248,7 @@ const CommunityPost = ({ stack, push, pop, top, postId }: postProps) => {
                         ...prev,
                         [`reply_${comment.commentId}`]: false,
                       }));
-                      fetchComments();
+                      refetchComments();
                     }}
                   />
                 )}
@@ -247,9 +256,9 @@ const CommunityPost = ({ stack, push, pop, top, postId }: postProps) => {
                   <Comment
                     key={reply.commentId}
                     user={{
-                      name: reply.name,
+                      name: userDataMap[reply.userId]?.name || '사용자',
                       userId: reply.userId,
-                      profile: reply.profile,
+                      profile: userDataMap[reply.userId]?.profile,
                     }}
                     post={{
                       postId: reply.postId,
@@ -259,7 +268,7 @@ const CommunityPost = ({ stack, push, pop, top, postId }: postProps) => {
                       createdAt: reply.createdAt,
                       updatedAt: reply.updatedAt,
                     }}
-                    refetchComments={fetchComments}
+                    refetchComments={refetchComments}
                     parentCommentId={reply.parentCommentId}
                     currentUserName={currentUser?.name}
                     currentUserId={currentUser?.userId}

@@ -179,9 +179,16 @@ const Posts: React.FC<PostsProps> = ({
   };
 
   const likeHandle = () => {
+    if (!loggedInUserId) {
+      setAlert?.(<>로그인이 필요합니다.</>, () => {
+        taskTransform?.('경고', '');
+      });
+      return;
+    }
+
     if (isLike) {
       commentLikeDeleteMutation.mutate(
-        { comment_id: post.commentId, user_id: user.userId },
+        { comment_id: post.commentId, user_id: loggedInUserId },
         {
           onSuccess: () => setIsLike(false),
           onError: () => {},
@@ -189,7 +196,7 @@ const Posts: React.FC<PostsProps> = ({
       );
     } else {
       commentLikeMutation.mutate(
-        { comment_id: post.commentId, user_id: user.userId },
+        { comment_id: post.commentId, user_id: loggedInUserId },
         {
           onSuccess: () => setIsLike(true),
           onError: () => {},
@@ -199,8 +206,7 @@ const Posts: React.FC<PostsProps> = ({
   };
 
   // 로그인한 유저가 댓글 작성자인지 확인
-  // const isOwner = loggedInUserId && loggedInUserId === userId;
-  const isOwner = true; // 테스트용: 항상 수정/삭제 가능
+  const isOwner = loggedInUserId && loggedInUserId === userId;
 
   return (
     <_.Post isReply={!!parentCommentId}>

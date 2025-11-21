@@ -8,8 +8,6 @@ interface postData {
   data: {
     postId: number;
     userId: string;
-    name: string;
-    profile: string;
     title: string;
     body: string;
     status: string;

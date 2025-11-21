@@ -124,9 +124,16 @@ const Posts = ({ user, post, postDelete, refetchPost, postEdit }: PostsProps) =>
     }
   };
   const likeHandle = () => {
+    if (!currentUserId) {
+      setAlert?.(<>로그인이 필요합니다.</>, () => {
+        taskTransform?.('경고', '');
+      });
+      return;
+    }
+
     if (isLike) {
       postLikeDeleteMutation.mutate(
-        { post_id: post.postId, user_id: user.userId },
+        { post_id: post.postId, user_id: currentUserId },
         {
           onSuccess: () => {
             setIsLike(false);
@@ -137,7 +144,7 @@ const Posts = ({ user, post, postDelete, refetchPost, postEdit }: PostsProps) =>
       );
     } else {
       postLikeMutation.mutate(
-        { post_id: post.postId, user_id: user.userId },
+        { post_id: post.postId, user_id: currentUserId },
         {
           onSuccess: () => {
             setIsLike(true);
@@ -150,8 +157,7 @@ const Posts = ({ user, post, postDelete, refetchPost, postEdit }: PostsProps) =>
   };
 
   // 로그인한 유저가 게시글 작성자인지 확인
-  // const isOwner = currentUserId && currentUserId === user.userId;
-  const isOwner = true; // 테스트용
+  const isOwner = currentUserId && currentUserId === user.userId;
 
   return (
     <_.Post>

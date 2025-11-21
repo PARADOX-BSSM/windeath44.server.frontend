@@ -118,7 +118,7 @@ const CommunityPostWrite: React.FC<postData> = ({
       // 게시글 작성
       postCreateMutation.mutate(
         {
-          user_id: 'testid',
+          user_id: currentUserId!,
           title: title,
           body: body,
           status: 'PUBLISHED',
@@ -146,10 +146,24 @@ const CommunityPostWrite: React.FC<postData> = ({
   };
   const postDraft = () => {
     if (title || body) {
+      if (!currentUserId) {
+        setAlert?.(
+          <>
+            유저 정보를 찾아올 수 없습니다.
+            <br />
+            잠시 후 다시 시도해주세요.
+          </>,
+          () => {
+            taskTransform?.('경고', '');
+          },
+        );
+        return;
+      }
+
       setAlert?.(<>임시저장 하시겠습니까?</>, () => {
         postCreateMutation.mutate(
           {
-            user_id: 'user_id',
+            user_id: currentUserId,
             title: title,
             body: body,
             status: 'DRAFT',
@@ -172,9 +186,23 @@ const CommunityPostWrite: React.FC<postData> = ({
         taskTransform?.('경고', '');
       });
     } else {
+      if (!currentUserId) {
+        setAlert?.(
+          <>
+            유저 정보를 찾아올 수 없습니다.
+            <br />
+            잠시 후 다시 시도해주세요.
+          </>,
+          () => {
+            taskTransform?.('경고', '');
+          },
+        );
+        return;
+      }
+
       postListSearchMutation.mutate(
         {
-          user_id: 'user_id',
+          user_id: currentUserId,
           status: 'DRAFT',
         },
         {
