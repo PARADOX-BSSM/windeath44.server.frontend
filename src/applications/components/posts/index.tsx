@@ -98,27 +98,30 @@ const Posts = ({ user, post, postDelete, refetchPost, postEdit }: PostsProps) =>
           console.log('게시글 ID가 없습니다');
           return;
         }
-        postDeleteMutation.mutate(post.postId, {
-          onSuccess: () => {
-            taskTransform?.('경고', '');
-            postDelete();
-          },
-          onError: (error) => {
-            console.error('게시글 삭제 실패:', error);
-            if (setAlert) {
-              setAlert(
-                <>
-                  게시글이 삭제되지 않았습니다.
-                  <br />
-                  잠시 후 다시 시도해주세요
-                </>,
-                () => {
-                  taskTransform?.('경고', '');
-                },
-              );
-            }
-          },
-        });
+        postDeleteMutation.mutate(
+          { post_id: post.postId, user_id: currentUserId! },
+          {
+              onSuccess: () => {
+                taskTransform?.('경고', '');
+                postDelete();
+              },
+              onError: (error) => {
+                console.error('게시글 삭제 실패:', error);
+                if (setAlert) {
+                  setAlert(
+                    <>
+                      게시글이 삭제되지 않았습니다.
+                      <br />
+                      잠시 후 다시 시도해주세요
+                    </>,
+                    () => {
+                      taskTransform?.('경고', '');
+                    },
+                  );
+                }
+              },
+            },
+          );
         setIsOpen(false);
       });
     }

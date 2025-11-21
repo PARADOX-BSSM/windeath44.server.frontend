@@ -39,8 +39,6 @@ const CommunityPostWrite: React.FC<postData> = ({
     Array<{
       postId: number;
       userId: string;
-      name: string;
-      profile: string | null;
       title: string;
       body: string;
       status: string;
@@ -61,12 +59,7 @@ const CommunityPostWrite: React.FC<postData> = ({
   }, []);
 
   const postCreate = () => {
-    if (
-      typeof title !== 'string' ||
-      typeof body !== 'string' ||
-      !title.trim() ||
-      !body.trim()
-    ) {
+    if (typeof title !== 'string' || typeof body !== 'string' || !title.trim() || !body.trim()) {
       setAlert?.(<>제목과 내용을 모두 입력해주세요.</>, () => {
         taskTransform?.('경고', '');
       });
@@ -92,6 +85,7 @@ const CommunityPostWrite: React.FC<postData> = ({
       postUpdateMutation.mutate(
         {
           postId: postId,
+          user_id: currentUserId!,
           title: title,
           body: body,
           status: 'PUBLISHED',
@@ -222,11 +216,7 @@ const CommunityPostWrite: React.FC<postData> = ({
     setLoadPage(!loadPage);
   };
 
-  const handleSelectDraft = (
-    postId: number,
-    draftTitle: string,
-    draftBody: string,
-  ) => {
+  const handleSelectDraft = (postId: number, draftTitle: string, draftBody: string) => {
     setTitle(String(draftTitle || ''));
     setBody(String(draftBody || ''));
     setLoadPage(false);
@@ -234,19 +224,22 @@ const CommunityPostWrite: React.FC<postData> = ({
 
   const handleDeleteDraft = (postId: number) => {
     setAlert?.(<>선택한 임시저장 게시글을 삭제하시겠습니까?</>, () => {
-      postDeleteMutation.mutate(postId, {
-        onSuccess: () => {
-          setDraftPosts((prev) => prev.filter((post) => post.postId !== postId));
-          setAlert?.(<>임시저장 게시글이 삭제되었습니다.</>, () => {
-            taskTransform?.('경고', '');
-          });
+      postDeleteMutation.mutate(
+        { post_id: postId, user_id: currentUserId! },
+        {
+          onSuccess: () => {
+            setDraftPosts((prev) => prev.filter((post) => post.postId !== postId));
+            setAlert?.(<>임시저장 게시글이 삭제되었습니다.</>, () => {
+              taskTransform?.('경고', '');
+            });
+          },
+          onError: () => {
+            setAlert?.(<>임시저장 게시글 삭제에 실패했습니다.</>, () => {
+              taskTransform?.('경고', '');
+            });
+          },
         },
-        onError: () => {
-          setAlert?.(<>임시저장 게시글 삭제에 실패했습니다.</>, () => {
-            taskTransform?.('경고', '');
-          });
-        },
-      });
+      );
       taskTransform?.('경고', '');
     });
   };

@@ -3,11 +3,16 @@ import { AxiosResponse } from 'axios';
 import { community } from '@/config';
 import api from '../axiosInstance';
 
-const postDelete = async (post_id: number) => {
+interface PostDeleteInterface {
+  post_id: number;
+  user_id: string;
+}
+
+const postDelete = async ({ post_id, user_id }: PostDeleteInterface) => {
   try {
     const response: AxiosResponse = await api.delete(`${community}/posts/${post_id}`, {
       headers: {
-        'user-id': 'user_id',
+        'user-id': user_id,
         role: '',
       },
     });

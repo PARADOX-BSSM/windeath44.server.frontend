@@ -30,7 +30,7 @@ const postCreate = async ({
   try {
     const response: AxiosResponse = await api.post(`${community}/posts`, data, {
       headers: {
-        'user-id': 'user_id',
+        'user-id': user_id,
         'Content-Type': 'application/json',
       },
     });

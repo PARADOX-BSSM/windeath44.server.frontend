@@ -5,6 +5,7 @@ import api from '../axiosInstance';
 
 interface PostUpdateInterface {
   postId: number;
+  user_id: string;
   title: string;
   body: string;
   status: string;
@@ -30,7 +31,7 @@ interface PostUpdateResponse {
   };
 }
 
-const postUpdate = async ({ postId, title, body, status, isBlind }: PostUpdateInterface) => {
+const postUpdate = async ({ postId, user_id, title, body, status, isBlind }: PostUpdateInterface) => {
   const data = {
     title: title,
     body: body,
@@ -43,7 +44,7 @@ const postUpdate = async ({ postId, title, body, status, isBlind }: PostUpdateIn
       data,
       {
         headers: {
-          'user-id': 'user_id',
+          'user-id': user_id,
           role: '',
         },
       },

@@ -12,6 +12,8 @@ import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer';
 import { usePostListSearch } from '@/api/community/postListSearch';
 import { getCookie } from '@/api/auth/cookie.ts';
 import { alerterAtom } from '@/atoms/alerter';
+import axios from 'axios';
+import { user as userEndpoint } from '@/config';
 
 enum sortOption {
   normal = '기본순',
@@ -47,6 +49,9 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
   const [active, setActive] = useState('humor');
   const [search, setSearch] = useState('');
   const [postData, setPostData] = useState<any[]>([]);
+  const [userDataMap, setUserDataMap] = useState<Record<string, { name: string; profile: string }>>(
+    {},
+  );
   const token = getCookie('access_token');
 
   useEffect(() => {
@@ -54,6 +59,43 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
       setPostData(postListSearchMutation.data.data.posts);
     }
   }, [postListSearchMutation.isSuccess, postListSearchMutation.data]);
+
+  // 사용자 정보 가져오기
+  useEffect(() => {
+    if (postData.length === 0) return;
+    const userIds = new Set<string>();
+    postData.forEach((post) => {
+      userIds.add(post.userId);
+    });
+
+    const userIdArray = Array.from(userIds);
+    if (userIdArray.length === 0) return;
+    axios
+      .get(userEndpoint, {
+        params: { userIds: userIdArray },
+        paramsSerializer: (params) => {
+          const searchParams = new URLSearchParams();
+          params.userIds.forEach((id: string) => {
+            searchParams.append('userIds', id);
+          });
+          return searchParams.toString();
+        },
+      })
+      .then((response) => {
+        const users = response.data.data;
+        const userMap: Record<string, { name: string; profile: string }> = {};
+        users.forEach((user: any) => {
+          userMap[user.userId] = {
+            name: user.name,
+            profile: user.profile,
+          };
+        });
+        setUserDataMap(userMap);
+      })
+      .catch((error) => {
+        console.error('사용자 정보 가져오기 실패:', error);
+      });
+  }, [postData]);
 
   // 컴포넌트 마운트 시 초기 게시글 로딩
   useEffect(() => {
@@ -233,7 +275,11 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
           {postData.map((data) => (
             <PostPreview
               key={data.postId}
-              user={{ name: data.name, userId: data.userId, profile: data.profile }}
+              user={{
+                name: userDataMap[data.userId]?.name || '사용자',
+                userId: data.userId,
+                profile: userDataMap[data.userId]?.profile,
+              }}
               post={{
                 postId: data.postId,
                 title: data.title,

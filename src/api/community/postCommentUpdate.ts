@@ -5,6 +5,7 @@ import api from '../axiosInstance';
 
 interface PostCommentUpdateInterface {
   commentId: number;
+  user_id: string;
   body: string;
 }
 
@@ -23,7 +24,7 @@ interface PostCommentUpdateResponse {
     likesCount: number;
   };
 }
-const postCommentUpdate = async ({ commentId, body }: PostCommentUpdateInterface) => {
+const postCommentUpdate = async ({ commentId, user_id, body }: PostCommentUpdateInterface) => {
   const data = {
     body: body,
   };
@@ -33,7 +34,7 @@ const postCommentUpdate = async ({ commentId, body }: PostCommentUpdateInterface
       data,
       {
         headers: {
-          'user-id': 'user_id',
+          'user-id': user_id,
           role: '',
         },
       },

@@ -119,6 +119,7 @@ const Posts: React.FC<PostsProps> = ({
     commentUpdateMutation.mutate(
       {
         commentId: post.commentId,
+        user_id: loggedInUserId!,
         body: editedBody,
       },
       {
@@ -152,7 +153,7 @@ const Posts: React.FC<PostsProps> = ({
           return;
         }
         commentDeleteMutation.mutate(
-          { comment_id: post.commentId },
+          { comment_id: post.commentId, user_id: loggedInUserId! },
           {
             onSuccess: () => {
               refetchComments();

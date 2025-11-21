@@ -17,8 +17,6 @@ interface postListSearchResponse {
     posts: {
       postId: number;
       userId: string;
-      name: string;
-      profile: string | null;
       title: string;
       body: string;
       status: string;

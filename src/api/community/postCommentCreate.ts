@@ -30,6 +30,7 @@ interface ApiResponse {
 
 const postCommentCreate = async ({
   post_id,
+  user_id,
   body,
   parentCommentId,
 }: PostCommentCreateInterface) => {
@@ -44,7 +45,7 @@ const postCommentCreate = async ({
       data,
       {
         headers: {
-          'user-id': 'user_id',
+          'user-id': user_id,
           'Content-Type': 'application/json',
         },
       },
