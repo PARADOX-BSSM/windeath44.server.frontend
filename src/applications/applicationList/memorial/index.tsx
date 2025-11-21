@@ -10,6 +10,7 @@ import { Fragment, useEffect, useState, useMemo } from 'react';
 import { useGetCharacter } from '@/api/anime/getCharacter.ts';
 import type { CharacterData } from '@/api/anime/getCharacter';
 import type { memorialData } from '@/api/memorial/memorialGet';
+import { useGetCharactersByCharacterIds } from '@/api/anime/getCharactersByCharacterIds.ts';
 import {
   MemorialCommentsData,
   useGetMemorialComments,
@@ -78,6 +79,10 @@ const Memorial = ({
   const [userDataMap, setUserDataMap] = useState<Record<string, { name: string; profile: string }>>(
     {},
   );
+  const [officialCharactersData, setOfficialCharactersData] = useState<CharacterData[]>([]);
+  const [officialUserIdToCharacterId, setOfficialUserIdToCharacterId] = useState<
+    Map<string, number>
+  >(new Map());
   const [characterData, setCharacterData] = useState<CharacterData>({
     characterId: 0,
     animeId: 0,
@@ -128,6 +133,8 @@ const Memorial = ({
   const mutationCommentUpdate = useCommentUpdate(setMemorialComment);
   const mutationCommentDelete = useCommentDelete(setMemorialComment);
   const mutationCommentLike = useCommentLike(setMemorialComment);
+  const mutationGetCharactersByCharacterIds =
+    useGetCharactersByCharacterIds(setOfficialCharactersData);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -447,12 +454,48 @@ const Memorial = ({
 
     // 모든 userId 추출 (부모 + 자식 댓글)
     const userIds = new Set<string>();
+    const officialCharacterIds = new Set<number>();
+    const userIdToCharacterIdMap = new Map<string, number>();
+
     memorialComment.forEach((comment) => {
-      userIds.add(comment.userId);
+      // official-windeath44로 시작하는 userId에서 characterId 추출
+      // 형식: official-windeath44-{characterId}-{chatbotName}
+      if (comment.userId.startsWith('official-windeath44-')) {
+        const parts = comment.userId.split('-');
+        // parts[0] = 'official', parts[1] = 'windeath44', parts[2] = characterId
+        if (parts.length >= 3) {
+          const characterId = parseInt(parts[2]);
+          if (!isNaN(characterId)) {
+            officialCharacterIds.add(characterId);
+            userIdToCharacterIdMap.set(comment.userId, characterId);
+          }
+        }
+      } else {
+        userIds.add(comment.userId);
+      }
+
       comment.children?.forEach((child) => {
-        userIds.add(child.userId);
+        if (child.userId.startsWith('official-windeath44-')) {
+          const parts = child.userId.split('-');
+          if (parts.length >= 3) {
+            const characterId = parseInt(parts[2]);
+            if (!isNaN(characterId)) {
+              officialCharacterIds.add(characterId);
+              userIdToCharacterIdMap.set(child.userId, characterId);
+            }
+          }
+        } else {
+          userIds.add(child.userId);
+        }
       });
     });
+
+    // official character 정보 가져오기
+    if (officialCharacterIds.size > 0) {
+      const characterIdsArray = Array.from(officialCharacterIds);
+      setOfficialUserIdToCharacterId(userIdToCharacterIdMap);
+      mutationGetCharactersByCharacterIds.mutate(characterIdsArray);
+    }
 
     const userIdArray = Array.from(userIds);
     if (userIdArray.length === 0) return;
@@ -484,6 +527,33 @@ const Memorial = ({
         console.error('사용자 정보 가져오기 실패:', error);
       });
   }, [memorialComment]);
+
+  // official character 정보를 userDataMap에 추가
+  useEffect(() => {
+    if (officialCharactersData.length === 0) return;
+
+    const characterMap = new Map<number, CharacterData>();
+    officialCharactersData.forEach((character) => {
+      if (character) {
+        characterMap.set(character.characterId, character);
+      }
+    });
+
+    // 각 official userId에 대해 character 정보 매핑
+    setUserDataMap((prev) => {
+      const newMap = { ...prev };
+      officialUserIdToCharacterId.forEach((characterId, userId) => {
+        const character = characterMap.get(characterId);
+        if (character) {
+          newMap[userId] = {
+            name: character.name,
+            profile: character.imageUrl,
+          };
+        }
+      });
+      return newMap;
+    });
+  }, [officialCharactersData, officialUserIdToCharacterId]);
 
   // 데이터 로딩 중일 때 로딩 컴포넌트 표시
   if (
@@ -671,6 +741,7 @@ const Memorial = ({
                           isLiked={comment.isLiked}
                           userName={userDataMap[comment.userId]?.name}
                           userProfile={userDataMap[comment.userId]?.profile}
+                          isOfficial={comment.userId.startsWith('official-windeath44-')}
                           onReplySubmit={handleReplySubmit}
                           onEditSubmit={handleEditSubmit}
                           onDeleteSubmit={handleDeleteSubmit}
@@ -689,6 +760,7 @@ const Memorial = ({
                             isLiked={child.isLiked}
                             userName={userDataMap[child.userId]?.name}
                             userProfile={userDataMap[child.userId]?.profile}
+                            isOfficial={child.userId.startsWith('official-windeath44-')}
                             onReplySubmit={handleReplySubmit}
                             onEditSubmit={handleEditSubmit}
                             onDeleteSubmit={handleDeleteSubmit}

@@ -239,19 +239,6 @@ const WindowManager = () => {
       isLogIned !== 'true'
     )
       return;
-    if (!notificationsData?.data) return;
-
-    const openNotifications = notificationsData.data.filter((n) => n.is_open);
-    if (openNotifications.length === 0) {
-      hasCheckedNotification.current = true;
-      if (
-        !hydrated ||
-        hasCheckedNotification.current ||
-        !settings.showBootNotification ||
-        isLogIned !== 'true'
-      )
-        return;
-    }
 
     hasCheckedNotification.current = true;
 
