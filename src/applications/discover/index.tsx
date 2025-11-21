@@ -185,7 +185,7 @@ const Discover = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
   }, []);
 
   return (
-    <section ref={containerRef} className="discover" style={{ position: "relative", width: '100%', height: '100%', overflow: 'hidden', margin: "1.5rem", boxSizing: "border-box" }}>
+    <section ref={containerRef} className="discover" style={{ position: "relative", width: '100%', height: '100%', margin: "1.5rem", boxSizing: "border-box" }}>
       {visibleAndPlacedApps.map((Application: TaskType) => {
         const position = iconPositions[Application.name];
         return (
