@@ -18,6 +18,10 @@ interface postData {
   defaultTitle?: string;
   defaultBody?: string;
   refetchPosts?: () => void;
+  stack?: any[];
+  push?: any;
+  pop?: any;
+  top?: any;
 }
 
 const CommunityPostWrite: React.FC<postData> = ({
@@ -25,6 +29,10 @@ const CommunityPostWrite: React.FC<postData> = ({
   defaultTitle,
   defaultBody,
   refetchPosts,
+  stack,
+  push,
+  pop,
+  top,
 }: postData) => {
   const postCreateMutation = usePostCreate();
   const postUpdateMutation = usePostUpdate();
@@ -97,8 +105,8 @@ const CommunityPostWrite: React.FC<postData> = ({
             if (refetchPosts) {
               refetchPosts();
             }
-            if (taskTransform) {
-              taskTransform('게시글 작성', '');
+            if (pop) {
+              pop();
             }
           },
           onError: () => {
@@ -125,8 +133,8 @@ const CommunityPostWrite: React.FC<postData> = ({
             if (refetchPosts) {
               refetchPosts();
             }
-            if (taskTransform) {
-              taskTransform('게시글 작성', '');
+            if (pop) {
+              pop();
             }
           },
           onError: () => {
@@ -168,7 +176,9 @@ const CommunityPostWrite: React.FC<postData> = ({
               setTitle('');
               setBody('');
               refetchPosts?.();
-              taskTransform?.('게시글 작성', '');
+              if (pop) {
+                pop();
+              }
             },
             onError: () => {
               setAlert?.(<>게시글이 작성되지 않았습니다.</>, () => {
@@ -305,6 +315,11 @@ const CommunityPostWrite: React.FC<postData> = ({
             type="menu"
           />
         )}
+        <CommunityBtn
+          name="취소"
+          type="submit"
+          onClick={() => pop?.()}
+        />
         <CommunityBtn
           name={postId ? '수정' : '게시'}
           type="submit"

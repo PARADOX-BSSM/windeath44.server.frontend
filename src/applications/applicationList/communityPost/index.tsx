@@ -136,13 +136,14 @@ const CommunityPost = ({ stack, push, pop, top, postId }: postProps) => {
   const comments = commentsData?.data || [];
 
   const postEdit = () => {
-    if (taskTransform) {
-      taskTransform('', '게시글 작성', {
+    if (taskSearch) {
+      push(taskSearch('게시글 작성', {
+        ...stackProps,
         postId: postId,
         defaultTitle: data?.data.title,
         defaultBody: data?.data.body,
         refetchPosts: refetchPost,
-      });
+      }));
     }
   };
 

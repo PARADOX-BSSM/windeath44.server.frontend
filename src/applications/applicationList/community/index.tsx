@@ -179,8 +179,8 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
         },
       );
       return;
-    } else if (taskTransform) {
-      return taskTransform('', '게시글 작성', { refetchPosts });
+    } else if (taskSearch) {
+      return push(taskSearch('게시글 작성', { ...stackProps, refetchPosts }));
     }
   };
 
