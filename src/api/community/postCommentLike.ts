@@ -14,7 +14,7 @@ const postCommentLike = async ({ comment_id, user_id }: postCommentLike) => {
       {},
       {
         headers: {
-          'user-id': 'user_id',
+          'user-id': user_id,
         },
       },
     );

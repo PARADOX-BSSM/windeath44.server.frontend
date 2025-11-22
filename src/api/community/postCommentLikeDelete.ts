@@ -14,7 +14,7 @@ const postCommentLikeDelete = async ({ comment_id, user_id }: postCommentLikeDel
       `${community}/posts/comments/${comment_id}/likes`,
       {
         headers: {
-          'user-id': 'user_id',
+          'user-id': user_id,
         },
       },
     );
