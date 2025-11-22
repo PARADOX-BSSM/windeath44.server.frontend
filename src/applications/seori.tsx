@@ -130,7 +130,7 @@ export default function Seori() {
     const ground = Bodies.rectangle(
       0,
       bounds.bottom - taskbarBounds.height / 2,
-      taskbarBounds.width * 200,
+      taskbarBounds.width * 2000,
       taskbarBounds.height,
       {
         isStatic: true,
