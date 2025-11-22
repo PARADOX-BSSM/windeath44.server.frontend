@@ -25,29 +25,23 @@ const sort = ['최신순', '인기순'];
 const Judgement = ({ stack, push, pop, top }: JudgementProps) => {
   const [Judgement_List, setJL] = useState([]);
 
-  const { mutate: getList, data } = useGetJudgementList();
+  const { mutate: getList } = useGetJudgementList();
 
   const [text, setText] = useState('');
 
   const [open, setOpen] = useState(false);
   const [choice, setChoice] = useState('인기순');
 
-  const taskSearch = useAtomValue(taskSearchAtom);
-
   const set_selected = useSetAtom(select_chat);
-
-  const stackProps = {
-    stack: stack,
-    push: push,
-    pop: pop,
-    top: top,
-  };
 
   useEffect(() => {
     set_selected(-1);
+  }, []);
+
+  useEffect(() => {
     getList(undefined, {
       onSuccess: (data) => {
-        const content = data.data?.content ?? [];
+        const content = data.data.judgments ?? [];
 
         // 서버 데이터 구조를 미리보기 형태로 변환
         const mapped = content.map((item: any) => ({
@@ -76,7 +70,7 @@ const Judgement = ({ stack, push, pop, top }: JudgementProps) => {
         setJL(ranked);
       },
     });
-  }, []);
+  }, [stack]);
 
   return (
     <_.Container>

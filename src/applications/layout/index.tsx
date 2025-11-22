@@ -362,10 +362,12 @@ const Application = (props: ApplicationProps) => {
                   setEvent((prev) => prev + 1);
                   set_sep_window(false);
                   set_open_vote(false);
+                  console.log('왜 삭제가 안되는거지');
                   return;
                 }
 
-                if (taskTransform) taskTransform('재판 댓글', '');
+                taskTransform('재판 댓글', ''); //댓글 창 자동으로 닫기
+
                 props.removeTask(props.removeCompnent);
 
                 if (!isLogIned) {

@@ -1,7 +1,7 @@
 import * as _ from './style';
 import ameImg from '@/assets/profile/ame.svg';
 import chotenImg from '@/assets/profile/choten.svg';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { setCursorImage, CURSOR_IMAGES } from 'lib/setCursorImg';
 
 interface PropsType {
@@ -48,6 +48,10 @@ const Comment = ({
   // console.log(imgUrl);
 
   const isOwner = currentUserId === userid;
+
+  useEffect(() => {
+    console.log(isOwner);
+  }, [isOwner]);
 
   const handleReplySubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

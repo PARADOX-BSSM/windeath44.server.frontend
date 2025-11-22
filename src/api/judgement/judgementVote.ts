@@ -5,17 +5,21 @@ import { useMutation } from '@tanstack/react-query';
 
 interface postVoteProps {
   judgement_id: number;
-  is_heaven: boolean;
+  isHeaven: boolean;
 }
 
 interface getVoteProps {
   judgement_id: number;
 }
 
-const getVote = async ({ judgement_id }: getVoteProps) => {
+interface deleteVoteProps {
+  judgement_id: number;
+}
+
+const getVoteDirection = async ({ judgement_id }: getVoteProps) => {
   try {
     const response: AxiosResponse = await api.get(`${judgement}/${judgement_id}/votes/me`, {
-      headers: { 'user-id': 'test' },
+      headers: { 'user-id': 'xlah_ht09' },
     });
     return response.data;
   } catch (error: any) {
@@ -24,13 +28,25 @@ const getVote = async ({ judgement_id }: getVoteProps) => {
   }
 };
 
-const postVote = async ({ judgement_id, is_heaven }: postVoteProps) => {
+const postVote = async ({ judgement_id, isHeaven }: postVoteProps) => {
   try {
     const response: AxiosResponse = await api.post(
       `${judgement}/${judgement_id}/votes`,
-      { is_heaven },
-      { headers: { 'user-id': 'test' } },
+      { isHeaven },
+      { headers: { 'user-id': 'xlah_ht09' } },
     );
+    return response.data;
+  } catch (error: any) {
+    console.log('투표 전송 실패');
+    throw error;
+  }
+};
+
+const deleteVote = async ({ judgement_id }: deleteVoteProps) => {
+  try {
+    const response: AxiosResponse = await api.delete(`${judgement}/${judgement_id}/votes`, {
+      headers: { 'user-id': 'xlah_ht09' },
+    });
     return response.data;
   } catch (error: any) {
     console.log('투표 전송 실패');
@@ -50,9 +66,21 @@ export const usePostVote = () => {
   });
 };
 
-export const useGetVote = () => {
+export const useDeleteVote = () => {
   return useMutation({
-    mutationFn: getVote,
+    mutationFn: deleteVote,
+    onSuccess: () => {
+      console.log('성공:');
+    },
+    onError: () => {
+      console.log('실패:');
+    },
+  });
+};
+
+export const useGetVoteDirection = () => {
+  return useMutation({
+    mutationFn: getVoteDirection,
     onSuccess: () => {
       console.log('성공:');
     },

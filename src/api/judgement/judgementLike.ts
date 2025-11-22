@@ -52,7 +52,7 @@ const deleteJudgementLike = async ({ judgement_id }: deleteJudgementLike) => {
 const getJudgementLike = async ({ judgement_id }: getJudgementLike) => {
   try {
     const response: AxiosResponse = await api.get(`${judgement}/${judgement_id}/likes`, {
-      headers: { 'user-id': 'test-user' },
+      headers: { 'user-id': 'test' },
     });
     return response.data;
   } catch (error: any) {

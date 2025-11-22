@@ -13,8 +13,8 @@ import {
   usegetJudgementLike,
   usepostJudgementLike,
 } from '@/api/judgement/judgementLike';
-import { judgement } from '@/config';
-import { useGetVote, usePostVote } from '@/api/judgement/judgementVote';
+
+import { useDeleteVote, useGetVoteDirection, usePostVote } from '@/api/judgement/judgementVote';
 
 interface VoteProps {
   stack: any[];
@@ -52,7 +52,8 @@ const Judgement_Vote = ({
 
   const [isHeaven, setIsHeaven] = useState(false);
   const [isHell, setIsHell] = useState(false);
-  const [currentHeart, setHeart] = useState(empty_heart);
+
+  const [Like, setLike] = useState(like);
 
   const count = useAtomValue(Event_Count);
   const count_p = useAtomValue(Event_Past);
@@ -63,8 +64,11 @@ const Judgement_Vote = ({
   const { mutate: deleteLike } = usedeleteJudgementLike();
   const { mutate: getLike } = usegetJudgementLike();
 
+  const [currentHeart, setHeart] = useState(empty_heart);
+
   const { mutate: postVote } = usePostVote();
-  const { mutate: getVote } = useGetVote();
+  const { mutate: getVoteDirection } = useGetVoteDirection();
+  const { mutate: deleteVote } = useDeleteVote();
 
   useEffect(() => {
     if (count != count_p) {
@@ -75,7 +79,32 @@ const Judgement_Vote = ({
 
   useEffect(() => {
     Set_open_vote(true);
-    getVote({ judgement_id });
+    getVoteDirection(
+      { judgement_id },
+      {
+        onSuccess: (data) => {
+          console.log(data.data);
+          if (data.data == false) {
+            setIsHell(true);
+            setIsHeaven(false);
+          } else if (data.data == true) {
+            setIsHell(false);
+            setIsHeaven(true);
+          } else {
+            setIsHell(false);
+            setIsHeaven(false);
+          }
+        },
+      },
+    );
+    getLike(
+      { judgement_id },
+      {
+        onSuccess: (data) => {
+          setHeart(data.data ? heart : empty_heart);
+        },
+      },
+    );
   }, []);
 
   return (
@@ -139,8 +168,19 @@ const Judgement_Vote = ({
             fontSize="26px"
             selected={isHeaven}
             onClick={() => {
-              console.log(isHeaven);
-              postVote({ judgement_id: judgement_id, is_heaven: isHeaven });
+              if (isHell == true) {
+                deleteVote(
+                  { judgement_id },
+                  {
+                    onSuccess: () => {
+                      postVote({ judgement_id: judgement_id, isHeaven: true });
+                    },
+                  },
+                );
+              } else {
+                postVote({ judgement_id: judgement_id, isHeaven: true });
+              }
+
               setIsHeaven(true);
               setIsHell(false);
             }}
@@ -154,8 +194,19 @@ const Judgement_Vote = ({
             fontSize="26px"
             selected={isHell}
             onClick={() => {
-              console.log(isHeaven);
-              postVote({ judgement_id: judgement_id, is_heaven: isHeaven });
+              if (isHeaven == true) {
+                deleteVote(
+                  { judgement_id },
+                  {
+                    onSuccess: () => {
+                      postVote({ judgement_id: judgement_id, isHeaven: false });
+                    },
+                  },
+                );
+              } else {
+                postVote({ judgement_id: judgement_id, isHeaven: false });
+              }
+
               setIsHell(true);
               setIsHeaven(false);
             }}
@@ -173,13 +224,13 @@ const Judgement_Vote = ({
               <_.LikeImg
                 src={currentHeart}
                 onClick={() => {
-                  currentHeart === heart
-                    ? deleteLike({ judgement_id })
-                    : postLike({ judgement_id });
+                  currentHeart == heart
+                    ? (deleteLike({ judgement_id }), setLike(Like - 1))
+                    : (postLike({ judgement_id }), setLike(Like + 1));
                   setHeart(currentHeart === heart ? empty_heart : heart);
                 }}
               ></_.LikeImg>
-              <_.LikeText>{like}</_.LikeText>
+              <_.LikeText>{Like}</_.LikeText>
             </_.Interact>
           </_.Name_Div>
         </_.Info>
