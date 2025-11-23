@@ -1,9 +1,7 @@
 import * as _ from './style.ts';
-import { ChatList } from './chat_list.ts';
 import { Fragment, useEffect, useRef, useState } from 'react';
 import MemorialBtn from '@/applications/components/memorialBtn/index.tsx';
 import FilterBlock from '@/applications/components/filterBlock/index.tsx';
-import JudgementChatObj from '@/applications/components/judgementChatObj/index.tsx';
 import { useAtomValue } from 'jotai';
 import { chat_num, select_chat } from '@/applications/components/judgementChatObj/state_manager.ts';
 import {
@@ -12,15 +10,15 @@ import {
   usePostJudgementChatLike,
 } from '@/api/judgement/judgementChat.ts';
 import Comment from '@/applications/components/comment/index.tsx';
-import { usePostCommentLike } from '@/api/community/postCommentLike.ts';
-import { usePostCommentCreate } from '@/api/community/postCommentCreate.ts';
 import { usePatchJudgementChats } from '@/api/judgement/judgementChatEdit.ts';
 import { useDeleteJudgementChats } from '@/api/judgement/judgementChatDelete.ts';
 import { usePostJudgementChats } from '@/api/judgement/judgementChatCreate.ts';
-import { usePostLike } from '@/api/community/postLike.ts';
 import { useGetUserMutation } from '@/api/user/getUser';
 import axios from 'axios';
 import { user as userEndpoint } from '@/config';
+import { getCookie } from '@/api/auth/cookie.ts';
+import { alerterAtom } from '@/atoms/alerter';
+import { taskTransformerAtom } from '@/atoms/taskTransformer';
 
 const sort = ['최신', '인기'];
 
@@ -33,7 +31,7 @@ const JudgementChat = ({ judgement_id }: judgementChatProps) => {
   const [userDataMap, setUserDataMap] = useState<Record<string, { name: string; profile: string }>>(
     {},
   );
-  const { mutate: getChats, data } = useGetJudgementChats();
+  const { mutate: getChats } = useGetJudgementChats();
   const { mutate: postLike } = usePostJudgementChatLike();
   const { mutate: deleteLike } = useDeleteJudgementChatLike();
   const { mutate: createChat } = usePostJudgementChats();
@@ -46,6 +44,10 @@ const JudgementChat = ({ judgement_id }: judgementChatProps) => {
   const currentUserName = userData?.data?.name || '';
   const currentUserProfile = userData?.data?.profile || '';
   const currentUserRole = userData?.data?.role || '';
+
+  const token = getCookie('access_token');
+  const setAlert = useAtomValue(alerterAtom);
+  const taskTransform = useAtomValue(taskTransformerAtom);
 
   useEffect(() => {
     getUser();
@@ -110,6 +112,13 @@ const JudgementChat = ({ judgement_id }: judgementChatProps) => {
   }, [ChatList]);
 
   const useCreateChat = (content: string, parentCommentId?: number | null) => {
+    if (!token) {
+      setAlert?.(<>로그인 후 이용 가능합니다.</>, () => {
+        taskTransform?.('경고', '');
+      });
+      return;
+    }
+
     createChat(
       {
         judgement_id: judgement_id,
@@ -120,7 +129,7 @@ const JudgementChat = ({ judgement_id }: judgementChatProps) => {
         user_profile: currentUserProfile,
       },
       {
-        onSuccess: (data) => {
+        onSuccess: () => {
           // ✅ 여기가 핵심! setChatList를 호출해야 함
           getChats(
             { judgement_id, user_id: currentUserId },
@@ -140,14 +149,21 @@ const JudgementChat = ({ judgement_id }: judgementChatProps) => {
           );
           set_input_value(''); // input 초기화
         },
-        onError: (error) => {
-          console.error('댓글 생성 실패:', error);
+        onError: () => {
+          console.error('댓글 생성 실패');
         },
       },
     );
   };
 
   const useEditChat = (content: string, comment_id: number) => {
+    if (!token) {
+      setAlert?.(<>로그인 후 이용 가능합니다.</>, () => {
+        taskTransform?.('경고', '');
+      });
+      return;
+    }
+
     editChat(
       {
         comment_id: comment_id,
@@ -156,7 +172,7 @@ const JudgementChat = ({ judgement_id }: judgementChatProps) => {
         role: currentUserRole,
       },
       {
-        onSuccess: (data) => {
+        onSuccess: () => {
           // ✅ 여기가 핵심! setChatList를 호출해야 함
           getChats(
             { judgement_id, user_id: currentUserId },
@@ -176,14 +192,21 @@ const JudgementChat = ({ judgement_id }: judgementChatProps) => {
           );
           set_input_value(''); // input 초기화
         },
-        onError: (error) => {
-          console.error('댓글 생성 실패:', error);
+        onError: () => {
+          console.error('댓글 생성 실패');
         },
       },
     );
   };
 
   const useDeleteChat = (comment_id: number) => {
+    if (!token) {
+      setAlert?.(<>로그인 후 이용 가능합니다.</>, () => {
+        taskTransform?.('경고', '');
+      });
+      return;
+    }
+
     deleteChat(
       {
         comment_id,
@@ -191,7 +214,7 @@ const JudgementChat = ({ judgement_id }: judgementChatProps) => {
         role: currentUserRole,
       },
       {
-        onSuccess: (data) => {
+        onSuccess: () => {
           // ✅ 여기가 핵심! setChatList를 호출해야 함
           getChats(
             { judgement_id, user_id: currentUserId },
@@ -203,14 +226,21 @@ const JudgementChat = ({ judgement_id }: judgementChatProps) => {
           );
           set_input_value(''); // input 초기화
         },
-        onError: (error) => {
-          console.error('댓글 생성 실패:', error);
+        onError: () => {
+          console.error('댓글 생성 실패');
         },
       },
     );
   };
 
   const handleLikeToggle = (comment_id: number, isLiked: boolean) => {
+    if (!token) {
+      setAlert?.(<>로그인 후 이용 가능합니다.</>, () => {
+        taskTransform?.('경고', '');
+      });
+      return;
+    }
+
     if (isLiked) {
       // 이미 좋아요 상태 → 좋아요 취소
       deleteLike(
@@ -226,8 +256,8 @@ const JudgementChat = ({ judgement_id }: judgementChatProps) => {
               },
             );
           },
-          onError: (error) => {
-            console.error('좋아요 취소 실패:', error);
+          onError: () => {
+            console.error('좋아요 취소 실패');
           },
         },
       );
@@ -246,8 +276,8 @@ const JudgementChat = ({ judgement_id }: judgementChatProps) => {
               },
             );
           },
-          onError: (error) => {
-            console.error('좋아요 추가 실패:', error);
+          onError: () => {
+            console.error('좋아요 추가 실패');
           },
         },
       );
@@ -271,7 +301,7 @@ const JudgementChat = ({ judgement_id }: judgementChatProps) => {
   const chat_count = useAtomValue(chat_num);
 
   useEffect(() => {
-    if (select != -1) {
+    if (select !== -1 && scroll_ref.current) {
       console.log(chat_count);
       scroll_ref.current.scrollTo();
     }
@@ -327,18 +357,18 @@ const JudgementChat = ({ judgement_id }: judgementChatProps) => {
                       likes={item.likesCount}
                       parentId={item.parentCommentId}
                       isLiked={item.isLiked}
-                      onReplySubmit={(commentId, content) => {
+                      onReplySubmit={(commentId: number, content: string) => {
                         useCreateChat(content, commentId);
                       }}
-                      onEditSubmit={(commentId, content) => {
+                      onEditSubmit={(commentId: number, content: string) => {
                         useEditChat(content, commentId);
                       }}
-                      onDeleteSubmit={(commentId) => {
+                      onDeleteSubmit={(commentId: number) => {
                         useDeleteChat(commentId);
                       }}
                       onLikeToggle={handleLikeToggle}
                     />
-                    {item.children?.map((child, childIdx) => {
+                    {item.children?.map((child: any, childIdx: number) => {
                       return (
                         <Comment
                           idx={idx + childIdx + 1}
@@ -352,13 +382,13 @@ const JudgementChat = ({ judgement_id }: judgementChatProps) => {
                           likes={child.likesCount}
                           parentId={child.parentCommentId}
                           isLiked={child.isLiked}
-                          onReplySubmit={(commentId, content) => {
+                          onReplySubmit={(commentId: number, content: string) => {
                             useCreateChat(content, commentId);
                           }}
-                          onEditSubmit={(commentId, content) => {
+                          onEditSubmit={(commentId: number, content: string) => {
                             useEditChat(content, commentId);
                           }}
-                          onDeleteSubmit={(commentId) => {
+                          onDeleteSubmit={(commentId: number) => {
                             useDeleteChat(commentId);
                           }}
                           onLikeToggle={handleLikeToggle}

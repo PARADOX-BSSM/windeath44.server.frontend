@@ -16,6 +16,9 @@ import {
 
 import { useDeleteVote, useGetVoteDirection, usePostVote } from '@/api/judgement/judgementVote';
 import { useGetUserMutation } from '@/api/user/getUser';
+import { getCookie } from '@/api/auth/cookie.ts';
+import { alerterAtom } from '@/atoms/alerter';
+import { taskTransformerAtom } from '@/atoms/taskTransformer';
 
 interface VoteProps {
   stack: any[];
@@ -50,6 +53,10 @@ const Judgement_Vote = ({
   // 로그인한 유저 정보 가져오기
   const { mutate: getUser, data: userData } = useGetUserMutation();
   const currentUserId = userData?.data?.userId || '';
+
+  const token = getCookie('access_token');
+  const setAlert = useAtomValue(alerterAtom);
+  const taskTransform = useAtomValue(taskTransformerAtom);
 
   useEffect(() => {
     getUser();
@@ -181,12 +188,23 @@ const Judgement_Vote = ({
             fontSize="26px"
             selected={isHeaven}
             onClick={() => {
+              if (!token) {
+                setAlert?.(<>로그인 후 이용 가능합니다.</>, () => {
+                  taskTransform?.('경고', '');
+                });
+                return;
+              }
+
               if (isHell == true) {
                 deleteVote(
                   { judgement_id, user_id: currentUserId },
                   {
                     onSuccess: () => {
-                      postVote({ judgement_id: judgement_id, isHeaven: true, user_id: currentUserId });
+                      postVote({
+                        judgement_id: judgement_id,
+                        isHeaven: true,
+                        user_id: currentUserId,
+                      });
                     },
                   },
                 );
@@ -207,12 +225,23 @@ const Judgement_Vote = ({
             fontSize="26px"
             selected={isHell}
             onClick={() => {
+              if (!token) {
+                setAlert?.(<>로그인 후 이용 가능합니다.</>, () => {
+                  taskTransform?.('경고', '');
+                });
+                return;
+              }
+
               if (isHeaven == true) {
                 deleteVote(
                   { judgement_id, user_id: currentUserId },
                   {
                     onSuccess: () => {
-                      postVote({ judgement_id: judgement_id, isHeaven: false, user_id: currentUserId });
+                      postVote({
+                        judgement_id: judgement_id,
+                        isHeaven: false,
+                        user_id: currentUserId,
+                      });
                     },
                   },
                 );
@@ -237,6 +266,13 @@ const Judgement_Vote = ({
               <_.LikeImg
                 src={currentHeart}
                 onClick={() => {
+                  if (!token) {
+                    setAlert?.(<>로그인 후 이용 가능합니다.</>, () => {
+                      taskTransform?.('경고', '');
+                    });
+                    return;
+                  }
+
                   currentHeart == heart
                     ? (deleteLike({ judgement_id, user_id: currentUserId }), setLike(Like - 1))
                     : (postLike({ judgement_id, user_id: currentUserId }), setLike(Like + 1));
