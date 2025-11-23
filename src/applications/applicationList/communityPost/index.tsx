@@ -139,13 +139,15 @@ const CommunityPost = ({ stack, push, pop, top, postId }: postProps) => {
 
   const postEdit = () => {
     if (taskSearch) {
-      push(taskSearch('게시글 작성', {
-        ...stackProps,
-        postId: postId,
-        defaultTitle: data?.data.title,
-        defaultBody: data?.data.body,
-        refetchPosts: refetchPost,
-      }));
+      push(
+        taskSearch('게시글 작성', {
+          ...stackProps,
+          postId: postId,
+          defaultTitle: data?.data.title,
+          defaultBody: data?.data.body,
+          refetchPosts: refetchPost,
+        }),
+      );
     }
   };
 
@@ -195,6 +197,7 @@ const CommunityPost = ({ stack, push, pop, top, postId }: postProps) => {
             refetchPost={refetchPost}
             postEdit={postEdit}
           />
+          {}
           <CommentInput
             name={currentUser?.name}
             userId={currentUser?.userId}

@@ -9,6 +9,7 @@ import { alerterAtom } from '@/atoms/alerter';
 import { useAtomValue } from 'jotai';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
+import { getCookie } from '@/api/auth/cookie';
 
 interface CommentInputProps {
   name?: string;
@@ -30,31 +31,38 @@ const CommentInput: React.FC<CommentInputProps> = ({
   const postCreateCommentMutation = usePostCommentCreate();
   const taskTransform = useAtomValue(taskTransformerAtom);
   const setAlert = useAtomValue(alerterAtom);
+  const token = getCookie('access_token');
 
   const createComment = () => {
-    postCreateCommentMutation.mutate(
-      {
-        post_id: postId,
-        user_id: userId,
-        body: commentInput,
-        parentCommentId: parentCommentId,
-      },
-      {
-        onSuccess: () => {
-          console.log('댓글 작성 완료');
-          setCommentInput('');
-          if (refetchComments) {
-            refetchComments();
-          }
+    if (token) {
+      postCreateCommentMutation.mutate(
+        {
+          post_id: postId,
+          user_id: userId,
+          body: commentInput,
+          parentCommentId: parentCommentId,
         },
+        {
+          onSuccess: () => {
+            console.log('댓글 작성 완료');
+            setCommentInput('');
+            if (refetchComments) {
+              refetchComments();
+            }
+          },
 
-        onError: () => {
-          setAlert?.(<>댓글이 작성되지 않았습니다.</>, () => {
-            taskTransform?.('경고', '');
-          });
+          onError: () => {
+            setAlert?.(<>댓글이 작성되지 않았습니다.</>, () => {
+              taskTransform?.('경고', '');
+            });
+          },
         },
-      },
-    );
+      );
+    } else {
+      setAlert?.(<>로그인 후 이용 가능합니다.</>, () => {
+        taskTransform?.('경고', '');
+      });
+    }
   };
 
   const [commentInput, setCommentInput] = useState<string>('');
