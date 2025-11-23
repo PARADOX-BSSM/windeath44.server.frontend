@@ -10,7 +10,7 @@ import Seori from '@/applications/seori';
 import * as _ from './style';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
 import { TaskType } from '@/modules/typeModule.tsx';
-import { isNotClickAtom } from '@/atoms/cursorState';
+import { isNotClickAtom, isSeoriDraggingAtom } from '@/atoms/cursorState';
 
 interface TaskBarProps {
   backUpFocus: string;
@@ -33,7 +33,8 @@ const Discover = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
   const [, initializeGrid] = useAtom(initializeGridAtom);
   const [, resizeGrid] = useAtom(resizeGridAtom);
   const [iconPositions] = useAtom(iconPositionsAtom);
-  const [isNotClick, ] = useAtom(isNotClickAtom);
+  const [isNotClick] = useAtom(isNotClickAtom);
+  const [isSeoriDragging] = useAtom(isSeoriDraggingAtom);
 
   const [displayWidth, setDisplayWidth] = React.useState<number>(0);
   const [displayLeft, setDisplayLeft] = React.useState<number>(0);
@@ -101,8 +102,13 @@ const Discover = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
     if (!container) return;
 
     const handleMouseDown = (e: MouseEvent) => {
+      // Seori 드래그 중이면 SelectionBox 시작 안 함
+      if (isSeoriDragging) {
+        return;
+      }
+
       const target = e.target as HTMLElement;
-      // 앱 버튼이나 태스크바 클릭 시 드래그 시작 안 함
+      // 앱 버튼, 태스크바 클릭 시 드래그 시작 안 함
       if (target.closest('.app-button') || target.closest('[style*="bottom: 0"]')) {
         return;
       }
@@ -160,7 +166,7 @@ const Discover = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [isDragging, selectionRect, isIntersecting, getSelectionBounds]);
+  }, [isDragging, selectionRect, isIntersecting, getSelectionBounds, isSeoriDragging]);
 
   // 빈 공간 클릭 시 선택 해제 (mousedown 사용으로 드래그 후 click 문제 해결)
   React.useEffect(() => {
@@ -186,6 +192,7 @@ const Discover = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
 
   return (
     <section ref={containerRef} className="discover" style={{ position: "relative", width: '100%', height: '100%', margin: "1.5rem", boxSizing: "border-box" }}>
+      <Seori />
       {visibleAndPlacedApps.map((Application: TaskType) => {
         const position = iconPositions[Application.name];
         return (
@@ -198,7 +205,7 @@ const Discover = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
               addTask(Application);
               setFocus(Application.name);
             }}
-            style={{ zIndex: '0' }}
+            style={{ zIndex: '1' }}
             isSelected={selectedApps.has(Application.name)}
             onClick={(e) => {
               if (e.ctrlKey || e.metaKey) {

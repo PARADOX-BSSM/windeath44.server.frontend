@@ -1,4 +1,5 @@
 import { focusAtom } from '@/atoms/windowManager';
+import { isSeoriDraggingAtom } from '@/atoms/cursorState';
 import { useAtom } from 'jotai';
 import {
   MouseConstraint,
@@ -11,13 +12,14 @@ import {
   Runner,
   World,
 } from 'matter-js';
-import { MutableRefObject, useEffect, useLayoutEffect, useRef } from 'react';
+import { MutableRefObject, useLayoutEffect, useRef } from 'react';
 
 export default function Seori() {
   // 설이 Ref
   const shapeRef = useRef<Body | null>(null) as MutableRefObject<Body | null>;
 
   const [, setFocus] = useAtom(focusAtom);
+  const [, setIsSeoriDragging] = useAtom(isSeoriDraggingAtom);
 
   // 설이 스프라이트 변경 함수
   const setSpriteTexture = (path: string) => {
@@ -40,15 +42,12 @@ export default function Seori() {
   // 설이 상태 Ref
   const stateRef = useRef('default');
   const setStateRef = (state: string) => {
+    if (stateRef.current === state) return; // 같은 상태면 무시
     stateRef.current = state;
+    const texturePath = `src/assets/seori/interaction_${state}.png`;
+    setSpriteTexture(texturePath);
   };
 
-  // 설이 스프라이트 변경 useEffect
-  useEffect(() => {
-    // console.log(directionRef.current, stateRef.current);
-    const texturePath = `src/assets/seori/seori_${stateRef.current}_${directionRef.current}.png`;
-    // setSpriteTexture(texturePath);
-  }, [directionRef.current, stateRef.current]);
 
   useLayoutEffect(() => {
     const container = document.getElementById('cursorContainer');
@@ -74,12 +73,40 @@ export default function Seori() {
       },
     });
     const world = engine.world;
-    render.canvas.style.zIndex = '0';
+    render.canvas.style.zIndex = '1';
     render.canvas.style.position = 'absolute';
     render.canvas.style.pointerEvents = 'auto';
 
-    render.canvas.onclick! = () => {
-      setFocus('Discover');
+    render.canvas.onclick = (e: MouseEvent) => {
+      // 클릭 위치에 있는 모든 요소 찾기
+      const elements = document.elementsFromPoint(e.clientX, e.clientY);
+      // canvas를 제외한 요소 중 app-button 찾기
+      const appButton = elements.find(
+        (el) => el !== render.canvas && el.closest('.app-button'),
+      );
+      if (appButton) {
+        // app-button 클릭 이벤트 전달
+        (appButton.closest('.app-button') as HTMLElement)?.click();
+      } else {
+        setFocus('Discover');
+      }
+    };
+
+    render.canvas.ondblclick = (e: MouseEvent) => {
+      // 더블클릭도 전달
+      const elements = document.elementsFromPoint(e.clientX, e.clientY);
+      const appButton = elements.find(
+        (el) => el !== render.canvas && el.closest('.app-button'),
+      );
+      if (appButton) {
+        const event = new MouseEvent('dblclick', {
+          bubbles: true,
+          cancelable: true,
+          clientX: e.clientX,
+          clientY: e.clientY,
+        });
+        appButton.closest('.app-button')?.dispatchEvent(event);
+      }
     };
 
     const secondDiv = container.querySelector('div');
@@ -103,7 +130,7 @@ export default function Seori() {
     const ground = Bodies.rectangle(
       0,
       bounds.bottom - taskbarBounds.height / 2,
-      taskbarBounds.width * 200,
+      taskbarBounds.width * 2000,
       taskbarBounds.height,
       {
         isStatic: true,
@@ -134,31 +161,32 @@ export default function Seori() {
       });
     }
 
+    const texturePath = `src/assets/seori/interaction_${stateRef.current}.png`;
+
     let shape = Bodies.rectangle(300, 150, 100, 100, {
       inertia: Infinity,
       friction: 0,
       frictionStatic: 0,
       render: {
         sprite: {
-          texture: `src/assets/seori/seori_${stateRef.current}_${directionRef.current}.png`,
-          xScale: 0.8,
-          yScale: 0.8,
+          texture: texturePath,
+          xScale: 0.1,
+          yScale: 0.1,
         },
       },
       label: 'shape',
     });
-
-    const texturePath = `src/assets/seori/seori_${stateRef.current}_${directionRef.current}.png`;
     loadImageSize(texturePath).then(({ width, height }) => {
-      shape = Bodies.rectangle(300, 150, width * 0.8, height * 0.8, {
+      const scale = 0.1;
+      shape = Bodies.rectangle(300, 150, width * scale, height * scale, {
         inertia: Infinity,
         friction: 0,
         frictionStatic: 0,
         render: {
           sprite: {
             texture: texturePath,
-            xScale: 0.8,
-            yScale: 0.8,
+            xScale: scale,
+            yScale: scale,
           },
         },
         label: 'shape',
@@ -170,19 +198,13 @@ export default function Seori() {
 
     // 드래그 시작 && 끝나면 실행되는 함수들
     const onDragStart = () => {
-      // console.log("Started");
       isDraggingRef.current = true;
+      setIsSeoriDragging(true);
       setStateRef('holding');
-      if (directionRef.current === 'left') {
-        shape.render.fillStyle = '#FFFFAA';
-      }
-      if (directionRef.current === 'right') {
-        shape.render.fillStyle = '#FFAA00';
-      }
     };
     const onDragEnd = () => {
-      // console.log("Ended");
       isDraggingRef.current = false;
+      setIsSeoriDragging(false);
       setStateRef('falling');
     };
 
@@ -260,33 +282,15 @@ export default function Seori() {
       const interval = 1;
 
       // 설이를 잡지 않고 위아래로 이동
-      if (y > interval && !isDraggingRef.current) {
+      if ((y > interval || y < -interval) && !isDraggingRef.current) {
         setStateRef('falling');
-        // console.log("아래로 이동 중");
-        if (directionRef.current === 'left') {
-          shape.render.fillStyle = '#00FFAA';
-        }
-        if (directionRef.current === 'right') {
-          shape.render.fillStyle = '#AAFF00';
-        }
-      } else if (y < -interval && !isDraggingRef.current) {
-        setStateRef('falling');
-        // console.log("위로 이동 중");
-        if (directionRef.current === 'left') {
-          shape.render.fillStyle = '#AAAAFF';
-        }
-        if (directionRef.current === 'right') {
-          shape.render.fillStyle = '#FFAAAA';
-        }
       }
 
-      // 설이를 잡고 좌우로 이동
+      // 설이를 잡고 좌우로 이동 (방향 저장용)
       if (x > interval && isDraggingRef.current) {
         setDirectionRef('right');
-        shape.render.fillStyle = '#FF0000';
       } else if (x < -interval && isDraggingRef.current) {
         setDirectionRef('left');
-        shape.render.fillStyle = '#0000FF';
       }
     });
 
@@ -302,28 +306,10 @@ export default function Seori() {
 
     // 설이의 속도가 0인 것을 감지하는 이벤트 (바닥에 붙어있다)
     setInterval(() => {
-      if (shape.speed < 0.1) {
-        // 들고있을 때
-        if (isDraggingRef.current) {
-          if (directionRef.current === 'left') {
-            shape.render.fillStyle = '#FFFFAA';
-          }
-          if (directionRef.current === 'right') {
-            shape.render.fillStyle = '#FFAA00';
-          }
-        }
-        // 내려놨을 떄
-        else {
-          setStateRef('default');
-          if (directionRef.current === 'left') {
-            shape.render.fillStyle = '#000000';
-          }
-          if (directionRef.current === 'right') {
-            shape.render.fillStyle = '#00AAAA';
-          }
-        }
+      if (shape.speed < 0.1 && !isDraggingRef.current) {
+        setStateRef('default');
       }
-    }, 75);
+    }, 10);
 
     return () => {
       Render.stop(render);
