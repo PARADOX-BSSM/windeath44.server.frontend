@@ -7,6 +7,7 @@ interface PostCommentUpdateInterface {
   commentId: number;
   user_id: string;
   body: string;
+  role: string;
 }
 
 interface PostCommentUpdateResponse {
@@ -24,7 +25,7 @@ interface PostCommentUpdateResponse {
     likesCount: number;
   };
 }
-const postCommentUpdate = async ({ commentId, user_id, body }: PostCommentUpdateInterface) => {
+const postCommentUpdate = async ({ commentId, user_id, body, role }: PostCommentUpdateInterface) => {
   const data = {
     body: body,
   };
@@ -35,7 +36,7 @@ const postCommentUpdate = async ({ commentId, user_id, body }: PostCommentUpdate
       {
         headers: {
           'user-id': user_id,
-          role: '',
+          role: role,
         },
       },
     );

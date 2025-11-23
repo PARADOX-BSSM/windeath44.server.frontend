@@ -10,6 +10,7 @@ interface PostUpdateInterface {
   body: string;
   status: string;
   isBlind: boolean;
+  role: string;
 }
 
 interface PostUpdateResponse {
@@ -31,7 +32,7 @@ interface PostUpdateResponse {
   };
 }
 
-const postUpdate = async ({ postId, user_id, title, body, status, isBlind }: PostUpdateInterface) => {
+const postUpdate = async ({ postId, user_id, title, body, status, isBlind, role }: PostUpdateInterface) => {
   const data = {
     title: title,
     body: body,
@@ -45,7 +46,7 @@ const postUpdate = async ({ postId, user_id, title, body, status, isBlind }: Pos
       {
         headers: {
           'user-id': user_id,
-          role: '',
+          role: role,
         },
       },
     );

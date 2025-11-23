@@ -40,6 +40,7 @@ const CommunityPostWrite: React.FC<postData> = ({
   const postDeleteMutation = usePostDelete();
   const { mutate: getUser, data: userData } = useGetUserMutation();
   const currentUserId = userData?.data?.userId;
+  const currentUserRole = userData?.data?.role || '';
   const [loadPage, setLoadPage] = useState(false);
   const [title, setTitle] = useState(defaultTitle || '');
   const [body, setBody] = useState(defaultBody || '');
@@ -98,6 +99,7 @@ const CommunityPostWrite: React.FC<postData> = ({
           body: body,
           status: 'PUBLISHED',
           isBlind: false,
+          role: currentUserRole,
         },
         {
           onSuccess: () => {
@@ -235,7 +237,7 @@ const CommunityPostWrite: React.FC<postData> = ({
   const handleDeleteDraft = (postId: number) => {
     setAlert?.(<>선택한 임시저장 게시글을 삭제하시겠습니까?</>, () => {
       postDeleteMutation.mutate(
-        { post_id: postId, user_id: currentUserId! },
+        { post_id: postId, user_id: currentUserId!, role: currentUserRole },
         {
           onSuccess: () => {
             setDraftPosts((prev) => prev.filter((post) => post.postId !== postId));

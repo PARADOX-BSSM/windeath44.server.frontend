@@ -12,6 +12,7 @@ export const Main = styled.div`
   display: flex;
   align-items: flex-start;
   gap: 10px;
+  flex: 1;
 `;
 export const ProfileImg = styled.div<{ imgUrl: string }>`
   width: 45px;
@@ -26,6 +27,13 @@ export const PostMain = styled.div`
   flex-direction: column;
   align-items: flex-start;
   gap: 10px;
+  flex: 1;
+`;
+export const PostHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 `;
 export const PostInfo = styled.div`
   display: flex;

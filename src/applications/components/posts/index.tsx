@@ -47,6 +47,7 @@ const Posts = ({ user, post, postDelete, refetchPost, postEdit }: PostsProps) =>
   // 로그인한 유저 정보 가져오기
   const { mutate: getUser, data: userData } = useGetUserMutation();
   const currentUserId = userData?.data?.userId;
+  const currentUserRole = userData?.data?.role || '';
   const taskTransform = useAtomValue(taskTransformerAtom);
   const setAlert = useAtomValue(alerterAtom);
   const postDeleteMutation = usePostDelete();
@@ -99,7 +100,7 @@ const Posts = ({ user, post, postDelete, refetchPost, postEdit }: PostsProps) =>
           return;
         }
         postDeleteMutation.mutate(
-          { post_id: post.postId, user_id: currentUserId! },
+          { post_id: post.postId, user_id: currentUserId!, role: currentUserRole },
           {
               onSuccess: () => {
                 taskTransform?.('경고', '');
@@ -167,10 +168,50 @@ const Posts = ({ user, post, postDelete, refetchPost, postEdit }: PostsProps) =>
       <_.Main>
         <_.ProfileImg imgUrl={user.profile || Seori} />
         <_.PostMain>
-          <_.PostInfo>
-            <_.Name>{user.name}</_.Name>
-            <_.UserId>@{user.userId}</_.UserId>
-          </_.PostInfo>
+          <_.PostHeader>
+            <_.PostInfo>
+              <_.Name>{user.name}</_.Name>
+              <_.UserId>@{user.userId}</_.UserId>
+            </_.PostInfo>
+            {isOwner && (
+              <_.KebabContainer ref={menuRef}>
+                <_.KebabBtn
+                  onClick={handleKebabClick}
+                  onMouseDown={() => setCursorImage(CURSOR_IMAGES.click)}
+                  onMouseUp={() => setCursorImage(CURSOR_IMAGES.hand)}
+                  onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                  onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+                >
+                  <_.Icon
+                    src={KebabIcon}
+                    alt="메뉴"
+                  />
+                </_.KebabBtn>
+                {isOpen && (
+                  <_.ContextMenu>
+                    <_.MenuItem
+                      onClick={handleEdit}
+                      onMouseDown={() => setCursorImage(CURSOR_IMAGES.click)}
+                      onMouseUp={() => setCursorImage(CURSOR_IMAGES.hand)}
+                      onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                      onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+                    >
+                      수정
+                    </_.MenuItem>
+                    <_.MenuItem
+                      onClick={handleDelete}
+                      onMouseDown={() => setCursorImage(CURSOR_IMAGES.click)}
+                      onMouseUp={() => setCursorImage(CURSOR_IMAGES.hand)}
+                      onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+                      onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+                    >
+                      삭제
+                    </_.MenuItem>
+                  </_.ContextMenu>
+                )}
+              </_.KebabContainer>
+            )}
+          </_.PostHeader>
           <_.Content>
             <_.PostTitle>{post.title}</_.PostTitle>
             <_.PostContent>{parsedContent}</_.PostContent>
@@ -203,44 +244,6 @@ const Posts = ({ user, post, postDelete, refetchPost, postEdit }: PostsProps) =>
           </_.PostInfo>
         </_.PostMain>
       </_.Main>
-      {isOwner && (
-        <_.KebabContainer ref={menuRef}>
-          <_.KebabBtn
-            onClick={handleKebabClick}
-            onMouseDown={() => setCursorImage(CURSOR_IMAGES.click)}
-            onMouseUp={() => setCursorImage(CURSOR_IMAGES.hand)}
-            onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
-            onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
-          >
-            <_.Icon
-              src={KebabIcon}
-              alt="메뉴"
-            />
-          </_.KebabBtn>
-          {isOpen && (
-            <_.ContextMenu>
-              <_.MenuItem
-                onClick={handleEdit}
-                onMouseDown={() => setCursorImage(CURSOR_IMAGES.click)}
-                onMouseUp={() => setCursorImage(CURSOR_IMAGES.hand)}
-                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
-                onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
-              >
-                수정
-              </_.MenuItem>
-              <_.MenuItem
-                onClick={handleDelete}
-                onMouseDown={() => setCursorImage(CURSOR_IMAGES.click)}
-                onMouseUp={() => setCursorImage(CURSOR_IMAGES.hand)}
-                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
-                onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
-              >
-                삭제
-              </_.MenuItem>
-            </_.ContextMenu>
-          )}
-        </_.KebabContainer>
-      )}
     </_.Post>
   );
 };

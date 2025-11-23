@@ -48,6 +48,7 @@ const CommunityPost = ({ stack, push, pop, top, postId }: postProps) => {
     name: string;
     userId: string;
     profile?: string;
+    role?: string;
   } | null>(null);
   const [isUserLoading, setIsUserLoading] = useState(true);
   const [expandedReplies, setExpandedReplies] = useState<Record<string | number, boolean>>({});
@@ -64,6 +65,7 @@ const CommunityPost = ({ stack, push, pop, top, postId }: postProps) => {
             name: response.data?.name || '사용자',
             userId: response.data?.userId || 'user',
             profile: response.data?.profile,
+            role: response.data?.role,
           });
           setIsUserLoading(false);
         },

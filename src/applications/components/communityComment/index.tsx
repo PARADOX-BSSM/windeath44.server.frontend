@@ -61,6 +61,7 @@ const Posts: React.FC<PostsProps> = ({
 
   const { mutate: getUser, data: userData } = useGetUserMutation();
   const loggedInUserId = userData?.data?.userId;
+  const loggedInUserRole = userData?.data?.role || '';
   const commentDeleteMutation = usePostCommentDelete();
   const commentUpdateMutation = usePostCommentUpdate();
   const commentLikeMutation = usePostCommentLike();
@@ -121,6 +122,7 @@ const Posts: React.FC<PostsProps> = ({
         commentId: post.commentId,
         user_id: loggedInUserId!,
         body: editedBody,
+        role: loggedInUserRole,
       },
       {
         onSuccess: () => {
@@ -153,7 +155,7 @@ const Posts: React.FC<PostsProps> = ({
           return;
         }
         commentDeleteMutation.mutate(
-          { comment_id: post.commentId, user_id: loggedInUserId! },
+          { comment_id: post.commentId, user_id: loggedInUserId!, role: loggedInUserRole },
           {
             onSuccess: () => {
               refetchComments();
