@@ -63,6 +63,15 @@ const JudgementChat = ({ judgement_id }: judgementChatProps) => {
           },
         },
       );
+    } else {
+      getChats(
+        { judgement_id, user_id: 'guest' },
+        {
+          onSuccess: (data) => {
+            setChatList(data.data);
+          },
+        },
+      );
     }
   }, [currentUserId]);
 
