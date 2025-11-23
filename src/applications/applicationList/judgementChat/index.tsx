@@ -19,6 +19,8 @@ import { useDeleteJudgementChats } from '@/api/judgement/judgementChatDelete.ts'
 import { usePostJudgementChats } from '@/api/judgement/judgementChatCreate.ts';
 import { usePostLike } from '@/api/community/postLike.ts';
 import { useGetUserMutation } from '@/api/user/getUser';
+import axios from 'axios';
+import { user as userEndpoint } from '@/config';
 
 const sort = ['최신', '인기'];
 
@@ -27,7 +29,10 @@ interface judgementChatProps {
 }
 
 const JudgementChat = ({ judgement_id }: judgementChatProps) => {
-  const [ChatList, setChatList] = useState([]);
+  const [ChatList, setChatList] = useState<any[]>([]);
+  const [userDataMap, setUserDataMap] = useState<Record<string, { name: string; profile: string }>>(
+    {},
+  );
   const { mutate: getChats, data } = useGetJudgementChats();
   const { mutate: postLike } = usePostJudgementChatLike();
   const { mutate: deleteLike } = useDeleteJudgementChatLike();
@@ -58,6 +63,51 @@ const JudgementChat = ({ judgement_id }: judgementChatProps) => {
       );
     }
   }, [currentUserId]);
+
+  // 사용자 정보 가져오기 (community 방식)
+  useEffect(() => {
+    if (ChatList.length === 0) return;
+
+    const userIds = new Set<string>();
+    ChatList.forEach((comment: any) => {
+      userIds.add(comment.userId);
+      // 대댓글도 확인
+      if (comment.children) {
+        comment.children.forEach((child: any) => {
+          userIds.add(child.userId);
+        });
+      }
+    });
+
+    const userIdArray = Array.from(userIds);
+    if (userIdArray.length === 0) return;
+
+    axios
+      .get(userEndpoint, {
+        params: { userIds: userIdArray },
+        paramsSerializer: (params) => {
+          const searchParams = new URLSearchParams();
+          params.userIds.forEach((id: string) => {
+            searchParams.append('userIds', id);
+          });
+          return searchParams.toString();
+        },
+      })
+      .then((response) => {
+        const users = response.data.data;
+        const userMap: Record<string, { name: string; profile: string }> = {};
+        users.forEach((user: any) => {
+          userMap[user.userId] = {
+            name: user.name,
+            profile: user.profile,
+          };
+        });
+        setUserDataMap(userMap);
+      })
+      .catch((error) => {
+        console.error('사용자 정보 가져오기 실패:', error);
+      });
+  }, [ChatList]);
 
   const useCreateChat = (content: string, parentCommentId?: number | null) => {
     createChat(
@@ -270,10 +320,10 @@ const JudgementChat = ({ judgement_id }: judgementChatProps) => {
                       idx={idx}
                       userid={item.userId}
                       currentUserId={currentUserId}
-                      userName={item.name}
+                      userName={userDataMap[item.userId]?.name || '사용자'}
                       commentId={item.commentId}
                       content={item.body}
-                      userProfile={item.profile}
+                      userProfile={userDataMap[item.userId]?.profile}
                       likes={item.likesCount}
                       parentId={item.parentCommentId}
                       isLiked={item.isLiked}
@@ -295,10 +345,10 @@ const JudgementChat = ({ judgement_id }: judgementChatProps) => {
                           key={child.commentId}
                           userid={child.userId}
                           currentUserId={currentUserId}
-                          userName={child.name}
+                          userName={userDataMap[child.userId]?.name || '사용자'}
                           commentId={child.commentId}
                           content={child.body}
-                          userProfile={child.profile}
+                          userProfile={userDataMap[child.userId]?.profile}
                           likes={child.likesCount}
                           parentId={child.parentCommentId}
                           isLiked={child.isLiked}
