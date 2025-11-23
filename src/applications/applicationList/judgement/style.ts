@@ -41,7 +41,8 @@ export const Search_div = styled.div`
 `;
 
 export const Select = styled.div`
-  min-width: 78px;
+  min-width: 90px;
+  font-family: 'Galmuri11', sans-serif;
 `;
 
 export const Main_Display = styled.div`

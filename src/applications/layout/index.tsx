@@ -285,6 +285,14 @@ const Application = (props: ApplicationProps) => {
               <_.ExitButton
                 onMouseDown={(e: React.MouseEvent<HTMLDivElement>) => {
                   e.stopPropagation();
+
+                  if (sep_window === true) {
+                    setEvent((prev) => prev + 1);
+                    set_sep_window(false);
+                    set_open_vote(false);
+                    return;
+                  }
+
                   props.removeTask(props.removeCompnent);
                   if (!isLogIned) {
                     setIsLogIned('true');

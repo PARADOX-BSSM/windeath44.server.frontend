@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 
 export const Main_Div = styled.div`
   width: 100%;
-  height: 70px;
+  min-height: 70px;
 
   display: flex;
   align-items: center;

@@ -1,13 +1,15 @@
 import Inputs from '@/applications/components/inputs';
 import * as _ from './style';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import FilterBlock from '@/applications/components/filterBlock';
 import MemorialBtn from '@/applications/components/memorialBtn';
 import JudgementSort from '@/applications/components/judgementSort';
 import Judgement_Object from '@/applications/components/judgementObject';
 import hosino from '@/assets/character/hosino.svg';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer';
+import { select_chat } from '@/applications/components/judgementChatObj/state_manager';
+import { useGetJudgementList } from '@/api/judgement/judgementList';
 
 interface JudgementProps {
   stack: any[];
@@ -16,102 +18,59 @@ interface JudgementProps {
   top: any;
 }
 
-const sort = ['최신', '인기'];
+const sort = ['최신순', '인기순'];
 
-const Judgement_List = [
-  {
-    rank: 1,
-    cName: '호시노 아이',
-    aName: '최애의 아이',
-    img: hosino,
-    like: 2025,
-    vote: 10010,
-    heaven_count: 7833,
-    hell_count: 2177,
-    is_end: false,
-  },
-  {
-    rank: 2,
-    cName: '포트거스 D. 에이스',
-    aName: '원피스',
-    img: hosino,
-    like: 2025,
-    vote: 100000,
-    heaven_count: 99999,
-    hell_count: 1,
-    is_end: false,
-  },
-  {
-    rank: 3,
-    cName: '사토 카즈마',
-    aName: '이 멋진 세계에 축복을',
-    img: hosino,
-    like: 2025,
-    vote: 7777,
-    heaven_count: 7139,
-    hell_count: 17,
-    is_end: false,
-  },
-  {
-    rank: 4,
-    cName: '가나다라마바사',
-    aName: 'hijklmnop',
-    img: hosino,
-    like: 2025,
-    vote: 6666,
-    heaven_count: 23,
-    hell_count: 31,
-    is_end: false,
-  },
-  {
-    rank: 4,
-    cName: '테스트',
-    aName: 'hijklmnop',
-    img: hosino,
-    like: 2025,
-    vote: 6666,
-    heaven_count: 9999,
-    hell_count: 10001,
-    is_end: false,
-  },
-  {
-    rank: 5,
-    cName: '가나다라마바사',
-    aName: 'hijklmnop',
-    img: hosino,
-    like: 2025,
-    vote: 6666,
-    heaven_count: 1909090,
-    hell_count: 23,
-    is_end: true,
-  },
-  {
-    rank: 1,
-    cName: '가나다라마바사',
-    aName: 'hijklmnop',
-    img: hosino,
-    like: 2025,
-    vote: 6666,
-    heaven_count: 1999,
-    hell_count: 1,
-    is_end: true,
-  },
-];
+/* api 로 재판 목록 불러와야함 */
 
 const Judgement = ({ stack, push, pop, top }: JudgementProps) => {
+  const [Judgement_List, setJL] = useState([]);
+
+  const { mutate: getList } = useGetJudgementList();
+
   const [text, setText] = useState('');
 
   const [open, setOpen] = useState(false);
-  const [choice, setChoice] = useState('최신');
+  const [choice, setChoice] = useState('인기순');
 
-  const taskSearch = useAtomValue(taskSearchAtom);
+  const set_selected = useSetAtom(select_chat);
 
-  const stackProps = {
-    stack: stack,
-    push: push,
-    pop: pop,
-    top: top,
-  };
+  useEffect(() => {
+    set_selected(-1);
+  }, []);
+
+  useEffect(() => {
+    getList(undefined, {
+      onSuccess: (data) => {
+        const content = data.data.judgments ?? [];
+
+        // 서버 데이터 구조를 미리보기 형태로 변환
+        const mapped = content.map((item: any) => ({
+          id: item.judgmentId,
+          c_name: item.characterName,
+          a_name: item.animeName,
+          img: hosino,
+          like: item.likesCount,
+          vote: (item.heavenCount || 0) + (item.hellCount || 0),
+          heaven_count: item.heavenCount,
+          hell_count: item.hellCount,
+          is_end: item.isEnd ?? false,
+          isSearch: false,
+        }));
+
+        // 좋아요 + 투표 기준 내림차순 정렬
+        const sorted = mapped.sort((a: any, b: any) => b.like + b.vote - (a.like + a.vote));
+
+        // rank 부여
+        const ranked = sorted.map((item: any, index: any) => ({
+          ...item,
+          rank: index + 1,
+        }));
+
+        // 상태 업데이트
+        setJL(ranked);
+      },
+    });
+  }, [stack]);
 
   return (
     <_.Container>
@@ -124,6 +83,14 @@ const Judgement = ({ stack, push, pop, top }: JudgementProps) => {
             value={text}
             setValue={(value) => {
               setText(value);
+
+              setJL((prevList: any) =>
+                prevList.map((item: any) => ({
+                  ...item,
+                  // c_name에 value가 포함되면 isSearch를 true, 아니면 false
+                  isSearch: value ? item.c_name.includes(value) : false,
+                })),
+              );
             }}
             placeHold="캐릭터 이름으로 검색"
           />
@@ -157,37 +124,47 @@ const Judgement = ({ stack, push, pop, top }: JudgementProps) => {
         <_.Judgement_List>
           <_.Sort>인기재판</_.Sort>
           <_.Obj_Div>
-            {Judgement_List.filter((item) => item.rank <= 3 && item.is_end === false).map(
-              (item) => {
-                return (
-                  <Judgement_Object
-                    rank={item.rank}
-                    cName={item.cName}
-                    aName={item.aName}
-                    img={item.img}
-                    like={item.like}
-                    vote={item.vote}
-                    heaven_count={item.heaven_count}
-                    hell_count={item.hell_count}
-                    stack={stack}
-                    push={push}
-                    pop={pop}
-                    top={top}
-                  />
-                );
-              },
-            )}
+            {Judgement_List.filter((item) => {
+              const anySearch = Judgement_List.some((i) => i.isSearch); // 하나라도 검색된 항목 있는지
+              if (anySearch) return item.isSearch && item.rank <= 3 && item.is_end === false; // 있으면 isSearch true만
+              return item.rank <= 3 && item.is_end === false; // 없으면 기존 필터
+            }).map((item) => {
+              return (
+                <Judgement_Object
+                  key={item.id}
+                  judgement_id={item.id}
+                  rank={item.rank}
+                  c_name={item.c_name}
+                  a_name={item.a_name}
+                  img={item.img}
+                  like={item.like}
+                  vote={item.vote}
+                  heaven_count={item.heaven_count}
+                  hell_count={item.hell_count}
+                  stack={stack}
+                  push={push}
+                  pop={pop}
+                  top={top}
+                />
+              );
+            })}
           </_.Obj_Div>
 
           <_.Sort>재판</_.Sort>
 
           <_.Obj_Div>
-            {Judgement_List.filter((item) => item.rank > 3 && item.is_end === false).map((item) => {
+            {Judgement_List.filter((item) => {
+              const anySearch = Judgement_List.some((i) => i.isSearch); // 하나라도 검색된 항목 있는지
+              if (anySearch) return item.isSearch && item.rank > 3 && item.is_end === false; // 있으면 isSearch true만
+              return item.rank > 3 && item.is_end === false; // 없으면 기존 필터
+            }).map((item) => {
               return (
                 <Judgement_Object
+                  key={item.id}
+                  judgement_id={item.id}
                   rank={item.rank}
-                  cName={item.cName}
-                  aName={item.aName}
+                  c_name={item.c_name}
+                  a_name={item.a_name}
                   img={item.img}
                   like={item.like}
                   vote={item.vote}
@@ -205,12 +182,18 @@ const Judgement = ({ stack, push, pop, top }: JudgementProps) => {
           <_.Sort>종료된 재판</_.Sort>
 
           <_.Obj_Div>
-            {Judgement_List.filter((item) => item.is_end === true).map((item) => {
+            {Judgement_List.filter((item) => {
+              const anySearch = Judgement_List.some((i) => i.isSearch); // 하나라도 검색된 항목 있는지
+              if (anySearch) return item.isSearch && item.is_end === true; // 있으면 isSearch true만
+              return item.is_end === true; // 없으면 기존 필터
+            }).map((item) => {
               return (
                 <Judgement_Object
+                  key={item.id}
+                  judgement_id={item.id}
                   rank={item.rank}
-                  cName={item.cName}
-                  aName={item.aName}
+                  c_name={item.c_name}
+                  a_name={item.a_name}
                   img={item.img}
                   like={item.like}
                   vote={item.vote}

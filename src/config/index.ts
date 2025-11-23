@@ -8,3 +8,4 @@ export const memorial_application = `${protocol}${server}/applications`; //추�
 export const anime = `${protocol}${server}/animes`; //에니메이션
 export const chatbot = `${protocol}${server}/chatbots`; //분신사바
 export const community = `http://localhost:8080/api/communities`; //커뮤니티
+export const judgement = `http://localhost:8080/api/communities/judgments`; // 재판

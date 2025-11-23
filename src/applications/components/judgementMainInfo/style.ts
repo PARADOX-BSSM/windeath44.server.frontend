@@ -56,7 +56,6 @@ export const Like_Div = styled.div`
 export const Img_Div = styled.div`
   width: 80px;
   height: 104px;
-  background-color: red;
 `;
 
 export const Main_Img = styled.img`
