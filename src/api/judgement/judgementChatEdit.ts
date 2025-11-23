@@ -6,13 +6,15 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 interface patchJudgementChatsProps {
   comment_id: number;
   body: string;
+  user_id: string;
+  role: string;
 }
 
-const patchJudgementChats = async ({ comment_id, body }: patchJudgementChatsProps) => {
+const patchJudgementChats = async ({ comment_id, body, user_id, role }: patchJudgementChatsProps) => {
   const data = JSON.stringify({ body: body });
   try {
     const response: AxiosResponse = await api.patch(`${judgement}/comments/${comment_id}`, data, {
-      headers: { 'user-id': 'xlah_ht09', role: 'user', 'Content-Type': 'application/json' },
+      headers: { 'user-id': user_id, role: role, 'Content-Type': 'application/json' },
     });
     return response.data;
   } catch (error: any) {

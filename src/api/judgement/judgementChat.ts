@@ -5,24 +5,28 @@ import { useMutation } from '@tanstack/react-query';
 
 interface getJudgementChatsProps {
   judgement_id: number;
+  user_id: string;
 }
 
 interface postJudgementChatLikeProps {
   comment_id: number;
+  user_id: string;
 }
 
 interface deleteJudgementChatLikeProps {
   comment_id: number;
+  user_id: string;
 }
 
 interface getJudgementChatLikeProps {
   comment_id: number;
+  user_id: string;
 }
 
-const getJudgementChats = async ({ judgement_id }: getJudgementChatsProps) => {
+const getJudgementChats = async ({ judgement_id, user_id }: getJudgementChatsProps) => {
   try {
     const response: AxiosResponse = await api.get(`${judgement}/${judgement_id}/comments`, {
-      headers: { 'user-id': 'test' },
+      headers: { 'user-id': user_id },
     });
     return response.data;
   } catch (error: any) {
@@ -34,13 +38,13 @@ const getJudgementChats = async ({ judgement_id }: getJudgementChatsProps) => {
   }
 };
 
-const postJudgementChatLike = async ({ comment_id }: postJudgementChatLikeProps) => {
+const postJudgementChatLike = async ({ comment_id, user_id }: postJudgementChatLikeProps) => {
   try {
     const response: AxiosResponse = await api.post(
       `${judgement}/comments/${comment_id}/likes`,
       {},
       {
-        headers: { 'user-id': 'test' },
+        headers: { 'user-id': user_id },
       },
     );
     return response.data;
@@ -53,10 +57,10 @@ const postJudgementChatLike = async ({ comment_id }: postJudgementChatLikeProps)
   }
 };
 
-const deleteJudgementChatLike = async ({ comment_id }: deleteJudgementChatLikeProps) => {
+const deleteJudgementChatLike = async ({ comment_id, user_id }: deleteJudgementChatLikeProps) => {
   try {
     const response: AxiosResponse = await api.delete(`${judgement}/comments/${comment_id}/likes`, {
-      headers: { 'user-id': 'test' },
+      headers: { 'user-id': user_id },
     });
     return response.data;
   } catch (error: any) {
@@ -68,10 +72,10 @@ const deleteJudgementChatLike = async ({ comment_id }: deleteJudgementChatLikePr
   }
 };
 
-const getJudgementChatLike = async ({ comment_id }: getJudgementChatLikeProps) => {
+const getJudgementChatLike = async ({ comment_id, user_id }: getJudgementChatLikeProps) => {
   try {
     const response: AxiosResponse = await api.get(`${judgement}/comments/${comment_id}/likes`, {
-      headers: { 'user-id': 'test' },
+      headers: { 'user-id': user_id },
     });
     return response.data;
   } catch (error: any) {

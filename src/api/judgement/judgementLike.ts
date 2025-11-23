@@ -5,23 +5,26 @@ import { useMutation } from '@tanstack/react-query';
 
 interface postJudgementLike {
   judgement_id: number;
+  user_id: string;
 }
 
 interface deleteJudgementLike {
   judgement_id: number;
+  user_id: string;
 }
 
 interface getJudgementLike {
   judgement_id: number;
+  user_id: string;
 }
 
-const postJudgementLike = async ({ judgement_id }: postJudgementLike) => {
+const postJudgementLike = async ({ judgement_id, user_id }: postJudgementLike) => {
   try {
     const response: AxiosResponse = await api.post(
       `${judgement}/${judgement_id}/likes`,
       {},
       {
-        headers: { 'user-id': 'test' },
+        headers: { 'user-id': user_id },
       },
     );
     return response.data;
@@ -34,10 +37,10 @@ const postJudgementLike = async ({ judgement_id }: postJudgementLike) => {
   }
 };
 
-const deleteJudgementLike = async ({ judgement_id }: deleteJudgementLike) => {
+const deleteJudgementLike = async ({ judgement_id, user_id }: deleteJudgementLike) => {
   try {
     const response: AxiosResponse = await api.delete(`${judgement}/${judgement_id}/likes`, {
-      headers: { 'user-id': 'test' },
+      headers: { 'user-id': user_id },
     });
     return response.data;
   } catch (error: any) {
@@ -49,10 +52,10 @@ const deleteJudgementLike = async ({ judgement_id }: deleteJudgementLike) => {
   }
 };
 
-const getJudgementLike = async ({ judgement_id }: getJudgementLike) => {
+const getJudgementLike = async ({ judgement_id, user_id }: getJudgementLike) => {
   try {
     const response: AxiosResponse = await api.get(`${judgement}/${judgement_id}/likes`, {
-      headers: { 'user-id': 'test' },
+      headers: { 'user-id': user_id },
     });
     return response.data;
   } catch (error: any) {

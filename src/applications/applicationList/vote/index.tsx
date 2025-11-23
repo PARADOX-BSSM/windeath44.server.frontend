@@ -15,6 +15,7 @@ import {
 } from '@/api/judgement/judgementLike';
 
 import { useDeleteVote, useGetVoteDirection, usePostVote } from '@/api/judgement/judgementVote';
+import { useGetUserMutation } from '@/api/user/getUser';
 
 interface VoteProps {
   stack: any[];
@@ -46,9 +47,19 @@ const Judgement_Vote = ({
   hell_count,
   img,
 }: VoteProps) => {
+  // 로그인한 유저 정보 가져오기
+  const { mutate: getUser, data: userData } = useGetUserMutation();
+  const currentUserId = userData?.data?.userId || '';
+
   useEffect(() => {
-    getLike({ judgement_id });
+    getUser();
   }, []);
+
+  useEffect(() => {
+    if (currentUserId) {
+      getLike({ judgement_id, user_id: currentUserId });
+    }
+  }, [currentUserId]);
 
   const [isHeaven, setIsHeaven] = useState(false);
   const [isHell, setIsHell] = useState(false);
@@ -78,34 +89,36 @@ const Judgement_Vote = ({
   }, [count]);
 
   useEffect(() => {
-    Set_open_vote(true);
-    getVoteDirection(
-      { judgement_id },
-      {
-        onSuccess: (data) => {
-          console.log(data.data);
-          if (data.data == false) {
-            setIsHell(true);
-            setIsHeaven(false);
-          } else if (data.data == true) {
-            setIsHell(false);
-            setIsHeaven(true);
-          } else {
-            setIsHell(false);
-            setIsHeaven(false);
-          }
+    if (currentUserId) {
+      Set_open_vote(true);
+      getVoteDirection(
+        { judgement_id, user_id: currentUserId },
+        {
+          onSuccess: (data) => {
+            console.log(data.data);
+            if (data.data == false) {
+              setIsHell(true);
+              setIsHeaven(false);
+            } else if (data.data == true) {
+              setIsHell(false);
+              setIsHeaven(true);
+            } else {
+              setIsHell(false);
+              setIsHeaven(false);
+            }
+          },
         },
-      },
-    );
-    getLike(
-      { judgement_id },
-      {
-        onSuccess: (data) => {
-          setHeart(data.data ? heart : empty_heart);
+      );
+      getLike(
+        { judgement_id, user_id: currentUserId },
+        {
+          onSuccess: (data) => {
+            setHeart(data.data ? heart : empty_heart);
+          },
         },
-      },
-    );
-  }, []);
+      );
+    }
+  }, [currentUserId]);
 
   return (
     <_.Container>
@@ -170,15 +183,15 @@ const Judgement_Vote = ({
             onClick={() => {
               if (isHell == true) {
                 deleteVote(
-                  { judgement_id },
+                  { judgement_id, user_id: currentUserId },
                   {
                     onSuccess: () => {
-                      postVote({ judgement_id: judgement_id, isHeaven: true });
+                      postVote({ judgement_id: judgement_id, isHeaven: true, user_id: currentUserId });
                     },
                   },
                 );
               } else {
-                postVote({ judgement_id: judgement_id, isHeaven: true });
+                postVote({ judgement_id: judgement_id, isHeaven: true, user_id: currentUserId });
               }
 
               setIsHeaven(true);
@@ -196,15 +209,15 @@ const Judgement_Vote = ({
             onClick={() => {
               if (isHeaven == true) {
                 deleteVote(
-                  { judgement_id },
+                  { judgement_id, user_id: currentUserId },
                   {
                     onSuccess: () => {
-                      postVote({ judgement_id: judgement_id, isHeaven: false });
+                      postVote({ judgement_id: judgement_id, isHeaven: false, user_id: currentUserId });
                     },
                   },
                 );
               } else {
-                postVote({ judgement_id: judgement_id, isHeaven: false });
+                postVote({ judgement_id: judgement_id, isHeaven: false, user_id: currentUserId });
               }
 
               setIsHell(true);
@@ -225,8 +238,8 @@ const Judgement_Vote = ({
                 src={currentHeart}
                 onClick={() => {
                   currentHeart == heart
-                    ? (deleteLike({ judgement_id }), setLike(Like - 1))
-                    : (postLike({ judgement_id }), setLike(Like + 1));
+                    ? (deleteLike({ judgement_id, user_id: currentUserId }), setLike(Like - 1))
+                    : (postLike({ judgement_id, user_id: currentUserId }), setLike(Like + 1));
                   setHeart(currentHeart === heart ? empty_heart : heart);
                 }}
               ></_.LikeImg>

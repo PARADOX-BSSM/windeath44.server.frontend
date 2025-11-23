@@ -7,17 +7,21 @@ interface postJudgementChatsProps {
   judgement_id: number;
   body: string;
   parentCommentId?: null | number;
+  user_id: string;
+  user_name: string;
+  user_profile?: string;
 }
 
 const postJudgementChats = async ({
   judgement_id,
   body,
   parentCommentId,
+  user_id,
 }: postJudgementChatsProps) => {
   const data = JSON.stringify({ body: body, parentCommentId: parentCommentId });
   try {
     const response: AxiosResponse = await api.post(`${judgement}/${judgement_id}/comments`, data, {
-      headers: { 'user-id': 'xlah_ht09', 'Content-Type': 'application/json' },
+      headers: { 'user-id': user_id, 'Content-Type': 'application/json' },
     });
     return response.data;
   } catch (error: any) {
@@ -38,7 +42,7 @@ export const usePostJudgementChats = () => {
 
     // 1) API 요청 전에 캐시를 낙관적으로 업데이트
     onMutate: async (newComment) => {
-      const { judgement_id, body, parentCommentId } = newComment;
+      const { judgement_id, body, parentCommentId, user_id, user_name, user_profile } = newComment;
 
       // 해당 쿼리 invalidate 방지
       await queryClient.cancelQueries({
@@ -53,9 +57,9 @@ export const usePostJudgementChats = () => {
         commentId: `temp_${Date.now()}`, // 임시 ID (문자열로)
         body,
         parentCommentId: parentCommentId || null,
-        userId: 'test', // 현재 사용자 ID
-        name: 'xlah', // 사용자 이름
-        profile: null,
+        userId: user_id,
+        name: user_name,
+        profile: user_profile || null,
         likesCount: 0,
         isLiked: false,
         judgmentId: judgement_id,

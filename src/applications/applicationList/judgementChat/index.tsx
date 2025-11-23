@@ -18,6 +18,7 @@ import { usePatchJudgementChats } from '@/api/judgement/judgementChatEdit.ts';
 import { useDeleteJudgementChats } from '@/api/judgement/judgementChatDelete.ts';
 import { usePostJudgementChats } from '@/api/judgement/judgementChatCreate.ts';
 import { usePostLike } from '@/api/community/postLike.ts';
+import { useGetUserMutation } from '@/api/user/getUser';
 
 const sort = ['최신', '인기'];
 
@@ -34,16 +35,29 @@ const JudgementChat = ({ judgement_id }: judgementChatProps) => {
   const { mutate: editChat } = usePatchJudgementChats();
   const { mutate: deleteChat } = useDeleteJudgementChats();
 
+  // 로그인한 유저 정보 가져오기
+  const { mutate: getUser, data: userData } = useGetUserMutation();
+  const currentUserId = userData?.data?.userId || '';
+  const currentUserName = userData?.data?.name || '';
+  const currentUserProfile = userData?.data?.profile || '';
+  const currentUserRole = userData?.data?.role || '';
+
   useEffect(() => {
-    getChats(
-      { judgement_id },
-      {
-        onSuccess: (data) => {
-          setChatList(data.data);
-        },
-      },
-    );
+    getUser();
   }, []);
+
+  useEffect(() => {
+    if (currentUserId) {
+      getChats(
+        { judgement_id, user_id: currentUserId },
+        {
+          onSuccess: (data) => {
+            setChatList(data.data);
+          },
+        },
+      );
+    }
+  }, [currentUserId]);
 
   const useCreateChat = (content: string, parentCommentId?: number | null) => {
     createChat(
@@ -51,12 +65,15 @@ const JudgementChat = ({ judgement_id }: judgementChatProps) => {
         judgement_id: judgement_id,
         body: content,
         parentCommentId: parentCommentId ?? null,
+        user_id: currentUserId,
+        user_name: currentUserName,
+        user_profile: currentUserProfile,
       },
       {
         onSuccess: (data) => {
           // ✅ 여기가 핵심! setChatList를 호출해야 함
           getChats(
-            { judgement_id },
+            { judgement_id, user_id: currentUserId },
             {
               onSuccess: (newData) => {
                 setChatList(newData.data); // ← UI 업데이트!
@@ -85,12 +102,14 @@ const JudgementChat = ({ judgement_id }: judgementChatProps) => {
       {
         comment_id: comment_id,
         body: content,
+        user_id: currentUserId,
+        role: currentUserRole,
       },
       {
         onSuccess: (data) => {
           // ✅ 여기가 핵심! setChatList를 호출해야 함
           getChats(
-            { judgement_id },
+            { judgement_id, user_id: currentUserId },
             {
               onSuccess: (newData) => {
                 setChatList(newData.data); // ← UI 업데이트!
@@ -118,12 +137,14 @@ const JudgementChat = ({ judgement_id }: judgementChatProps) => {
     deleteChat(
       {
         comment_id,
+        user_id: currentUserId,
+        role: currentUserRole,
       },
       {
         onSuccess: (data) => {
           // ✅ 여기가 핵심! setChatList를 호출해야 함
           getChats(
-            { judgement_id },
+            { judgement_id, user_id: currentUserId },
             {
               onSuccess: (newData) => {
                 setChatList(newData.data); // ← UI 업데이트!
@@ -143,11 +164,11 @@ const JudgementChat = ({ judgement_id }: judgementChatProps) => {
     if (isLiked) {
       // 이미 좋아요 상태 → 좋아요 취소
       deleteLike(
-        { comment_id },
+        { comment_id, user_id: currentUserId },
         {
           onSuccess: () => {
             getChats(
-              { judgement_id },
+              { judgement_id, user_id: currentUserId },
               {
                 onSuccess: (newData) => {
                   setChatList(newData.data);
@@ -163,11 +184,11 @@ const JudgementChat = ({ judgement_id }: judgementChatProps) => {
     } else {
       // 좋아요 안 눌린 상태 → 좋아요 추가
       postLike(
-        { comment_id },
+        { comment_id, user_id: currentUserId },
         {
           onSuccess: () => {
             getChats(
-              { judgement_id },
+              { judgement_id, user_id: currentUserId },
               {
                 onSuccess: (newData) => {
                   setChatList(newData.data);
@@ -248,7 +269,7 @@ const JudgementChat = ({ judgement_id }: judgementChatProps) => {
                     <Comment
                       idx={idx}
                       userid={item.userId}
-                      currentUserId={'xlah_ht09'}
+                      currentUserId={currentUserId}
                       userName={item.name}
                       commentId={item.commentId}
                       content={item.body}
@@ -273,7 +294,7 @@ const JudgementChat = ({ judgement_id }: judgementChatProps) => {
                           idx={idx + childIdx + 1}
                           key={child.commentId}
                           userid={child.userId}
-                          currentUserId={'xlah_ht09'}
+                          currentUserId={currentUserId}
                           userName={child.name}
                           commentId={child.commentId}
                           content={child.body}

@@ -5,12 +5,14 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 interface deleteJudgementChatsProps {
   comment_id: number;
+  user_id: string;
+  role: string;
 }
 
-const deleteJudgementChats = async ({ comment_id }: deleteJudgementChatsProps) => {
+const deleteJudgementChats = async ({ comment_id, user_id, role }: deleteJudgementChatsProps) => {
   try {
     const response: AxiosResponse = await api.delete(`${judgement}/comments/${comment_id}`, {
-      headers: { 'user-id': 'xlah_ht09', role: 'ADMIN' },
+      headers: { 'user-id': user_id, role: role },
     });
     return response.data;
   } catch (error: any) {

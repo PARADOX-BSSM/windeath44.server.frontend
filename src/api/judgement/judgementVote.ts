@@ -6,20 +6,23 @@ import { useMutation } from '@tanstack/react-query';
 interface postVoteProps {
   judgement_id: number;
   isHeaven: boolean;
+  user_id: string;
 }
 
 interface getVoteProps {
   judgement_id: number;
+  user_id: string;
 }
 
 interface deleteVoteProps {
   judgement_id: number;
+  user_id: string;
 }
 
-const getVoteDirection = async ({ judgement_id }: getVoteProps) => {
+const getVoteDirection = async ({ judgement_id, user_id }: getVoteProps) => {
   try {
     const response: AxiosResponse = await api.get(`${judgement}/${judgement_id}/votes/me`, {
-      headers: { 'user-id': 'xlah_ht09' },
+      headers: { 'user-id': user_id },
     });
     return response.data;
   } catch (error: any) {
@@ -28,12 +31,12 @@ const getVoteDirection = async ({ judgement_id }: getVoteProps) => {
   }
 };
 
-const postVote = async ({ judgement_id, isHeaven }: postVoteProps) => {
+const postVote = async ({ judgement_id, isHeaven, user_id }: postVoteProps) => {
   try {
     const response: AxiosResponse = await api.post(
       `${judgement}/${judgement_id}/votes`,
       { isHeaven },
-      { headers: { 'user-id': 'xlah_ht09' } },
+      { headers: { 'user-id': user_id } },
     );
     return response.data;
   } catch (error: any) {
@@ -42,10 +45,10 @@ const postVote = async ({ judgement_id, isHeaven }: postVoteProps) => {
   }
 };
 
-const deleteVote = async ({ judgement_id }: deleteVoteProps) => {
+const deleteVote = async ({ judgement_id, user_id }: deleteVoteProps) => {
   try {
     const response: AxiosResponse = await api.delete(`${judgement}/${judgement_id}/votes`, {
-      headers: { 'user-id': 'xlah_ht09' },
+      headers: { 'user-id': user_id },
     });
     return response.data;
   } catch (error: any) {
