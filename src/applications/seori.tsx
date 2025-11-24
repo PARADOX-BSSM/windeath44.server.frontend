@@ -165,34 +165,11 @@ export default function Seori() {
     const world = engine.world;
     render.canvas.style.zIndex = '1';
     render.canvas.style.position = 'absolute';
-    render.canvas.style.pointerEvents = 'auto';
+    render.canvas.style.pointerEvents = 'none'; // 기본적으로 이벤트 통과
 
-    render.canvas.onclick = (e: MouseEvent) => {
-      // 클릭 위치에 있는 모든 요소 찾기
-      const elements = document.elementsFromPoint(e.clientX, e.clientY);
-      // canvas를 제외한 요소 중 app-button 찾기
-      const appButton = elements.find((el) => el !== render.canvas && el.closest('.app-button'));
-      if (appButton) {
-        // app-button 클릭 이벤트 전달
-        (appButton.closest('.app-button') as HTMLElement)?.click();
-      } else {
-        setFocus('Discover');
-      }
-    };
-
-    render.canvas.ondblclick = (e: MouseEvent) => {
-      // 더블클릭도 전달
-      const elements = document.elementsFromPoint(e.clientX, e.clientY);
-      const appButton = elements.find((el) => el !== render.canvas && el.closest('.app-button'));
-      if (appButton) {
-        const event = new MouseEvent('dblclick', {
-          bubbles: true,
-          cancelable: true,
-          clientX: e.clientX,
-          clientY: e.clientY,
-        });
-        appButton.closest('.app-button')?.dispatchEvent(event);
-      }
+    render.canvas.onclick = () => {
+      // Seori 클릭 시 Discover에 포커스
+      setFocus('Discover');
     };
 
     const secondDiv = container.querySelector('div');
@@ -349,11 +326,10 @@ export default function Seori() {
     const canvasWidth = bounds.width + 100;
     const canvasHeight = bounds.height + 100;
 
-    // world 바깥으로 나가면 드래그 종료하는 코드
+    // world 바깥으로 나가면 드래그 종료하는 코드 + Seori 위에 있을 때만 pointer-events 활성화
     document.addEventListener('mousemove', (e) => {
       const mouseX = mouse.position.x;
       const mouseY = mouse.position.y;
-      // console.log(mouseX, mouseY, canvasHeight, canvasWidth);
 
       // 범위
       const isOutOfBounds =
@@ -362,6 +338,22 @@ export default function Seori() {
       if (isOutOfBounds) {
         // 드래그 강제 해제
         mouseConstraint.mouse.button = -1;
+      }
+
+      // Seori 위에 있는지 체크해서 pointer-events 토글
+      if (shape) {
+        const rect = render.canvas.getBoundingClientRect();
+        const mousePos = {
+          x: e.clientX - rect.left,
+          y: e.clientY - rect.top,
+        };
+        const bodies = Query.point([shape], mousePos);
+
+        if (bodies.length > 0 || isDraggingRef.current) {
+          render.canvas.style.pointerEvents = 'auto';
+        } else {
+          render.canvas.style.pointerEvents = 'none';
+        }
       }
     });
 
@@ -416,7 +408,7 @@ export default function Seori() {
         setStateRef('default');
         // 땅에 닿으면 말풍선 표시
         showBubble(
-          '가끔 저를 던지는걸 좋아하시는 분들이 있더라고요... \n 당신은 그런 분이 아니시길 바랄게요.',
+          '가끔 절 던지는걸 좋아하시는 분들이 있더라고요... \n 당신은 그런 사람이 아니길 바랄게요.',
           [
             {
               name: '다음',
