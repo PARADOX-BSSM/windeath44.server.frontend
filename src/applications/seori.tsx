@@ -11,10 +11,12 @@ import {
   Render,
   Runner,
   World,
+  Query,
 } from 'matter-js';
 import { MutableRefObject, useLayoutEffect, useRef } from 'react';
 import SpeechBubble from '@/applications/components/speechBubble';
 import useSpeechBubble from '@/hooks/speechBubble';
+import { set } from './utility/signUp/style';
 
 export default function Seori() {
   // 설이 Ref
@@ -317,6 +319,23 @@ export default function Seori() {
 
     World.add(world, mouseConstraint);
     render.mouse = mouse;
+
+    // mousedown 시 Seori 위에 있는지 즉시 체크 (동기적으로)
+    render.canvas.addEventListener('mousedown', (e: MouseEvent) => {
+      if (!shape) return;
+
+      const rect = render.canvas.getBoundingClientRect();
+      const mousePos = {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top,
+      };
+
+      // Seori body 위에 마우스가 있는지 체크
+      const bodies = Query.point([shape], mousePos);
+      if (bodies.length > 0) {
+        setIsSeoriDragging(true);
+      }
+    });
 
     // 마우스 뗐을 때 이벤트
     // world 바깥에서도 드래그를 종료하기 위해 필요함
