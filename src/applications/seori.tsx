@@ -39,12 +39,70 @@ export default function Seori() {
       '안녕하세요! \n 도움이 필요하신가요?',
       [
         {
+          name: '다음',
+          onClick: () => showRandomTextBubble(),
+        },
+        {
           name: '추모관 추천',
+          onClick: () => showMemorialFeedBubble(),
+        },
+      ],
+      bounds.left + spawnX,
+      bounds.top + spawnY - 80,
+    );
+  };
+
+  const showRandomTextBubble = () => {
+    const texts = ['랜덤1', '랜덤2', '랜덤3', '랜덤4', '랜덤5'];
+    const randomIndex = Math.floor(Math.random() * texts.length);
+    const randomText = texts[randomIndex];
+
+    const container = document.getElementById('cursorContainer');
+    if (!container || !shapeRef.current) {
+      return;
+    }
+    const bounds = container.getBoundingClientRect();
+    const spawnX = shapeRef.current.position.x;
+    const spawnY = shapeRef.current.position.y;
+    showBubble(
+      randomText,
+      [
+        {
+          name: '다음',
+          onClick: () => showRandomTextBubble(),
+        },
+        {
+          name: '추모관 추천',
+          onClick: () => showMemorialFeedBubble(),
+        },
+      ],
+      bounds.left + spawnX,
+      bounds.top + spawnY - 80,
+    );
+  };
+
+  const showMemorialFeedBubble = () => {
+    const container = document.getElementById('cursorContainer');
+    if (!container || !shapeRef.current) {
+      return;
+    }
+    const bounds = container.getBoundingClientRect();
+    const spawnX = shapeRef.current.position.x;
+    const spawnY = shapeRef.current.position.y;
+    showBubble(
+      '최근 방문하신 추모관을 참고해서 한 곳 추천해드릴게요! \n 우치하 이타치 님의 추모관은 어떠신가요?',
+      [
+        {
+          name: '취소',
+          onClick: () => showDefaultBubble(),
+        },
+        {
+          name: '추모관으로 이동',
           onClick: () => hideBubble(),
         },
         {
-          name: '다음',
-          onClick: () => hideBubble(),
+          name: '다른거',
+          onClick: () => showMemorialFeedBubble(),
         },
       ],
       bounds.left + spawnX,
@@ -193,11 +251,11 @@ export default function Seori() {
     let shape: Body;
 
     loadImageSize(texturePath).then(({ width, height }) => {
-      const scale = 0.1;
+      const scale = 0.08;
       const shapeHeight = height * scale;
       // 바닥 위에 생성 (ground top - shape의 절반 높이)
       const groundTopY = bounds.height - taskbarBounds.height;
-      const spawnX = bounds.width - 200;
+      const spawnX = bounds.width - 300;
       const spawnY = groundTopY - shapeHeight / 2;
 
       shape = Bodies.rectangle(spawnX, spawnY, width * scale, shapeHeight, {
