@@ -1,15 +1,36 @@
-import { TaskType } from '@/modules/typeModule';
-import { useEffect, useRef, useState } from 'react';
+import { StackSnapshot, TaskType } from '@/modules/typeModule';
+import { useCallback, useEffect, useRef, useState } from 'react';
+
+type StackHelpers = {
+  stack: TaskType[];
+  push: (value?: TaskType | null) => void;
+  pop: () => void;
+  top: () => TaskType | null;
+};
+
+type UseStackOptions = {
+  storageKey?: string;
+  restoreTask?: (snapshot: StackSnapshot, helpers: StackHelpers) => TaskType | null;
+};
 
 const useStack = (
   window?: React.CSSProperties,
   setWindow?: React.Dispatch<React.SetStateAction<React.CSSProperties>>,
   setUpHeight?: number,
   setUpWidth?: number,
+  options?: UseStackOptions,
 ) => {
-  const [stack, setStack] = useState<any[]>([]);
+  const [stack, setStack] = useState<TaskType[]>([]);
   const windowRef = useRef<React.CSSProperties | undefined>(window);
   const windowHistoryRef = useRef<React.CSSProperties[]>([]);
+  const stackRef = useRef<TaskType[]>([]);
+  const storageKey = options?.storageKey;
+  const restoreTask = options?.restoreTask;
+  const hasHydratedRef = useRef(!storageKey);
+
+  useEffect(() => {
+    stackRef.current = stack;
+  }, [stack]);
 
   useEffect(() => {
     if (window) {
@@ -21,36 +42,43 @@ const useStack = (
     }
   }, [window]);
 
-  const push: any = (value: any) => {
-    setStack((prev) => [...prev, value]);
-    const latestWindow = windowRef.current;
+  const push = useCallback(
+    (value?: TaskType | null) => {
+      if (!value) return;
 
-    if (setWindow && latestWindow && value?.appSetup) {
-      // 현재 상태를 히스토리에 먼저 저장 (pop할 때 되돌아갈 상태)
-      if (windowHistoryRef.current[windowHistoryRef.current.length - 1] !== latestWindow) {
-        windowHistoryRef.current.push(latestWindow);
+      setStack((prev) => [...prev, value]);
+      const latestWindow = windowRef.current;
+
+      if (setWindow && latestWindow && value?.appSetup) {
+        // 현재 상태를 히스토리에 먼저 저장 (pop할 때 되돌아갈 상태)
+        if (windowHistoryRef.current[windowHistoryRef.current.length - 1] !== latestWindow) {
+          windowHistoryRef.current.push(latestWindow);
+        }
+
+        const newWindowState = {
+          ...latestWindow,
+          top: latestWindow.top!,
+          left: latestWindow.left!,
+          height: value.appSetup.setUpHeight || latestWindow.height,
+          width: value.appSetup.setUpWidth || latestWindow.width,
+          minHeight:
+            value.appSetup.minHeight !== undefined
+              ? value.appSetup.minHeight
+              : latestWindow.minHeight,
+          minWidth:
+            value.appSetup.minWidth !== undefined
+              ? value.appSetup.minWidth
+              : latestWindow.minWidth,
+        };
+
+        windowRef.current = newWindowState;
+        setWindow(newWindowState);
       }
+    },
+    [setWindow],
+  );
 
-      const newWindowState = {
-        ...latestWindow,
-        top: latestWindow.top!,
-        left: latestWindow.left!,
-        height: value.appSetup.setUpHeight || latestWindow.height,
-        width: value.appSetup.setUpWidth || latestWindow.width,
-        minHeight:
-          value.appSetup.minHeight !== undefined
-            ? value.appSetup.minHeight
-            : latestWindow.minHeight,
-        minWidth:
-          value.appSetup.minWidth !== undefined ? value.appSetup.minWidth : latestWindow.minWidth,
-      };
-
-      windowRef.current = newWindowState;
-      setWindow(newWindowState);
-    }
-  };
-
-  const pop = () => {
+  const pop = useCallback(() => {
     setStack((prev) => {
       const copy = [...prev];
       copy.pop();
@@ -71,13 +99,61 @@ const useStack = (
 
       return copy;
     });
-  };
-  const top: any = (): TaskType | null => {
-    if (stack.length > 0) return stack[stack.length - 1];
-    else return null;
-  };
+  }, [setWindow]);
 
-  return [stack, push, pop, top];
+  const top = useCallback((): TaskType | null => {
+    if (stackRef.current.length > 0) return stackRef.current[stackRef.current.length - 1];
+    else return null;
+  }, []);
+
+  useEffect(() => {
+    if (!storageKey || hasHydratedRef.current || !restoreTask) return;
+
+    hasHydratedRef.current = true;
+
+    try {
+      const raw = localStorage.getItem(storageKey);
+      if (!raw) return;
+
+      const parsed = JSON.parse(raw) as StackSnapshot[];
+      if (!Array.isArray(parsed)) return;
+
+      parsed.forEach((snapshot) => {
+        if (!snapshot?.name) return;
+
+        const task = restoreTask(snapshot, {
+          stack: stackRef.current,
+          push,
+          pop,
+          top,
+        });
+        if (task) push(task);
+      });
+    } catch (error) {
+      console.warn('Failed to restore stack from storage', error);
+    }
+  }, [storageKey, restoreTask, push, pop, top]);
+
+  useEffect(() => {
+    if (!storageKey || !hasHydratedRef.current) return;
+
+    const snapshot = stack.map(
+      (task) =>
+        task.stackSnapshot ?? ({
+          name: task.name,
+          id: task.id,
+          type: task.type,
+        } as StackSnapshot),
+    );
+
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(snapshot));
+    } catch (error) {
+      console.warn('Failed to save stack to storage', error);
+    }
+  }, [stack, storageKey]);
+
+  return [stack, push, pop, top] as const;
 };
 
 const useQueue = () => {

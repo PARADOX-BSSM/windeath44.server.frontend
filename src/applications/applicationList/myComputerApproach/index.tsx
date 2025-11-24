@@ -1,7 +1,8 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useAtomValue } from 'jotai';
 import { useStack } from '@/hooks/dataStructure.tsx';
 import { taskSearchAtom } from '@/atoms/taskTransformer.ts';
+import { StackSnapshot } from '@/modules/typeModule';
 
 interface MyComputerApproachProps {
   window: React.CSSProperties;
@@ -10,18 +11,39 @@ interface MyComputerApproachProps {
   setUpWidth: number;
   memorialId: number;
   memorialName: string;
+  instanceId?: string;
 }
 
 const MyComputerApproach = ({
-                            window,
-                            setWindow,
-                            setUpHeight,
-                            setUpWidth,
-                              memorialId,
-                              memorialName,
-                          }: MyComputerApproachProps) => {
-  const [stack, push, pop, top] = useStack(window, setWindow, setUpHeight, setUpWidth);
+  window,
+  setWindow,
+  setUpHeight,
+  setUpWidth,
+  memorialId,
+  memorialName,
+  instanceId,
+}: MyComputerApproachProps) => {
   const taskSearch = useAtomValue(taskSearchAtom);
+  const storageKey = useMemo(
+    () => `stack-memorial-pr-${instanceId ?? memorialId ?? 'default'}`,
+    [instanceId, memorialId],
+  );
+
+  const restoreTask = useCallback(
+    (snapshot: StackSnapshot, helpers: any) =>
+      taskSearch?.(snapshot.name, {
+        memorialId,
+        memorialName,
+        ...helpers,
+        ...(snapshot.props || {}),
+      }) ?? null,
+    [taskSearch, memorialId, memorialName],
+  );
+
+  const [stack, push, pop, top] = useStack(window, setWindow, setUpHeight, setUpWidth, {
+    storageKey,
+    restoreTask: taskSearch ? restoreTask : undefined,
+  });
 
   const stackProps = {
     stack: stack,
@@ -35,7 +57,7 @@ const MyComputerApproach = ({
     // console.log("top: ", top());
   }, [stack]);
   useEffect(() => {
-    push(taskSearch?.('memorialPRManager', {...stackProps,memorialId,memorialName}));
+    push(taskSearch?.('memorialPRManager', { ...stackProps, memorialId, memorialName }));
   }, []);
   return <>{top()?.component}</>;
 };

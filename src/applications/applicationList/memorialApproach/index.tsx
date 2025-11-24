@@ -1,13 +1,17 @@
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useAtomValue } from 'jotai';
 import { useStack } from '@/hooks/dataStructure.tsx';
 import { taskSearchAtom } from '@/atoms/taskTransformer.ts';
+import { ApplicationProps } from '@/applications/layout/utils';
+import { StackSnapshot } from '@/modules/typeModule';
 
 interface MemorialApplicationListApproachProps {
   window: React.CSSProperties;
   setWindow: React.Dispatch<React.SetStateAction<React.CSSProperties>>;
   setUpHeight: number;
   setUpWidth: number;
+  props?: ApplicationProps;
+  instanceId?: string;
 }
 
 const MemorialApproach = ({
@@ -15,9 +19,25 @@ const MemorialApproach = ({
   setWindow,
   setUpHeight,
   setUpWidth,
+  props,
+  instanceId,
 }: MemorialApplicationListApproachProps) => {
-  const [stack, push, pop, top] = useStack(window, setWindow, setUpHeight, setUpWidth);
   const taskSearch = useAtomValue(taskSearchAtom);
+  const storageKey = useMemo(
+    () => `stack-${instanceId || props?.name || 'memorial'}`,
+    [instanceId, props?.name],
+  );
+
+  const restoreTask = useCallback(
+    (snapshot: StackSnapshot, helpers: any) =>
+      taskSearch?.(snapshot.name, { ...helpers, ...(snapshot.props || {}) }) ?? null,
+    [taskSearch],
+  );
+
+  const [stack, push, pop, top] = useStack(window, setWindow, setUpHeight, setUpWidth, {
+    storageKey,
+    restoreTask: taskSearch ? restoreTask : undefined,
+  });
 
   const stackProps = useMemo(
     () => ({
