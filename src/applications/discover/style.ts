@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 export const AppContainer = styled.div<{ isSelected?: boolean }>`
   width: 5.5rem;
   height: 6.5rem;
-  padding-top: .5rem;
+  padding-top: 0.5rem;
   background-color: ${({ isSelected }) => (isSelected ? '#FFD3FB70' : 'transparent')};
   box-shadow: ${({ isSelected }) => (isSelected ? '0 0 0 2px #FFD3FB' : 'none')};
   box-sizing: border-box;

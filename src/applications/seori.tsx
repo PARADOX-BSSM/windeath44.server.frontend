@@ -145,7 +145,10 @@ export default function Seori() {
       [
         {
           name: '취소',
-          onClick: () => showDefaultBubble(),
+          onClick: () => {
+            feedsIdxRef.current = 0;
+            showDefaultBubble();
+          },
         },
         {
           name: '추모관으로 이동',
