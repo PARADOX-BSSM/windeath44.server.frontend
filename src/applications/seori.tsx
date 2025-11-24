@@ -72,7 +72,13 @@ export default function Seori() {
 
   // 랜덤 텍스트 말풍선 표시 함수
   const showRandomTextBubble = () => {
-    const texts = ['랜덤1', '랜덤2', '랜덤3', '랜덤4', '랜덤5'];
+    const texts = [
+      '컴퓨터 화면에 갇혀있으면 심심하지 않냐고요? \n 오히려 더 많은 사람들과 만날 수 있어서 괜찮은 것 같은데요.',
+      '제가 가장 좋아하는 음식은 돌멩이입니다. \n 후후, 농담이에요. 저는 아무것도 먹지 않아요.',
+      '당신이 저를 갖고 놀 수 있는 건 \n 모두 물리 엔진 덕분이랍니다.',
+      '제가 좋아하는 계절은 겨울이에요. \n 눈 덮인 산의 하얀색이 이쁘거든요.',
+      '오늘도 좋은 하루 보내세요. \n 저는 여기서 항상 응원할게요.',
+    ];
     const randomIndex = Math.floor(Math.random() * texts.length);
     const randomText = texts[randomIndex];
 
