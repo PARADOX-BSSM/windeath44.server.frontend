@@ -1,6 +1,7 @@
 import { focusAtom } from '@/atoms/windowManager';
 import { isSeoriDraggingAtom } from '@/atoms/cursorState';
-import { useAtom } from 'jotai';
+import { settingsAtom } from '@/atoms/settings';
+import { useAtom, useAtomValue } from 'jotai';
 import {
   MouseConstraint,
   Mouse,
@@ -24,6 +25,7 @@ export default function Seori() {
 
   const [, setFocus] = useAtom(focusAtom);
   const [, setIsSeoriDragging] = useAtom(isSeoriDraggingAtom);
+  const settings = useAtomValue(settingsAtom);
 
   // 말풍선 hook
   const { bubble, showBubble, hideBubble, updatePosition } = useSpeechBubble();
@@ -230,7 +232,7 @@ export default function Seori() {
     let shape: Body;
 
     loadImageSize(texturePath).then(({ width, height }) => {
-      const scale = 0.08;
+      const scale = settings.seoriScale;
       const shapeHeight = height * scale;
       // 바닥 위에 생성 (ground top - shape의 절반 높이)
       const groundTopY = bounds.height - taskbarBounds.height;
