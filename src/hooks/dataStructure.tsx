@@ -23,14 +23,9 @@ const useStack = (
   const [stack, setStack] = useState<TaskType[]>([]);
   const windowRef = useRef<React.CSSProperties | undefined>(window);
   const windowHistoryRef = useRef<React.CSSProperties[]>([]);
-  const stackRef = useRef<TaskType[]>([]);
   const storageKey = options?.storageKey;
   const restoreTask = options?.restoreTask;
   const hasHydratedRef = useRef(!storageKey);
-
-  useEffect(() => {
-    stackRef.current = stack;
-  }, [stack]);
 
   useEffect(() => {
     if (window) {
@@ -102,9 +97,9 @@ const useStack = (
   }, [setWindow]);
 
   const top = useCallback((): TaskType | null => {
-    if (stackRef.current.length > 0) return stackRef.current[stackRef.current.length - 1];
+    if (stack.length > 0) return stack[stack.length - 1];
     else return null;
-  }, []);
+  }, [stack]);
 
   useEffect(() => {
     if (!storageKey || hasHydratedRef.current || !restoreTask) return;
@@ -122,7 +117,7 @@ const useStack = (
         if (!snapshot?.name) return;
 
         const task = restoreTask(snapshot, {
-          stack: stackRef.current,
+          stack,
           push,
           pop,
           top,
@@ -132,7 +127,7 @@ const useStack = (
     } catch (error) {
       console.warn('Failed to restore stack from storage', error);
     }
-  }, [storageKey, restoreTask, push, pop, top]);
+  }, [storageKey, restoreTask, push, pop, top, stack]);
 
   useEffect(() => {
     if (!storageKey || !hasHydratedRef.current) return;
@@ -147,11 +142,16 @@ const useStack = (
     );
 
     try {
-      localStorage.setItem(storageKey, JSON.stringify(snapshot));
+      if (snapshot.length === 0) {
+        localStorage.removeItem(storageKey);
+      } else {
+        localStorage.setItem(storageKey, JSON.stringify(snapshot));
+      }
     } catch (error) {
       console.warn('Failed to save stack to storage', error);
     }
   }, [stack, storageKey]);
+
 
   return [stack, push, pop, top] as const;
 };
