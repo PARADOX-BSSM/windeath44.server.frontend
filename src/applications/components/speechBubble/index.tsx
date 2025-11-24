@@ -10,7 +10,7 @@ interface SpeechBubbleProps {
   x: number;
   y: number;
   text: string;
-  buttons: [ButtonConfig, ButtonConfig];
+  buttons: [ButtonConfig, ButtonConfig?, ButtonConfig?];
   show: boolean;
 }
 
@@ -18,18 +18,22 @@ const SpeechBubble = ({ x, y, text, buttons, show }: SpeechBubbleProps) => {
   if (!show) return null;
 
   return (
-    <_.BubbleContainer x={x} y={y}>
+    <_.BubbleContainer
+      x={x}
+      y={y}
+    >
       <_.BubbleText>{text}</_.BubbleText>
       <_.ButtonContainer>
         {buttons.map((button, index) => (
-          <_.ClippyButton
-            key={index}
-            onClick={button.onClick}
-            onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
-            onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
-          >
-            {button.name}
-          </_.ClippyButton>
+          <_.ClippyButtonWrapper key={index}>
+            <_.ClippyButton
+              onClick={button?.onClick}
+              onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+              onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+            >
+              {button?.name}
+            </_.ClippyButton>
+          </_.ClippyButtonWrapper>
         ))}
       </_.ButtonContainer>
     </_.BubbleContainer>

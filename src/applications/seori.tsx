@@ -12,8 +12,9 @@ import {
   Runner,
   World,
 } from 'matter-js';
-import { MutableRefObject, useLayoutEffect, useRef, useState } from 'react';
+import { MutableRefObject, useLayoutEffect, useRef } from 'react';
 import SpeechBubble from '@/applications/components/speechBubble';
+import useSpeechBubble from '@/hooks/speechBubble';
 
 export default function Seori() {
   // 설이 Ref
@@ -22,12 +23,8 @@ export default function Seori() {
   const [, setFocus] = useAtom(focusAtom);
   const [, setIsSeoriDragging] = useAtom(isSeoriDraggingAtom);
 
-  // 말풍선 상태
-  const [bubble, setBubble] = useState<{ show: boolean; x: number; y: number }>({
-    show: false,
-    x: 0,
-    y: 0,
-  });
+  // 말풍선 hook
+  const { bubble, showBubble, hideBubble, updatePosition } = useSpeechBubble();
 
   // 설이 스프라이트 변경 함수
   const setSpriteTexture = (path: string) => {
@@ -199,11 +196,21 @@ export default function Seori() {
       shapeRef.current = shape;
 
       // 초기 말풍선 표시
-      setBubble({
-        show: true,
-        x: bounds.left + 300,
-        y: bounds.top + 150 - 80,
-      });
+      showBubble(
+        '안녕하세요! \n 도움이 필요하신가요?',
+        [
+          {
+            name: '피드',
+            onClick: () => hideBubble(),
+          },
+          {
+            name: '다음',
+            onClick: () => hideBubble(),
+          },
+        ],
+        bounds.left + 300,
+        bounds.top + 150 - 80,
+      );
     });
 
     // 드래그 시작 && 끝나면 실행되는 함수들
@@ -211,7 +218,7 @@ export default function Seori() {
       isDraggingRef.current = true;
       setIsSeoriDragging(true);
       setStateRef('holding');
-      setBubble((prev) => ({ ...prev, show: false })); // 드래그 시작하면 말풍선 숨김
+      hideBubble(); // 드래그 시작하면 말풍선 숨김
     };
     const onDragEnd = () => {
       isDraggingRef.current = false;
@@ -287,14 +294,7 @@ export default function Seori() {
       }
 
       // 말풍선 위치 업데이트 (설이 따라다니기)
-      setBubble((prev) => {
-        if (!prev.show) return prev;
-        return {
-          ...prev,
-          x: bounds.left + x,
-          y: bounds.top + y - 150,
-        };
-      });
+      updatePosition(bounds.left + x, bounds.top + y - 150);
     });
 
     // 설이 이동 관련 이벤트
@@ -330,11 +330,21 @@ export default function Seori() {
       if (shape.speed < 0.1 && !isDraggingRef.current) {
         setStateRef('default');
         // 땅에 닿으면 말풍선 표시
-        setBubble({
-          show: true,
-          x: bounds.left + shape.position.x,
-          y: bounds.top + shape.position.y - 150,
-        });
+        showBubble(
+          '안녕하세요! \n 도움이 필요하신가요?',
+          [
+            {
+              name: '피드',
+              onClick: () => hideBubble(),
+            },
+            {
+              name: '다음',
+              onClick: () => hideBubble(),
+            },
+          ],
+          bounds.left + shape.position.x,
+          bounds.top + shape.position.y - 150,
+        );
       }
     }, 10);
 
@@ -348,18 +358,9 @@ export default function Seori() {
     <SpeechBubble
       x={bubble.x}
       y={bubble.y}
-      text="안녕하세요!"
+      text={bubble.text}
       show={bubble.show}
-      buttons={[
-        {
-          name: '닫기',
-          onClick: () => setBubble((prev) => ({ ...prev, show: false })),
-        },
-        {
-          name: '다음',
-          onClick: () => setBubble((prev) => ({ ...prev, show: false })),
-        },
-      ]}
+      buttons={bubble.buttons}
     />
   );
 }

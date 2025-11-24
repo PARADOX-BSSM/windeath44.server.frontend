@@ -45,36 +45,66 @@ export const BubbleContainer = styled.div<{ x: number; y: number }>`
 export const BubbleText = styled.p`
   font-family: Galmuri11;
   font-size: 16px;
-  color: #333;
-  text-align: center;
+  color: var(--primary-black);
+  text-align: left;
+  white-space: pre-line;
 `;
 
 export const ButtonContainer = styled.div`
   display: flex;
-  gap: 12px;
   width: 100%;
-  justify-content: center;
+  justify-content: space-between;
   padding-top: 8px;
   border-top: 1px solid var(--primary-black);
 `;
 
+export const ClippyButtonWrapper = styled.span`
+  position: relative;
+  display: inline-block;
+
+  /* 모서리 픽셀 */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+      linear-gradient(#000, #000) 1px 1px / 1px 1px no-repeat,
+      linear-gradient(#000, #000) calc(100% - 1px) 1px / 1px 1px no-repeat,
+      linear-gradient(#000, #000) 1px calc(100% - 1px) / 1px 1px no-repeat,
+      linear-gradient(#000, #000) calc(100% - 1px) calc(100% - 1px) / 1px 1px no-repeat;
+    pointer-events: none;
+    z-index: 1;
+  }
+`;
+
 export const ClippyButton = styled.button`
   padding: 4px 12px;
-  background: #ffffcc;
+  background: var(--very-light-primary-color);
   border: 1px solid #000;
   border-radius: 0;
   font-family: Galmuri11;
   font-size: 12px;
   color: #000;
   cursor: pointer;
-  box-shadow: 1px 1px 0 #808080;
+  clip-path: polygon(
+    0 2px,
+    2px 2px,
+    2px 0,
+    calc(100% - 2px) 0,
+    calc(100% - 2px) 2px,
+    100% 2px,
+    100% calc(100% - 2px),
+    calc(100% - 2px) calc(100% - 2px),
+    calc(100% - 2px) 100%,
+    2px 100%,
+    2px calc(100% - 2px),
+    0 calc(100% - 2px)
+  );
 
   &:hover {
-    background: #ffff99;
-  }
-
-  &:active {
-    box-shadow: none;
-    transform: translate(1px, 1px);
+    background: var(--light-primary-color);
   }
 `;
