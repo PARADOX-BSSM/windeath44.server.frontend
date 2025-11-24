@@ -26,6 +26,32 @@ export default function Seori() {
   // 말풍선 hook
   const { bubble, showBubble, hideBubble, updatePosition } = useSpeechBubble();
 
+  // 기본값 말풍선 표시 함수
+  const showDefaultBubble = () => {
+    const container = document.getElementById('cursorContainer');
+    if (!container || !shapeRef.current) {
+      return;
+    }
+    const bounds = container.getBoundingClientRect();
+    const spawnX = shapeRef.current.position.x;
+    const spawnY = shapeRef.current.position.y;
+    showBubble(
+      '안녕하세요! \n 도움이 필요하신가요?',
+      [
+        {
+          name: '추모관 추천',
+          onClick: () => hideBubble(),
+        },
+        {
+          name: '다음',
+          onClick: () => hideBubble(),
+        },
+      ],
+      bounds.left + spawnX,
+      bounds.top + spawnY - 80,
+    );
+  };
+
   // 설이 스프라이트 변경 함수
   const setSpriteTexture = (path: string) => {
     if (!shapeRef.current) {
@@ -163,22 +189,18 @@ export default function Seori() {
 
     const texturePath = `src/assets/seori/interaction_${stateRef.current}.png`;
 
-    let shape = Bodies.rectangle(300, 150, 100, 100, {
-      inertia: Infinity,
-      friction: 0,
-      frictionStatic: 0,
-      render: {
-        sprite: {
-          texture: texturePath,
-          xScale: 0.1,
-          yScale: 0.1,
-        },
-      },
-      label: 'shape',
-    });
+    // shape를 먼저 선언 (이벤트 핸들러에서 참조하기 위해)
+    let shape: Body;
+
     loadImageSize(texturePath).then(({ width, height }) => {
       const scale = 0.1;
-      shape = Bodies.rectangle(300, 150, width * scale, height * scale, {
+      const shapeHeight = height * scale;
+      // 바닥 위에 생성 (ground top - shape의 절반 높이)
+      const groundTopY = bounds.height - taskbarBounds.height;
+      const spawnX = bounds.width - 200;
+      const spawnY = groundTopY - shapeHeight / 2;
+
+      shape = Bodies.rectangle(spawnX, spawnY, width * scale, shapeHeight, {
         inertia: Infinity,
         friction: 0,
         frictionStatic: 0,
@@ -196,21 +218,7 @@ export default function Seori() {
       shapeRef.current = shape;
 
       // 초기 말풍선 표시
-      showBubble(
-        '안녕하세요! \n 도움이 필요하신가요?',
-        [
-          {
-            name: '피드',
-            onClick: () => hideBubble(),
-          },
-          {
-            name: '다음',
-            onClick: () => hideBubble(),
-          },
-        ],
-        bounds.left + 300,
-        bounds.top + 150 - 80,
-      );
+      showDefaultBubble();
     });
 
     // 드래그 시작 && 끝나면 실행되는 함수들
@@ -327,26 +335,22 @@ export default function Seori() {
 
     // 설이의 속도가 0인 것을 감지하는 이벤트 (바닥에 붙어있다)
     setInterval(() => {
-      if (shape.speed < 0.1 && !isDraggingRef.current) {
+      if (shape.speed < 0.1 && !isDraggingRef.current && stateRef.current !== 'default') {
         setStateRef('default');
         // 땅에 닿으면 말풍선 표시
         showBubble(
-          '안녕하세요! \n 도움이 필요하신가요?',
+          '가끔 저를 던지는걸 좋아하시는 분들이 있더라고요... \n 당신은 그런 분이 아니시길 바랄게요.',
           [
             {
-              name: '피드',
-              onClick: () => hideBubble(),
-            },
-            {
               name: '다음',
-              onClick: () => hideBubble(),
+              onClick: () => showDefaultBubble(),
             },
           ],
           bounds.left + shape.position.x,
           bounds.top + shape.position.y - 150,
         );
       }
-    }, 10);
+    }, 100);
 
     return () => {
       Render.stop(render);
