@@ -7,6 +7,12 @@ export interface NotificationData {
 
 export const DEFAULT_NOTIFICATIONS: NotificationData[] = [
   {
+    title: '최애의 사인(死因) 최종 발표회 출품 안내',
+    content: 'https://windeath44.s3.ap-northeast-2.amazonaws.com/notification/no5.png',
+    is_image: true,
+    created_at: '2025-11-24T20:36:00',
+  },
+  {
     title: '서비스 점검 안내_2025_11_21',
     content: 'https://windeath44.s3.ap-northeast-2.amazonaws.com/notification/no4.png',
     is_image: true,
