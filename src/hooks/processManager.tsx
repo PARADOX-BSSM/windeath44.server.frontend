@@ -27,6 +27,13 @@ export const useProcessManager = (): [
   const [virtualWindowPositions, setVirtualWindowPositions] = useAtom(virtualWindowPositionsAtom);
   const [desktopIndex] = useAtom(virtualDesktopIndexAtom);
 
+  const stackAppKeyMap: Record<string, string> = {
+    '추모관': 'stack-추모관',
+    '추모관 신청': 'stack-추모관 신청',
+    '설까기': 'stack-sulkkagi',
+    '추모관 수정 요청': 'stack-memorial-pr-default',
+  };
+
   const isInitialMount = useRef(true);
   const setVirtualWindowPosition = (positions: Record<string, Position>, index?: number) => {
     setVirtualWindowPositions((prev) => {
@@ -66,14 +73,24 @@ export const useProcessManager = (): [
 
     const savedTasks: SavedTaskType[][] = virtualTaskLists.map((tasks, idx) =>
       tasks
-        .filter((t) => !t.instanceId && !excludedPages.includes(t.name))
-        .map((t) => ({
-          type: t.type,
-          id: t.id,
-          name: t.name,
-          position: virtualWindowPositions[idx]?.[t.name],
-          desktopIndex: idx,
-        })),
+        .filter((t) => !excludedPages.includes(t.name))
+        .map((t) => {
+          const stackKey = stackAppKeyMap[t.name];
+          const stackData =
+            stackKey && typeof window !== 'undefined'
+              ? localStorage.getItem(stackKey) || undefined
+              : undefined;
+
+          return {
+            type: t.type,
+            id: t.id,
+            name: t.name,
+            position: virtualWindowPositions[idx]?.[t.name],
+            desktopIndex: idx,
+            stackKey,
+            stackData,
+          };
+        }),
     );
 
     setLastTaskList(savedTasks);

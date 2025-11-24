@@ -25,7 +25,8 @@ const useStack = (
   const windowHistoryRef = useRef<React.CSSProperties[]>([]);
   const storageKey = options?.storageKey;
   const restoreTask = options?.restoreTask;
-  const hasHydratedRef = useRef(!storageKey);
+  const hasHydratedRef = useRef(false);
+  const storageReadyRef = useRef(false);
 
   useEffect(() => {
     if (window) {
@@ -102,35 +103,52 @@ const useStack = (
   }, [stack]);
 
   useEffect(() => {
-    if (!storageKey || hasHydratedRef.current || !restoreTask) return;
+    if (!storageKey || !restoreTask || hasHydratedRef.current) return;
 
-    hasHydratedRef.current = true;
+    let restored = false;
 
     try {
       const raw = localStorage.getItem(storageKey);
-      if (!raw) return;
+      if (raw) {
+        const parsed = JSON.parse(raw) as StackSnapshot[];
+        if (Array.isArray(parsed)) {
+          parsed.forEach((snapshot) => {
+            if (!snapshot?.name) return;
 
-      const parsed = JSON.parse(raw) as StackSnapshot[];
-      if (!Array.isArray(parsed)) return;
-
-      parsed.forEach((snapshot) => {
-        if (!snapshot?.name) return;
-
-        const task = restoreTask(snapshot, {
-          stack,
-          push,
-          pop,
-          top,
-        });
-        if (task) push(task);
-      });
+            const task = restoreTask(snapshot, {
+              stack,
+              push,
+              pop,
+              top,
+            });
+            if (task) {
+              restored = true;
+              push(task);
+            }
+          });
+        } else {
+          restored = true; // malformed -> skip further attempts
+        }
+      } else {
+        restored = true; // nothing to restore
+      }
     } catch (error) {
       console.warn('Failed to restore stack from storage', error);
+    } finally {
+      if (restored) {
+        hasHydratedRef.current = true;
+      }
+      storageReadyRef.current = true;
     }
   }, [storageKey, restoreTask, push, pop, top, stack]);
 
   useEffect(() => {
-    if (!storageKey || !hasHydratedRef.current) return;
+    if (!storageKey || !restoreTask || storageReadyRef.current) return;
+    storageReadyRef.current = true;
+  }, [storageKey, restoreTask]);
+
+  useEffect(() => {
+    if (!storageKey || !storageReadyRef.current) return;
 
     const snapshot = stack.map(
       (task) =>
