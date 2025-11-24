@@ -20,12 +20,14 @@ import { useNotification } from '@/hooks/notification.tsx';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg.tsx';
 import { useDrag } from 'react-use-gesture';
 import useApps from '@/applications/data/importManager.tsx';
-import { lastTaskListAtom, windowPositionsAtom } from '@/atoms/processManager.ts';
+import { lastTaskListAtom } from '@/atoms/processManager.ts';
 import { useGetPublicNotificationsQuery } from '@/api/notification/getPublicNotifications';
 import { notificationAtom, notificationListAtom } from '@/atoms/notification';
 import { settingsAtom } from '@/atoms/settings.ts';
 import { DEFAULT_NOTIFICATIONS } from '@/data/notifications.ts';
 import { isNotClickAtom } from '@/atoms/cursorState.ts';
+import { feedsAtom } from '@/atoms/feeds';
+import { useGetFeedsMutation } from '@/api/feeds/getFeeds';
 
 const Application = lazy(() => import('@/applications/layout/index.tsx'));
 
@@ -44,6 +46,8 @@ const WindowManager = () => {
   const setNotificationList = useSetAtom(notificationListAtom);
   const [settings] = useAtom(settingsAtom);
   const [isNotClick] = useAtom(isNotClickAtom);
+  const setFeeds = useSetAtom(feedsAtom);
+  const { mutate: getFeeds } = useGetFeedsMutation();
 
   const [taskList, addTask, removeTask, setVirtualWindowPosition] = useProcessManager();
   const [, , , addTaskToDesktop] = useVirtualProcessManager();
@@ -264,6 +268,26 @@ const WindowManager = () => {
       }, 500); // 부팅 후 0.5초 뒤에 표시
     }
   }, [hydrated, settings, isLogIned, notificationsData, setNotification]);
+
+  // 부팅 시 feeds 데이터 가져오기
+  useEffect(() => {
+    if (!hydrated) return;
+
+    getFeeds(
+      { days: 5, size: 10 },
+      {
+        onSuccess: (response) => {
+          if (response?.data) {
+            setFeeds(response.data);
+            console.log('[WindowManager] Feeds loaded:', response.data.length);
+          }
+        },
+        onError: (error) => {
+          console.error('[WindowManager] Failed to load feeds:', error);
+        },
+      },
+    );
+  }, [hydrated, getFeeds, setFeeds]);
 
   useEffect(() => {
     const container = document.getElementById('cursorContainer') as HTMLElement;
