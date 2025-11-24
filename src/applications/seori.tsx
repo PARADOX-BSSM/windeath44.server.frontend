@@ -17,7 +17,6 @@ import {
 import { MutableRefObject, useLayoutEffect, useRef } from 'react';
 import SpeechBubble from '@/applications/components/speechBubble';
 import useSpeechBubble from '@/hooks/speechBubble';
-import { set } from './utility/signUp/style';
 
 export default function Seori() {
   // 설이 Ref
@@ -40,7 +39,7 @@ export default function Seori() {
     const spawnX = shapeRef.current.position.x;
     const spawnY = shapeRef.current.position.y;
     showBubble(
-      '안녕하세요! \n 도움이 필요하신가요?',
+      '안녕하세요. \n 도움이 필요하신가요?',
       [
         {
           name: '다음',
@@ -52,7 +51,7 @@ export default function Seori() {
         },
       ],
       bounds.left + spawnX,
-      bounds.top + spawnY - 80,
+      bounds.top + spawnY - 150,
     );
   };
 
@@ -81,7 +80,7 @@ export default function Seori() {
         },
       ],
       bounds.left + spawnX,
-      bounds.top + spawnY - 80,
+      bounds.top + spawnY - 150,
     );
   };
 
@@ -94,7 +93,7 @@ export default function Seori() {
     const spawnX = shapeRef.current.position.x;
     const spawnY = shapeRef.current.position.y;
     showBubble(
-      '최근 방문하신 추모관을 참고해서 한 곳 추천해드릴게요! \n 우치하 이타치 님의 추모관은 어떠신가요?',
+      '최근 방문하신 추모관을 참고해서 한 곳 추천해드릴게요. \n 우치하 이타치 님의 추모관은 어떠신가요?',
       [
         {
           name: '취소',
@@ -110,7 +109,7 @@ export default function Seori() {
         },
       ],
       bounds.left + spawnX,
-      bounds.top + spawnY - 80,
+      bounds.top + spawnY - 150,
     );
   };
 
