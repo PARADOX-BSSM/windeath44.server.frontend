@@ -47,11 +47,6 @@ const useStack = (
       const latestWindow = windowRef.current;
 
       if (setWindow && latestWindow && value?.appSetup) {
-        // 현재 상태를 히스토리에 먼저 저장 (pop할 때 되돌아갈 상태)
-        if (windowHistoryRef.current[windowHistoryRef.current.length - 1] !== latestWindow) {
-          windowHistoryRef.current.push(latestWindow);
-        }
-
         const newWindowState = {
           ...latestWindow,
           top: latestWindow.top!,
@@ -65,7 +60,7 @@ const useStack = (
           minWidth:
             value.appSetup.minWidth !== undefined ? value.appSetup.minWidth : latestWindow.minWidth,
         };
-
+        windowHistoryRef.current.push(newWindowState);
         windowRef.current = newWindowState;
         setWindow(newWindowState);
       }
@@ -75,8 +70,8 @@ const useStack = (
 
   const pop = useCallback(() => {
     setStack((prev) => {
-      const copy = [...prev];
-      copy.pop();
+      if (prev.length === 0) return prev;
+      const copy = prev.slice(0, -1);
 
       const latestWindow = windowRef.current;
       // 이전 window 상태로 복원
@@ -133,6 +128,7 @@ const useStack = (
       }
     } catch (error) {
       console.warn('Failed to restore stack from storage', error);
+      restored = true;
     } finally {
       if (restored) {
         hasHydratedRef.current = true;
