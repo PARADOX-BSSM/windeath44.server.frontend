@@ -47,5 +47,5 @@ export const SelectionBox = styled.div<{
   background-color: rgba(255, 142, 246, 0.3);
   border: 1px solid rgba(231, 116, 221, 0.8);
   pointer-events: none;
-  z-index: 9999;
+  z-index: 0;
 `;

@@ -16,6 +16,7 @@ import { useGetCharacter, CharacterData } from '@/api/anime/getCharacter';
 import { useProcessManager } from '@/hooks/processManager';
 import { useGetMemorialsCharacterFilteredQuery } from '@/api/memorial/getMemorialsCharacterFiltered';
 import { useGetUsersQuery } from '@/api/user/getUsersByIds';
+import ribbon from '@/assets/memorial_ribbon.svg';
 
 interface Message {
   id: string;
@@ -323,10 +324,16 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
           <_.ProfileSection>
             <_.ProfileTop>
               <_.CharacterImageContainer>
-                <_.CharacterImage
-                  src={characterImage}
-                  alt={character}
-                />
+                <_.PictureContainer>
+                  <_.Ribbon
+                    src={ribbon}
+                    alt="ribbon"
+                  />
+                  <_.CharacterImage
+                    src={characterImage}
+                    alt={character}
+                  />
+                </_.PictureContainer>
               </_.CharacterImageContainer>
               <_.CharacterName>{character}</_.CharacterName>
             </_.ProfileTop>

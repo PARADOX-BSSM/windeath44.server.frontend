@@ -434,8 +434,8 @@ const Memorial = ({
         prev.map((v) =>
           v.instanceId === instanceId
             ? { ...v, windowName: `추모관 뷰어 - ${characterData.name}` }
-            : v
-        )
+            : v,
+        ),
       );
     }
   }, [instanceId, characterData?.name, setViewerList]);
@@ -513,7 +513,7 @@ const Memorial = ({
         },
       })
       .then((response) => {
-        const users = response.data.data;
+        const users = response.data.data.data;
         const userMap: Record<string, { name: string; profile: string }> = {};
         users.forEach((user: any) => {
           userMap[user.userId] = {
@@ -566,12 +566,6 @@ const Memorial = ({
     return <Loading />;
   }
 
-  const stackProps = {
-    stack: stack,
-    push: push,
-    pop: pop,
-    top: top,
-  };
   const handleCommit = () => {
     if (!token && setAlert) {
       setAlert(
@@ -617,7 +611,7 @@ const Memorial = ({
             <_.Header>
               <_.TextContainer>
                 <_.Title>{characterData?.name}</_.Title>
-                <_.Subtitle>최근 수정: {formatDate(memorialData?.updatedAt)}</_.Subtitle>
+                <_.Subtitle>최근 수정: {formatDate(memorialData!.updatedAt)}</_.Subtitle>
               </_.TextContainer>
               <_.History
                 onClick={() => {
