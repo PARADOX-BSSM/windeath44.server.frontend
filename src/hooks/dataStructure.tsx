@@ -1,5 +1,6 @@
 import { StackSnapshot, TaskType } from '@/modules/typeModule';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { STACK_EXCLUDE_NAMES } from '@/config/stackStorage';
 
 type StackHelpers = {
   stack: TaskType[];
@@ -62,9 +63,7 @@ const useStack = (
               ? value.appSetup.minHeight
               : latestWindow.minHeight,
           minWidth:
-            value.appSetup.minWidth !== undefined
-              ? value.appSetup.minWidth
-              : latestWindow.minWidth,
+            value.appSetup.minWidth !== undefined ? value.appSetup.minWidth : latestWindow.minWidth,
         };
 
         windowRef.current = newWindowState;
@@ -150,9 +149,20 @@ const useStack = (
   useEffect(() => {
     if (!storageKey || !storageReadyRef.current) return;
 
+    // 제외 대상이 하나라도 포함되어 있으면 저장하지 않고 비움
+    if (stack.some((task) => STACK_EXCLUDE_NAMES.has(task.name))) {
+      try {
+        localStorage.removeItem(storageKey);
+      } catch (error) {
+        console.warn('Failed to clear excluded stack from storage', error);
+      }
+      return;
+    }
+
     const snapshot = stack.map(
       (task) =>
-        task.stackSnapshot ?? ({
+        task.stackSnapshot ??
+        ({
           name: task.name,
           id: task.id,
           type: task.type,
@@ -169,7 +179,6 @@ const useStack = (
       console.warn('Failed to save stack to storage', error);
     }
   }, [stack, storageKey]);
-
 
   return [stack, push, pop, top] as const;
 };

@@ -126,6 +126,13 @@ const WindowManager = () => {
             } catch (e) {
               console.warn('Failed to restore stack storage', savedTask.stackKey, e);
             }
+          } else if (savedTask.stackKey) {
+            // 스택 데이터가 없으면 기존 키를 정리
+            try {
+              localStorage.removeItem(savedTask.stackKey);
+            } catch (e) {
+              console.warn('Failed to clear missing stack storage', savedTask.stackKey, e);
+            }
           }
 
           if (savedTask.position) {

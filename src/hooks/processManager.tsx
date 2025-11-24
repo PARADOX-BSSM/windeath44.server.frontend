@@ -10,6 +10,7 @@ import {
   SavedTaskType,
 } from '@/atoms/processManager.ts';
 import { useEffect, useRef } from 'react';
+import { STACK_KEY_MAP, STACK_EXCLUDE_NAMES, STACK_ALL_KEYS } from '@/config/stackStorage';
 
 type Position = { top: number; left: number; width: number; height: number };
 
@@ -26,13 +27,6 @@ export const useProcessManager = (): [
   const [windowPositions, setWindowPositions] = useAtom(windowPositionsAtom);
   const [virtualWindowPositions, setVirtualWindowPositions] = useAtom(virtualWindowPositionsAtom);
   const [desktopIndex] = useAtom(virtualDesktopIndexAtom);
-
-  const stackAppKeyMap: Record<string, string> = {
-    '추모관': 'stack-추모관',
-    '추모관 신청': 'stack-추모관 신청',
-    '설까기': 'stack-sulkkagi',
-    '추모관 수정 요청': 'stack-memorial-pr-default',
-  };
 
   const isInitialMount = useRef(true);
   const setVirtualWindowPosition = (positions: Record<string, Position>, index?: number) => {
@@ -75,9 +69,10 @@ export const useProcessManager = (): [
       tasks
         .filter((t) => !excludedPages.includes(t.name))
         .map((t) => {
-          const stackKey = stackAppKeyMap[t.name];
+          const isExcluded = STACK_EXCLUDE_NAMES.has(t.name);
+          const stackKey = STACK_KEY_MAP[t.name];
           const stackData =
-            stackKey && typeof window !== 'undefined'
+            !isExcluded && stackKey && typeof window !== 'undefined'
               ? localStorage.getItem(stackKey) || undefined
               : undefined;
 
@@ -94,6 +89,23 @@ export const useProcessManager = (): [
     );
 
     setLastTaskList(savedTasks);
+
+    // 현재 유지할 스택 스토리지 키를 추려내고 나머지는 삭제
+    const activeKeys = new Set<string>();
+    savedTasks.forEach((desktop) =>
+      desktop.forEach((task) => {
+        if (task.stackKey && task.stackData) activeKeys.add(task.stackKey);
+      }),
+    );
+    STACK_ALL_KEYS.forEach((key) => {
+      if (!activeKeys.has(key)) {
+        try {
+          localStorage.removeItem(key);
+        } catch (e) {
+          console.warn('Failed to clear stale stack storage', key, e);
+        }
+      }
+    });
   }, [virtualTaskList, windowPositions, virtualWindowPositions, desktopIndex]);
 
   const addTask = (task: TaskType) => {

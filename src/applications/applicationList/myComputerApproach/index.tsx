@@ -1,8 +1,7 @@
-import { useCallback, useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { useAtomValue } from 'jotai';
 import { useStack } from '@/hooks/dataStructure.tsx';
 import { taskSearchAtom } from '@/atoms/taskTransformer.ts';
-import { StackSnapshot } from '@/modules/typeModule';
 
 interface MyComputerApproachProps {
   window: React.CSSProperties;
@@ -24,26 +23,8 @@ const MyComputerApproach = ({
   instanceId,
 }: MyComputerApproachProps) => {
   const taskSearch = useAtomValue(taskSearchAtom);
-  const storageKey = useMemo(
-    () => `stack-memorial-pr-${instanceId ?? memorialId ?? 'default'}`,
-    [instanceId, memorialId],
-  );
 
-  const restoreTask = useCallback(
-    (snapshot: StackSnapshot, helpers: any) =>
-      taskSearch?.(snapshot.name, {
-        memorialId,
-        memorialName,
-        ...helpers,
-        ...(snapshot.props || {}),
-      }) ?? null,
-    [taskSearch, memorialId, memorialName],
-  );
-
-  const [stack, push, pop, top] = useStack(window, setWindow, setUpHeight, setUpWidth, {
-    storageKey,
-    restoreTask: taskSearch ? restoreTask : undefined,
-  });
+  const [stack, push, pop, top] = useStack(window, setWindow, setUpHeight, setUpWidth);
 
   const stackProps = {
     stack: stack,
