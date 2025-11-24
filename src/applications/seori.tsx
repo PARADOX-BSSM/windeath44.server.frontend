@@ -147,7 +147,7 @@ export default function Seori() {
     const recommendedMemorial = currentFeeds[feedsIdxRef.current];
 
     showBubble(
-      `최근 방문하신 추모관을 참고해서 한 곳 추천해드릴게요. \n "${recommendedMemorial.metadata.characterName}"님의 추모관은 어떠신가요?`,
+      `최근 방문하신 추모관을 참고해서 한 곳 추천해드릴게요. \n 「${recommendedMemorial.metadata.characterName}」님의 추모관은 어떠신가요?`,
       [
         {
           name: '취소',
