@@ -138,9 +138,9 @@ const useStack = (
   }, [storageKey, restoreTask, push, pop, top, stack]);
 
   useEffect(() => {
-    if (!storageKey || !restoreTask || storageReadyRef.current) return;
+    if (!storageKey || storageReadyRef.current) return;
     storageReadyRef.current = true;
-  }, [storageKey, restoreTask]);
+  }, [storageKey]);
 
   useEffect(() => {
     if (!storageKey || !storageReadyRef.current) return;
