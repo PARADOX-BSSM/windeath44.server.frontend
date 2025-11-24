@@ -20,7 +20,7 @@ import { useNotification } from '@/hooks/notification.tsx';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg.tsx';
 import { useDrag } from 'react-use-gesture';
 import useApps from '@/applications/data/importManager.tsx';
-import { lastTaskListAtom, windowPositionsAtom } from '@/atoms/processManager.ts';
+import { lastTaskListAtom } from '@/atoms/processManager.ts';
 import { useGetPublicNotificationsQuery } from '@/api/notification/getPublicNotifications';
 import { notificationAtom, notificationListAtom } from '@/atoms/notification';
 import { settingsAtom } from '@/atoms/settings.ts';
@@ -269,9 +269,9 @@ const WindowManager = () => {
     }
   }, [hydrated, settings, isLogIned, notificationsData, setNotification]);
 
-  // 로그인 시 feeds 데이터 가져오기
+  // 부팅 시 feeds 데이터 가져오기
   useEffect(() => {
-    if (!hydrated || isLogIned !== 'true') return;
+    if (!hydrated) return;
 
     getFeeds(
       { days: 5, size: 10 },
@@ -287,7 +287,7 @@ const WindowManager = () => {
         },
       },
     );
-  }, [hydrated, isLogIned, getFeeds, setFeeds]);
+  }, [hydrated, getFeeds, setFeeds]);
 
   useEffect(() => {
     const container = document.getElementById('cursorContainer') as HTMLElement;

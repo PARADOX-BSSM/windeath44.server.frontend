@@ -88,7 +88,7 @@ export const ClippyButton = styled.button`
   font-family: Galmuri11;
   font-size: 12px;
   color: #000;
-  cursor: pointer;
+  cursor: none;
   clip-path: polygon(
     0 2px,
     2px 2px,

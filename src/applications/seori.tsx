@@ -14,9 +14,11 @@ import {
   World,
   Query,
 } from 'matter-js';
-import { MutableRefObject, useLayoutEffect, useRef } from 'react';
+import { MutableRefObject, useLayoutEffect, useRef, useEffect } from 'react';
 import SpeechBubble from '@/applications/components/speechBubble';
 import useSpeechBubble from '@/hooks/speechBubble';
+import { feedsAtom } from '@/atoms/feeds';
+import { taskTransformerAtom } from '@/atoms/taskTransformer';
 
 export default function Seori() {
   // 설이 Ref
@@ -25,9 +27,22 @@ export default function Seori() {
   const [, setFocus] = useAtom(focusAtom);
   const [, setIsSeoriDragging] = useAtom(isSeoriDraggingAtom);
   const settings = useAtomValue(settingsAtom);
+  const feedsIdxRef = useRef(0);
 
   // 말풍선 hook
   const { bubble, showBubble, hideBubble, updatePosition } = useSpeechBubble();
+
+  // task 변환기
+  const taskTransform = useAtomValue(taskTransformerAtom);
+
+  // 피드
+  const feeds = useAtomValue(feedsAtom);
+  const feedsRef = useRef(feeds);
+
+  // feeds가 업데이트되면 ref도 업데이트
+  useEffect(() => {
+    feedsRef.current = feeds;
+  }, [feeds]);
 
   // 기본값 말풍선 표시 함수
   const showDefaultBubble = () => {
@@ -55,6 +70,7 @@ export default function Seori() {
     );
   };
 
+  // 랜덤 텍스트 말풍선 표시 함수
   const showRandomTextBubble = () => {
     const texts = ['랜덤1', '랜덤2', '랜덤3', '랜덤4', '랜덤5'];
     const randomIndex = Math.floor(Math.random() * texts.length);
@@ -84,6 +100,17 @@ export default function Seori() {
     );
   };
 
+  // 피드 추모관 이동 함수
+  const handleGoToRecommendedMemorial = (memorialId: number, characterId: number) => {
+    if (taskTransform && memorialId) {
+      taskTransform('', '추모관 뷰어', {
+        memorialId: memorialId,
+        characterId: characterId,
+      });
+    }
+  };
+
+  // 피드 기반 추천 말풍선 표시 함수
   const showMemorialFeedBubble = () => {
     const container = document.getElementById('cursorContainer');
     if (!container || !shapeRef.current) {
@@ -92,8 +119,29 @@ export default function Seori() {
     const bounds = container.getBoundingClientRect();
     const spawnX = shapeRef.current.position.x;
     const spawnY = shapeRef.current.position.y;
+
+    // ref를 통해 최신 feeds 값 가져오기 (stale closure 방지)
+    const currentFeeds = feedsRef.current;
+
+    if (currentFeeds.length === 0) {
+      showBubble(
+        '아직 추모관을 방문하시지 않은 것 같네요. \n 아쉽게도 저는 무에서 유를 창조할 순 없어요.',
+        [
+          {
+            name: '확인',
+            onClick: () => showDefaultBubble(),
+          },
+        ],
+        bounds.left + spawnX,
+        bounds.top + spawnY - 150,
+      );
+      return;
+    }
+
+    const recommendedMemorial = currentFeeds[feedsIdxRef.current];
+
     showBubble(
-      '최근 방문하신 추모관을 참고해서 한 곳 추천해드릴게요. \n 우치하 이타치 님의 추모관은 어떠신가요?',
+      `최근 방문하신 추모관을 참고해서 한 곳 추천해드릴게요. \n ${recommendedMemorial.metadata.characterName} 님의 추모관은 어떠신가요?`,
       [
         {
           name: '취소',
@@ -101,11 +149,18 @@ export default function Seori() {
         },
         {
           name: '추모관으로 이동',
-          onClick: () => hideBubble(),
+          onClick: () =>
+            handleGoToRecommendedMemorial(
+              recommendedMemorial.metadata.memorialId,
+              recommendedMemorial.metadata.characterId,
+            ),
         },
         {
           name: '다른거',
-          onClick: () => showMemorialFeedBubble(),
+          onClick: () => {
+            feedsIdxRef.current = (feedsIdxRef.current + 1) % currentFeeds.length;
+            showMemorialFeedBubble();
+          },
         },
       ],
       bounds.left + spawnX,
