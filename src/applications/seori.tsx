@@ -12,7 +12,8 @@ import {
   Runner,
   World,
 } from 'matter-js';
-import { MutableRefObject, useLayoutEffect, useRef } from 'react';
+import { MutableRefObject, useLayoutEffect, useRef, useState } from 'react';
+import SpeechBubble from '@/applications/components/speechBubble';
 
 export default function Seori() {
   // 설이 Ref
@@ -20,6 +21,13 @@ export default function Seori() {
 
   const [, setFocus] = useAtom(focusAtom);
   const [, setIsSeoriDragging] = useAtom(isSeoriDraggingAtom);
+
+  // 말풍선 상태
+  const [bubble, setBubble] = useState<{ show: boolean; x: number; y: number }>({
+    show: false,
+    x: 0,
+    y: 0,
+  });
 
   // 설이 스프라이트 변경 함수
   const setSpriteTexture = (path: string) => {
@@ -47,7 +55,6 @@ export default function Seori() {
     const texturePath = `src/assets/seori/interaction_${state}.png`;
     setSpriteTexture(texturePath);
   };
-
 
   useLayoutEffect(() => {
     const container = document.getElementById('cursorContainer');
@@ -81,9 +88,7 @@ export default function Seori() {
       // 클릭 위치에 있는 모든 요소 찾기
       const elements = document.elementsFromPoint(e.clientX, e.clientY);
       // canvas를 제외한 요소 중 app-button 찾기
-      const appButton = elements.find(
-        (el) => el !== render.canvas && el.closest('.app-button'),
-      );
+      const appButton = elements.find((el) => el !== render.canvas && el.closest('.app-button'));
       if (appButton) {
         // app-button 클릭 이벤트 전달
         (appButton.closest('.app-button') as HTMLElement)?.click();
@@ -95,9 +100,7 @@ export default function Seori() {
     render.canvas.ondblclick = (e: MouseEvent) => {
       // 더블클릭도 전달
       const elements = document.elementsFromPoint(e.clientX, e.clientY);
-      const appButton = elements.find(
-        (el) => el !== render.canvas && el.closest('.app-button'),
-      );
+      const appButton = elements.find((el) => el !== render.canvas && el.closest('.app-button'));
       if (appButton) {
         const event = new MouseEvent('dblclick', {
           bubbles: true,
@@ -194,6 +197,13 @@ export default function Seori() {
 
       World.add(world, shape);
       shapeRef.current = shape;
+
+      // 초기 말풍선 표시
+      setBubble({
+        show: true,
+        x: bounds.left + 300,
+        y: bounds.top + 150 - 80,
+      });
     });
 
     // 드래그 시작 && 끝나면 실행되는 함수들
@@ -201,6 +211,7 @@ export default function Seori() {
       isDraggingRef.current = true;
       setIsSeoriDragging(true);
       setStateRef('holding');
+      setBubble((prev) => ({ ...prev, show: false })); // 드래그 시작하면 말풍선 숨김
     };
     const onDragEnd = () => {
       isDraggingRef.current = false;
@@ -262,7 +273,7 @@ export default function Seori() {
       }
     });
 
-    // 설이가 world 바깥으로 나가면 다시 되돌아오는 코드
+    // 설이가 world 바깥으로 나가면 다시 되돌아오는 코드 + 말풍선 위치 업데이트
     Events.on(engine, 'afterUpdate', () => {
       const x = shape.position.x;
       const y = shape.position.y;
@@ -274,6 +285,16 @@ export default function Seori() {
         Body.setPosition(shape, { x: (canvasWidth + 30) / 2, y: canvasHeight / 2 }); // 다시 중앙으로
         Body.setVelocity(shape, { x: 0, y: 0 }); // 속도 초기화
       }
+
+      // 말풍선 위치 업데이트 (설이 따라다니기)
+      setBubble((prev) => {
+        if (!prev.show) return prev;
+        return {
+          ...prev,
+          x: bounds.left + x,
+          y: bounds.top + y - 150,
+        };
+      });
     });
 
     // 설이 이동 관련 이벤트
@@ -308,6 +329,12 @@ export default function Seori() {
     setInterval(() => {
       if (shape.speed < 0.1 && !isDraggingRef.current) {
         setStateRef('default');
+        // 땅에 닿으면 말풍선 표시
+        setBubble({
+          show: true,
+          x: bounds.left + shape.position.x,
+          y: bounds.top + shape.position.y - 150,
+        });
       }
     }, 10);
 
@@ -317,5 +344,22 @@ export default function Seori() {
     };
   }, []);
 
-  return <></>;
+  return (
+    <SpeechBubble
+      x={bubble.x}
+      y={bubble.y}
+      text="안녕하세요!"
+      show={bubble.show}
+      buttons={[
+        {
+          name: '닫기',
+          onClick: () => setBubble((prev) => ({ ...prev, show: false })),
+        },
+        {
+          name: '다음',
+          onClick: () => setBubble((prev) => ({ ...prev, show: false })),
+        },
+      ]}
+    />
+  );
 }
