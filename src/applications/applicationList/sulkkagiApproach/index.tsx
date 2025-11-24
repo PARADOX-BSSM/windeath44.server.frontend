@@ -39,12 +39,10 @@ const SulkkagiApproach = ({
   };
 
   useEffect(() => {
-    // console.log("stack: ", stack);
-    // console.log("top: ", top());
-  }, [stack]);
-  useEffect(() => {
-    push(taskSearch?.('sulkkagiMenu', stackProps));
-  }, []);
+    if (taskSearch && stack.length === 0) {
+      push(taskSearch('sulkkagiMenu', stackProps));
+    }
+  }, [taskSearch, push, stackProps, stack.length]);
   return <>{top()?.component}</>;
 };
 export default SulkkagiApproach;

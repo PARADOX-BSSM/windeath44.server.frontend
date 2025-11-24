@@ -53,12 +53,10 @@ const MyComputerApproach = ({
   };
 
   useEffect(() => {
-    // console.log("stack: ", stack);
-    // console.log("top: ", top());
-  }, [stack]);
-  useEffect(() => {
-    push(taskSearch?.('memorialPRManager', { ...stackProps, memorialId, memorialName }));
-  }, []);
+    if (taskSearch && stack.length === 0) {
+      push(taskSearch('memorialPRManager', { ...stackProps, memorialId, memorialName }));
+    }
+  }, [taskSearch, push, stackProps, memorialId, memorialName, stack.length]);
   return <>{top()?.component}</>;
 };
 export default MyComputerApproach;
