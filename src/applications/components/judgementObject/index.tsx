@@ -93,9 +93,9 @@ const Judgement_Object = ({
     top: top,
 
     judgement_id: judgement_id,
-    a_name: a_name,
-    c_name: c_name,
-    img: img,
+    a_name: animeData?.data.name,
+    c_name: characterData.name,
+    img: characterData.imageUrl,
     like: like,
     vote: vote,
     hell_count: hell_count,

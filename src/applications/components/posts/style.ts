@@ -9,6 +9,7 @@ export const Post = styled.div`
   background-color: #fff;
 `;
 export const Main = styled.div`
+  max-width: 100%;
   display: flex;
   align-items: flex-start;
   gap: 10px;
