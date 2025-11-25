@@ -60,9 +60,6 @@ body {
 
 .shell {
   background-color: var(--secondary-color);
-  display: grid;
-  grid-template-columns: repeat(auto-fill, 5rem);
-  grid-template-rows: repeat(6, 6rem);
   grid-auto-flow: column;
   height: 100%;
   width: 100%;
@@ -71,8 +68,7 @@ body {
   background-size: cover;
   gap: 1rem;
   align-content: start;
-  padding-top: 1.5rem;
-  padding-left: 1.5rem;
+  box-sizing: border-box;
 }
 
 .app-button > button {

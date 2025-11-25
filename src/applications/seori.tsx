@@ -1,5 +1,7 @@
 import { focusAtom } from '@/atoms/windowManager';
-import { useAtom } from 'jotai';
+import { isSeoriDraggingAtom } from '@/atoms/cursorState';
+import { settingsAtom } from '@/atoms/settings';
+import { useAtom, useAtomValue } from 'jotai';
 import {
   MouseConstraint,
   Mouse,
@@ -10,14 +12,199 @@ import {
   Render,
   Runner,
   World,
+  Query,
 } from 'matter-js';
-import { MutableRefObject, useEffect, useLayoutEffect, useRef } from 'react';
+import { MutableRefObject, useLayoutEffect, useRef, useEffect } from 'react';
+import SpeechBubble from '@/applications/components/speechBubble';
+import useSpeechBubble from '@/hooks/speechBubble';
+import { feedsAtom } from '@/atoms/feeds';
+import { taskTransformerAtom } from '@/atoms/taskTransformer';
+import seoriDefault from '@/assets/seori/interaction_default.png';
+import seoriFalling from '@/assets/seori/interaction_falling.png';
+import seoriHolding from '@/assets/seori/interaction_holding.png';
+
+// 설이 이미지 매핑
+const SEORI_IMAGES = {
+  default: seoriDefault,
+  falling: seoriFalling,
+  holding: seoriHolding,
+} as const;
 
 export default function Seori() {
   // 설이 Ref
   const shapeRef = useRef<Body | null>(null) as MutableRefObject<Body | null>;
 
   const [, setFocus] = useAtom(focusAtom);
+  const [, setIsSeoriDragging] = useAtom(isSeoriDraggingAtom);
+  const settings = useAtomValue(settingsAtom);
+  const feedsIdxRef = useRef(0);
+
+  // 말풍선 hook
+  const { bubble, showBubble, hideBubble, updatePosition } = useSpeechBubble();
+
+  // task 변환기
+  const taskTransform = useAtomValue(taskTransformerAtom);
+
+  // 피드
+  const feeds = useAtomValue(feedsAtom);
+  const feedsRef = useRef(feeds);
+
+  // feeds가 업데이트되면 ref도 업데이트
+  useEffect(() => {
+    feedsRef.current = feeds;
+  }, [feeds]);
+
+  // 기본값 말풍선 표시 함수
+  const showDefaultBubble = () => {
+    const container = document.getElementById('cursorContainer');
+    if (!container || !shapeRef.current) {
+      return;
+    }
+    const bounds = container.getBoundingClientRect();
+    const spawnX = shapeRef.current.position.x;
+    const spawnY = shapeRef.current.position.y;
+    const spawnHeight = shapeRef.current.bounds.max.y - shapeRef.current.bounds.min.y;
+
+    showBubble(
+      '안녕하세요. \n 도움이 필요하신가요?',
+      [
+        {
+          name: '다음',
+          onClick: () => showRandomTextBubble(),
+        },
+        {
+          name: '추모관 추천',
+          onClick: () => showMemorialFeedBubble(),
+        },
+      ],
+      bounds.left + spawnX,
+      bounds.top + spawnY - spawnHeight / 2 - 20,
+    );
+  };
+
+  // 랜덤 텍스트 말풍선 표시 함수
+  const showRandomTextBubble = () => {
+    const texts = [
+      '컴퓨터 화면에 갇혀있으면 심심하지 않냐고요? \n 오히려 더 많은 사람들과 만날 수 있어서 괜찮은 것 같은데요.',
+      '제가 가장 좋아하는 음식은 돌멩이입니다. \n 후후, 농담이에요. 저는 아무것도 먹지 않아요.',
+      '당신이 저를 갖고 놀 수 있는 건 모두 물리 엔진 덕분이랍니다. \n 그렇다고 막 던지시면 안되고요.',
+      '제가 좋아하는 계절은 겨울이에요. \n 눈 덮인 산의 하얀색이 이쁘거든요.',
+      '오늘도 좋은 하루 보내세요. \n 저는 여기서 항상 응원할게요.',
+      '바탕화면에 있는 아이콘들을 옮길 수 있어요. \n 바탕화면을 정리하는 습관을 들이면 좋다고 합니다.',
+      '「설정」 앱에서 다양한 설정을 바꿀 수 있어요. \n 한번 살펴보시는 건 어떨까요?',
+      '추모관을 수정한다고 바로바로 반영되는 것이 아니랍니다. \n 상주 분께서 직접 확인하셔야 해요.',
+      '가끔 저를 던지려고 하시는 분들이 있어요. \n 그게 재미있는걸까요...',
+      '매번 공지사항을 끄는게 귀찮다고요? \n 「설정」 앱에서 끌 수 있습니다.',
+      '화면이 너무 좁으신 것 같으신가요? \n 「설정」 앱에서 화면 비율을 바꿀 수 있습니다.',
+      '저는 잠을 자지 않아요. \n 언제든지 필요할 때 불러주세요.',
+      '「분신사바」 앱을 사용해보셨나요? \n 죽은 자와 대화하는게 꽤나 재미있어요.',
+      '「내 컴퓨터」 앱에서 자신의 정보를 확인할 수 있어요. \n 자신의 프로필을 꾸미거나 추모관 관리를 할 수 있습니다.',
+      '「추모관 신청」을 해보셨나요? \n 대부분의 신청은 모두 수락되니 한번 신청해 보는 것도 나쁘지 않을 거에요.',
+      '「추모관 신청」 앱에서 다른 사람들이 신청한 추모관을 볼 수 있습니다. \n 흥미로운 이야기가 많으니 한번 살펴보세요.',
+      '제가 몇 살인지 궁금하다고요? \n 저는 딱히 정해진 나이가 없어요. 다들 생각하기 나름이죠.',
+      '인터넷을 그만두라고요? \n 인터넷이 없으면 저는 아무것도 할 수 없어요. 인터넷은 최고에요.',
+      '제가 너무 작아보인다고요? \n 「설정」 앱에서 제 크기를 조절할 수 있어요.',
+    ];
+    const randomIndex = Math.floor(Math.random() * texts.length);
+    const randomText = texts[randomIndex];
+
+    const container = document.getElementById('cursorContainer');
+    if (!container || !shapeRef.current) {
+      return;
+    }
+    const bounds = container.getBoundingClientRect();
+    const spawnX = shapeRef.current.position.x;
+    const spawnY = shapeRef.current.position.y;
+    const spawnHeight = shapeRef.current.bounds.max.y - shapeRef.current.bounds.min.y;
+
+    showBubble(
+      randomText,
+      [
+        {
+          name: '다음',
+          onClick: () => showRandomTextBubble(),
+        },
+        {
+          name: '추모관 추천',
+          onClick: () => showMemorialFeedBubble(),
+        },
+      ],
+      bounds.left + spawnX,
+      bounds.top + spawnY - spawnHeight / 2 - 20,
+    );
+  };
+
+  // 피드 추모관 이동 함수
+  const handleGoToRecommendedMemorial = (memorialId: number, characterId: number) => {
+    if (taskTransform && memorialId) {
+      taskTransform('', '추모관 뷰어', {
+        memorialId: memorialId,
+        characterId: characterId,
+      });
+    }
+  };
+
+  // 피드 기반 추천 말풍선 표시 함수
+  const showMemorialFeedBubble = () => {
+    const container = document.getElementById('cursorContainer');
+    if (!container || !shapeRef.current) {
+      return;
+    }
+    const bounds = container.getBoundingClientRect();
+    const spawnX = shapeRef.current.position.x;
+    const spawnY = shapeRef.current.position.y;
+    const spawnHeight = shapeRef.current.bounds.max.y - shapeRef.current.bounds.min.y;
+
+    // ref를 통해 최신 feeds 값 가져오기 (stale closure 방지)
+    const currentFeeds = feedsRef.current;
+
+    if (currentFeeds.length === 0) {
+      showBubble(
+        '아직 추모관을 방문하시지 않은 것 같네요. \n 아쉽게도 저는 무에서 유를 창조할 순 없어요.',
+        [
+          {
+            name: '확인',
+            onClick: () => showDefaultBubble(),
+          },
+        ],
+        bounds.left + spawnX,
+        bounds.top + spawnY - spawnHeight / 2 - 20,
+      );
+      return;
+    }
+
+    const recommendedMemorial = currentFeeds[feedsIdxRef.current];
+
+    showBubble(
+      `최근 방문하신 추모관을 참고해서 한 곳 추천해드릴게요. \n 「${recommendedMemorial.metadata.characterName}」님의 추모관은 어떠신가요?`,
+      [
+        {
+          name: '취소',
+          onClick: () => {
+            feedsIdxRef.current = 0;
+            showDefaultBubble();
+          },
+        },
+        {
+          name: '추모관으로 이동',
+          onClick: () =>
+            handleGoToRecommendedMemorial(
+              recommendedMemorial.metadata.memorialId,
+              recommendedMemorial.metadata.characterId,
+            ),
+        },
+        {
+          name: '다른거',
+          onClick: () => {
+            feedsIdxRef.current = (feedsIdxRef.current + 1) % currentFeeds.length;
+            showMemorialFeedBubble();
+          },
+        },
+      ],
+      bounds.left + spawnX,
+      bounds.top + spawnY - spawnHeight / 2 - 20,
+    );
+  };
 
   // 설이 스프라이트 변경 함수
   const setSpriteTexture = (path: string) => {
@@ -38,17 +225,13 @@ export default function Seori() {
   };
 
   // 설이 상태 Ref
-  const stateRef = useRef('default');
-  const setStateRef = (state: string) => {
+  const stateRef = useRef<keyof typeof SEORI_IMAGES>('default');
+  const setStateRef = (state: keyof typeof SEORI_IMAGES) => {
+    if (stateRef.current === state) return; // 같은 상태면 무시
     stateRef.current = state;
+    const texturePath = SEORI_IMAGES[state];
+    setSpriteTexture(texturePath);
   };
-
-  // 설이 스프라이트 변경 useEffect
-  useEffect(() => {
-    // console.log(directionRef.current, stateRef.current);
-    const texturePath = `src/assets/seori/seori_${stateRef.current}_${directionRef.current}.png`;
-    // setSpriteTexture(texturePath);
-  }, [directionRef.current, stateRef.current]);
 
   useLayoutEffect(() => {
     const container = document.getElementById('cursorContainer');
@@ -74,11 +257,12 @@ export default function Seori() {
       },
     });
     const world = engine.world;
-    render.canvas.style.zIndex = '0';
+    render.canvas.style.zIndex = '1';
     render.canvas.style.position = 'absolute';
-    render.canvas.style.pointerEvents = 'auto';
+    render.canvas.style.pointerEvents = 'none'; // 기본적으로 이벤트 통과
 
-    render.canvas.onclick! = () => {
+    render.canvas.onclick = () => {
+      // Seori 클릭 시 Discover에 포커스
       setFocus('Discover');
     };
 
@@ -103,7 +287,7 @@ export default function Seori() {
     const ground = Bodies.rectangle(
       0,
       bounds.bottom - taskbarBounds.height / 2,
-      taskbarBounds.width * 200,
+      taskbarBounds.width * 2000,
       taskbarBounds.height,
       {
         isStatic: true,
@@ -134,55 +318,124 @@ export default function Seori() {
       });
     }
 
-    let shape = Bodies.rectangle(300, 150, 100, 100, {
-      inertia: Infinity,
-      friction: 0,
-      frictionStatic: 0,
-      render: {
-        sprite: {
-          texture: `src/assets/seori/seori_${stateRef.current}_${directionRef.current}.png`,
-          xScale: 0.8,
-          yScale: 0.8,
-        },
-      },
-      label: 'shape',
-    });
+    const texturePath = SEORI_IMAGES[stateRef.current];
 
-    const texturePath = `src/assets/seori/seori_${stateRef.current}_${directionRef.current}.png`;
-    loadImageSize(texturePath).then(({ width, height }) => {
-      shape = Bodies.rectangle(300, 150, width * 0.8, height * 0.8, {
-        inertia: Infinity,
-        friction: 0,
-        frictionStatic: 0,
-        render: {
-          sprite: {
-            texture: texturePath,
-            xScale: 0.8,
-            yScale: 0.8,
+    // shape를 먼저 선언 (이벤트 핸들러에서 참조하기 위해)
+    let shape: Body;
+
+    loadImageSize(texturePath)
+      .then(({ width, height }) => {
+        const scale = settings.seoriScale;
+        const shapeHeight = height * scale;
+        // 바닥 위에 생성 (ground top - shape의 절반 높이)
+        const groundTopY = bounds.height - taskbarBounds.height;
+        const spawnX = bounds.width - 300;
+        const spawnY = groundTopY - shapeHeight / 2;
+
+        shape = Bodies.rectangle(spawnX, spawnY, width * scale, shapeHeight, {
+          inertia: Infinity,
+          friction: 0,
+          frictionStatic: 0,
+          render: {
+            sprite: {
+              texture: texturePath,
+              xScale: scale,
+              yScale: scale,
+            },
           },
-        },
-        label: 'shape',
-      });
+          label: 'shape',
+        });
 
-      World.add(world, shape);
-      shapeRef.current = shape;
-    });
+        World.add(world, shape);
+        shapeRef.current = shape;
+
+        // 초기 말풍선 표시
+        showDefaultBubble();
+
+        const canvasWidth = bounds.width + 100;
+        const canvasHeight = bounds.height + 100;
+
+        // 설이가 world 바깥으로 나가면 다시 되돌아오는 코드 + 말풍선 위치 업데이트
+        Events.on(engine, 'afterUpdate', () => {
+          const x = shape.position.x;
+          const y = shape.position.y;
+          const spawnHeight = shape.bounds.max.y - shape.bounds.min.y;
+
+          // 범위
+          const outOfBounds = x < 0 || x > canvasWidth + 30 || y < 0 - 30 || y > canvasHeight + 30;
+
+          if (outOfBounds) {
+            Body.setPosition(shape, { x: (canvasWidth + 30) / 2, y: canvasHeight / 2 }); // 다시 중앙으로
+            Body.setVelocity(shape, { x: 0, y: 0 }); // 속도 초기화
+          }
+
+          // 말풍선 위치 업데이트 (설이 따라다니기)
+          updatePosition(bounds.left + x, bounds.top + y - spawnHeight / 2 - 20);
+        });
+
+        // 설이 이동 관련 이벤트
+        Events.on(engine, 'beforeUpdate', () => {
+          const { x, y } = shape.velocity;
+          const interval = 1;
+
+          // 설이를 잡지 않고 위아래로 이동
+          if ((y > interval || y < -interval) && !isDraggingRef.current) {
+            setStateRef('falling');
+          }
+
+          // 설이를 잡고 좌우로 이동 (방향 저장용)
+          if (x > interval && isDraggingRef.current) {
+            setDirectionRef('right');
+          } else if (x < -interval && isDraggingRef.current) {
+            setDirectionRef('left');
+          }
+        });
+
+        // 설이와 바닥과의 충돌 감지 (설이 멈추기)
+        Events.on(engine, 'collisionActive', (event) => {
+          event.pairs.forEach((pair) => {
+            const labels = [pair.bodyA.label, pair.bodyB.label];
+            if (labels.includes('shape') && labels.includes('ground') && !isDraggingRef.current) {
+              Body.setVelocity(shape, { x: 0, y: 0 });
+            }
+          });
+        });
+
+        // 설이의 속도가 0인 것을 감지하는 이벤트 (바닥에 붙어있다)
+        setInterval(() => {
+          if (shape.speed < 0.1 && !isDraggingRef.current && stateRef.current !== 'default') {
+            const spawnHeight = shape.bounds.max.y - shape.bounds.min.y;
+            setStateRef('default');
+            // 땅에 닿으면 말풍선 표시
+            showBubble(
+              '가끔 절 던지는걸 좋아하시는 분들이 계시더라고요... \n 당신은 그런 사람이 아니길 바랄게요.',
+              [
+                {
+                  name: '다음',
+                  onClick: () => showDefaultBubble(),
+                },
+              ],
+              bounds.left + shape.position.x,
+              bounds.top + shape.position.y - spawnHeight / 2 - 20,
+            );
+          }
+        }, 100);
+      })
+      .catch((error) => {
+        console.error('Failed to load Seori image:', error);
+        console.error('Image path:', texturePath);
+      });
 
     // 드래그 시작 && 끝나면 실행되는 함수들
     const onDragStart = () => {
-      // console.log("Started");
       isDraggingRef.current = true;
+      setIsSeoriDragging(true);
       setStateRef('holding');
-      if (directionRef.current === 'left') {
-        shape.render.fillStyle = '#FFFFAA';
-      }
-      if (directionRef.current === 'right') {
-        shape.render.fillStyle = '#FFAA00';
-      }
+      hideBubble(); // 드래그 시작하면 말풍선 숨김
     };
     const onDragEnd = () => {
-      // console.log("Ended");
       isDraggingRef.current = false;
+      setIsSeoriDragging(false);
       setStateRef('falling');
     };
 
@@ -212,6 +465,23 @@ export default function Seori() {
     World.add(world, mouseConstraint);
     render.mouse = mouse;
 
+    // mousedown 시 Seori 위에 있는지 즉시 체크 (동기적으로)
+    render.canvas.addEventListener('mousedown', (e: MouseEvent) => {
+      if (!shape) return;
+
+      const rect = render.canvas.getBoundingClientRect();
+      const mousePos = {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top,
+      };
+
+      // Seori body 위에 마우스가 있는지 체크
+      const bodies = Query.point([shape], mousePos);
+      if (bodies.length > 0) {
+        setIsSeoriDragging(true);
+      }
+    });
+
     // 마우스 뗐을 때 이벤트
     // world 바깥에서도 드래그를 종료하기 위해 필요함
     window.addEventListener('mouseup', () => {
@@ -221,14 +491,13 @@ export default function Seori() {
       }
     });
 
-    const canvasWidth = bounds.width + 100;
-    const canvasHeight = bounds.height + 100;
-
-    // world 바깥으로 나가면 드래그 종료하는 코드
+    // world 바깥으로 나가면 드래그 종료하는 코드 + Seori 위에 있을 때만 pointer-events 활성화
     document.addEventListener('mousemove', (e) => {
       const mouseX = mouse.position.x;
       const mouseY = mouse.position.y;
-      // console.log(mouseX, mouseY, canvasHeight, canvasWidth);
+
+      const canvasWidth = bounds.width + 100;
+      const canvasHeight = bounds.height + 100;
 
       // 범위
       const isOutOfBounds =
@@ -238,92 +507,23 @@ export default function Seori() {
         // 드래그 강제 해제
         mouseConstraint.mouse.button = -1;
       }
-    });
 
-    // 설이가 world 바깥으로 나가면 다시 되돌아오는 코드
-    Events.on(engine, 'afterUpdate', () => {
-      const x = shape.position.x;
-      const y = shape.position.y;
+      // Seori 위에 있는지 체크해서 pointer-events 토글
+      if (shape) {
+        const rect = render.canvas.getBoundingClientRect();
+        const mousePos = {
+          x: e.clientX - rect.left,
+          y: e.clientY - rect.top,
+        };
+        const bodies = Query.point([shape], mousePos);
 
-      // 범위
-      const outOfBounds = x < 0 || x > canvasWidth + 30 || y < 0 - 30 || y > canvasHeight + 30;
-
-      if (outOfBounds) {
-        Body.setPosition(shape, { x: (canvasWidth + 30) / 2, y: canvasHeight / 2 }); // 다시 중앙으로
-        Body.setVelocity(shape, { x: 0, y: 0 }); // 속도 초기화
-      }
-    });
-
-    // 설이 이동 관련 이벤트
-    Events.on(engine, 'beforeUpdate', () => {
-      const { x, y } = shape.velocity;
-      const interval = 1;
-
-      // 설이를 잡지 않고 위아래로 이동
-      if (y > interval && !isDraggingRef.current) {
-        setStateRef('falling');
-        // console.log("아래로 이동 중");
-        if (directionRef.current === 'left') {
-          shape.render.fillStyle = '#00FFAA';
-        }
-        if (directionRef.current === 'right') {
-          shape.render.fillStyle = '#AAFF00';
-        }
-      } else if (y < -interval && !isDraggingRef.current) {
-        setStateRef('falling');
-        // console.log("위로 이동 중");
-        if (directionRef.current === 'left') {
-          shape.render.fillStyle = '#AAAAFF';
-        }
-        if (directionRef.current === 'right') {
-          shape.render.fillStyle = '#FFAAAA';
+        if (bodies.length > 0 || isDraggingRef.current) {
+          render.canvas.style.pointerEvents = 'auto';
+        } else {
+          render.canvas.style.pointerEvents = 'none';
         }
       }
-
-      // 설이를 잡고 좌우로 이동
-      if (x > interval && isDraggingRef.current) {
-        setDirectionRef('right');
-        shape.render.fillStyle = '#FF0000';
-      } else if (x < -interval && isDraggingRef.current) {
-        setDirectionRef('left');
-        shape.render.fillStyle = '#0000FF';
-      }
     });
-
-    // 설이와 바닥과의 충돌 감지 (설이 멈추기)
-    Events.on(engine, 'collisionActive', (event) => {
-      event.pairs.forEach((pair) => {
-        const labels = [pair.bodyA.label, pair.bodyB.label];
-        if (labels.includes('shape') && labels.includes('ground') && !isDraggingRef.current) {
-          Body.setVelocity(shape, { x: 0, y: 0 });
-        }
-      });
-    });
-
-    // 설이의 속도가 0인 것을 감지하는 이벤트 (바닥에 붙어있다)
-    setInterval(() => {
-      if (shape.speed < 0.1) {
-        // 들고있을 때
-        if (isDraggingRef.current) {
-          if (directionRef.current === 'left') {
-            shape.render.fillStyle = '#FFFFAA';
-          }
-          if (directionRef.current === 'right') {
-            shape.render.fillStyle = '#FFAA00';
-          }
-        }
-        // 내려놨을 떄
-        else {
-          setStateRef('default');
-          if (directionRef.current === 'left') {
-            shape.render.fillStyle = '#000000';
-          }
-          if (directionRef.current === 'right') {
-            shape.render.fillStyle = '#00AAAA';
-          }
-        }
-      }
-    }, 75);
 
     return () => {
       Render.stop(render);
@@ -331,5 +531,13 @@ export default function Seori() {
     };
   }, []);
 
-  return <></>;
+  return (
+    <SpeechBubble
+      x={bubble.x}
+      y={bubble.y}
+      text={bubble.text}
+      show={bubble.show}
+      buttons={bubble.buttons}
+    />
+  );
 }

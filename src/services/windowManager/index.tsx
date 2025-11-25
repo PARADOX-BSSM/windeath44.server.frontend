@@ -20,18 +20,28 @@ import { useNotification } from '@/hooks/notification.tsx';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg.tsx';
 import { useDrag } from 'react-use-gesture';
 import useApps from '@/applications/data/importManager.tsx';
-import { lastTaskListAtom, windowPositionsAtom } from '@/atoms/processManager.ts';
+import { lastTaskListAtom } from '@/atoms/processManager.ts';
 import { useGetPublicNotificationsQuery } from '@/api/notification/getPublicNotifications';
 import { notificationAtom, notificationListAtom } from '@/atoms/notification';
 import { settingsAtom } from '@/atoms/settings.ts';
 import { DEFAULT_NOTIFICATIONS } from '@/data/notifications.ts';
-import { isNotClickAtom } from '@/atoms/cursorState.ts';
+import { isNotClickAtom, useNativeContextMenuAtom } from '@/atoms/cursorState.ts';
+import { feedsAtom } from '@/atoms/feeds';
+import { useGetFeedsMutation } from '@/api/feeds/getFeeds';
+import ContextMenu from '@/applications/components/contextMenu';
 
 const Application = lazy(() => import('@/applications/layout/index.tsx'));
 
 const WindowManager = () => {
   const [cursorVec, setCursorVec] = useState<number[]>([0, 0, 0, 0]);
   const [sideWidth, setSideWidth] = useState<number>(0);
+  const [contextMenu, setContextMenu] = useState<{
+    x: number;
+    y: number;
+    isInputElement: boolean;
+    isAppButton: boolean;
+    targetElement: HTMLElement | null;
+  } | null>(null);
 
   // jotai 전역 상태
   const [focus, setFocus] = useAtom(focusAtom);
@@ -44,6 +54,9 @@ const WindowManager = () => {
   const setNotificationList = useSetAtom(notificationListAtom);
   const [settings] = useAtom(settingsAtom);
   const [isNotClick] = useAtom(isNotClickAtom);
+  const [useNativeContextMenu] = useAtom(useNativeContextMenuAtom);
+  const setFeeds = useSetAtom(feedsAtom);
+  const { mutate: getFeeds } = useGetFeedsMutation();
 
   const [taskList, addTask, removeTask, setVirtualWindowPosition] = useProcessManager();
   const [, , , addTaskToDesktop] = useVirtualProcessManager();
@@ -119,6 +132,22 @@ const WindowManager = () => {
           { top: number; left: number; width: number; height: number }
         > = {};
         tasks.forEach((savedTask) => {
+          if (savedTask.stackKey && savedTask.stackData) {
+            try {
+              localStorage.setItem(savedTask.stackKey, savedTask.stackData as string);
+              console.log('[WindowManager] Restored stack storage for', savedTask.stackKey);
+            } catch (e) {
+              console.warn('Failed to restore stack storage', savedTask.stackKey, e);
+            }
+          } else if (savedTask.stackKey) {
+            // 스택 데이터가 없으면 기존 키를 정리
+            try {
+              localStorage.removeItem(savedTask.stackKey);
+            } catch (e) {
+              console.warn('Failed to clear missing stack storage', savedTask.stackKey, e);
+            }
+          }
+
           if (savedTask.position) {
             positions[savedTask.name] = savedTask.position;
             console.log(
@@ -265,6 +294,26 @@ const WindowManager = () => {
     }
   }, [hydrated, settings, isLogIned, notificationsData, setNotification]);
 
+  // 부팅 시 feeds 데이터 가져오기
+  useEffect(() => {
+    if (!hydrated) return;
+
+    getFeeds(
+      { days: 5, size: 10 },
+      {
+        onSuccess: (response) => {
+          if (response?.data) {
+            setFeeds(response.data);
+            console.log('[WindowManager] Feeds loaded:', response.data.length);
+          }
+        },
+        onError: (error) => {
+          console.error('[WindowManager] Failed to load feeds:', error);
+        },
+      },
+    );
+  }, [hydrated, getFeeds, setFeeds]);
+
   useEffect(() => {
     const container = document.getElementById('cursorContainer') as HTMLElement;
     const cursor = document.getElementById('cursor');
@@ -348,6 +397,35 @@ const WindowManager = () => {
     return () => document.removeEventListener('mousedown', handleClick);
   }, [isNotClick]);
 
+  // 우클릭 메뉴 처리
+  useEffect(() => {
+    const handleContextMenu = (e: MouseEvent) => {
+      // 네이티브 메뉴 사용 시 커스텀 메뉴 표시 안 함
+      if (useNativeContextMenu) {
+        return;
+      }
+
+      e.preventDefault();
+
+      // input, textarea 요소인지 확인
+      const target = e.target as HTMLElement;
+      const isInputElement = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA';
+
+      const isAppButton = target.closest('.app-button') ? true : false;
+
+      setContextMenu({
+        x: e.clientX,
+        y: e.clientY,
+        isInputElement,
+        isAppButton,
+        targetElement: target,
+      });
+    };
+
+    document.addEventListener('contextmenu', handleContextMenu);
+    return () => document.removeEventListener('contextmenu', handleContextMenu);
+  }, [useNativeContextMenu]);
+
   // Custom Hook 초기화 역할
   useTaskTransformFunction();
   useTaskSearchFunction();
@@ -412,6 +490,15 @@ const WindowManager = () => {
             );
           })}
           {startOption ? <Observer /> : <></>}
+          {contextMenu && (
+            <ContextMenu
+              x={contextMenu.x}
+              y={contextMenu.y}
+              isInputElement={contextMenu.isInputElement}
+              targetElement={contextMenu.targetElement}
+              onClose={() => setContextMenu(null)}
+            />
+          )}
         </_.Display>
         <_.BackgroundDiv width={sideWidth}></_.BackgroundDiv>
       </Suspense>

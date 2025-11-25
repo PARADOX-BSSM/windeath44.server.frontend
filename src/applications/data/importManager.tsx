@@ -187,19 +187,24 @@ const useApps = (): TaskType[] => {
     {
       component: (
         <Suspense fallback={null}>
-          <MemorialApplicationListApproach />
+          <MemorialApproach
+            window={{}}
+            setWindow={() => {}}
+            setUpHeight={577}
+            setUpWidth={890}
+          />
         </Suspense>
       ),
       type: 'App',
-      id: 2221,
-      name: '추모관 신청',
+      id: 2250,
+      name: '추모관',
       layer: undefined,
       appSetup: {
-        Image: memorial,
-        minWidth: 50 * 16,
-        minHeight: 30 * 16,
-        setUpWidth: 55 * 16,
-        setUpHeight: 35 * 16,
+        Image: search,
+        minWidth: 600,
+        minHeight: 400,
+        setUpWidth: 950,
+        setUpHeight: 500,
       },
       visible: true,
     },
@@ -886,6 +891,25 @@ const useApps = (): TaskType[] => {
     {
       component: (
         <Suspense fallback={null}>
+          <MemorialApplicationListApproach />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2221,
+      name: '추모관 신청',
+      layer: undefined,
+      appSetup: {
+        Image: memorial,
+        minWidth: 50 * 16,
+        minHeight: 30 * 16,
+        setUpWidth: 55 * 16,
+        setUpHeight: 35 * 16,
+      },
+      visible: true,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
           <Settings />
         </Suspense>
       ),
@@ -898,30 +922,6 @@ const useApps = (): TaskType[] => {
         minWidth: 600,
         minHeight: 400,
         setUpWidth: 700,
-        setUpHeight: 500,
-      },
-      visible: true,
-    },
-    {
-      component: (
-        <Suspense fallback={null}>
-          <MemorialApproach
-            window={{}}
-            setWindow={() => {}}
-            setUpHeight={577}
-            setUpWidth={890}
-          />
-        </Suspense>
-      ),
-      type: 'App',
-      id: 2250,
-      name: '추모관',
-      layer: undefined,
-      appSetup: {
-        Image: search,
-        minWidth: 600,
-        minHeight: 400,
-        setUpWidth: 950,
         setUpHeight: 500,
       },
       visible: true,
