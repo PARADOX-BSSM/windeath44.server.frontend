@@ -8,10 +8,18 @@ interface ContextMenuProps {
   y: number;
   onClose: () => void;
   isInputElement: boolean;
+  isAppButton?: boolean;
   targetElement: HTMLElement | null;
 }
 
-const ContextMenu = ({ x, y, onClose, isInputElement, targetElement }: ContextMenuProps) => {
+const ContextMenu = ({
+  x,
+  y,
+  onClose,
+  isInputElement,
+  isAppButton,
+  targetElement,
+}: ContextMenuProps) => {
   const menuRef = useRef<HTMLDivElement>(null);
   const setUseNativeContextMenu = useSetAtom(useNativeContextMenuAtom);
 
@@ -65,7 +73,7 @@ const ContextMenu = ({ x, y, onClose, isInputElement, targetElement }: ContextMe
       if (element && (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA')) {
         const selectedText = element.value.substring(
           element.selectionStart || 0,
-          element.selectionEnd || 0
+          element.selectionEnd || 0,
         );
         if (selectedText) {
           await navigator.clipboard.writeText(selectedText);
@@ -120,6 +128,20 @@ const ContextMenu = ({ x, y, onClose, isInputElement, targetElement }: ContextMe
       x={x}
       y={y}
     >
+      {/* {isAppButton && (
+        <>
+          <_.MenuItem
+            onClick={() => {
+              (targetElement as HTMLElement)?.click();
+              onClose();
+            }}
+          >
+            열기
+          </_.MenuItem>
+
+          <_.MenuSeparator />
+        </>
+      )} */}
       <_.MenuItem onClick={handleBack}>뒤로</_.MenuItem>
       <_.MenuItem onClick={handleForward}>앞으로</_.MenuItem>
       <_.MenuItem onClick={handleRefresh}>새로고침</_.MenuItem>

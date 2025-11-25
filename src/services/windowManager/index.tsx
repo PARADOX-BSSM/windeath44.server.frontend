@@ -39,6 +39,7 @@ const WindowManager = () => {
     x: number;
     y: number;
     isInputElement: boolean;
+    isAppButton: boolean;
     targetElement: HTMLElement | null;
   } | null>(null);
 
@@ -392,13 +393,15 @@ const WindowManager = () => {
 
       // input, textarea 요소인지 확인
       const target = e.target as HTMLElement;
-      const isInputElement =
-        target.tagName === 'INPUT' || target.tagName === 'TEXTAREA';
+      const isInputElement = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA';
+
+      const isAppButton = target.closest('.app-button') ? true : false;
 
       setContextMenu({
         x: e.clientX,
         y: e.clientY,
         isInputElement,
+        isAppButton,
         targetElement: target,
       });
     };
