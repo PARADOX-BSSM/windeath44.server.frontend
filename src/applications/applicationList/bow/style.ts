@@ -9,11 +9,11 @@ export const main = styled.div`
   padding: 12px 24px;
   overflow-y: scroll;
 `;
-export const nbow = styled.div``;
+export const nbow = styled.div`
+  margin: 8px 0;
+`;
 export const place = styled.div`
   width: 100%;
-  height: 100%;
-  margin-top: -10%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -22,7 +22,6 @@ export const place = styled.div`
 `;
 export const imgs = styled.div`
   width: 100%;
-  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -34,9 +33,8 @@ export const character = styled.img`
   height: 50%;
 `;
 export const table = styled.img`
-  margin-top: -26%;
-  width: 70%;
-  height: 78%;
+  margin-top: -32%;
+  width: 100%;
 `;
 export const bbow = styled.div`
   margin-top: -16%;
