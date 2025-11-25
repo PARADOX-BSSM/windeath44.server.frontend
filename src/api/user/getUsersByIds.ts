@@ -5,7 +5,7 @@ import axios from 'axios';
 interface UserResponse {
   userId: string;
   name: string;
-  realinToken: number;
+  remainToken: number;
   profile: string;
   role: string;
 }
