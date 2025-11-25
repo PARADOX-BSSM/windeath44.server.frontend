@@ -29,6 +29,7 @@ export const imgs = styled.div`
 `;
 export const character = styled.img`
   width: 100%;
+  border: 12px solid #000;
 `;
 export const table = styled.img`
   width: 100%;
