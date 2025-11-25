@@ -1,7 +1,6 @@
 import * as _ from '@/applications/applicationList/bow/style.ts';
 import Table from '@/assets/bow/table.svg';
 import { useEffect, useState } from 'react';
-import { useMemorialGet as useMemorialGetBowCount } from '@/api/memorial/countBowsByMi.ts';
 import { useMemorialGet } from '@/api/memorial/memorialGet.ts';
 import { useGetCharacter, type CharacterData } from '@/api/anime/getCharacter.ts';
 import type { memorialData } from '@/api/memorial/memorialGet.ts';
@@ -37,6 +36,64 @@ const Bow = ({ memorialId }: bowProps) => {
   const userId = userData?.data?.userId || 'user';
   const token = getCookie('access_token');
   const memorialBowMutation = useMemorialBow();
+  useEffect(() => {
+    getUser();
+  }, [getUser]);
+  const getMemorialData = () => {
+    mutationMemorialGet.mutate(memorialId, {
+      onSuccess: (data) => {
+        // Memorial 정보에서 characterId를 얻어 캐릭터 정보 가져오기
+        if (data.data?.characterId) {
+          mutationGetCharacter.mutate(data.data.characterId, {
+            onError: () => {
+              setAlert?.(
+                <>
+                  캐릭터 정보를 가져오는 중 문제가 발생했습니다.
+                  <br />
+                  잠시 후 다시 시도해 주세요.
+                </>,
+                () => {
+                  taskTransform?.('경고', '');
+                },
+              );
+            },
+          });
+        }
+      },
+      onError: () => {
+        setAlert?.(
+          <>
+            추모관 정보를 가져오는 중 문제가 발생했습니다.
+            <br />
+            잠시 후 다시 시도해 주세요.
+          </>,
+          () => {
+            taskTransform?.('경고', '');
+          },
+        );
+      },
+    });
+  };
+  useEffect(() => {
+    // Memorial 정보 가져오기
+    getMemorialData();
+    // 상주목록 초기 로드
+    mutationMemorialChiefs.mutate(undefined, {
+      onError: () => {
+        setAlert?.(
+          <>
+            조문객 명단을 가져오는 중 문제가 발생했습니다.
+            <br />
+            잠시 후 다시 시도해 주세요.
+          </>,
+          () => {
+            taskTransform?.('경고', '');
+          },
+        );
+      },
+    });
+  }, [memorialId]);
+
   const addBow = () => {
     if (!token && setAlert) {
       setAlert(
@@ -82,6 +139,7 @@ const Bow = ({ memorialId }: bowProps) => {
               taskTransform?.('경고', '');
             },
           );
+          getMemorialData();
           // 상주목록 revalidation
           mutationMemorialChiefs.mutate(undefined, {
             onError: () => {
@@ -92,63 +150,13 @@ const Bow = ({ memorialId }: bowProps) => {
       });
     }
   };
-  useEffect(() => {
-    getUser();
-  }, [getUser]);
-  useEffect(() => {
-    // Memorial 정보 가져오기
-    mutationMemorialGet.mutate(memorialId, {
-      onSuccess: (data) => {
-        // Memorial 정보에서 characterId를 얻어 캐릭터 정보 가져오기
-        if (data.data?.characterId) {
-          mutationGetCharacter.mutate(data.data.characterId, {
-            onError: () => {
-              setAlert?.(
-                <>
-                  캐릭터 정보를 가져오는 중 문제가 발생했습니다.
-                  <br />
-                  잠시 후 다시 시도해 주세요.
-                </>,
-                () => {
-                  taskTransform?.('경고', '');
-                },
-              );
-            },
-          });
-        }
-      },
-      onError: () => {
-        setAlert?.(
-          <>
-            추모관 정보를 가져오는 중 문제가 발생했습니다.
-            <br />
-            잠시 후 다시 시도해 주세요.
-          </>,
-          () => {
-            taskTransform?.('경고', '');
-          },
-        );
-      },
-    });
-    // 상주목록 초기 로드
-    mutationMemorialChiefs.mutate(undefined, {
-      onError: () => {
-        setAlert?.(
-          <>
-            조문객 명단을 가져오는 중 문제가 발생했습니다.
-            <br />
-            잠시 후 다시 시도해 주세요.
-          </>,
-          () => {
-            taskTransform?.('경고', '');
-          },
-        );
-      },
-    });
-  }, [memorialId]);
+
   // 캐릭터 데이터가 로드되기 전에는 렌더링하지 않음
   if (!characterData) {
     return null;
+  }
+  if (mutationMemorialGet.isPending) {
+    return <Loading />;
   }
   if (mutationMemorialBows.isPending || memorialBowMutation.isPending) {
     return <Loading />;
