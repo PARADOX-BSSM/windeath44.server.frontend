@@ -3,12 +3,15 @@ import { useAtomValue, useSetAtom } from 'jotai';
 import { useStack } from '@/hooks/dataStructure.tsx';
 import { taskSearchAtom } from '@/atoms/taskTransformer.ts';
 import { currentStackTopAtom } from '@/atoms/memorialManager.ts';
+import { ApplicationProps } from '@/applications/layout/utils';
 
 interface MemorialApproachProps {
   window: React.CSSProperties;
   setWindow: React.Dispatch<React.SetStateAction<React.CSSProperties>>;
   setUpHeight: number;
   setUpWidth: number;
+  props?: ApplicationProps;
+  instanceId?: string;
 }
 
 const MemorialApplicationListApproach = ({
@@ -16,10 +19,13 @@ const MemorialApplicationListApproach = ({
   setWindow,
   setUpHeight,
   setUpWidth,
+  props,
+  instanceId,
 }: MemorialApproachProps) => {
-  const [stack, push, pop, top] = useStack(window, setWindow, setUpHeight, setUpWidth);
   const taskSearch = useAtomValue(taskSearchAtom);
   const setCurrentStackTop = useSetAtom(currentStackTopAtom);
+
+  const [stack, push, pop, top] = useStack(window, setWindow, setUpHeight, setUpWidth);
 
   const stackProps = useMemo(
     () => ({
