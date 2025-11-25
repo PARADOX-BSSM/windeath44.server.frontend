@@ -202,6 +202,15 @@ const Application = (props: ApplicationProps) => {
     }
   }, [isFullScreen]);
 
+  // 컴포넌트 언마운트 시 isNotClick 리셋
+  useEffect(() => {
+    return () => {
+      if (props.type === 'App') {
+        setIsNotClick(false);
+      }
+    };
+  }, [setIsNotClick, props.type]);
+
   if (props.type === 'App') {
     const setEvent = useSetAtom(Event_Count);
 

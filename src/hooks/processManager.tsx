@@ -11,6 +11,7 @@ import {
 } from '@/atoms/processManager.ts';
 import { focusAtom } from '@/atoms/windowManager';
 import { useEffect, useRef } from 'react';
+import { STACK_KEY_MAP, STACK_EXCLUDE_NAMES, STACK_ALL_KEYS } from '@/config/stackStorage';
 
 type Position = { top: number; left: number; width: number; height: number };
 
@@ -68,17 +69,45 @@ export const useProcessManager = (): [
 
     const savedTasks: SavedTaskType[][] = virtualTaskLists.map((tasks, idx) =>
       tasks
-        .filter((t) => !t.instanceId && !excludedPages.includes(t.name))
-        .map((t) => ({
-          type: t.type,
-          id: t.id,
-          name: t.name,
-          position: virtualWindowPositions[idx]?.[t.name],
-          desktopIndex: idx,
-        })),
+        .filter((t) => !excludedPages.includes(t.name))
+        .map((t) => {
+          const isExcluded = STACK_EXCLUDE_NAMES.has(t.name);
+          const stackKey = STACK_KEY_MAP[t.name];
+          const stackData =
+            !isExcluded && stackKey && typeof window !== 'undefined'
+              ? localStorage.getItem(stackKey) || undefined
+              : undefined;
+
+          return {
+            type: t.type,
+            id: t.id,
+            name: t.name,
+            position: virtualWindowPositions[idx]?.[t.name],
+            desktopIndex: idx,
+            stackKey,
+            stackData,
+          };
+        }),
     );
 
     setLastTaskList(savedTasks);
+
+    // 현재 유지할 스택 스토리지 키를 추려내고 나머지는 삭제
+    const activeKeys = new Set<string>();
+    savedTasks.forEach((desktop) =>
+      desktop.forEach((task) => {
+        if (task.stackKey && task.stackData) activeKeys.add(task.stackKey);
+      }),
+    );
+    STACK_ALL_KEYS.forEach((key) => {
+      if (!activeKeys.has(key)) {
+        try {
+          localStorage.removeItem(key);
+        } catch (e) {
+          console.warn('Failed to clear stale stack storage', key, e);
+        }
+      }
+    });
   }, [virtualTaskList, windowPositions, virtualWindowPositions, desktopIndex]);
 
   const addTask = (task: TaskType) => {

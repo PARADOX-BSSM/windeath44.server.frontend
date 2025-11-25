@@ -6,6 +6,7 @@ import radioButtonSelected from '@/assets/radio/selected.svg';
 import radioButtonUnselected from '@/assets/radio/unselected.svg';
 import checkIcon from '@/assets/checkbox/check.svg';
 import MemorialBtn from '@/applications/components/memorialBtn';
+import Inputs from '@/applications/components/inputs';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
 import { alerterAtom, reconfirmAlerterAtom } from '@/atoms/alerter';
 import { isLogInedAtom } from '@/atoms/windowManager';
@@ -13,7 +14,52 @@ import { useDeleteAccount } from '@/api/user/deleteAccount';
 import { useGetUserMutation } from '@/api/user/getUser';
 import { deleteCookie, getCookie } from '@/api/auth/cookie';
 import Seori from '@/assets/sulkkagi/black_stone.svg';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+
+// 숫자 입력 컴포넌트 (blur 시 유효성 검사)
+interface NumberInputItemProps {
+  label: string;
+  value: number;
+  min: number;
+  max: number;
+  displayMultiplier: number;
+  onChange: (value: number) => void;
+}
+
+const NumberInputItem = ({ label, value, min, max, displayMultiplier, onChange }: NumberInputItemProps) => {
+  const [localValue, setLocalValue] = useState((value * displayMultiplier).toFixed(1));
+
+  // 외부 값이 변경되면 로컬 값 업데이트
+  useEffect(() => {
+    setLocalValue((value * displayMultiplier).toFixed(1));
+  }, [value, displayMultiplier]);
+
+  const handleBlur = () => {
+    const numValue = parseFloat(localValue) / displayMultiplier;
+    if (isNaN(numValue)) {
+      // 유효하지 않은 값이면 원래 값으로 복원
+      setLocalValue((value * displayMultiplier).toFixed(1));
+      return;
+    }
+    const clampedValue = Math.max(min, Math.min(max, numValue));
+    onChange(clampedValue);
+    setLocalValue((clampedValue * displayMultiplier).toFixed(1));
+  };
+
+  return (
+    <_.Input>
+      <_.LabelText>{label}</_.LabelText>
+      <div onBlur={handleBlur}>
+        <Inputs
+          width="80px"
+          type="text"
+          value={localValue}
+          setValue={setLocalValue}
+        />
+      </div>
+    </_.Input>
+  );
+};
 
 const Settings = () => {
   const [settings, setSettings] = useAtom(settingsAtom);
@@ -155,6 +201,22 @@ const Settings = () => {
                         />
                       </_.Label>
                     </_.Input>
+                  );
+                }
+
+                if (item.type === 'number' && item.numberConfig) {
+                  const { min, max, displayMultiplier = 1 } = item.numberConfig;
+
+                  return (
+                    <NumberInputItem
+                      key={itemIndex}
+                      label={item.label}
+                      value={settings[item.key] as number}
+                      min={min}
+                      max={max}
+                      displayMultiplier={displayMultiplier}
+                      onChange={(value) => handleValueChange(item.key, value as SettingsState[typeof item.key])}
+                    />
                   );
                 }
 
