@@ -56,9 +56,17 @@ export const BowCount = styled.div`
   color: var(--primary-black);
   font-family: 'Galmuri11';
 `;
+export const BowStatus = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+`;
 export const bbow = styled.div`
   width: 100%;
-  margin: 0px 0 17% 0;
+  margin: -100px 0 17% 0;
   box-sizing: border-box;
   position: absolute;
   display: flex;

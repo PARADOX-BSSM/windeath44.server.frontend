@@ -330,18 +330,6 @@ const Bow = ({ memorialId }: bowProps) => {
           />
         </_.imgs>
         <_.bbow>
-          <_.BowCount>
-            {remainClick === 0 || !canBow ? '절을 이미 했습니다' : `${remainClick}번 남았습니다.`}
-          </_.BowCount>
-          <Inputs
-            width="100px"
-            fontSize="16px"
-            flex={true}
-            value={remainingTime}
-            type="text"
-            disabled={false}
-            setValue={() => {}}
-          />
           <MemorialBtn
             key={'절'}
             name={'절'}
@@ -352,6 +340,20 @@ const Bow = ({ memorialId }: bowProps) => {
             width="20%"
             height="2.8rem"
           />
+          <_.BowStatus>
+            <Inputs
+              width="100px"
+              fontSize="16px"
+              flex={true}
+              value={remainingTime}
+              type="text"
+              disabled={false}
+              setValue={() => {}}
+            />
+            <_.BowCount>
+              {remainClick === 0 || !canBow ? '절을 이미 했습니다' : `${remainClick}번 남았습니다.`}
+            </_.BowCount>
+          </_.BowStatus>
         </_.bbow>
       </_.place>
       <Mourners bowData={bowData} />
