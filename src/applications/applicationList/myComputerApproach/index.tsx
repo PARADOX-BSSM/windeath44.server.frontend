@@ -10,18 +10,21 @@ interface MyComputerApproachProps {
   setUpWidth: number;
   memorialId: number;
   memorialName: string;
+  instanceId?: string;
 }
 
 const MyComputerApproach = ({
-                            window,
-                            setWindow,
-                            setUpHeight,
-                            setUpWidth,
-                              memorialId,
-                              memorialName,
-                          }: MyComputerApproachProps) => {
-  const [stack, push, pop, top] = useStack(window, setWindow, setUpHeight, setUpWidth);
+  window,
+  setWindow,
+  setUpHeight,
+  setUpWidth,
+  memorialId,
+  memorialName,
+  instanceId,
+}: MyComputerApproachProps) => {
   const taskSearch = useAtomValue(taskSearchAtom);
+
+  const [stack, push, pop, top] = useStack(window, setWindow, setUpHeight, setUpWidth);
 
   const stackProps = {
     stack: stack,
@@ -31,12 +34,10 @@ const MyComputerApproach = ({
   };
 
   useEffect(() => {
-    // console.log("stack: ", stack);
-    // console.log("top: ", top());
-  }, [stack]);
-  useEffect(() => {
-    push(taskSearch?.('memorialPRManager', {...stackProps,memorialId,memorialName}));
-  }, []);
+    if (taskSearch && stack.length === 0) {
+      push(taskSearch('memorialPRManager', { ...stackProps, memorialId, memorialName }));
+    }
+  }, [taskSearch, push, stackProps, memorialId, memorialName, stack.length]);
   return <>{top()?.component}</>;
 };
 export default MyComputerApproach;

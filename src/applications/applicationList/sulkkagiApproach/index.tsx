@@ -1,7 +1,8 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useAtomValue } from 'jotai';
 import { useStack } from '@/hooks/dataStructure.tsx';
 import { taskSearchAtom } from '@/atoms/taskTransformer.ts';
+import { StackSnapshot } from '@/modules/typeModule';
 
 interface SulkkagiApproachProps {
   window: React.CSSProperties;
@@ -16,8 +17,19 @@ const SulkkagiApproach = ({
   setUpHeight,
   setUpWidth,
 }: SulkkagiApproachProps) => {
-  const [stack, push, pop, top] = useStack(window, setWindow, setUpHeight, setUpWidth);
   const taskSearch = useAtomValue(taskSearchAtom);
+  const storageKey = useMemo(() => `stack-sulkkagi`, []);
+
+  const restoreTask = useCallback(
+    (snapshot: StackSnapshot, helpers: any) =>
+      taskSearch?.(snapshot.name, { ...helpers, ...(snapshot.props || {}) }) ?? null,
+    [taskSearch],
+  );
+
+  const [stack, push, pop, top] = useStack(window, setWindow, setUpHeight, setUpWidth, {
+    storageKey,
+    restoreTask: taskSearch ? restoreTask : undefined,
+  });
 
   const stackProps = {
     stack: stack,
@@ -27,12 +39,10 @@ const SulkkagiApproach = ({
   };
 
   useEffect(() => {
-    // console.log("stack: ", stack);
-    // console.log("top: ", top());
-  }, [stack]);
-  useEffect(() => {
-    push(taskSearch?.('sulkkagiMenu', stackProps));
-  }, []);
+    if (taskSearch && stack.length === 0) {
+      push(taskSearch('sulkkagiMenu', stackProps));
+    }
+  }, [taskSearch, push, stackProps, stack.length]);
   return <>{top()?.component}</>;
 };
 export default SulkkagiApproach;
