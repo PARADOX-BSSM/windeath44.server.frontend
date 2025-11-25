@@ -3,11 +3,9 @@ import * as _ from './style';
 import { useEffect, useState } from 'react';
 import FilterBlock from '@/applications/components/filterBlock';
 import MemorialBtn from '@/applications/components/memorialBtn';
-import JudgementSort from '@/applications/components/judgementSort';
 import Judgement_Object from '@/applications/components/judgementObject';
 import hosino from '@/assets/character/hosino.svg';
-import { useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer';
+import { useSetAtom } from 'jotai';
 import { select_chat } from '@/applications/components/judgementChatObj/state_manager';
 import { useGetJudgementList } from '@/api/judgement/judgementList';
 
@@ -46,9 +44,10 @@ const Judgement = ({ stack, push, pop, top }: JudgementProps) => {
         // 서버 데이터 구조를 미리보기 형태로 변환
         const mapped = content.map((item: any) => ({
           id: item.judgmentId,
-          c_name: item.characterName,
-          a_name: item.animeName,
-          img: hosino,
+          characterId: item.characterId,
+          c_name: null,
+          a_name: null,
+          img: null,
           like: item.likesCount,
           vote: (item.heavenCount || 0) + (item.hellCount || 0),
           heaven_count: item.heavenCount,
@@ -134,9 +133,10 @@ const Judgement = ({ stack, push, pop, top }: JudgementProps) => {
                   key={item.id}
                   judgement_id={item.id}
                   rank={item.rank}
-                  c_name={item.c_name}
-                  a_name={item.a_name}
-                  img={item.img}
+                  c_id={item.characterId}
+                  c_name=""
+                  a_name=""
+                  img={undefined}
                   like={item.like}
                   vote={item.vote}
                   heaven_count={item.heaven_count}
@@ -163,9 +163,10 @@ const Judgement = ({ stack, push, pop, top }: JudgementProps) => {
                   key={item.id}
                   judgement_id={item.id}
                   rank={item.rank}
-                  c_name={item.c_name}
-                  a_name={item.a_name}
-                  img={item.img}
+                  c_id={item.characterId}
+                  c_name=""
+                  a_name=""
+                  img={undefined}
                   like={item.like}
                   vote={item.vote}
                   heaven_count={item.heaven_count}
@@ -192,9 +193,10 @@ const Judgement = ({ stack, push, pop, top }: JudgementProps) => {
                   key={item.id}
                   judgement_id={item.id}
                   rank={item.rank}
-                  c_name={item.c_name}
-                  a_name={item.a_name}
-                  img={item.img}
+                  c_id={item.characterId}
+                  c_name=""
+                  a_name=""
+                  img={undefined}
                   like={item.like}
                   vote={item.vote}
                   heaven_count={item.heaven_count}

@@ -3,8 +3,10 @@ import * as _ from './style';
 import heart from '@/assets/judgement/Judgement_Heart.svg';
 import vote from '@/assets/community/Vote Yeah.svg';
 import star from '@/assets/judgement/star.svg';
+import { useGetAnimeQuery } from '@/api/anime/getAnime';
 
 interface InfoProps {
+  id: number;
   rank: number;
   cName: string;
   aName: string;
@@ -13,7 +15,7 @@ interface InfoProps {
   voteNum: number;
 }
 
-const MainInfo = ({ rank, cName, aName, img, like, voteNum }: InfoProps) => {
+const MainInfo = ({ rank, cName, aName, img, like, voteNum, id }: InfoProps) => {
   if (rank <= 3) {
     return (
       <_.MainBox>
