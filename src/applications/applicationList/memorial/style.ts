@@ -299,6 +299,14 @@ export const GotoBow = styled.button`
   font-style: normal;
   font-weight: 400;
   border: none;
+
+  &:active {
+    box-shadow:
+      -1px -1px 0px 0px #fff inset,
+      1px 1px 0px 0px var(--primary-black) inset,
+      -2px -2px 0px 0px var(--secondary-color) inset,
+      2px 2px 0px 0px var(--dark-primary-color) inset;
+  }
 `;
 
 export const Section2 = styled.section`

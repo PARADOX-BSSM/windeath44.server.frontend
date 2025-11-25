@@ -22,6 +22,14 @@ export const Btn = styled.button<{ width?: string; height?: string; fontSize?: s
   font-weight: 400;
   line-height: 15px;
   cursor: none;
+
+  &:active {
+    box-shadow:
+      -1px -1px 0px 0px #fff inset,
+      1px 1px 0px 0px var(--primary-black) inset,
+      -2px -2px 0px 0px var(--secondary-color) inset,
+      2px 2px 0px 0px var(--dark-primary-color) inset;
+  }
 `;
 
 export const SelectedBtn = styled.button<{ width?: string; height?: string; fontSize?: string }>`
@@ -46,6 +54,14 @@ export const SelectedBtn = styled.button<{ width?: string; height?: string; font
   line-height: 15px;
   border: none;
   cursor: none;
+
+  &:active {
+    box-shadow:
+      -1px -1px 0px 0px var(--primary-black) inset,
+      1px 1px 0px 0px #fff inset,
+      -2px -2px 0px 0px var(--dark-primary-color) inset,
+      2px 2px 0px 0px var(--secondary-color) inset;
+  }
 `;
 
 export const SubmitDefault = styled.button<{ width?: string; height?: string; fontSize?: string }>`
@@ -70,6 +86,14 @@ export const SubmitDefault = styled.button<{ width?: string; height?: string; fo
   line-height: 0.938rem;
   border: none;
   cursor: none;
+
+  &:active {
+    box-shadow:
+      -1px -1px 0px 0px #fff inset,
+      1px 1px 0px 0px var(--primary-black) inset,
+      -2px -2px 0px 0px var(--secondary-color) inset,
+      2px 2px 0px 0px var(--dark-primary-color) inset;
+  }
 `;
 
 export const SubmitActive = styled.button<{ width?: string; height?: string; fontSize?: string }>`
@@ -93,6 +117,14 @@ export const SubmitActive = styled.button<{ width?: string; height?: string; fon
   line-height: 0.938rem;
   border: none;
   cursor: none;
+
+  &:active {
+    box-shadow:
+      -1px -1px 0px 0px #fff inset,
+      1px 1px 0px 0px var(--primary-black) inset,
+      -2px -2px 0px 0px var(--secondary-color) inset,
+      2px 2px 0px 0px var(--dark-primary-color) inset;
+  }
 `;
 
 export const HiddenBtn = styled.div<{ width?: string; height?: string }>`

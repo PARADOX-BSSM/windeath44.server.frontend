@@ -51,12 +51,19 @@ export const Ribbon = styled.img`
   top: 0;
   z-index: 1;
 `;
+export const BowCount = styled.div`
+  font-size: 20px;
+  color: var(--primary-black);
+  font-family: 'Galmuri11';
+`;
 export const bbow = styled.div`
   width: 100%;
-  margin: -17% 0 17% 0;
+  margin: 0px 0 17% 0;
   box-sizing: border-box;
   position: absolute;
   display: flex;
+  gap: 12px;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
 `;
