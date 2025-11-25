@@ -24,13 +24,16 @@ export const imgs = styled.div`
   justify-content: center;
   align-items: center;
   box-sizing: border-box;
+  position: relative;
+  padding-bottom: 33%;
 `;
 export const character = styled.img`
   width: 100%;
 `;
 export const table = styled.img`
-  margin-top: -32%;
   width: 100%;
+  margin-top: 28%;
+  position: absolute;
 `;
 export const PictureContainer = styled.div`
   width: 25%;
