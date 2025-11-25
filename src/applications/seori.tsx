@@ -53,6 +53,8 @@ export default function Seori() {
     const bounds = container.getBoundingClientRect();
     const spawnX = shapeRef.current.position.x;
     const spawnY = shapeRef.current.position.y;
+    const spawnHeight = shapeRef.current.bounds.max.y - shapeRef.current.bounds.min.y;
+
     showBubble(
       '안녕하세요. \n 도움이 필요하신가요?',
       [
@@ -66,7 +68,7 @@ export default function Seori() {
         },
       ],
       bounds.left + spawnX,
-      bounds.top + spawnY - 150,
+      bounds.top + spawnY - spawnHeight / 2 - 20,
     );
   };
 
@@ -89,6 +91,8 @@ export default function Seori() {
     const bounds = container.getBoundingClientRect();
     const spawnX = shapeRef.current.position.x;
     const spawnY = shapeRef.current.position.y;
+    const spawnHeight = shapeRef.current.bounds.max.y - shapeRef.current.bounds.min.y;
+
     showBubble(
       randomText,
       [
@@ -102,7 +106,7 @@ export default function Seori() {
         },
       ],
       bounds.left + spawnX,
-      bounds.top + spawnY - 150,
+      bounds.top + spawnY - spawnHeight / 2 - 20,
     );
   };
 
@@ -125,6 +129,7 @@ export default function Seori() {
     const bounds = container.getBoundingClientRect();
     const spawnX = shapeRef.current.position.x;
     const spawnY = shapeRef.current.position.y;
+    const spawnHeight = shapeRef.current.bounds.max.y - shapeRef.current.bounds.min.y;
 
     // ref를 통해 최신 feeds 값 가져오기 (stale closure 방지)
     const currentFeeds = feedsRef.current;
@@ -139,7 +144,7 @@ export default function Seori() {
           },
         ],
         bounds.left + spawnX,
-        bounds.top + spawnY - 150,
+        bounds.top + spawnY - spawnHeight / 2 - 20,
       );
       return;
     }
@@ -173,7 +178,7 @@ export default function Seori() {
         },
       ],
       bounds.left + spawnX,
-      bounds.top + spawnY - 150,
+      bounds.top + spawnY - spawnHeight / 2 - 20,
     );
   };
 
@@ -426,6 +431,7 @@ export default function Seori() {
     Events.on(engine, 'afterUpdate', () => {
       const x = shape.position.x;
       const y = shape.position.y;
+      const spawnHeight = shape.bounds.max.y - shape.bounds.min.y;
 
       // 범위
       const outOfBounds = x < 0 || x > canvasWidth + 30 || y < 0 - 30 || y > canvasHeight + 30;
@@ -436,7 +442,7 @@ export default function Seori() {
       }
 
       // 말풍선 위치 업데이트 (설이 따라다니기)
-      updatePosition(bounds.left + x, bounds.top + y - 150);
+      updatePosition(bounds.left + x, bounds.top + y - spawnHeight / 2 - 20);
     });
 
     // 설이 이동 관련 이벤트
@@ -470,6 +476,7 @@ export default function Seori() {
     // 설이의 속도가 0인 것을 감지하는 이벤트 (바닥에 붙어있다)
     setInterval(() => {
       if (shape.speed < 0.1 && !isDraggingRef.current && stateRef.current !== 'default') {
+        const spawnHeight = shape.bounds.max.y - shape.bounds.min.y;
         setStateRef('default');
         // 땅에 닿으면 말풍선 표시
         showBubble(
@@ -481,7 +488,7 @@ export default function Seori() {
             },
           ],
           bounds.left + shape.position.x,
-          bounds.top + shape.position.y - 150,
+          bounds.top + shape.position.y - spawnHeight / 2 - 20,
         );
       }
     }, 100);

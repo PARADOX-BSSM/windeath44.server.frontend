@@ -17,7 +17,7 @@ export interface SettingsState {
 export const settingsAtom = atomWithStorage<SettingsState>('settings', {
   screenRatio: '4:3',
   showBootNotification: true,
-  seoriScale: 0.08,
+  seoriScale: 0.07,
 });
 
 // 설정 스키마 타입 정의
