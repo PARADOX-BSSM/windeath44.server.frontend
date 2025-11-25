@@ -8,8 +8,8 @@ export const BubbleContainer = styled.div<{ x: number; y: number }>`
   display: flex;
   flex-direction: column;
   align-items: start;
-  background: var(--very-light-primary-color);
-  border: 2px solid var(--primary-black);
+  background: var(--light-primary-color);
+  border: 1.5px solid var(--primary-black);
   padding: 12px 12px;
   gap: 12px;
   border-radius: 8px;
@@ -22,11 +22,11 @@ export const BubbleContainer = styled.div<{ x: number; y: number }>`
     content: '';
     position: absolute;
     bottom: -11px;
-    left: 50%;
+    left: 35%;
     transform: translateX(-50%);
     border-left: 11px solid transparent;
-    border-right: 11px solid transparent;
-    border-top: 11px solid var(--primary-black);
+    border-right: 0px solid transparent;
+    border-top: 10px solid var(--primary-black);
   }
 
   /* 꼬리 내부 */
@@ -34,11 +34,11 @@ export const BubbleContainer = styled.div<{ x: number; y: number }>`
     content: '';
     position: absolute;
     bottom: -8px;
-    left: 50%;
+    left: 35%;
     transform: translateX(-50%);
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-top: 10px solid var(--very-light-primary-color);
+    border-left: 8px solid transparent;
+    border-right: 0px solid transparent;
+    border-top: 8px solid var(--light-primary-color);
   }
 `;
 
@@ -82,7 +82,7 @@ export const ClippyButtonWrapper = styled.span`
 
 export const ClippyButton = styled.button`
   padding: 4px 12px;
-  background: var(--very-light-primary-color);
+  background: var(--light-primary-color);
   border: 1px solid #000;
   border-radius: 0;
   font-family: Galmuri11;
