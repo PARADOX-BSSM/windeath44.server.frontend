@@ -23,6 +23,24 @@ export const ProfileImg = styled.div<{ imgUrl: string }>`
   background-position: center;
 `;
 
+export const ProfileImgSkeleton = styled.div`
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s ease-in-out infinite;
+  border-radius: 4px;
+
+  @keyframes skeleton-loading {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+`;
+
 export const TextBox = styled.div`
   display: flex;
   padding: 0 8px;

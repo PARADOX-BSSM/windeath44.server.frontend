@@ -1,7 +1,6 @@
 import * as _ from './style';
-import ameImg from '@/assets/profile/ame.svg';
 import verificationBadge from '@/assets/verification.png';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { setCursorImage, CURSOR_IMAGES } from 'lib/setCursorImg';
 
 interface PropsType {
@@ -41,7 +40,7 @@ const Comment = ({
   onLikeToggle,
 }: PropsType) => {
   // console.log(idx);
-  const imgUrl = userProfile || ameImg;
+  const imgUrl = userProfile;
   const displayName = userName || userid;
 
   // official 계정의 경우 userid에서 1,2,4번째 요소만 추출
@@ -57,10 +56,36 @@ const Comment = ({
   const [replyContent, setReplyContent] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(content);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
   // console.log(imgUrl);
 
   const isOwner = currentUserId === userid;
   const isPending = commentId < 0; // 음수 ID는 임시 댓글 (아직 서버에 등록 중)
+
+  // 이미지 로딩 상태 추적
+  useEffect(() => {
+    if (!userProfile) {
+      // userProfile이 없으면 스켈레톤 유지
+      setImageLoaded(false);
+      return;
+    }
+
+    setImageLoaded(false);
+    setImageError(false);
+
+    const img = new Image();
+    img.src = userProfile;
+
+    img.onload = () => {
+      setImageLoaded(true);
+    };
+
+    img.onerror = () => {
+      setImageError(true);
+      setImageLoaded(false); // 에러 시에도 스켈레톤 유지
+    };
+  }, [userProfile]);
 
   const handleReplySubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -91,7 +116,11 @@ const Comment = ({
   return (
     <>
       <_.CommentDiv $isReply={!!parentId}>
-        <_.ProfileImg imgUrl={imgUrl} />
+        {imageLoaded && userProfile ? (
+          <_.ProfileImg imgUrl={imgUrl} />
+        ) : (
+          <_.ProfileImgSkeleton />
+        )}
         <_.TextBox>
           <_.NickNameContainer>
             {userName && (
