@@ -156,10 +156,15 @@ const Bow = ({ memorialId }: bowProps) => {
     return null;
   }
   if (mutationMemorialGet.isPending) {
-    return <Loading />;
+    return (
+      <Loading
+        overlay={true}
+        text="정보를 가져오는 중입니다..."
+      />
+    );
   }
   if (mutationMemorialBows.isPending || memorialBowMutation.isPending) {
-    return <Loading />;
+    return <Loading text="정보를 가져오는 중입니다..." />;
   }
   return (
     <_.main>
