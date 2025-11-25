@@ -27,7 +27,6 @@ const Bow = ({ memorialId }: bowProps) => {
   const [memorialData, setMemorialData] = useState<memorialData>(null);
   const [characterData, setCharacterData] = useState<CharacterData>(null);
   const [bowData, setBowData] = useState<BowData[]>();
-  const mutationMemorialGetBowCount = useMemorialGetBowCount(setTotalBow);
   const mutationMemorialGet = useMemorialGet(setMemorialData);
   const mutationGetCharacter = useGetCharacter(setCharacterData);
   const mutationMemorialChiefs = useMemorialChiefBows(setBowData, memorialId);
@@ -83,7 +82,6 @@ const Bow = ({ memorialId }: bowProps) => {
               taskTransform?.('경고', '');
             },
           );
-          setTotalBow((prev) => (prev ? prev + 1 : 1));
           // 상주목록 revalidation
           mutationMemorialChiefs.mutate(undefined, {
             onError: () => {
