@@ -15,6 +15,8 @@ import { useGetUserMutation } from '@/api/user/getUser.ts';
 import Loading from '@/applications/components/loading';
 import { useMemorialChiefBows } from '@/api/memorial/getMemorialChiefs.ts';
 import type { BowData } from '@/modules/interface.ts';
+import ribbon from '@/assets/memorial_ribbon.svg';
+import MemorialBtn from '@/applications/components/memorialBtn';
 
 interface bowProps {
   memorialId: number;
@@ -160,23 +162,32 @@ const Bow = ({ memorialId }: bowProps) => {
       </_.nbow>
       <_.place>
         <_.imgs>
-          <_.character
-            src={characterData.imageUrl}
-            alt={'캐릭터'}
-          />
+          <_.PictureContainer>
+            <_.Ribbon
+              src={ribbon}
+              alt="ribbon"
+            />
+            <_.character
+              src={characterData.imageUrl}
+              alt={'캐릭터'}
+            />
+          </_.PictureContainer>
           <_.table
             src={Table}
             alt={'테이블'}
           />
         </_.imgs>
         <_.bbow>
-          <div>
-            <div>
-              <div>
-                <button onClick={addBow}>절</button>
-              </div>
-            </div>
-          </div>
+          <MemorialBtn
+            key={'절'}
+            name={'절'}
+            selected={false}
+            onClick={addBow}
+            type="menu"
+            fontSize="1.2rem"
+            width="20%"
+            height="2.8rem"
+          />
         </_.bbow>
       </_.place>
       <Mourners bowData={bowData} />
