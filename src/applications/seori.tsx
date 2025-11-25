@@ -325,7 +325,8 @@ export default function Seori() {
 
     loadImageSize(texturePath)
       .then(({ width, height }) => {
-        const scale = settings.seoriScale;
+        // seoriScale이 undefined거나 NaN인 경우 기본값 사용
+        const scale = settings.seoriScale && !isNaN(settings.seoriScale) ? settings.seoriScale : 0.07;
         const shapeHeight = height * scale;
         // 바닥 위에 생성 (ground top - shape의 절반 높이)
         const groundTopY = bounds.height - taskbarBounds.height;

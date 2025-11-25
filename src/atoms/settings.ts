@@ -14,11 +14,41 @@ export interface SettingsState {
   // };
 }
 
-export const settingsAtom = atomWithStorage<SettingsState>('settings', {
+// 기본 설정값
+const defaultSettings: SettingsState = {
   screenRatio: '4:3',
   showBootNotification: true,
   seoriScale: 0.07,
-});
+};
+
+export const settingsAtom = atomWithStorage<SettingsState>(
+  'settings',
+  defaultSettings,
+  {
+    getItem: (key, initialValue) => {
+      const storedValue = localStorage.getItem(key);
+      if (!storedValue) {
+        return initialValue;
+      }
+      try {
+        const parsed = JSON.parse(storedValue);
+        // 누락된 필드를 기본값으로 채움 (마이그레이션)
+        return {
+          ...defaultSettings,
+          ...parsed,
+        };
+      } catch {
+        return initialValue;
+      }
+    },
+    setItem: (key, value) => {
+      localStorage.setItem(key, JSON.stringify(value));
+    },
+    removeItem: (key) => {
+      localStorage.removeItem(key);
+    },
+  },
+);
 
 // 설정 스키마 타입 정의
 export type SettingInputType = 'radio' | 'checkbox' | 'button' | 'number';
