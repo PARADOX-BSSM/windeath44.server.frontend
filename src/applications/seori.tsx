@@ -19,6 +19,16 @@ import SpeechBubble from '@/applications/components/speechBubble';
 import useSpeechBubble from '@/hooks/speechBubble';
 import { feedsAtom } from '@/atoms/feeds';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
+import seoriDefault from '@/assets/seori/interaction_default.png';
+import seoriFalling from '@/assets/seori/interaction_falling.png';
+import seoriHolding from '@/assets/seori/interaction_holding.png';
+
+// 설이 이미지 매핑
+const SEORI_IMAGES = {
+  default: seoriDefault,
+  falling: seoriFalling,
+  holding: seoriHolding,
+} as const;
 
 export default function Seori() {
   // 설이 Ref
@@ -201,11 +211,11 @@ export default function Seori() {
   };
 
   // 설이 상태 Ref
-  const stateRef = useRef('default');
-  const setStateRef = (state: string) => {
+  const stateRef = useRef<keyof typeof SEORI_IMAGES>('default');
+  const setStateRef = (state: keyof typeof SEORI_IMAGES) => {
     if (stateRef.current === state) return; // 같은 상태면 무시
     stateRef.current = state;
-    const texturePath = `src/assets/seori/interaction_${state}.png`;
+    const texturePath = SEORI_IMAGES[state];
     setSpriteTexture(texturePath);
   };
 
@@ -294,108 +304,113 @@ export default function Seori() {
       });
     }
 
-    const texturePath = `src/assets/seori/interaction_${stateRef.current}.png`;
+    const texturePath = SEORI_IMAGES[stateRef.current];
 
     // shape를 먼저 선언 (이벤트 핸들러에서 참조하기 위해)
     let shape: Body;
 
-    loadImageSize(texturePath).then(({ width, height }) => {
-      const scale = settings.seoriScale;
-      const shapeHeight = height * scale;
-      // 바닥 위에 생성 (ground top - shape의 절반 높이)
-      const groundTopY = bounds.height - taskbarBounds.height;
-      const spawnX = bounds.width - 300;
-      const spawnY = groundTopY - shapeHeight / 2;
+    loadImageSize(texturePath)
+      .then(({ width, height }) => {
+        const scale = settings.seoriScale;
+        const shapeHeight = height * scale;
+        // 바닥 위에 생성 (ground top - shape의 절반 높이)
+        const groundTopY = bounds.height - taskbarBounds.height;
+        const spawnX = bounds.width - 300;
+        const spawnY = groundTopY - shapeHeight / 2;
 
-      shape = Bodies.rectangle(spawnX, spawnY, width * scale, shapeHeight, {
-        inertia: Infinity,
-        friction: 0,
-        frictionStatic: 0,
-        render: {
-          sprite: {
-            texture: texturePath,
-            xScale: scale,
-            yScale: scale,
+        shape = Bodies.rectangle(spawnX, spawnY, width * scale, shapeHeight, {
+          inertia: Infinity,
+          friction: 0,
+          frictionStatic: 0,
+          render: {
+            sprite: {
+              texture: texturePath,
+              xScale: scale,
+              yScale: scale,
+            },
           },
-        },
-        label: 'shape',
-      });
+          label: 'shape',
+        });
 
-      World.add(world, shape);
-      shapeRef.current = shape;
+        World.add(world, shape);
+        shapeRef.current = shape;
 
-      // 초기 말풍선 표시
-      showDefaultBubble();
+        // 초기 말풍선 표시
+        showDefaultBubble();
 
-      const canvasWidth = bounds.width + 100;
-      const canvasHeight = bounds.height + 100;
+        const canvasWidth = bounds.width + 100;
+        const canvasHeight = bounds.height + 100;
 
-      // 설이가 world 바깥으로 나가면 다시 되돌아오는 코드 + 말풍선 위치 업데이트
-      Events.on(engine, 'afterUpdate', () => {
-        const x = shape.position.x;
-        const y = shape.position.y;
-        const spawnHeight = shape.bounds.max.y - shape.bounds.min.y;
+        // 설이가 world 바깥으로 나가면 다시 되돌아오는 코드 + 말풍선 위치 업데이트
+        Events.on(engine, 'afterUpdate', () => {
+          const x = shape.position.x;
+          const y = shape.position.y;
+          const spawnHeight = shape.bounds.max.y - shape.bounds.min.y;
 
-        // 범위
-        const outOfBounds = x < 0 || x > canvasWidth + 30 || y < 0 - 30 || y > canvasHeight + 30;
+          // 범위
+          const outOfBounds = x < 0 || x > canvasWidth + 30 || y < 0 - 30 || y > canvasHeight + 30;
 
-        if (outOfBounds) {
-          Body.setPosition(shape, { x: (canvasWidth + 30) / 2, y: canvasHeight / 2 }); // 다시 중앙으로
-          Body.setVelocity(shape, { x: 0, y: 0 }); // 속도 초기화
-        }
+          if (outOfBounds) {
+            Body.setPosition(shape, { x: (canvasWidth + 30) / 2, y: canvasHeight / 2 }); // 다시 중앙으로
+            Body.setVelocity(shape, { x: 0, y: 0 }); // 속도 초기화
+          }
 
-        // 말풍선 위치 업데이트 (설이 따라다니기)
-        updatePosition(bounds.left + x, bounds.top + y - spawnHeight / 2 - 20);
-      });
+          // 말풍선 위치 업데이트 (설이 따라다니기)
+          updatePosition(bounds.left + x, bounds.top + y - spawnHeight / 2 - 20);
+        });
 
-      // 설이 이동 관련 이벤트
-      Events.on(engine, 'beforeUpdate', () => {
-        const { x, y } = shape.velocity;
-        const interval = 1;
+        // 설이 이동 관련 이벤트
+        Events.on(engine, 'beforeUpdate', () => {
+          const { x, y } = shape.velocity;
+          const interval = 1;
 
-        // 설이를 잡지 않고 위아래로 이동
-        if ((y > interval || y < -interval) && !isDraggingRef.current) {
-          setStateRef('falling');
-        }
+          // 설이를 잡지 않고 위아래로 이동
+          if ((y > interval || y < -interval) && !isDraggingRef.current) {
+            setStateRef('falling');
+          }
 
-        // 설이를 잡고 좌우로 이동 (방향 저장용)
-        if (x > interval && isDraggingRef.current) {
-          setDirectionRef('right');
-        } else if (x < -interval && isDraggingRef.current) {
-          setDirectionRef('left');
-        }
-      });
-
-      // 설이와 바닥과의 충돌 감지 (설이 멈추기)
-      Events.on(engine, 'collisionActive', (event) => {
-        event.pairs.forEach((pair) => {
-          const labels = [pair.bodyA.label, pair.bodyB.label];
-          if (labels.includes('shape') && labels.includes('ground') && !isDraggingRef.current) {
-            Body.setVelocity(shape, { x: 0, y: 0 });
+          // 설이를 잡고 좌우로 이동 (방향 저장용)
+          if (x > interval && isDraggingRef.current) {
+            setDirectionRef('right');
+          } else if (x < -interval && isDraggingRef.current) {
+            setDirectionRef('left');
           }
         });
-      });
 
-      // 설이의 속도가 0인 것을 감지하는 이벤트 (바닥에 붙어있다)
-      setInterval(() => {
-        if (shape.speed < 0.1 && !isDraggingRef.current && stateRef.current !== 'default') {
-          const spawnHeight = shape.bounds.max.y - shape.bounds.min.y;
-          setStateRef('default');
-          // 땅에 닿으면 말풍선 표시
-          showBubble(
-            '가끔 절 던지는걸 좋아하시는 분들이 있더라고요... \n 당신은 그런 사람이 아니길 바랄게요.',
-            [
-              {
-                name: '다음',
-                onClick: () => showDefaultBubble(),
-              },
-            ],
-            bounds.left + shape.position.x,
-            bounds.top + shape.position.y - spawnHeight / 2 - 20,
-          );
-        }
-      }, 100);
-    });
+        // 설이와 바닥과의 충돌 감지 (설이 멈추기)
+        Events.on(engine, 'collisionActive', (event) => {
+          event.pairs.forEach((pair) => {
+            const labels = [pair.bodyA.label, pair.bodyB.label];
+            if (labels.includes('shape') && labels.includes('ground') && !isDraggingRef.current) {
+              Body.setVelocity(shape, { x: 0, y: 0 });
+            }
+          });
+        });
+
+        // 설이의 속도가 0인 것을 감지하는 이벤트 (바닥에 붙어있다)
+        setInterval(() => {
+          if (shape.speed < 0.1 && !isDraggingRef.current && stateRef.current !== 'default') {
+            const spawnHeight = shape.bounds.max.y - shape.bounds.min.y;
+            setStateRef('default');
+            // 땅에 닿으면 말풍선 표시
+            showBubble(
+              '가끔 절 던지는걸 좋아하시는 분들이 있더라고요... \n 당신은 그런 사람이 아니길 바랄게요.',
+              [
+                {
+                  name: '다음',
+                  onClick: () => showDefaultBubble(),
+                },
+              ],
+              bounds.left + shape.position.x,
+              bounds.top + shape.position.y - spawnHeight / 2 - 20,
+            );
+          }
+        }, 100);
+      })
+      .catch((error) => {
+        console.error('Failed to load Seori image:', error);
+        console.error('Image path:', texturePath);
+      });
 
     // 드래그 시작 && 끝나면 실행되는 함수들
     const onDragStart = () => {
