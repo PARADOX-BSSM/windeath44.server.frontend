@@ -9,7 +9,7 @@ import { useAtomValue } from 'jotai';
 import { alerterAtom } from '@/atoms/alerter';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
 import { getCookie } from '@/api/auth/cookie.ts';
-import { useGetBowByUserId, useMemorialBow } from '@/api/memorial/memorialBow.ts';
+import { useGetBowByUserId, useMemorialBow, useGetBowStatus } from '@/api/memorial/memorialBow.ts';
 import { useGetUserMutation } from '@/api/user/getUser.ts';
 import Loading from '@/applications/components/loading';
 import { useMemorialChiefBows } from '@/api/memorial/getMemorialChiefs.ts';
@@ -26,6 +26,8 @@ const Bow = ({ memorialId }: bowProps) => {
   const [memorialData, setMemorialData] = useState<memorialData>(null);
   const [characterData, setCharacterData] = useState<CharacterData>(null);
   const [bowData, setBowData] = useState<BowData[]>();
+  const [canBow, setCanBow] = useState<boolean>(true);
+  const [availableAt, setAvailableAt] = useState<string>('');
   const mutationMemorialGet = useMemorialGet(setMemorialData);
   const mutationGetCharacter = useGetCharacter(setCharacterData);
   const mutationMemorialChiefs = useMemorialChiefBows(setBowData, memorialId);
@@ -36,9 +38,30 @@ const Bow = ({ memorialId }: bowProps) => {
   const userId = userData?.data?.userId || 'user';
   const token = getCookie('access_token');
   const memorialBowMutation = useMemorialBow();
+  const bowStatusMutation = useGetBowStatus();
+
   useEffect(() => {
     getUser();
   }, [getUser]);
+
+  // bow 상태 확인 함수
+  const checkBowStatus = () => {
+    if (token && userId && userId !== 'user') {
+      bowStatusMutation.mutate(
+        { userId, memorialId },
+        {
+          onSuccess: (data) => {
+            setCanBow(data.canBow);
+            setAvailableAt(data.availableAt);
+          },
+          onError: (error) => {
+            console.error('Failed to check bow status:', error);
+          },
+        },
+      );
+    }
+  };
+
   const getMemorialData = () => {
     mutationMemorialGet.mutate(memorialId, {
       onSuccess: (data) => {
@@ -94,6 +117,13 @@ const Bow = ({ memorialId }: bowProps) => {
     });
   }, [memorialId]);
 
+  // userId가 로드되면 bow 상태 확인
+  useEffect(() => {
+    if (userId && userId !== 'user') {
+      checkBowStatus();
+    }
+  }, [userId, memorialId]);
+
   const addBow = () => {
     if (!token && setAlert) {
       setAlert(
@@ -106,49 +136,81 @@ const Bow = ({ memorialId }: bowProps) => {
           taskTransform?.('경고', '로그인');
         },
       );
-    } else {
-      memorialBowMutation.mutate(memorialId, {
-        onError: (error) => {
-          const remainTime = error.response?.data.remainTime;
-          const formatRemainTime = (timeStr?: string) => {
-            if (!timeStr) return '';
-            const [hours, minutes] = timeStr.split(':');
-            return `${Number(hours)}시 ${Number(minutes)}분`;
-          };
-          (setAlert ?? userId)(
-            <>
-              아직 절을 할 수 없습니다
-              <br />
-              절은 24시간마다 할 수 있습니다.
-              <br />* 남은 시간: {formatRemainTime(remainTime)}
-            </>,
-            () => {
-              taskTransform?.('경고', '');
-            },
-          );
-        },
-        onSuccess: () => {
-          // 서버 응답 성공 시에만 UI 숫자 증가
-          (setAlert ?? userId)(
-            <>
-              절하기를 성공하였습니다.
-              <br />
-              절하기를 한 번 한 후엔 24시간이 지나야 다시 할 수 있습니다.
-            </>,
-            () => {
-              taskTransform?.('경고', '');
-            },
-          );
-          getMemorialData();
-          // 상주목록 revalidation
-          mutationMemorialChiefs.mutate(undefined, {
-            onError: () => {
-              console.error('상주목록 갱신 실패');
-            },
-          });
-        },
-      });
+      return;
     }
+
+    if (!canBow && setAlert) {
+      const formatAvailableTime = (timeStr: string) => {
+        if (!timeStr) return '';
+        try {
+          const date = new Date(timeStr);
+          const now = new Date();
+          const diff = date.getTime() - now.getTime();
+          const hours = Math.floor(diff / (1000 * 60 * 60));
+          const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+          return `${hours}시간 ${minutes}분`;
+        } catch {
+          return timeStr;
+        }
+      };
+
+      setAlert(
+        <>
+          아직 절을 할 수 없습니다
+          <br />
+          절은 24시간마다 할 수 있습니다.
+          <br />* 남은 시간: {formatAvailableTime(availableAt)}
+        </>,
+        () => {
+          taskTransform?.('경고', '');
+        },
+      );
+      return;
+    }
+
+    memorialBowMutation.mutate(memorialId, {
+      onError: (error) => {
+        const remainTime = error.response?.data.remainTime;
+        const formatRemainTime = (timeStr?: string) => {
+          if (!timeStr) return '';
+          const [hours, minutes] = timeStr.split(':');
+          return `${Number(hours)}시 ${Number(minutes)}분`;
+        };
+        (setAlert ?? userId)(
+          <>
+            아직 절을 할 수 없습니다
+            <br />
+            절은 24시간마다 할 수 있습니다.
+            <br />* 남은 시간: {formatRemainTime(remainTime)}
+          </>,
+          () => {
+            taskTransform?.('경고', '');
+          },
+        );
+      },
+      onSuccess: () => {
+        // 서버 응답 성공 시에만 UI 숫자 증가
+        (setAlert ?? userId)(
+          <>
+            절하기를 성공하였습니다.
+            <br />
+            절하기를 한 번 한 후엔 24시간이 지나야 다시 할 수 있습니다.
+          </>,
+          () => {
+            taskTransform?.('경고', '');
+          },
+        );
+        getMemorialData();
+        // 상주목록 revalidation
+        mutationMemorialChiefs.mutate(undefined, {
+          onError: () => {
+            console.error('상주목록 갱신 실패');
+          },
+        });
+        // bow 상태 다시 확인
+        checkBowStatus();
+      },
+    });
   };
 
   // 캐릭터 데이터가 로드되기 전에는 렌더링하지 않음
@@ -192,9 +254,9 @@ const Bow = ({ memorialId }: bowProps) => {
           <MemorialBtn
             key={'절'}
             name={'절'}
-            selected={false}
+            active={canBow}
             onClick={addBow}
-            type="menu"
+            type="submit"
             fontSize="1.2rem"
             width="20%"
             height="2.8rem"

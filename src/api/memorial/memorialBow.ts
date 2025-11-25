@@ -31,3 +31,24 @@ export const useGetBowByUserId = () => {
     },
   });
 };
+
+interface BowStatusResponse {
+  canBow: boolean;
+  availableAt: string;
+}
+
+interface BowStatusParams {
+  userId: string;
+  memorialId: number;
+}
+
+const getBowStatus = async ({ userId, memorialId }: BowStatusParams): Promise<BowStatusResponse> => {
+  const response = await api.get(`${memorial}/bow/status/${userId}/${memorialId}`);
+  return response.data;
+};
+
+export const useGetBowStatus = () => {
+  return useMutation({
+    mutationFn: getBowStatus,
+  });
+};
