@@ -25,15 +25,23 @@ import { useGetPublicNotificationsQuery } from '@/api/notification/getPublicNoti
 import { notificationAtom, notificationListAtom } from '@/atoms/notification';
 import { settingsAtom } from '@/atoms/settings.ts';
 import { DEFAULT_NOTIFICATIONS } from '@/data/notifications.ts';
-import { isNotClickAtom } from '@/atoms/cursorState.ts';
+import { isNotClickAtom, useNativeContextMenuAtom } from '@/atoms/cursorState.ts';
 import { feedsAtom } from '@/atoms/feeds';
 import { useGetFeedsMutation } from '@/api/feeds/getFeeds';
+import ContextMenu from '@/applications/components/contextMenu';
 
 const Application = lazy(() => import('@/applications/layout/index.tsx'));
 
 const WindowManager = () => {
   const [cursorVec, setCursorVec] = useState<number[]>([0, 0, 0, 0]);
   const [sideWidth, setSideWidth] = useState<number>(0);
+  const [contextMenu, setContextMenu] = useState<{
+    x: number;
+    y: number;
+    isInputElement: boolean;
+    isAppButton: boolean;
+    targetElement: HTMLElement | null;
+  } | null>(null);
 
   // jotai 전역 상태
   const [focus, setFocus] = useAtom(focusAtom);
@@ -46,6 +54,7 @@ const WindowManager = () => {
   const setNotificationList = useSetAtom(notificationListAtom);
   const [settings] = useAtom(settingsAtom);
   const [isNotClick] = useAtom(isNotClickAtom);
+  const [useNativeContextMenu] = useAtom(useNativeContextMenuAtom);
   const setFeeds = useSetAtom(feedsAtom);
   const { mutate: getFeeds } = useGetFeedsMutation();
 
@@ -388,6 +397,35 @@ const WindowManager = () => {
     return () => document.removeEventListener('mousedown', handleClick);
   }, [isNotClick]);
 
+  // 우클릭 메뉴 처리
+  useEffect(() => {
+    const handleContextMenu = (e: MouseEvent) => {
+      // 네이티브 메뉴 사용 시 커스텀 메뉴 표시 안 함
+      if (useNativeContextMenu) {
+        return;
+      }
+
+      e.preventDefault();
+
+      // input, textarea 요소인지 확인
+      const target = e.target as HTMLElement;
+      const isInputElement = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA';
+
+      const isAppButton = target.closest('.app-button') ? true : false;
+
+      setContextMenu({
+        x: e.clientX,
+        y: e.clientY,
+        isInputElement,
+        isAppButton,
+        targetElement: target,
+      });
+    };
+
+    document.addEventListener('contextmenu', handleContextMenu);
+    return () => document.removeEventListener('contextmenu', handleContextMenu);
+  }, [useNativeContextMenu]);
+
   // Custom Hook 초기화 역할
   useTaskTransformFunction();
   useTaskSearchFunction();
@@ -452,6 +490,15 @@ const WindowManager = () => {
             );
           })}
           {startOption ? <Observer /> : <></>}
+          {contextMenu && (
+            <ContextMenu
+              x={contextMenu.x}
+              y={contextMenu.y}
+              isInputElement={contextMenu.isInputElement}
+              targetElement={contextMenu.targetElement}
+              onClose={() => setContextMenu(null)}
+            />
+          )}
         </_.Display>
         <_.BackgroundDiv width={sideWidth}></_.BackgroundDiv>
       </Suspense>
