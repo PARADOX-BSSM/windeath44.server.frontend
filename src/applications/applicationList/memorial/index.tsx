@@ -513,7 +513,7 @@ const Memorial = ({
         },
       })
       .then((response) => {
-        const users = response.data.data.data;
+        const users = response.data.data;
         const userMap: Record<string, { name: string; profile: string }> = {};
         users.forEach((user: any) => {
           userMap[user.userId] = {
