@@ -48,12 +48,14 @@ export const BubbleText = styled.p`
   color: var(--primary-black);
   text-align: left;
   white-space: pre-line;
+  line-height: 28px;
 `;
 
 export const ButtonContainer = styled.div`
   display: flex;
   width: 100%;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 24px;
   padding-top: 8px;
   border-top: 1px solid var(--primary-black);
 `;
@@ -105,6 +107,6 @@ export const ClippyButton = styled.button`
   );
 
   &:hover {
-    background: var(--light-primary-color);
+    background: var(--dark-primary-color);
   }
 `;
