@@ -7,7 +7,7 @@ import { useAtomValue } from 'jotai';
 import { alerterAtom } from '@/atoms/alerter';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
 import { getCookie } from '@/api/auth/cookie.ts';
-import { useMemorialBow, useGetBowStatus } from '@/api/memorial/memorialBow.ts';
+import { useMemorialBow, useGetBowStatus, useGetBowByUserId } from '@/api/memorial/memorialBow.ts';
 import { useGetUserMutation } from '@/api/user/getUser.ts';
 import Loading from '@/applications/components/loading';
 import { useMemorialChiefBows } from '@/api/memorial/getMemorialChiefs.ts';
@@ -31,6 +31,10 @@ const NewBow = ({ memorialId }: bowProps) => {
   const [isInitialLoad, setIsInitialLoad] = useState<boolean>(true);
   const [showBowComplete, setShowBowComplete] = useState<boolean>(false);
   const [cachedToken, setCachedToken] = useState<number>(0);
+  const [userBowInfo, setUserBowInfo] = useState<{
+    bowCount: number;
+    currentBowRanking: number;
+  } | null>(null);
   const mutationMemorialGet = useMemorialGet(setMemorialData);
   const mutationGetCharacter = useGetCharacter(setCharacterData);
   const mutationMemorialChiefs = useMemorialChiefBows(setBowData, memorialId);
@@ -41,6 +45,7 @@ const NewBow = ({ memorialId }: bowProps) => {
   const token = getCookie('access_token');
   const memorialBowMutation = useMemorialBow();
   const bowStatusMutation = useGetBowStatus();
+  const getBowByUserIdMutation = useGetBowByUserId();
 
   useEffect(() => {
     getUser();
@@ -186,10 +191,26 @@ const NewBow = ({ memorialId }: bowProps) => {
     });
   }, [memorialId]);
 
-  // userId가 로드되면 bow 상태 확인
+  // userId가 로드되면 bow 상태 및 사용자 bow 정보 확인
   useEffect(() => {
     if (userId && userId !== 'user') {
       checkBowStatus();
+      // 사용자의 bow 정보 가져오기
+      getBowByUserIdMutation.mutate(
+        { userId, memorialId },
+        {
+          onSuccess: (response: any) => {
+            const data = response.data || response;
+            setUserBowInfo({
+              bowCount: data.bowCount || 0,
+              currentBowRanking: data.curruntBowRanking || 0,
+            });
+          },
+          onError: (error) => {
+            console.error('Failed to get user bow info:', error);
+          },
+        },
+      );
     }
   }, [userId, memorialId]);
 
@@ -304,6 +325,21 @@ const NewBow = ({ memorialId }: bowProps) => {
         checkBowStatus();
         // 사용자 토큰 정보 갱신
         getUser();
+        // 사용자 bow 정보 갱신
+        if (userId && userId !== 'user') {
+          getBowByUserIdMutation.mutate(
+            { userId, memorialId },
+            {
+              onSuccess: (response: any) => {
+                const data = response.data || response;
+                setUserBowInfo({
+                  bowCount: data.bowCount || 0,
+                  currentBowRanking: data.curruntBowRanking || 0,
+                });
+              },
+            },
+          );
+        }
       },
     });
   };
@@ -321,11 +357,6 @@ const NewBow = ({ memorialId }: bowProps) => {
       />
     );
   }
-  // 사용자 데이터 찾기
-  const userRank = bowData?.findIndex((mourner) => mourner.userId === userId);
-  const userMourner =
-    userRank !== undefined && userRank !== -1 && bowData ? bowData[userRank] : null;
-
   // 사용자 정보 (userData에서 가져오기)
   const userProfile = userData?.data?.profile;
   const userName = userData?.data?.name || '나';
@@ -382,9 +413,7 @@ const NewBow = ({ memorialId }: bowProps) => {
               <_.MournersList>
                 <_.MournerItem>
                   <_.MournerRankGroup>
-                    <_.MournerRank>
-                      #{userRank !== undefined && userRank !== -1 ? userRank + 1 : 0}
-                    </_.MournerRank>
+                    <_.MournerRank>#{userBowInfo?.currentBowRanking || 0}</_.MournerRank>
                     {userProfile && (
                       <_.MournerAvatar
                         src={userProfile}
@@ -396,7 +425,7 @@ const NewBow = ({ memorialId }: bowProps) => {
                     <_.MournerNameRow>
                       <_.MournerName>{userName}</_.MournerName>
                     </_.MournerNameRow>
-                    <_.MournerCount>{userMourner?.bowCount || 0}회</_.MournerCount>
+                    <_.MournerCount>{userBowInfo?.bowCount || 0}회</_.MournerCount>
                   </_.MournerInfo>
                 </_.MournerItem>
               </_.MournersList>

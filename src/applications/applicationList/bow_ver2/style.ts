@@ -137,6 +137,7 @@ export const MournerAvatar = styled.img`
   width: 32px;
   height: 32px;
   object-fit: cover;
+  pointer-events: none;
 `;
 
 export const MournerInfo = styled.div`
@@ -216,6 +217,7 @@ export const Ribbon = styled.img`
   width: 194px;
   height: auto;
   z-index: 1;
+  pointer-events: none;
 `;
 
 export const CharacterImage = styled.img`
@@ -223,6 +225,7 @@ export const CharacterImage = styled.img`
   height: 236px;
   object-fit: cover;
   display: block;
+  pointer-events: none;
 `;
 
 export const TableImage = styled.img`

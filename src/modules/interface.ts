@@ -13,6 +13,7 @@ type memorialUserIdData = {
   userId: string;
   bowCount: number;
   lastBowedAt: string;
+  curruntBowRanking: number;
 };
 export type memorialUserIdResponse = {
   message: string;
