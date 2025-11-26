@@ -157,7 +157,7 @@ export const MournerNameRow = styled.div`
 export const MournerName = styled.span`
   font-size: 14px;
   color: var(--primary-black);
-  white-space: wrap;
+  white-space: normal;
   overflow: hidden;
   text-overflow: ellipsis;
 `;
