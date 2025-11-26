@@ -300,7 +300,7 @@ const NewBow = ({ memorialId }: bowProps) => {
           const [hours, minutes] = timeStr.split(':');
           return `${Number(hours)}시 ${Number(minutes)}분`;
         };
-        (setAlert ?? userId)(
+        setAlert?.(
           <>
             아직 절을 할 수 없습니다
             <br />
