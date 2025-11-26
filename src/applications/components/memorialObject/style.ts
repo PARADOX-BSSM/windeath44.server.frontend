@@ -12,6 +12,10 @@ export const Container = styled.div`
   background-color: white;
   border: 1px solid var(--light-primary-color);
   cursor: none;
+
+  &:hover {
+    background-color: var(--very-light-primary-color);
+  }
 `;
 
 export const Info = styled.div`
