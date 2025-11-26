@@ -21,6 +21,7 @@ import Sulkkagi from '../applicationList/sulkkagi';
 import SulkkagiApproach from '../applicationList/sulkkagiApproach';
 import SulkkagiMenu from '../applicationList/sulkkagiMenu';
 import { getCookie } from '@/api/auth/cookie.ts';
+import NewBow from '../applicationList/bow_ver2';
 
 // lazy를 이용한 어플리케이션 컴포넌트 로드
 const Terminal = lazy(() => import('@/applications/applicationList/terminal/index.tsx'));
@@ -1038,6 +1039,25 @@ const useApps = (): TaskType[] => {
         minHeight: 600,
         setUpWidth: 1100,
         setUpHeight: 800,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <NewBow memorialId={0} />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2258,
+      name: '절',
+      layer: undefined,
+      appSetup: {
+        Image: search,
+        minWidth: 600,
+        minHeight: 400,
+        setUpWidth: 976,
+        setUpHeight: 617,
       },
       visible: false,
     },

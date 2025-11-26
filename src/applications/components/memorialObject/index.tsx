@@ -14,11 +14,11 @@ const MemorialObject = ({ icon, name, animeId, onDoubleClick }: MemorialObjectPr
   const animationText = animeData?.data
     ? `${animeData.data.name} | ${animeData.data.genres.slice(0, 2).join(', ')}`
     : isLoading
-    ? '로딩 중...'
-    : `애니메이션 ID: ${animeId}`;
+      ? '로딩 중...'
+      : `애니메이션 ID: ${animeId}`;
 
   return (
-    <_.Container onDoubleClick={onDoubleClick}>
+    <_.Container onClick={onDoubleClick}>
       <_.Info>
         <_.Icon imgUrl={icon} />
         <_.NameContainer>

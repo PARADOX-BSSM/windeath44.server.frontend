@@ -168,11 +168,12 @@ export const ContributorCard = styled.div<{ show: boolean }>`
     2px 2px 0px 0px inset var(--dark-primary-color);
   z-index: 10000;
   display: ${({ show }) => (show ? 'block' : 'none')};
-  pointer-events: none;
+  pointer-events: auto;
   max-height: 250px;
   overflow-y: auto;
   white-space: normal;
   word-break: break-word;
+  cursor: none;
 
   &::-webkit-scrollbar {
     width: 4px;

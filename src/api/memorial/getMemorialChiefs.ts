@@ -77,6 +77,8 @@ export const useMemorialChiefBows = (
           return {
             name: user ? user.name : 'Unknown',
             bowCount: bow.data.bowCount,
+            userId: bow.data.userId ? Number(bow.data.userId) : undefined,
+            profileUrl: user?.profile,
           };
         });
       // console.log('merged 결과:', merged);
