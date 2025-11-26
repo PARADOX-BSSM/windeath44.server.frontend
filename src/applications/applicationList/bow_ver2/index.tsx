@@ -338,13 +338,12 @@ const NewBow = ({ memorialId }: bowProps) => {
                   <_.MournerItem key={index}>
                     <_.MournerRankGroup>
                       <_.MournerRank>#{index + 1}</_.MournerRank>
-                      <_.MournerAvatar
-                        src={
-                          mourner.profileUrl ||
-                          'http://localhost:3845/assets/6b8ac76e6055eaffbc3bc08a3a370fd3b736d947.png'
-                        }
-                        alt="profile"
-                      />
+                      {mourner.profileUrl && (
+                        <_.MournerAvatar
+                          src={mourner.profileUrl}
+                          alt="profile"
+                        />
+                      )}
                     </_.MournerRankGroup>
                     <_.MournerInfo>
                       <_.MournerNameRow>
@@ -364,13 +363,12 @@ const NewBow = ({ memorialId }: bowProps) => {
                   <_.MournerItem>
                     <_.MournerRankGroup>
                       <_.MournerRank>#{userRank !== undefined ? userRank + 1 : 0}</_.MournerRank>
-                      <_.MournerAvatar
-                        src={
-                          userMourner.profileUrl ||
-                          'http://localhost:3845/assets/6b8ac76e6055eaffbc3bc08a3a370fd3b736d947.png'
-                        }
-                        alt="profile"
-                      />
+                      {userMourner.profileUrl && (
+                        <_.MournerAvatar
+                          src={userMourner.profileUrl}
+                          alt="profile"
+                        />
+                      )}
                     </_.MournerRankGroup>
                     <_.MournerInfo>
                       <_.MournerNameRow>
