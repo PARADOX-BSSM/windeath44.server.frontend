@@ -29,6 +29,7 @@ const NewBow = ({ memorialId }: bowProps) => {
   const [remainingTime, setRemainingTime] = useState<string>('00:00:00');
   const [remainClick, setRemainClick] = useState<number>(2);
   const [isInitialLoad, setIsInitialLoad] = useState<boolean>(true);
+  const [showBowComplete, setShowBowComplete] = useState<boolean>(false);
   const mutationMemorialGet = useMemorialGet(setMemorialData);
   const mutationGetCharacter = useGetCharacter(setCharacterData);
   const mutationMemorialChiefs = useMemorialChiefBows(setBowData, memorialId);
@@ -251,8 +252,14 @@ const NewBow = ({ memorialId }: bowProps) => {
       return;
     }
 
-    // remainClick이 1이면 즉시 UI 업데이트하고 백그라운드에서 API 호출
+    // remainClick이 1이면 즉시 UI 업데이트하고 애니메이션 표시 후 API 호출
     setRemainClick(0);
+    setShowBowComplete(true);
+
+    // 애니메이션이 끝나는 시점(1.5초 후)에 API 호출
+    setTimeout(() => {
+      setShowBowComplete(false);
+    }, 1500);
 
     memorialBowMutation.mutate(memorialId, {
       onError: (error) => {
@@ -402,17 +409,21 @@ const NewBow = ({ memorialId }: bowProps) => {
           </_.MemorialArea>
 
           <_.BowButtonSection>
-            <MemorialBtn
-              key={'절'}
-              name={`절(${remainClick === 0 || !canBow ? '0' : remainClick}회 남음)`}
-              active={canBow && remainClick > 0}
-              onClick={addBow}
-              type="submit"
-              fontSize="32px"
-              width="300px"
-              height="70px"
-            />
-            {!canBow && remainClick === 0 && <_.BowStatus>절을 이미 했습니다</_.BowStatus>}
+            <_.BowButtonWrapper>
+              <MemorialBtn
+                key={'절'}
+                name={`절(${remainClick === 0 || !canBow ? '0' : remainClick}회 남음)`}
+                active={canBow && remainClick > 0}
+                onClick={addBow}
+                type="submit"
+                fontSize="32px"
+                width="300px"
+                height="70px"
+              />
+              {showBowComplete && (
+                <_.BowCompleteText>성공적으로 캐릭터에게 절을 했습니다!</_.BowCompleteText>
+              )}
+            </_.BowButtonWrapper>
           </_.BowButtonSection>
         </_.RightPanel>
       </_.MainContent>

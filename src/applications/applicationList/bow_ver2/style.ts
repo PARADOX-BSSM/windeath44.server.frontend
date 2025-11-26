@@ -244,6 +244,36 @@ export const BowButtonSection = styled.div`
   gap: 10px;
 `;
 
+export const BowButtonWrapper = styled.div`
+  position: relative;
+  display: inline-block;
+`;
+
+export const BowCompleteText = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Galmuri11', sans-serif;
+  font-size: 24px;
+  color: var(--primary-black);
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: fadeUpAndOut 0.75s ease-out forwards;
+
+  @keyframes fadeUpAndOut {
+    0% {
+      opacity: 1;
+      transform: translate(-50%, -50%);
+    }
+    100% {
+      opacity: 0;
+      transform: translate(-50%, -175%);
+    }
+  }
+`;
+
 export const BowStatus = styled.div`
   font-family: 'Galmuri11', sans-serif;
   font-size: 18px;
