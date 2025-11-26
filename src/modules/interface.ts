@@ -41,4 +41,6 @@ export type userList = {
 export type BowData = {
   name: string;
   bowCount: number;
+  userId?: number;
+  profileUrl?: string;
 };

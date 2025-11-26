@@ -13,8 +13,8 @@ import Loading from '@/applications/components/loading';
 import { useMemorialChiefBows } from '@/api/memorial/getMemorialChiefs.ts';
 import type { BowData } from '@/modules/interface.ts';
 import ribbon from '@/assets/memorial_ribbon.svg';
+import table from '@/assets/bow/table.svg';
 import MemorialBtn from '@/applications/components/memorialBtn';
-import Whiteboard from '@/applications/components/whiteboard';
 
 interface bowProps {
   memorialId: number;
@@ -304,57 +304,85 @@ const NewBow = ({ memorialId }: bowProps) => {
       />
     );
   }
+  // 사용자 데이터 찾기
+  const userRank = bowData?.findIndex((mourner) => mourner.userId === userId);
+  const userMourner =
+    userRank !== undefined && userRank !== -1 && bowData ? bowData[userRank] : null;
+
   return (
     <_.Container>
       <_.MainContent>
         <_.LeftPanel>
-          <Whiteboard
-            width="100%"
-            height="fit-content"
-          >
-            <_.InfoSection>
+          <_.TopSection>
+            <_.InfoBox>
               <_.InfoLabel>절 한 사람:</_.InfoLabel>
               <_.InfoValue>{memorialData?.bowCount || 0}명</_.InfoValue>
-            </_.InfoSection>
-          </Whiteboard>
+            </_.InfoBox>
 
-          <Whiteboard
-            width="100%"
-            height="fit-content"
-          >
-            <_.InfoSection>
+            <_.InfoBox>
               <_.InfoLabel>다음 절 까지:</_.InfoLabel>
               <_.InfoValue>{canBow ? '00:00' : remainingTime}</_.InfoValue>
-            </_.InfoSection>
-          </Whiteboard>
+            </_.InfoBox>
 
-          <Whiteboard
-            width="100%"
-            height="fit-content"
-          >
-            <_.InfoSection>
+            <_.InfoBox>
               <_.InfoLabel>내 보유 토큰:</_.InfoLabel>
               <_.InfoValue>{userData?.data?.remainToken || 0}</_.InfoValue>
-            </_.InfoSection>
-          </Whiteboard>
+            </_.InfoBox>
+          </_.TopSection>
 
-          <_.MournersSection>
+          <_.MournersWrapper>
             <_.MournersTitle>조문객 명단</_.MournersTitle>
-            <_.MournersList>
-              {bowData?.slice(0, 10).map((mourner, index) => (
-                <_.MournerItem key={index}>
-                  <_.MournerRank isChief={index < 3}>#{index + 1}</_.MournerRank>
-                  <_.MournerInfo>
-                    <_.MournerNameRow>
-                      <_.MournerName>{mourner.name || 'user'}</_.MournerName>
-                      {index < 3 && <_.MournerBadge>(상주)</_.MournerBadge>}
-                    </_.MournerNameRow>
-                  </_.MournerInfo>
-                  <_.MournerCount>{mourner.bowCount}회</_.MournerCount>
-                </_.MournerItem>
-              ))}
-            </_.MournersList>
-          </_.MournersSection>
+            <_.MournersListContainer>
+              <_.MournersList>
+                {bowData?.slice(0, 3).map((mourner, index) => (
+                  <_.MournerItem key={index}>
+                    <_.MournerRankGroup>
+                      <_.MournerRank>#{index + 1}</_.MournerRank>
+                      <_.MournerAvatar
+                        src={
+                          mourner.profileUrl ||
+                          'http://localhost:3845/assets/6b8ac76e6055eaffbc3bc08a3a370fd3b736d947.png'
+                        }
+                        alt="profile"
+                      />
+                    </_.MournerRankGroup>
+                    <_.MournerInfo>
+                      <_.MournerNameRow>
+                        <_.MournerName>{mourner.name || 'user'}</_.MournerName>
+                        <_.MournerBadge>(상주)</_.MournerBadge>
+                      </_.MournerNameRow>
+                      <_.MournerCount>{mourner.bowCount}회</_.MournerCount>
+                    </_.MournerInfo>
+                  </_.MournerItem>
+                ))}
+              </_.MournersList>
+            </_.MournersListContainer>
+
+            {userMourner && (
+              <_.MournersListContainer>
+                <_.MournersList>
+                  <_.MournerItem>
+                    <_.MournerRankGroup>
+                      <_.MournerRank>#{userRank !== undefined ? userRank + 1 : 0}</_.MournerRank>
+                      <_.MournerAvatar
+                        src={
+                          userMourner.profileUrl ||
+                          'http://localhost:3845/assets/6b8ac76e6055eaffbc3bc08a3a370fd3b736d947.png'
+                        }
+                        alt="profile"
+                      />
+                    </_.MournerRankGroup>
+                    <_.MournerInfo>
+                      <_.MournerNameRow>
+                        <_.MournerName>나</_.MournerName>
+                      </_.MournerNameRow>
+                      <_.MournerCount>{userMourner.bowCount}회</_.MournerCount>
+                    </_.MournerInfo>
+                  </_.MournerItem>
+                </_.MournersList>
+              </_.MournersListContainer>
+            )}
+          </_.MournersWrapper>
         </_.LeftPanel>
 
         <_.RightPanel>
@@ -369,21 +397,25 @@ const NewBow = ({ memorialId }: bowProps) => {
                 alt={characterData.name || '캐릭터'}
               />
             </_.PictureContainer>
-
-            <_.BowButtonSection>
-              <MemorialBtn
-                key={'절'}
-                name={`절(${remainClick === 0 || !canBow ? '0' : remainClick}회 남음)`}
-                active={canBow && remainClick > 0}
-                onClick={addBow}
-                type="submit"
-                fontSize="1.2rem"
-                width="200px"
-                height="3rem"
-              />
-              {!canBow && remainClick === 0 && <_.BowStatus>절을 이미 했습니다</_.BowStatus>}
-            </_.BowButtonSection>
+            <_.TableImage
+              src={table}
+              alt="table"
+            />
           </_.MemorialArea>
+
+          <_.BowButtonSection>
+            <MemorialBtn
+              key={'절'}
+              name={`절(${remainClick === 0 || !canBow ? '0' : remainClick}회 남음)`}
+              active={canBow && remainClick > 0}
+              onClick={addBow}
+              type="submit"
+              fontSize="32px"
+              width="300px"
+              height="70px"
+            />
+            {!canBow && remainClick === 0 && <_.BowStatus>절을 이미 했습니다</_.BowStatus>}
+          </_.BowButtonSection>
         </_.RightPanel>
       </_.MainContent>
     </_.Container>
