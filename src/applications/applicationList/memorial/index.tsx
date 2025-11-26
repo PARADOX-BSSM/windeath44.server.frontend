@@ -692,7 +692,7 @@ const Memorial = ({
 
           <_.GotoBow
             onClick={() => {
-              taskTransform?.('', '절하기', { memorialId: memorialId });
+              taskTransform?.('', '절', { memorialId: memorialId });
             }}
           >
             절 하러가기
