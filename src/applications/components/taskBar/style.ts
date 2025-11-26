@@ -7,7 +7,8 @@ export const TTaskBar = styled.footer`
   height: ${48 / 16}rem;
   z-index: 998;
   background-color: var(--light-primary-color);
-  border: 0.063rem black solid;
+  border-bottom: 0.063rem black solid;
+  border-top: 0.063rem black solid;
   display: flex;
   padding: 0.25rem 0.5rem;
   flex-direction: column;
@@ -38,6 +39,11 @@ export const TaskItem = styled.div`
   height: 100%;
   flex-shrink: 0;
   box-sizing: border-box;
+`;
+
+export const VirtualDesktopItem = styled(TaskItem)`
+  width: 2.5rem;
+  justify-content: center;
 `;
 
 export const ImgContainer = styled.img`

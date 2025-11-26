@@ -10,7 +10,6 @@ import type { CharacterData } from '@/api/anime/getCharacter';
 import { parseCustomContent } from '@/lib/customTag/parseCustomContent.tsx';
 import { useGetAnimation } from '@/api/anime/getAnimation.ts';
 import ribbon from '@/assets/memorial_ribbon.svg';
-import Choten from '@/assets/profile/choten.svg';
 
 interface dataStructureProps {
   stack: any[];
@@ -44,6 +43,7 @@ const MemorialViewer = ({ stack, push, pop, top, characterId, content }: dataStr
   const mutationAnimation = useGetAnimation(setAnimation);
 
   useEffect(() => {
+    console.log('characterId', characterId);
     if (characterId) {
       mutationGetCharacter.mutate(characterId);
       mutationAnimation.mutate(characterId);
@@ -54,7 +54,6 @@ const MemorialViewer = ({ stack, push, pop, top, characterId, content }: dataStr
   useEffect(() => {
     if (mutationGetCharacter.isError) {
       setAlert?.(
-        Choten,
         <>
           캐릭터 정보를 가져오는 중 오류가 발생했습니다.
           <br />

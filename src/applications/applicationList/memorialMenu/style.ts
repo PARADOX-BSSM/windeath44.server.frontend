@@ -84,9 +84,11 @@ export const DescriptionBox = styled.div`
   align-self: stretch;
   background: #FFF;
   box-shadow: ${shadow};
+  overflow-y: auto;
+  overflow-x: hidden;
 `;
 
-export const Description = styled.p`
+export const Description = styled.div`
   flex: 1 1 0;
   align-self: stretch;
   color: #2E2E2E;

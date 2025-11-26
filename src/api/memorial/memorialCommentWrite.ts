@@ -1,6 +1,8 @@
 import { useMutation } from '@tanstack/react-query';
 import { memorial } from '@/config';
 import api from '../axiosInstance';
+import React from 'react';
+import type { MemorialCommentsData } from './getMemorialComments';
 
 interface commentData {
   memorialId: number;
@@ -19,14 +21,75 @@ const commentWrite = async ({ memorialId, content, parentCommentId }: commentDat
   }
 };
 
-export const useCommentWrite = () => {
+export const useCommentWrite = (
+  setMemorialComment: React.Dispatch<React.SetStateAction<MemorialCommentsData[]>>,
+  currentUserId?: string,
+) => {
   return useMutation({
     mutationFn: commentWrite,
-    onSuccess: (data: any) => {
-// console.log(data);
+    onMutate: async ({ memorialId, content, parentCommentId }) => {
+      // 이전 상태를 저장 (롤백을 위해)
+      const previousComments = await new Promise<MemorialCommentsData[]>((resolve) => {
+        setMemorialComment((prev) => {
+          resolve(prev);
+          return prev;
+        });
+      });
+
+      // 임시 댓글 객체 생성 (음수 ID 사용)
+      const tempComment: MemorialCommentsData = {
+        commentId: -Date.now(), // 임시 음수 ID
+        memorialId,
+        userId: currentUserId || 'unknown',
+        content,
+        likes: 0,
+        isLiked: false,
+        parentId: parentCommentId || null,
+        createdAt: new Date().toISOString(),
+        children: [],
+      };
+
+      // 낙관적 업데이트: 즉시 댓글 추가 반영
+      setMemorialComment((prev) => {
+        if (parentCommentId) {
+          // 답글인 경우: 부모 댓글의 children에 추가
+          const addReplyRecursive = (comments: MemorialCommentsData[]): MemorialCommentsData[] => {
+            return comments.map((comment) => {
+              if (comment.commentId === parentCommentId) {
+                return {
+                  ...comment,
+                  children: [...comment.children, tempComment],
+                };
+              }
+              if (comment.children && comment.children.length > 0) {
+                return {
+                  ...comment,
+                  children: addReplyRecursive(comment.children),
+                };
+              }
+              return comment;
+            });
+          };
+          return addReplyRecursive(prev);
+        } else {
+          // 최상위 댓글인 경우: 목록 끝에 추가
+          return [...prev, tempComment];
+        }
+      });
+
+      // 롤백을 위해 이전 상태 반환
+      return { previousComments };
     },
-    onError: (error: any) => {
-// console.log(error);
+    onError: (error: any, variables, context) => {
+      // 에러 발생 시 이전 상태로 롤백
+      if (context?.previousComments) {
+        setMemorialComment(context.previousComments);
+      }
+      console.error('댓글 작성 실패:', error);
+    },
+    onSuccess: () => {
+      // 서버가 생성된 댓글 데이터를 반환하지 않음 (data.data === null)
+      // memorial/index.tsx의 onSuccess에서 댓글 목록 재조회로 실제 ID 획득
     },
   });
 };

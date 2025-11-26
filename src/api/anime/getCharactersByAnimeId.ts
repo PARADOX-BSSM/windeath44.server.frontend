@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
-import api from '@/api/axiosInstance';
 import { anime } from '@/config';
 import qs from 'qs';
+import axios from 'axios';
 
 interface FetchCharactersParams {
   animeId?: number[];
@@ -10,7 +10,7 @@ interface FetchCharactersParams {
 }
 
 export const fetchCharacters = async ({ animeId, cursorId, size }: FetchCharactersParams) => {
-  const response = await api.get(`${anime}/characters/search/anime`, {
+  const response = await axios.get(`${anime}/characters/search/anime`, {
     params: { animeId, cursorId, size },
     paramsSerializer: (params) => qs.stringify(params, { arrayFormat: 'repeat' }),
   });

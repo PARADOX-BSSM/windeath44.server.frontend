@@ -31,16 +31,16 @@ const MemorialCommit = ({
 }: dataStructureProps) => {
   // const taskSearch = useAtomValue(taskSearchAtom);
   const { mutate: getUser, data, isPending, error } = useGetUserMutation();
-  const contentIn = useAtom(inputContent);
-  const [inputValue] = useAtom(inputPortage);
+  const [contentIn, setContentIn] = useAtom(inputContent);
+  const [inputValue, setInputValue] = useAtom(inputPortage);
   const [userId, setUserId] = useAtom(userIdAtom);
 
-// console.log(contentIn);
+  // console.log(contentIn);
 
   useEffect(() => {
     getUser(undefined, {
       onSuccess: (data) => {
-// console.log('성공:', data);
+        // console.log('성공:', data);
         setUserId(data.data.userId);
       },
       onError: (err) => {
@@ -48,6 +48,31 @@ const MemorialCommit = ({
       },
     });
   }, []);
+
+  // characterData와 memorialData를 atom에 설정하여 미리보기와 동기화
+  useEffect(() => {
+    if (characterData) {
+      setInputValue({
+        name: characterData.name,
+        deathReason: characterData.deathReason as any,
+        date: characterData.deathOfDay,
+        lifeCycle: characterData.lifeTime,
+        anime: animation,
+        animeId: characterData.animeId,
+        age: characterData.age,
+        profileImage: characterData.imageUrl,
+        phrase: characterData.saying,
+        causeOfDeathDetails: characterData.causeOfDeathDetails || '',
+      });
+    }
+
+    if (memorialData) {
+      setContentIn({
+        characterId: String(memorialData.characterId),
+        content: memorialData.content,
+      });
+    }
+  }, [characterData, memorialData, animation, setInputValue, setContentIn]);
 
   return (
     <_.Container>
@@ -98,12 +123,25 @@ const MemorialCommit = ({
                   <_.CharacterInformationRow>
                     <_.CharacterInformationRowAttribute>
                       <_.CharacterInformationRowAttributeText>
-                        생존 기간
+                        사인(死因)
                       </_.CharacterInformationRowAttributeText>
                     </_.CharacterInformationRowAttribute>
                     <_.CharacterInformationRowValue>
                       <_.CharacterInformationRowValueText>
-                        {characterData.lifeTime}화
+                        {characterData.deathReason}
+                      </_.CharacterInformationRowValueText>
+                    </_.CharacterInformationRowValue>
+                  </_.CharacterInformationRow>
+
+                  <_.CharacterInformationRow>
+                    <_.CharacterInformationRowAttribute>
+                      <_.CharacterInformationRowAttributeText>
+                        상세 사인
+                      </_.CharacterInformationRowAttributeText>
+                    </_.CharacterInformationRowAttribute>
+                    <_.CharacterInformationRowValue>
+                      <_.CharacterInformationRowValueText>
+                        {characterData.causeOfDeathDetails}
                       </_.CharacterInformationRowValueText>
                     </_.CharacterInformationRowValue>
                   </_.CharacterInformationRow>
@@ -132,6 +170,8 @@ const MemorialCommit = ({
         from={userId}
         content={memorialData?.content || ''}
         isPerson={true}
+        memorialId={memorialData?.memorialId}
+        characterId={characterData?.characterId}
       />
     </_.Container>
   );

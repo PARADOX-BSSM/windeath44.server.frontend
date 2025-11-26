@@ -45,7 +45,7 @@ export const useGetMemorialPullRequestsQuery = (memorialId: number) => {
     queryKey: ['memorialPullRequests', memorialId],
     queryFn: () => fetchMemorialPullRequests(memorialId),
     enabled: !!memorialId, // memorialId가 있을 때만 쿼리 실행
-    staleTime: 2 * 60 * 1000, // 2분간 fresh 상태 유지
-    gcTime: 5 * 60 * 1000, // 5분간 캐시 유지
+    staleTime: 0 * 60 * 1000, // 2분간 fresh 상태 유지
+    gcTime: 0 * 60 * 1000, // 5분간 캐시 유지
   });
 };

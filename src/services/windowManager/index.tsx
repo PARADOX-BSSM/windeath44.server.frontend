@@ -1,6 +1,6 @@
 import * as _ from './style.ts';
 import { useEffect, useState, Suspense, lazy, useRef } from 'react';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import {
   isLogInedAtom,
   focusAtom,
@@ -9,20 +9,25 @@ import {
 } from '@/atoms/windowManager.ts';
 import Discover from '@/applications/discover/index.tsx';
 import Observer from '@/applications/utility/observer/index.tsx';
-import { useProcessManager } from '@/hooks/processManager.tsx';
+import { useProcessManager, useVirtualProcessManager } from '@/hooks/processManager.tsx';
 import { TaskType } from '@/modules/typeModule.tsx';
 import { getTaskCreators } from './tasks';
 import { useTaskTransformFunction } from '@/hooks/taskTransformer.tsx';
 import { useTaskSearchFunction } from '@/hooks/taskSearch.tsx';
 import { useAlerter } from '@/hooks/alerter.tsx';
+import { useConfirmAlerter } from '@/hooks/alerter.tsx';
+import { useNotification } from '@/hooks/notification.tsx';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg.tsx';
 import { useDrag } from 'react-use-gesture';
-import { taskTransformerAtom } from '@/atoms/taskTransformer.ts';
+import useApps from '@/applications/data/importManager.tsx';
+import { lastTaskListAtom, windowPositionsAtom } from '@/atoms/processManager.ts';
+import { useGetPublicNotificationsQuery } from '@/api/notification/getPublicNotifications';
+import { notificationAtom, notificationListAtom } from '@/atoms/notification';
+import { settingsAtom } from '@/atoms/settings.ts';
+import { DEFAULT_NOTIFICATIONS } from '@/data/notifications.ts';
+import { isNotClickAtom } from '@/atoms/cursorState.ts';
 
 const Application = lazy(() => import('@/applications/layout/index.tsx'));
-const AnniversaryWindow = lazy(() => import('@/applications/applicationList/anniversaryWindow/index.tsx'));
-const MemorialWindow = lazy(() => import('@/applications/applicationList/memorialWindow/index.tsx'));
-const MournerWindow = lazy(() => import('@/applications/applicationList/mournerWindow/index.tsx'));
 
 const WindowManager = () => {
   const [cursorVec, setCursorVec] = useState<number[]>([0, 0, 0, 0]);
@@ -33,12 +38,29 @@ const WindowManager = () => {
   const [startOption, setStartOption] = useAtom(startOptionAtom);
   const [backUpFocus, setBackUpFocus] = useAtom(backUpFocusAtom);
   const [isLogIned, setIsLogIned] = useAtom(isLogInedAtom);
+  const [hydrated, setHydrated] = useState(false);
+  const [lastTaskList] = useAtom(lastTaskListAtom);
+  const setNotification = useAtomValue(notificationAtom);
+  const setNotificationList = useSetAtom(notificationListAtom);
+  const [settings] = useAtom(settingsAtom);
+  const [isNotClick] = useAtom(isNotClickAtom);
 
-  const [taskList, addTask, removeTask] = useProcessManager();
+  const [taskList, addTask, removeTask, setVirtualWindowPosition] = useProcessManager();
+  const [, , , addTaskToDesktop] = useVirtualProcessManager();
   const { logIn, signUp, emailChack, auth } = getTaskCreators(setIsLogIned, addTask, removeTask);
+  const availableApps = useApps();
   const isDragging = useRef(false);
   const dragOffset = useRef([0, 0]);
   const clickTimeout = useRef<NodeJS.Timeout | null>(null);
+  const hasRestoredTasks = useRef(false);
+  const hasCheckedNotification = useRef(false);
+
+  // 공지사항 조회
+  const { data: notificationsData } = useGetPublicNotificationsQuery();
+
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
 
   // Drag 감지해서 Cursor 변경
   const bindDrag = useDrag(
@@ -67,11 +89,84 @@ const WindowManager = () => {
       setStartOption(false);
     }
   }, [focus]);
+  useEffect(() => {
+    console.log('[WindowManager] Restore check:', {
+      hydrated,
+      hasRestoredTasks: hasRestoredTasks.current,
+      isLogIned,
+      lastTaskListLength: lastTaskList?.length,
+      availableAppsLength: availableApps?.length,
+    });
+
+    if (!hydrated || hasRestoredTasks.current || isLogIned !== 'true') return;
+
+    // availableApps가 준비되지 않았으면 대기
+    if (!availableApps || availableApps.length === 0) {
+      console.log('[WindowManager] Waiting for availableApps...');
+      return;
+    }
+
+    hasRestoredTasks.current = true;
+
+    // localStorage에서 마지막 태스크 리스트 복원
+    if (lastTaskList && lastTaskList.length > 0) {
+      console.log('[WindowManager] Restoring tasks:', lastTaskList);
+
+      // 위치 정보를 windowPositionsAtom에 먼저 복원
+      lastTaskList.map((tasks, index) => {
+        const positions: Record<
+          string,
+          { top: number; left: number; width: number; height: number }
+        > = {};
+        tasks.forEach((savedTask) => {
+          if (savedTask.position) {
+            positions[savedTask.name] = savedTask.position;
+            console.log(
+              '[WindowManager] Will restore position for',
+              savedTask.name,
+              ':',
+              savedTask.position,
+            );
+          }
+        });
+        setVirtualWindowPosition(positions, index);
+        console.log('[WindowManager] Set windowPositions to:', positions);
+      });
+
+      // setTimeout 전에 positions 설정하고 확인
+
+      // 위치 설정 후 조금 기다렸다가 앱 추가
+      setTimeout(() => {
+        console.log('[WindowManager] Now adding tasks...');
+        lastTaskList.map((tasks) =>
+          tasks.forEach((savedTask) => {
+            const app = availableApps.find(
+              (availableApp) =>
+                availableApp.id === savedTask.id && availableApp.name === savedTask.name,
+            );
+            console.log(
+              '[WindowManager] Looking for app:',
+              savedTask.name,
+              'Found:',
+              app ? 'YES' : 'NO',
+            );
+            if (app) {
+              console.log('[WindowManager] Adding task:', savedTask.name);
+              addTaskToDesktop(app, savedTask.desktopIndex || 0);
+            }
+          }),
+        );
+      }, 500); // 위치 설정 후 여유있게 대기
+    } else {
+      console.log('[WindowManager] No tasks to restore');
+    }
+  }, [hydrated, isLogIned, lastTaskList, availableApps, addTask, setVirtualWindowPosition]);
 
   useEffect(() => {
+    if (!hydrated) return; // hydration 전엔 아무것도 하지 않음
+
     //초기 기본 설정
-    // localStorage.setItem('isLogIned', isLogIned);
-    if (isLogIned === 'true' || isLogIned === 'guest') {
+    if (isLogIned === 'true') {
       removeTask(logIn);
       const discover: TaskType = {
         component: (
@@ -87,87 +182,142 @@ const WindowManager = () => {
         appSetup: undefined,
         visible: false,
       };
-
-      const anniversaryTask: TaskType = {
-        component: (
-          <Suspense fallback={null}>
-            <AnniversaryWindow />
-          </Suspense>
-        ),
-        type: 'App',
-        id: 9996,
-        name: '오늘의 기일',
-        layer: undefined,
-        appSetup: {
-          Image: 'default',
-          minWidth: 800,
-          minHeight: 81,
-          setUpWidth: 370,
-          setUpHeight: 81,
-        },
+      const virtualDesktopService: TaskType = {
+        component: <></>,
+        type: 'Shell',
+        id: 1,
+        layer: -999,
+        name: 'Extender',
+        appSetup: undefined,
         visible: false,
       };
-
-      const memorialTask: TaskType = {
-        component: (
-          <Suspense fallback={null}>
-            <MemorialWindow />
-          </Suspense>
-        ),
-        type: 'App',
-        id: 9997,
-        name: '오늘의 추모관',
-        layer: undefined,
-        appSetup: {
-          Image: 'default',
-          minWidth: 800,
-          minHeight: 80,
-          setUpWidth: 370,
-          setUpHeight: 80,
-        },
-        visible: false,
-      };
-
-      const mournerTask: TaskType = {
-        component: (
-          <Suspense fallback={null}>
-            <MournerWindow />
-          </Suspense>
-        ),
-        type: 'App',
-        id: 9998,
-        name: '오늘의 조문객',
-        layer: undefined,
-        appSetup: {
-          Image: 'default',
-          minWidth: 800,
-          minHeight: 80,
-          setUpWidth: 370,
-          setUpHeight: 80,
-        },
-        visible: false,
-      };
-
       setTimeout(() => {
         addTask(discover);
-        addTask(anniversaryTask);
-        addTask(memorialTask);
-        addTask(mournerTask);
+        addTask(virtualDesktopService);
       }, 200);
+
+      // bootLoader 끝난 후 알림창 띄우기 (3.5초 후)
+      setTimeout(() => {
+        if (!availableApps || availableApps.length === 0) return;
+
+        // 알림창 위치 설정
+        const notificationPositions: Record<string, { top: number; left: number; width: number; height: number }> = {
+          '오늘의 기일': { top: 10, left: 920, width: 370, height: 87 },
+          '오늘의 추모관': { top: 108, left: 920, width: 370, height: 87 },
+          '오늘의 조문객': { top: 205, left: 920, width: 370, height: 87 },
+        };
+        setVirtualWindowPosition(notificationPositions, 0);
+
+        // 오늘의 기일
+        const anniversaryApp = availableApps.find(app => app.id === 10001 && app.name === '오늘의 기일');
+        if (anniversaryApp) {
+          addTask(anniversaryApp);
+        }
+
+        // 추모관 알림
+        const memorialApp = availableApps.find(app => app.id === 10002 && app.name === '오늘의 추모관');
+        if (memorialApp) {
+          addTask(memorialApp);
+        }
+
+        // 조문객 알림
+        const mournerApp = availableApps.find(app => app.id === 10003 && app.name === '오늘의 조문객');
+        if (mournerApp) {
+          addTask(mournerApp);
+        }
+      }, 3500);
     } else {
       setTimeout(() => {
         addTask(logIn);
       }, 200);
     }
-  }, [isLogIned]);
+  }, [isLogIned, hydrated, availableApps]);
 
-  let resizeObserver = new ResizeObserver((_entries) => {
-    const container: HTMLElement = document.getElementById('cursorContainer') as HTMLElement;
+  // 공지사항 데이터를 atom에 저장 (항상 실행)
+  useEffect(() => {
+    if (!hydrated || isLogIned !== 'true') return;
+
+    // API 데이터가 있으면 API 데이터 사용, 없으면 DEFAULT_NOTIFICATIONS 사용
+    let notificationsToStore;
+
+    if (notificationsData?.data && notificationsData.data.length > 0) {
+      notificationsToStore = notificationsData.data;
+    } else {
+      // NotificationData 형식으로 변환
+      notificationsToStore = DEFAULT_NOTIFICATIONS.map((item, index) => ({
+        notification_id: Date.now() + index,
+        writer_id: 'system',
+        title: item.title,
+        content: item.content,
+        is_open: true,
+        is_image: item.is_image,
+        end_date: item.created_at,
+        created_at: item.created_at,
+        updated_at: item.created_at,
+      }));
+    }
+
+    // atom에 데이터 저장
+    setNotificationList(notificationsToStore);
+  }, [hydrated, isLogIned, notificationsData, setNotificationList]);
+
+  // 공지사항 자동 표시 (settings.showBootNotification이 true일 때만)
+  useEffect(() => {
+    if (
+      !hydrated ||
+      hasCheckedNotification.current ||
+      !settings.showBootNotification ||
+      isLogIned !== 'true'
+    )
+      return;
+    if (!notificationsData?.data) return;
+
+    const openNotifications = notificationsData.data.filter((n) => n.is_open);
+    if (openNotifications.length === 0) {
+      hasCheckedNotification.current = true;
+      if (
+        !hydrated ||
+        hasCheckedNotification.current ||
+        !settings.showBootNotification ||
+        isLogIned !== 'true'
+      )
+        return;
+    }
+
+    hasCheckedNotification.current = true;
+
+    // API 데이터가 있으면 API 데이터 사용, 없으면 DEFAULT_NOTIFICATIONS 사용
+    let notificationsToShow;
+
+    if (notificationsData?.data) {
+      const openNotifications = notificationsData.data.filter((n) => n.is_open);
+      if (openNotifications.length > 0) {
+        notificationsToShow = openNotifications;
+      }
+    }
+
+    // API 데이터가 없으면 기본 공지사항 사용
+    if (!notificationsToShow) {
+      notificationsToShow = DEFAULT_NOTIFICATIONS;
+    }
+
+    // setNotification 사용하여 공지사항 창 자동으로 열기
+    if (setNotification && notificationsToShow) {
+      setTimeout(() => {
+        setNotification(notificationsToShow);
+      }, 500); // 부팅 후 0.5초 뒤에 표시
+    }
+  }, [hydrated, settings, isLogIned, notificationsData, setNotification]);
+
+  useEffect(() => {
+    const container = document.getElementById('cursorContainer') as HTMLElement;
     const cursor = document.getElementById('cursor');
     if (!container || !cursor) return;
+
     cursor.style.zIndex = '9990';
-    const bounds = container.getBoundingClientRect();
-    document.addEventListener('mousemove', (event: MouseEvent) => {
+
+    const handleMouseMove = (event: MouseEvent) => {
+      const bounds = container.getBoundingClientRect();
       let x = event.clientX - bounds.x + bounds.left;
       let y = event.clientY - bounds.y;
       x = Math.max(bounds.left, Math.min(bounds.width - 1 + bounds.left, x));
@@ -175,29 +325,54 @@ const WindowManager = () => {
       cursor.style.left = `${x}px`;
       cursor.style.top = `${y}px`;
       setCursorVec([x, y]);
+    };
+
+    const resizeObserver = new ResizeObserver((_entries) => {
+      requestAnimationFrame(() => {
+        // bounds를 다시 계산하도록 트리거
+        const bounds = container.getBoundingClientRect();
+      });
     });
-  });
-  useEffect(() => {
-    resizeObserver.observe(document.getElementById('display') as HTMLElement);
-  }, []);
+
+    const display = document.getElementById('display');
+    if (display) resizeObserver.observe(display);
+
+    document.addEventListener('mousemove', handleMouseMove);
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      resizeObserver.disconnect();
+    };
+  }, [settings, sideWidth]);
 
   useEffect(() => {
-    const updateSideWidth = () => {
-      const fullWidth = window.innerWidth;
-      const fullHeight = window.innerHeight;
-      const containerWidth = (fullHeight * 4) / 3;
-      const calculatedSide = (fullWidth - containerWidth) / 2;
-      setSideWidth(Math.max(0, calculatedSide));
-    };
-    updateSideWidth();
-    window.addEventListener('resize', updateSideWidth);
-    return () => window.removeEventListener('resize', updateSideWidth);
-  }, []);
+    if (settings.screenRatio === '4:3') {
+      const updateSideWidth = () => {
+        const fullWidth = window.innerWidth;
+        const fullHeight = window.innerHeight;
+        const containerWidth = (fullHeight * 4) / 3;
+        const calculatedSide = (fullWidth - containerWidth) / 2;
+        setSideWidth(Math.max(0, calculatedSide));
+      };
+      updateSideWidth();
+      window.addEventListener('resize', updateSideWidth);
+      return () => window.removeEventListener('resize', updateSideWidth);
+    } else if (settings.screenRatio === '16:9') {
+      const updateSideWidth = () => {
+        setSideWidth(0);
+      };
+      updateSideWidth();
+      console.log('asdf');
+      window.addEventListener('resize', updateSideWidth);
+      return () => window.removeEventListener('resize', updateSideWidth);
+    }
+  }, [settings]);
 
   // 클릭 시 cursor 변경
   useEffect(() => {
     const cursor = document.getElementById('cursor');
     if (!cursor) return;
+    if (isNotClick) return;
 
     const handleClick = () => {
       const [dx, dy] = dragOffset.current;
@@ -215,12 +390,14 @@ const WindowManager = () => {
 
     document.addEventListener('mousedown', handleClick);
     return () => document.removeEventListener('mousedown', handleClick);
-  }, []);
+  }, [isNotClick]);
 
   // Custom Hook 초기화 역할
   useTaskTransformFunction();
   useTaskSearchFunction();
   useAlerter();
+  useConfirmAlerter();
+  useNotification();
 
   return (
     <_.Desktop>
@@ -228,19 +405,48 @@ const WindowManager = () => {
         <_.BackgroundDiv width={sideWidth}></_.BackgroundDiv>
         <_.Display
           id="cursorContainer"
+          is43={settings.screenRatio === '4:3'}
           {...bindDrag()}
         >
           <div id="cursor"></div>
           {taskList.map((task: TaskType) => {
+            // type 체크
+            if (task.type !== 'App' && task.type !== 'Shell') {
+              return null;
+            }
+
+            // App 타입은 appSetup이 필수
+            if (
+              task.type === 'App' &&
+              (!task.appSetup ||
+                task.appSetup.minWidth === undefined ||
+                task.appSetup.minHeight === undefined ||
+                task.appSetup.setUpWidth === undefined ||
+                task.appSetup.setUpHeight === undefined)
+            ) {
+              return null;
+            }
+
             return (
               <Application
-                key={task.name}
+                key={task.instanceId || task.name}
                 name={task.name}
                 uid={task.id}
-                type={task.type}
-                appSetup={task.appSetup}
-                setUpHeight={task.appSetup?.setUpHeight}
-                setUpWidth={task.appSetup?.setUpWidth}
+                instanceId={task.instanceId}
+                type={task.type as 'App' | 'Shell'}
+                appSetup={
+                  task.appSetup
+                    ? {
+                        ...task.appSetup,
+                        minWidth: task.appSetup.minWidth!,
+                        minHeight: task.appSetup.minHeight!,
+                        setUpWidth: task.appSetup.setUpWidth!,
+                        setUpHeight: task.appSetup.setUpHeight!,
+                      }
+                    : ({} as any)
+                }
+                setUpHeight={task.appSetup?.setUpHeight || 0}
+                setUpWidth={task.appSetup?.setUpWidth || 0}
                 cursorVec={cursorVec}
                 removeTask={removeTask}
                 removeCompnent={task}

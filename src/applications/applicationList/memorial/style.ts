@@ -120,15 +120,37 @@ export const IndexWrapper = styled.div`
 `;
 
 export const Quote = styled.h2`
+  position: relative;
   height: fit-content;
   align-self: stretch;
-  color: #2e2e2e;
-  font-family: Galmuri11;
-  font-size: 24px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-  display: flex;
+  color: #4a4a4a;
+  font-family: 'Galmuri11', serif;
+  font-size: 28px;
+  font-style: italic;
+  font-weight: 500;
+  line-height: 1.5;
+  background-color: #f0f0f0;
+  padding: 30px 40px;
+  border-left: 5px solid #e774dd;
+  border-radius: 5px;
+  margin: 10px 0;
+
+  &::before {
+    content: '“';
+    position: absolute;
+    top: 10px;
+    left: 5px;
+    font-size: 40px;
+    color: #e774dd;
+  }
+
+  &::after {
+    content: '”';
+    position: absolute;
+    bottom: -10px;
+    font-size: 40px;
+    color: #e774dd;
+  }
 `;
 
 export const Index = styled.div`
@@ -177,10 +199,10 @@ export const PictureContainer = styled.div`
 export const Ribbon = styled.img`
   position: absolute;
   top: 0;
-  width: 100%;
+  width: 144px;
   z-index: 1;
 `;
-export const Picture = styled.div<{ imgUrl: string }>`
+export const Picture = styled.div<{ imgUrl?: string }>`
   display: flex;
   height: 200px;
   flex-direction: column;
@@ -334,6 +356,11 @@ export const InputComment = styled.div`
   gap: 10px;
   align-self: stretch;
   background: #ffebfd;
+
+  & > form {
+    width: 100%;
+    display: flex;
+  }
 `;
 
 export const InputCommentText = styled.input`
@@ -341,6 +368,7 @@ export const InputCommentText = styled.input`
   font-size: 12px;
   font-style: normal;
   font-weight: 400;
+  cursor: none;
   line-height: normal;
   border: none;
   background: none;
@@ -348,9 +376,39 @@ export const InputCommentText = styled.input`
   box-shadow: none;
   padding: 0;
   border-width: 0;
-  width: 100%;
+  flex: 1;
   &::placeholder {
     color: var(--DarkPrimary, #dcafdd);
+  }
+`;
+
+export const CharCount = styled.span`
+  font-family: Galmuri11;
+  font-size: 10px;
+  color: var(--DarkPrimary, #dcafdd);
+  white-space: nowrap;
+  margin-left: 8px;
+`;
+
+export const LoadMoreButton = styled.button`
+  display: flex;
+  width: 100%;
+  padding: 12px 16px;
+  justify-content: center;
+  align-items: center;
+  background: #fff;
+  border: none;
+  cursor: pointer;
+  color: var(--Stroke, #e774dd);
+  font-family: Galmuri11;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background: #f5f5f5;
   }
 `;
 
@@ -374,6 +432,7 @@ export const ArticleTitle = styled.h1`
 export const ArticleContent = styled.div`
   display: flex;
   padding: 0 8px;
+  width: 100%;
   flex-direction: column;
   align-items: flex-start;
   gap: 20px;

@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import * as _ from '@/applications/utility/emailCheck/style.ts';
 import Logo from '@/assets/windeath44.svg';
-import Choten from '@/assets/profile/choten.svg';
 import Inputs from '@/applications/components/inputs';
 import { useChangeTemporaryKey } from '@/api/auth/changetemporaryKey.ts';
 import MemorialBtn from '@/applications/components/memorialBtn';
@@ -24,9 +23,18 @@ const EmailChack = ({ changeToLogIn, changeToAuth }: Props) => {
   const checkEmail = async (e: React.MouseEvent<HTMLButtonElement>) => {
     if (email.length === 0) {
       setAlert?.(
-        Choten,
         <>
-          이메일이 잘못되었습니다.
+          이메일을 입력해주세요.
+        </>,
+        () => {
+          taskTransform?.('경고', '');
+        },
+      );
+      return;
+    }if (!email.includes('@')){
+      setAlert?.(
+        <>
+          이메일 형식이 잘못되었습니다.
           <br />
           다시 입력해 주세요.
         </>,
@@ -46,7 +54,6 @@ const EmailChack = ({ changeToLogIn, changeToAuth }: Props) => {
         },
         onError: () => {
           setAlert?.(
-            Choten,
             <>
               이메일 전송에 실패했습니다.
               <br />
@@ -84,6 +91,7 @@ const EmailChack = ({ changeToLogIn, changeToAuth }: Props) => {
             setValue={setEmail}
             type={'text'}
             flex={true}
+            placeHold={"example@email.com"}
           />
         </_.tempInputsStyle>
         <_.tempButtonsStyle>

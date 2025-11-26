@@ -1,8 +1,6 @@
 import { useEffect } from "react";
 import * as _ from "./style.ts"
 import {setCursorImage,CURSOR_IMAGES} from '@/lib/setCursorImg'
-import { useAtomValue } from 'jotai';
-import { isNotificationWindow3OpenAtom } from '@/atoms/notificationPosition';
 import { usegetUserNameByLikeCount } from '@/api/notification/getUserNameByLikeCount';
 
 interface Today_Deceased{
@@ -12,19 +10,16 @@ interface Today_Deceased{
 
 const mournerWindow = ({window,setWindow}:Today_Deceased) => {
 
-// 다른 알림창 상태 확인하여 위치 조정
-const isNotificationWindow3Open = useAtomValue(isNotificationWindow3OpenAtom);
-
 // API 호출: 오늘의 조문객 데이터 조회 (오늘 하루 좋아요를 가장 많이 받은 유저)
 const { data: userData, isLoading, isError } = usegetUserNameByLikeCount();
 
     useEffect(() => {
         setWindow({
             ...window,
-            top: isNotificationWindow3Open ? 414 : 218,
+            top: 126,
             left: 885
         });
-    }, [isNotificationWindow3Open])
+    }, [])
 
     // 오늘의 조문객 텍스트 생성 (유저 이름만 표시)
     const getUserText = () => {

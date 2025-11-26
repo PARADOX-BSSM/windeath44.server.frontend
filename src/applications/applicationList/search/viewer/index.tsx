@@ -5,8 +5,11 @@ import { taskTransformerAtom } from '@/atoms/taskTransformer';
 import { useAtom, useAtomValue } from 'jotai';
 // import { useEffect } from 'react';
 import { memorialIdAtom } from '@/atoms/memorialManager.ts';
+import MemorialObject from '@/applications/components/memorialObject';
+import Loading from '@/applications/components/loading';
 
 interface ViewerProps {
+  isMemorialLoading?: boolean;
   characters: any[];
   memorials: any[];
   stack?: any[];
@@ -15,7 +18,15 @@ interface ViewerProps {
   top?: any;
 }
 
-const Viewer = ({ characters, memorials, stack, push, pop, top }: ViewerProps) => {
+const Viewer = ({
+  isMemorialLoading,
+  characters,
+  memorials,
+  stack,
+  push,
+  pop,
+  top,
+}: ViewerProps) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
   const [memorialId, setMemorialId] = useAtom(memorialIdAtom);
 
@@ -28,39 +39,51 @@ const Viewer = ({ characters, memorials, stack, push, pop, top }: ViewerProps) =
       <_.viewer>
         <_.Shadow>
           <_.inputs>
-            {characters?.map((character: any) => {
-              const relatedMemorials =
-                memorials?.filter((memorial) => memorial.characterId === character.characterId) ??
-                [];
+            <_.List>
+              {isMemorialLoading ? (
+                <Loading text="추모관 목록을 불러오는 중..." imageSize="100px" />
+              ) : (
+                characters?.map((character: any) => {
+                  const relatedMemorials =
+                    memorials?.filter(
+                      (memorial) => memorial.characterId === character.characterId,
+                    ) ?? [];
 
-              // console.log('Character:', character.name, 'Related memorials:', relatedMemorials);
+                  // console.log('Character:', character.name, 'Related memorials:', relatedMemorials);
 
-              return (
-                <MemorialWithIcon
-                  key={character.characterId}
-                  icon={myComputer}
-                  name={character.name}
-                  onDoubleClick={() => {
-                    const characterId = character.characterId;
-                    let targetMemorialId = memorialId;
+                  if (relatedMemorials.length > 0) {
+                    return (
+                      <MemorialObject
+                        key={character.characterId}
+                        icon={character.imageUrl || ''}
+                        name={character.name}
+                        animeId={character.animeId}
+                        onDoubleClick={() => {
+                          const characterId = character.characterId;
+                          let targetMemorialId = relatedMemorials[0].memorialId;
 
-                    if (relatedMemorials.length > 0) {
-                      targetMemorialId = relatedMemorials[0].memorialId;
-                      setMemorialId(targetMemorialId);
-                    }
+                          // if (relatedMemorials.length > 0) {
+                          //   targetMemorialId = relatedMemorials[0].memorialId;
+                          //   setMemorialId(targetMemorialId);
+                          // }
 
-                    taskTransform?.('', '추모관 뷰어', {
-                      memorialId: targetMemorialId,
-                      characterId: characterId,
-                      stack: stack,
-                      push: push,
-                      pop: pop,
-                      top: top,
-                    });
-                  }}
-                />
-              );
-            })}
+                          taskTransform?.('', '추모관 뷰어', {
+                            memorialId: targetMemorialId,
+                            characterId: characterId,
+                            stack: stack,
+                            push: push,
+                            pop: pop,
+                            top: top,
+                          });
+                        }}
+                      />
+                    );
+                  } else {
+                    return null;
+                  }
+                })
+              )}
+            </_.List>
           </_.inputs>
         </_.Shadow>
       </_.viewer>

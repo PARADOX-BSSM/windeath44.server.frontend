@@ -1,3 +1,5 @@
+import type deathType from './deathType';
+
 export interface InputPortageType {
   name: string;
   deathReason: deathType;
@@ -8,6 +10,7 @@ export interface InputPortageType {
   age: number;
   profileImage: string;
   phrase: string;
+  causeOfDeathDetails: string;
 }
 
 export interface InputContentType {

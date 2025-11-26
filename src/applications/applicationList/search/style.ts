@@ -30,6 +30,30 @@ export const search_task = styled.div<{ isColumn: boolean }>`
   gap: ${({ isColumn }) => (isColumn ? '10px' : '10px')};
 `;
 
+export const PagingContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1; /* 부모의 남는 공간을 채움 (fill) */
+  box-sizing: border-box;
+  overflow: hidden;
+`;
+
+export const Paging = styled.div`
+  display: flex;
+  width: 100%;
+  height: fit-content;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+`;
+
+export const PagingGap = styled.p`
+  font-size: 16px;
+  color: #7c547b;
+  user-select: none;
+`;
+
 export const object = styled.div`
   border-width: 1px 0 0 1px;
   flex: 0 0 auto;

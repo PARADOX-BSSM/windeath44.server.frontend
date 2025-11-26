@@ -5,11 +5,22 @@ import { useEffect, useState } from 'react';
 import { dummyQuestion } from './data';
 import { useAddWordSet } from '@/api/chatbot/addChatBotWordSet';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
+import { useGetChatBotQuery } from '@/api/chatbot/getChatBot';
+import { useAtomValue } from 'jotai';
+import { alerterAtom } from '@/atoms/alerter';
+import { taskTransformerAtom } from '@/atoms/taskTransformer';
 
-const TeachingChatBot = () => {
+interface TeachingChatBotProps {
+  chatbotId?: number;
+}
+
+const TeachingChatBot = ({ chatbotId = 1 }: TeachingChatBotProps) => {
   const [inputValue, setInputValue] = useState<string>('');
   const [question, setQuestion] = useState<string>('');
-  const [character] = useState<string>('호시노 아이');
+  const chatBotQuery = useGetChatBotQuery({ chatbot_id: chatbotId });
+  const character = chatBotQuery.data?.data?.name || '호시노 아이';
+  const setAlert = useAtomValue(alerterAtom);
+  const taskTransform = useAtomValue(taskTransformerAtom);
 
   const addWordSetMutation = useAddWordSet();
   const randomQuestion = (): number => {
@@ -30,17 +41,19 @@ const TeachingChatBot = () => {
     e.preventDefault();
     addWordSetMutation.mutate(
       {
-        characterId: 1,
+        characterId: chatbotId,
         userId: '1234',
         question: question,
         answer: inputValue,
       },
       {
-        onSuccess: (response) => {
+        onSuccess: () => {
           setInputValue('');
           const random = randomQuestion();
           setQuestion(dummyQuestion[random]);
-// console.log(response);
+          setAlert?.(<>캐릭터의 대사 한마디에 당신의 생명을 불어넣었습니다.</>, () => {
+            taskTransform?.('경고', '');
+          });
         },
       },
     );
@@ -51,7 +64,9 @@ const TeachingChatBot = () => {
       <_.TopContainer>
         <_.TopInnerFirst>
           <_.TopInnerFirstBox>
-            <_.TopInnerFirstP>'{character}’가 되어 대답해줘!</_.TopInnerFirstP>
+            <_.TopInnerFirstP>
+              {chatBotQuery.isLoading ? '로딩 중...' : `'${character}'가 되어 대답해줘!`}
+            </_.TopInnerFirstP>
           </_.TopInnerFirstBox>
           <_.TopInnerFirstImg src={seori} />
         </_.TopInnerFirst>

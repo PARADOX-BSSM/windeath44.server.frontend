@@ -9,18 +9,12 @@ export const useTaskSearchFunction = () => {
 
   const Apps = useApps();
 
-  let foundTask = Apps[0];
-
   const taskSearch = (i_want_to_find_it: string, props?: any) => {
     if (!i_want_to_find_it) return null;
 
-    foundTask = Apps.filter((app) => {
-      return app.name === i_want_to_find_it;
-    })[0];
+    const foundTask = Apps.find((app) => app.name === i_want_to_find_it);
 
     if (!foundTask) return null;
-
-    // console.log(1, i_want_to_find_it, foundTask);
 
     const original = foundTask.component;
     const internal = original.props.children as React.ReactElement;
@@ -29,17 +23,21 @@ export const useTaskSearchFunction = () => {
     // 기존 props를 유지하고 새로운 props를 병합
     const existingProps = internal.props || {};
 
-    foundTask.component = (
-      <Suspense fallback={null}>
-        {React.createElement(type, {
-          ...existingProps,
-          ...(props ?? {}),
-          __key: Math.random(),
-        })}
-      </Suspense>
-    );
+    const newTask = {
+      ...foundTask,
+      instanceId: `${foundTask.name}-${Date.now()}-${Math.random()}`,
+      component: (
+        <Suspense fallback={null}>
+          {React.createElement(type, {
+            ...existingProps,
+            ...(props ?? {}),
+            __key: Math.random(),
+          })}
+        </Suspense>
+      ),
+    };
 
-    return foundTask;
+    return newTask;
   };
 
   useEffect(() => {
