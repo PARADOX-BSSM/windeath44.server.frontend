@@ -358,7 +358,17 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
                       alt={contributor.alt}
                     />
                     {index === 0 && hoveredContributor && (
-                      <_.ContributorCard show={true}>
+                      <_.ContributorCard
+                        show={true}
+                        onMouseEnter={() => {
+                          setHoveredContributor(hoveredContributor);
+                          setCursorImage(CURSOR_IMAGES.default);
+                        }}
+                        onMouseLeave={() => {
+                          setHoveredContributor(null);
+                          setCursorImage(CURSOR_IMAGES.default);
+                        }}
+                      >
                         <_.ContributorCardUserId>@{hoveredContributor.userId}</_.ContributorCardUserId>
                         {hoveredContributor.wordsets.length > 0 ? (
                           hoveredContributor.wordsets.map((wordset, index) => (
