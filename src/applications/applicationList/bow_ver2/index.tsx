@@ -30,6 +30,7 @@ const NewBow = ({ memorialId }: bowProps) => {
   const [remainClick, setRemainClick] = useState<number>(2);
   const [isInitialLoad, setIsInitialLoad] = useState<boolean>(true);
   const [showBowComplete, setShowBowComplete] = useState<boolean>(false);
+  const [cachedToken, setCachedToken] = useState<number>(0);
   const mutationMemorialGet = useMemorialGet(setMemorialData);
   const mutationGetCharacter = useGetCharacter(setCharacterData);
   const mutationMemorialChiefs = useMemorialChiefBows(setBowData, memorialId);
@@ -44,6 +45,13 @@ const NewBow = ({ memorialId }: bowProps) => {
   useEffect(() => {
     getUser();
   }, [getUser]);
+
+  // userData 변경 시 토큰 캐시 업데이트
+  useEffect(() => {
+    if (userData?.data?.remainToken !== undefined && userData?.data?.remainToken !== null) {
+      setCachedToken(userData.data.remainToken);
+    }
+  }, [userData]);
 
   // 카운트다운 타이머
   useEffect(() => {
@@ -294,6 +302,8 @@ const NewBow = ({ memorialId }: bowProps) => {
         });
         // bow 상태 다시 확인
         checkBowStatus();
+        // 사용자 토큰 정보 갱신
+        getUser();
       },
     });
   };
@@ -316,6 +326,10 @@ const NewBow = ({ memorialId }: bowProps) => {
   const userMourner =
     userRank !== undefined && userRank !== -1 && bowData ? bowData[userRank] : null;
 
+  // 사용자 정보 (userData에서 가져오기)
+  const userProfile = userData?.data?.profile;
+  const userName = userData?.data?.name || '나';
+
   return (
     <_.Container>
       <_.MainContent>
@@ -333,7 +347,7 @@ const NewBow = ({ memorialId }: bowProps) => {
 
             <_.InfoBox>
               <_.InfoLabel>내 보유 토큰:</_.InfoLabel>
-              <_.InfoValue>{userData?.data?.remainToken || 0}</_.InfoValue>
+              <_.InfoValue>{cachedToken}</_.InfoValue>
             </_.InfoBox>
           </_.TopSection>
 
@@ -364,29 +378,29 @@ const NewBow = ({ memorialId }: bowProps) => {
               </_.MournersList>
             </_.MournersListContainer>
 
-            {userMourner && (
-              <_.MournersListContainer>
-                <_.MournersList>
-                  <_.MournerItem>
-                    <_.MournerRankGroup>
-                      <_.MournerRank>#{userRank !== undefined ? userRank + 1 : 0}</_.MournerRank>
-                      {userMourner.profileUrl && (
-                        <_.MournerAvatar
-                          src={userMourner.profileUrl}
-                          alt="profile"
-                        />
-                      )}
-                    </_.MournerRankGroup>
-                    <_.MournerInfo>
-                      <_.MournerNameRow>
-                        <_.MournerName>나</_.MournerName>
-                      </_.MournerNameRow>
-                      <_.MournerCount>{userMourner.bowCount}회</_.MournerCount>
-                    </_.MournerInfo>
-                  </_.MournerItem>
-                </_.MournersList>
-              </_.MournersListContainer>
-            )}
+            <_.MournersListContainer>
+              <_.MournersList>
+                <_.MournerItem>
+                  <_.MournerRankGroup>
+                    <_.MournerRank>
+                      #{userRank !== undefined && userRank !== -1 ? userRank + 1 : 0}
+                    </_.MournerRank>
+                    {userProfile && (
+                      <_.MournerAvatar
+                        src={userProfile}
+                        alt="profile"
+                      />
+                    )}
+                  </_.MournerRankGroup>
+                  <_.MournerInfo>
+                    <_.MournerNameRow>
+                      <_.MournerName>{userName}</_.MournerName>
+                    </_.MournerNameRow>
+                    <_.MournerCount>{userMourner?.bowCount || 0}회</_.MournerCount>
+                  </_.MournerInfo>
+                </_.MournerItem>
+              </_.MournersList>
+            </_.MournersListContainer>
           </_.MournersWrapper>
         </_.LeftPanel>
 

@@ -120,8 +120,8 @@ export const MournerItem = styled.div`
 export const MournerRankGroup = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  width: 72px;
+  gap: 8px;
+  min-width: 72px;
 `;
 
 export const MournerRank = styled.span`
@@ -129,6 +129,8 @@ export const MournerRank = styled.span`
   font-weight: bold;
   color: var(--stroke);
   font-family: 'Galmuri11', sans-serif;
+  flex-shrink: 0;
+  min-width: 32px;
 `;
 
 export const MournerAvatar = styled.img`
@@ -154,7 +156,7 @@ export const MournerNameRow = styled.div`
 export const MournerName = styled.span`
   font-size: 14px;
   color: var(--primary-black);
-  white-space: nowrap;
+  white-space: wrap;
   overflow: hidden;
   text-overflow: ellipsis;
 `;
