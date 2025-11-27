@@ -1,4 +1,4 @@
-import { useAtomValue } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 import MainInfo from '../judgementMainInfo';
 import SubInfo from '../judgementSubInfo';
 import * as _ from './style';
@@ -8,6 +8,8 @@ import { useEffect, useState } from 'react';
 import { useGetCharacter } from '@/api/anime/getCharacter';
 import type { CharacterData } from '@/api/anime/getCharacter';
 import { useGetAnimeQuery } from '@/api/anime/getAnime';
+import Loading from '@/applications/components/loading';
+import { judgementLoadingCount } from './load_state';
 
 interface JudgementObjProps {
   judgement_id: number;
@@ -56,19 +58,27 @@ const Judgement_Object = ({
     state: '',
     deathOfDay: '',
   });
+  const setIsJudgeLoading = useSetAtom(judgementLoadingCount);
 
   const mutationGetCharacter = useGetCharacter(setCharacterData);
   useEffect(() => {
+    setIsJudgeLoading((prev) => prev + 1);
+
     mutationGetCharacter.mutate(c_id, {
-      onSuccess: () => {},
+      onSuccess: () => {
+        setIsJudgeLoading((prev) => prev - 1);
+        console.log('뼤ㅃ');
+      },
       onError: () => {
         console.log('캐릭터 조회 실패');
+        setIsJudgeLoading((prev) => prev - 1);
       },
     });
   }, []);
+
   const {
     data: animeData,
-    isLoading,
+    isLoading: loading,
     isError,
   } = useGetAnimeQuery(characterData.animeId, !!characterData?.animeId);
 
