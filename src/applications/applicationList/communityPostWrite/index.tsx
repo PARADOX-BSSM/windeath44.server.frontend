@@ -149,48 +149,51 @@ const CommunityPostWrite: React.FC<postData> = ({
     }
   };
   const postDraft = () => {
-    if (title || body) {
-      if (!currentUserId) {
-        setAlert?.(
-          <>
-            유저 정보를 찾아올 수 없습니다.
-            <br />
-            잠시 후 다시 시도해주세요.
-          </>,
-          () => {
-            taskTransform?.('경고', '');
-          },
-        );
-        return;
-      }
+    if (!currentUserId) {
+      setAlert?.(
+        <>
+          유저 정보를 찾아올 수 없습니다.
+          <br />
+          잠시 후 다시 시도해주세요.
+        </>,
+        () => {
+          taskTransform?.('경고', '');
+        },
+      );
+      return;
+    }
 
-      setAlert?.(<>임시저장 하시겠습니까?</>, () => {
-        postCreateMutation.mutate(
-          {
-            user_id: currentUserId,
-            title: title,
-            body: body,
-            status: 'DRAFT',
+    setAlert?.(<>임시저장 하시겠습니까?</>, () => {
+      postCreateMutation.mutate(
+        {
+          user_id: currentUserId,
+          title: title,
+          body: body,
+          status: 'DRAFT',
+        },
+        {
+          onSuccess: () => {
+            console.log('게시글 임시저장 완료');
+            setTitle('');
+            setBody('');
+            refetchPosts?.();
+            if (pop) {
+              pop();
+            }
           },
-          {
-            onSuccess: () => {
-              console.log('게시글 임시저장 완료');
-              setTitle('');
-              setBody('');
-              refetchPosts?.();
-              if (pop) {
-                pop();
-              }
-            },
-            onError: () => {
-              setAlert?.(<>게시글이 작성되지 않았습니다.</>, () => {
-                taskTransform?.('경고', '');
-              });
-            },
+          onError: () => {
+            setAlert?.(<>게시글이 작성되지 않았습니다.</>, () => {
+              taskTransform?.('경고', '');
+            });
           },
-        );
-        taskTransform?.('경고', '');
-      });
+        },
+      );
+      taskTransform?.('경고', '');
+    });
+  };
+  const postDraftHandle = () => {
+    if (title || body) {
+      postDraft();
     } else {
       if (!currentUserId) {
         setAlert?.(
@@ -313,14 +316,17 @@ const CommunityPostWrite: React.FC<postData> = ({
           <CommunityBtn
             name="임시저장/불러오기"
             selected={loadPage}
-            onClick={postDraft}
+            onClick={postDraftHandle}
             type="menu"
           />
         )}
         <CommunityBtn
           name="취소"
           type="submit"
-          onClick={() => pop?.()}
+          onClick={() => {
+            if (title || body) postDraft();
+            else pop?.();
+          }}
         />
         <CommunityBtn
           name={postId ? '수정' : '게시'}

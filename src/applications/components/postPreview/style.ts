@@ -12,10 +12,13 @@ export const Main = styled.div`
   display: flex;
   align-items: flex-start;
   gap: 10px;
+  flex: 1;
+  min-width: 0;
 `;
 export const ProfileImg = styled.div<{ imgUrl: string }>`
   width: 45px;
   height: 45px;
+  flex-shrink: 0;
   background: #ffffff;
   background-image: url(${(props) => props.imgUrl});
   background-size: cover;
@@ -26,6 +29,8 @@ export const PostMain = styled.div`
   flex-direction: column;
   align-items: flex-start;
   gap: 10px;
+  flex: 1;
+  min-width: 0;
 `;
 export const PostInfo = styled.div`
   display: flex;
@@ -50,6 +55,8 @@ export const Content = styled.div`
   flex-direction: column;
   align-items: flex-start;
   gap: 2px;
+  width: 100%;
+  min-width: 0;
 
   color: #2e2e2e;
   font-family: Galmuri11;
@@ -60,9 +67,14 @@ export const Content = styled.div`
 `;
 export const PostTitle = styled.h3`
   font-weight: 400;
+  width: 100%;
+  word-break: break-word;
+  overflow-wrap: break-word;
 `;
 export const PostContent = styled.p`
   font-size: 14px;
+  width: 100%;
+  word-break: break-word;
   overflow-wrap: break-word;
 `;
 export const Datetime = styled.p`
@@ -92,6 +104,7 @@ export const Icon = styled.img<{ width: string; height: string }>`
 export const PostImg = styled.div<{ imgUrl: string }>`
   width: 110px;
   height: 110px;
+  flex-shrink: 0;
   background: #fff;
   background-image: url(${(props) => props.imgUrl});
   background-size: cover;
