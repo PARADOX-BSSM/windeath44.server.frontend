@@ -5,9 +5,11 @@ import FilterBlock from '@/applications/components/filterBlock';
 import MemorialBtn from '@/applications/components/memorialBtn';
 import Judgement_Object from '@/applications/components/judgementObject';
 import hosino from '@/assets/character/hosino.svg';
-import { useSetAtom } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { select_chat } from '@/applications/components/judgementChatObj/state_manager';
 import { useGetJudgementList } from '@/api/judgement/judgementList';
+import { judgementLoadingCount } from '@/applications/components/judgementObject/load_state';
+import Loading from '@/applications/components/loading';
 
 interface JudgementProps {
   stack: any[];
@@ -32,8 +34,12 @@ const Judgement = ({ stack, push, pop, top }: JudgementProps) => {
 
   const set_selected = useSetAtom(select_chat);
 
+  const judgementLoadCount = useAtomValue(judgementLoadingCount);
+
   useEffect(() => {
     set_selected(-1);
+    console.log('chrlrkqt');
+    console.log(judgementLoadCount);
   }, []);
 
   useEffect(() => {
@@ -71,8 +77,21 @@ const Judgement = ({ stack, push, pop, top }: JudgementProps) => {
     });
   }, [stack]);
 
+  /*if (judgementLoadCount) {
+    console.log(judgementLoadCount);
+    console.log('dkdkdkdkdkdkdkdkdkdkdkdk');
+    return <Loading />;
+  }*/
   return (
     <_.Container>
+      {judgementLoadCount !== 0 && (
+        <_.loadingBack>
+          <Loading
+            overlay={true}
+            text="데이터를 불러오는 중..."
+          />
+        </_.loadingBack>
+      )}
       <_.Top>
         <_.Top_Text>** 인기재판은 실시간으로 1시간 마다 갱신됩니다. **</_.Top_Text>
         <_.Search_div>

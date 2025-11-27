@@ -19,6 +19,7 @@ import { user as userEndpoint } from '@/config';
 import { getCookie } from '@/api/auth/cookie.ts';
 import { alerterAtom } from '@/atoms/alerter';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
+import Loading from '@/applications/components/loading/index.tsx';
 
 const sort = ['최신', '인기'];
 
@@ -49,6 +50,8 @@ const JudgementChat = ({ judgement_id }: judgementChatProps) => {
   const setAlert = useAtomValue(alerterAtom);
   const taskTransform = useAtomValue(taskTransformerAtom);
 
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     getUser();
   }, []);
@@ -60,6 +63,10 @@ const JudgementChat = ({ judgement_id }: judgementChatProps) => {
         {
           onSuccess: (data) => {
             setChatList(data.data);
+            setLoading(false);
+          },
+          onError: () => {
+            setLoading(false);
           },
         },
       );
@@ -69,6 +76,7 @@ const JudgementChat = ({ judgement_id }: judgementChatProps) => {
         {
           onSuccess: (data) => {
             setChatList(data.data);
+            setLoading(false);
           },
         },
       );
@@ -77,6 +85,7 @@ const JudgementChat = ({ judgement_id }: judgementChatProps) => {
 
   // 사용자 정보 가져오기 (community 방식)
   useEffect(() => {
+    setLoading(true);
     if (ChatList.length === 0) return;
 
     const userIds = new Set<string>();
@@ -105,6 +114,7 @@ const JudgementChat = ({ judgement_id }: judgementChatProps) => {
         },
       })
       .then((response) => {
+        setLoading(false);
         const users = response.data.data;
         const userMap: Record<string, { name: string; profile: string }> = {};
         users.forEach((user: any) => {
@@ -117,6 +127,7 @@ const JudgementChat = ({ judgement_id }: judgementChatProps) => {
       })
       .catch((error) => {
         console.error('사용자 정보 가져오기 실패:', error);
+        setLoading(false);
       });
   }, [ChatList]);
 
@@ -321,6 +332,10 @@ const JudgementChat = ({ judgement_id }: judgementChatProps) => {
   const [open, setOpen] = useState(false);
   const [choice, setChoice] = useState('최신');
   const selected = useAtomValue(select_chat);
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <_.Container>

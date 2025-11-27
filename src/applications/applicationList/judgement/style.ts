@@ -78,3 +78,11 @@ export const Sort = styled.div`
   font-family: Galmuri11;
   font-size: 12px;
 `;
+
+export const loadingBack = styled.div`
+  width: calc(100% - 36px);
+  height: 100%;
+  background-color: white;
+  position: absolute;
+  z-index: 999;
+`;

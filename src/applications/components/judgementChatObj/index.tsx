@@ -24,7 +24,7 @@ interface JudgementChatProps {
   updated_at?: Date;
 }
 
-/* text 30글짜 까지 허용 */
+/* text 30글자 까지 허용 */
 
 const JudgementChatObj = ({
   user_id,
