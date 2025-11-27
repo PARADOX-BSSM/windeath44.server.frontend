@@ -69,9 +69,11 @@ export const Content = styled.div`
 `;
 export const PostTitle = styled.h3`
   font-weight: 400;
+  overflow-wrap: break-word;
 `;
 export const PostContent = styled.div`
   font-size: 14px;
+  overflow-wrap: break-word;
 `;
 export const Datetime = styled.p`
   color: #999;

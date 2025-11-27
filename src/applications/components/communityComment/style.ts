@@ -109,6 +109,7 @@ export const PostContent = styled.p`
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+  overflow-wrap: break-word;
 `;
 export const Icons = styled.div`
   display: flex;

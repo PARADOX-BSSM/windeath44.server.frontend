@@ -5,6 +5,7 @@ import api from '../axiosInstance';
 
 interface postCommentLike {
   comment_id: number;
+  user_id: string;
 }
 const postCommentLike = async ({ comment_id, user_id }: postCommentLike) => {
   try {
@@ -13,7 +14,7 @@ const postCommentLike = async ({ comment_id, user_id }: postCommentLike) => {
       {},
       {
         headers: {
-          'user-id': 'user_id',
+          'user-id': user_id,
         },
       },
     );
