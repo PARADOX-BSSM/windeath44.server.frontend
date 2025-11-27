@@ -14,6 +14,7 @@ export const Main = styled.div`
   align-items: flex-start;
   gap: 10px;
   flex: 1;
+  min-width: 0;
 `;
 export const ProfileImg = styled.div<{ imgUrl: string }>`
   width: 45px;
@@ -29,6 +30,7 @@ export const PostMain = styled.div`
   align-items: flex-start;
   gap: 10px;
   flex: 1;
+  min-width: 0;
 `;
 export const PostHeader = styled.div`
   display: flex;
@@ -59,6 +61,8 @@ export const Content = styled.div`
   flex-direction: column;
   align-items: flex-start;
   gap: 2px;
+  width: 100%;
+  min-width: 0;
 
   color: #2e2e2e;
   font-family: Galmuri11;
@@ -69,10 +73,14 @@ export const Content = styled.div`
 `;
 export const PostTitle = styled.h3`
   font-weight: 400;
+  width: 100%;
+  word-break: break-word;
   overflow-wrap: break-word;
 `;
 export const PostContent = styled.div`
   font-size: 14px;
+  width: 100%;
+  word-break: break-word;
   overflow-wrap: break-word;
 `;
 export const Datetime = styled.p`
