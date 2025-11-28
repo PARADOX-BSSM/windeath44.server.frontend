@@ -50,7 +50,8 @@ const postListSearch = async ({
       data,
       {
         headers: {
-          user_id: user_id,
+          'user-id': user_id,
+          role: 'USER',
         },
       },
     );

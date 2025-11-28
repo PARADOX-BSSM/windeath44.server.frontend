@@ -216,7 +216,8 @@ const CommunityPostWrite: React.FC<postData> = ({
         },
         {
           onSuccess: (data) => {
-            setDraftPosts(data.data.posts);
+            const filteredPosts = data.data.posts.filter((post) => post.userId === currentUserId);
+            setDraftPosts(filteredPosts);
             setLoadPage(!loadPage);
           },
           onError: () => {
