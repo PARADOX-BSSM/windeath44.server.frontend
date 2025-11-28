@@ -7,7 +7,6 @@ import { useGetIntegratedCharactersOffsetQuery } from '@/api/anime/getCharacters
 import { fetchAnimesPage } from '@/api/anime/getAnimes';
 import { useGetMemorialsCharacterFilteredQuery } from '@/api/memorial/getMemorialsCharacterFiltered';
 import MemorialBtn from '@/applications/components/memorialBtn';
-import { set } from '@/applications/utility/signUp/style';
 
 type Character = { characterId: number; [k: string]: any };
 type AnimeItem = { animeId: number; [k: string]: any };
@@ -55,7 +54,7 @@ const Search = () => {
   // const [cursorId, setCursorId] = useState<number | undefined>(undefined);
   const [pageNumber, setPageNumber] = useState(1);
   const [maxPage, setMaxPage] = useState(1);
-  const [size, setSize] = useState(5);
+  const [size, setSize] = useState(7);
 
   // ------ 파라미터 정규화 ------
   const deathParam = useMemo(() => (fillDeath === '모두' ? undefined : fillDeath), [fillDeath]);

@@ -513,7 +513,7 @@ const Memorial = ({
         },
       })
       .then((response) => {
-        const users = response.data.data.data;
+        const users = response.data.data;
         const userMap: Record<string, { name: string; profile: string }> = {};
         users.forEach((user: any) => {
           userMap[user.userId] = {
@@ -692,7 +692,7 @@ const Memorial = ({
 
           <_.GotoBow
             onClick={() => {
-              taskTransform?.('', '절하기', { memorialId: memorialId });
+              taskTransform?.('', '절', { memorialId: memorialId });
             }}
           >
             절 하러가기

@@ -64,13 +64,21 @@ export const useMemorialChiefBows = (
       const userList = chiefIds.map((id) => id);
       // console.log('userList 데이터!!!:', userList);
       const usersRes: usersData = await getUserByList({ userList });
+
+      // 디버깅: usersRes 구조 확인
+      console.log('usersRes 전체:', usersRes);
+      console.log('usersRes.data:', usersRes?.data);
+
+      const userData = usersRes?.data || [];
       const merged = bowResults
         .filter((bow) => bow?.data) // null/undefined 필터링
         .map((bow) => {
-          const user = usersRes.data.find((u) => u.userId === bow.data.userId);
+          const user = userData.find((u) => u.userId === bow.data.userId);
           return {
             name: user ? user.name : 'Unknown',
             bowCount: bow.data.bowCount,
+            userId: bow.data.userId ? Number(bow.data.userId) : undefined,
+            profileUrl: user?.profile,
           };
         });
       // console.log('merged 결과:', merged);

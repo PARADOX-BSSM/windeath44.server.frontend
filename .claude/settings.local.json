@@ -14,7 +14,9 @@
       "mcp__apidog__read_project_oas_31b1m9",
       "mcp__apidog__refresh_project_oas_31b1m9",
       "Bash(xargs sed:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "mcp__figma-dev-mode-mcp-server__get_design_context",
+      "mcp__figma-dev-mode-mcp-server__get_screenshot"
     ],
     "deny": [],
     "ask": [],

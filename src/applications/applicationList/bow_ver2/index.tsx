@@ -1,29 +1,26 @@
-import * as _ from '@/applications/applicationList/bow/style.ts';
-import Table from '@/assets/bow/table.svg';
+import * as _ from '@/applications/applicationList/bow_ver2/style.ts';
 import { useEffect, useState } from 'react';
 import { useMemorialGet } from '@/api/memorial/memorialGet.ts';
 import { useGetCharacter, type CharacterData } from '@/api/anime/getCharacter.ts';
 import type { memorialData } from '@/api/memorial/memorialGet.ts';
-import Mourners from '@/applications/components/mourners';
 import { useAtomValue } from 'jotai';
 import { alerterAtom } from '@/atoms/alerter';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
 import { getCookie } from '@/api/auth/cookie.ts';
-import { useGetBowByUserId, useMemorialBow, useGetBowStatus } from '@/api/memorial/memorialBow.ts';
+import { useMemorialBow, useGetBowStatus, useGetBowByUserId } from '@/api/memorial/memorialBow.ts';
 import { useGetUserMutation } from '@/api/user/getUser.ts';
 import Loading from '@/applications/components/loading';
 import { useMemorialChiefBows } from '@/api/memorial/getMemorialChiefs.ts';
 import type { BowData } from '@/modules/interface.ts';
 import ribbon from '@/assets/memorial_ribbon.svg';
+import table from '@/assets/bow/table.svg';
 import MemorialBtn from '@/applications/components/memorialBtn';
-import Inputs from '@/applications/components/inputs';
 
 interface bowProps {
   memorialId: number;
 }
 
-const Bow = ({ memorialId }: bowProps) => {
-  const [totalBow, setTotalBow] = useState<number | null>(null);
+const NewBow = ({ memorialId }: bowProps) => {
   const [memorialData, setMemorialData] = useState<memorialData>(null);
   const [characterData, setCharacterData] = useState<CharacterData>(null);
   const [bowData, setBowData] = useState<BowData[]>();
@@ -32,6 +29,12 @@ const Bow = ({ memorialId }: bowProps) => {
   const [remainingTime, setRemainingTime] = useState<string>('00:00:00');
   const [remainClick, setRemainClick] = useState<number>(2);
   const [isInitialLoad, setIsInitialLoad] = useState<boolean>(true);
+  const [showBowComplete, setShowBowComplete] = useState<boolean>(false);
+  const [cachedToken, setCachedToken] = useState<number>(0);
+  const [userBowInfo, setUserBowInfo] = useState<{
+    bowCount: number;
+    currentBowRanking: number;
+  } | null>(null);
   const mutationMemorialGet = useMemorialGet(setMemorialData);
   const mutationGetCharacter = useGetCharacter(setCharacterData);
   const mutationMemorialChiefs = useMemorialChiefBows(setBowData, memorialId);
@@ -42,10 +45,18 @@ const Bow = ({ memorialId }: bowProps) => {
   const token = getCookie('access_token');
   const memorialBowMutation = useMemorialBow();
   const bowStatusMutation = useGetBowStatus();
+  const getBowByUserIdMutation = useGetBowByUserId();
 
   useEffect(() => {
     getUser();
   }, [getUser]);
+
+  // userData 변경 시 토큰 캐시 업데이트
+  useEffect(() => {
+    if (userData?.data?.remainToken !== undefined && userData?.data?.remainToken !== null) {
+      setCachedToken(userData.data.remainToken);
+    }
+  }, [userData]);
 
   // 카운트다운 타이머
   useEffect(() => {
@@ -180,10 +191,26 @@ const Bow = ({ memorialId }: bowProps) => {
     });
   }, [memorialId]);
 
-  // userId가 로드되면 bow 상태 확인
+  // userId가 로드되면 bow 상태 및 사용자 bow 정보 확인
   useEffect(() => {
     if (userId && userId !== 'user') {
       checkBowStatus();
+      // 사용자의 bow 정보 가져오기
+      getBowByUserIdMutation.mutate(
+        { userId, memorialId },
+        {
+          onSuccess: (response: any) => {
+            const data = response.data || response;
+            setUserBowInfo({
+              bowCount: data.bowCount || 0,
+              currentBowRanking: data.curruntBowRanking || 0,
+            });
+          },
+          onError: (error) => {
+            console.error('Failed to get user bow info:', error);
+          },
+        },
+      );
     }
   }, [userId, memorialId]);
 
@@ -254,8 +281,14 @@ const Bow = ({ memorialId }: bowProps) => {
       return;
     }
 
-    // remainClick이 1이면 즉시 UI 업데이트하고 백그라운드에서 API 호출
+    // remainClick이 1이면 즉시 UI 업데이트하고 애니메이션 표시 후 API 호출
     setRemainClick(0);
+    setShowBowComplete(true);
+
+    // 애니메이션이 끝나는 시점(1.5초 후)에 API 호출
+    setTimeout(() => {
+      setShowBowComplete(false);
+    }, 1500);
 
     memorialBowMutation.mutate(memorialId, {
       onError: (error) => {
@@ -267,7 +300,7 @@ const Bow = ({ memorialId }: bowProps) => {
           const [hours, minutes] = timeStr.split(':');
           return `${Number(hours)}시 ${Number(minutes)}분`;
         };
-        (setAlert ?? userId)(
+        setAlert?.(
           <>
             아직 절을 할 수 없습니다
             <br />
@@ -290,6 +323,23 @@ const Bow = ({ memorialId }: bowProps) => {
         });
         // bow 상태 다시 확인
         checkBowStatus();
+        // 사용자 토큰 정보 갱신
+        getUser();
+        // 사용자 bow 정보 갱신
+        if (userId && userId !== 'user') {
+          getBowByUserIdMutation.mutate(
+            { userId, memorialId },
+            {
+              onSuccess: (response: any) => {
+                const data = response.data || response;
+                setUserBowInfo({
+                  bowCount: data.bowCount || 0,
+                  currentBowRanking: data.curruntBowRanking || 0,
+                });
+              },
+            },
+          );
+        }
       },
     });
   };
@@ -307,57 +357,120 @@ const Bow = ({ memorialId }: bowProps) => {
       />
     );
   }
+  // 사용자 정보 (userData에서 가져오기)
+  const userProfile = userData?.data?.profile;
+  const userName = userData?.data?.name || '나';
+
   return (
-    <_.main>
-      <_.nbow>
-        <div>절하고 간 사람 : {memorialData?.bowCount ? memorialData.bowCount : '0'}명</div>
-      </_.nbow>
-      <_.place>
-        <_.imgs>
-          <_.PictureContainer>
-            <_.Ribbon
-              src={ribbon}
-              alt="ribbon"
+    <_.Container>
+      <_.MainContent>
+        <_.LeftPanel>
+          <_.TopSection>
+            <_.InfoBox>
+              <_.InfoLabel>절 한 사람:</_.InfoLabel>
+              <_.InfoValue>{memorialData?.bowCount || 0}명</_.InfoValue>
+            </_.InfoBox>
+
+            <_.InfoBox>
+              <_.InfoLabel>다음 절 까지:</_.InfoLabel>
+              <_.InfoValue>{canBow ? '00:00' : remainingTime}</_.InfoValue>
+            </_.InfoBox>
+
+            <_.InfoBox>
+              <_.InfoLabel>내 보유 토큰:</_.InfoLabel>
+              <_.InfoValue>{cachedToken}</_.InfoValue>
+            </_.InfoBox>
+          </_.TopSection>
+
+          <_.MournersWrapper>
+            <_.MournersTitle>조문객 명단</_.MournersTitle>
+            <_.MournersListContainer>
+              <_.MournersList>
+                {bowData?.slice(0, 3).map((mourner, index) => (
+                  <_.MournerItem key={index}>
+                    <_.MournerRankGroup>
+                      <_.MournerRank>#{index + 1}</_.MournerRank>
+                      {mourner.profileUrl && (
+                        <_.MournerAvatar
+                          src={mourner.profileUrl}
+                          alt="profile"
+                        />
+                      )}
+                    </_.MournerRankGroup>
+                    <_.MournerInfo>
+                      <_.MournerNameRow>
+                        <_.MournerName>{mourner.name || 'user'}</_.MournerName>
+                        <_.MournerBadge>(상주)</_.MournerBadge>
+                      </_.MournerNameRow>
+                      <_.MournerCount>{mourner.bowCount}회</_.MournerCount>
+                    </_.MournerInfo>
+                  </_.MournerItem>
+                ))}
+              </_.MournersList>
+            </_.MournersListContainer>
+
+            <_.MournersListContainer>
+              <_.MournersList>
+                <_.MournerItem>
+                  <_.MournerRankGroup>
+                    <_.MournerRank>#{userBowInfo?.currentBowRanking || 0}</_.MournerRank>
+                    {userProfile && (
+                      <_.MournerAvatar
+                        src={userProfile}
+                        alt="profile"
+                      />
+                    )}
+                  </_.MournerRankGroup>
+                  <_.MournerInfo>
+                    <_.MournerNameRow>
+                      <_.MournerName>{userName}</_.MournerName>
+                    </_.MournerNameRow>
+                    <_.MournerCount>{userBowInfo?.bowCount || 0}회</_.MournerCount>
+                  </_.MournerInfo>
+                </_.MournerItem>
+              </_.MournersList>
+            </_.MournersListContainer>
+          </_.MournersWrapper>
+        </_.LeftPanel>
+
+        <_.RightPanel>
+          <_.MemorialArea>
+            <_.PictureContainer>
+              <_.Ribbon
+                src={ribbon}
+                alt="ribbon"
+              />
+              <_.CharacterImage
+                src={characterData.imageUrl}
+                alt={characterData.name || '캐릭터'}
+              />
+            </_.PictureContainer>
+            <_.TableImage
+              src={table}
+              alt="table"
             />
-            <_.character
-              src={characterData.imageUrl}
-              alt={'캐릭터'}
-            />
-          </_.PictureContainer>
-          <_.table
-            src={Table}
-            alt={'테이블'}
-          />
-        </_.imgs>
-        <_.bbow>
-          <MemorialBtn
-            key={'절'}
-            name={'절'}
-            active={canBow && remainClick > 0}
-            onClick={addBow}
-            type="submit"
-            fontSize="1.2rem"
-            width="20%"
-            height="2.8rem"
-          />
-          <_.BowStatus>
-            <Inputs
-              width="100px"
-              fontSize="16px"
-              flex={true}
-              value={remainingTime}
-              type="text"
-              disabled={false}
-              setValue={() => {}}
-            />
-            <_.BowCount>
-              {remainClick === 0 || !canBow ? '절을 이미 했습니다' : `${remainClick}번 남았습니다.`}
-            </_.BowCount>
-          </_.BowStatus>
-        </_.bbow>
-      </_.place>
-      <Mourners bowData={bowData} />
-    </_.main>
+          </_.MemorialArea>
+
+          <_.BowButtonSection>
+            <_.BowButtonWrapper>
+              <MemorialBtn
+                key={'절'}
+                name={`절(${remainClick === 0 || !canBow ? '0' : remainClick}회 남음)`}
+                active={canBow && remainClick > 0}
+                onClick={addBow}
+                type="submit"
+                fontSize="32px"
+                width="300px"
+                height="70px"
+              />
+              {showBowComplete && (
+                <_.BowCompleteText>성공적으로 캐릭터에게 절을 했습니다!</_.BowCompleteText>
+              )}
+            </_.BowButtonWrapper>
+          </_.BowButtonSection>
+        </_.RightPanel>
+      </_.MainContent>
+    </_.Container>
   );
 };
-export default Bow;
+export default NewBow;
