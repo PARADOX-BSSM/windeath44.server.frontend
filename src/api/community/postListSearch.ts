@@ -10,6 +10,7 @@ interface postListSearchInterface {
   characterId?: number;
   status?: string;
   mod?: string;
+  role?: string;
 }
 interface postListSearchResponse {
   message: string;
@@ -36,6 +37,7 @@ const postListSearch = async ({
   characterId,
   status,
   mod,
+  role,
 }: postListSearchInterface) => {
   const data = {
     title: title,
@@ -51,7 +53,7 @@ const postListSearch = async ({
       {
         headers: {
           'user-id': user_id,
-          role: 'USER',
+          role: role,
         },
       },
     );

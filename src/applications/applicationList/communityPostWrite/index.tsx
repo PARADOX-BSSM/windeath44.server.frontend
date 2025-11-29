@@ -213,6 +213,7 @@ const CommunityPostWrite: React.FC<postData> = ({
         {
           user_id: currentUserId,
           status: 'DRAFT',
+          role: currentUserRole,
         },
         {
           onSuccess: (data) => {
