@@ -9,7 +9,7 @@ interface postListSearchInterface {
   isBlind?: boolean;
   characterId?: number;
   status?: string;
-  mod?: string;
+  mode?: string;
   role?: string;
 }
 interface postListSearchResponse {
@@ -36,7 +36,7 @@ const postListSearch = async ({
   isBlind,
   characterId,
   status,
-  mod,
+  mode,
   role,
 }: postListSearchInterface) => {
   const data = {
@@ -44,7 +44,7 @@ const postListSearch = async ({
     is_blind: isBlind,
     character_id: characterId,
     status: status,
-    mod: mod,
+    mode: mode,
   };
   try {
     const response: AxiosResponse<postListSearchResponse> = await api.post(

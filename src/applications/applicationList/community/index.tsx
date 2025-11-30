@@ -142,13 +142,13 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
   const taskSearch = useAtomValue(taskSearchAtom);
   const setAlert = useAtomValue(alerterAtom);
 
-  const mod: string[] = [sortOption.normal, sortOption.latest, sortOption.popular];
-  const modTogle = (value: any) => {
+  const mode: string[] = [sortOption.normal, sortOption.latest, sortOption.popular];
+  const modeTogle = (value: any) => {
     setSort(value);
     setIsOpen(false);
 
     postListSearchMutation.mutate(
-      { status: 'PUBLISHED', mod: sortMap[value] },
+      { status: 'PUBLISHED', mode: sortMap[value] },
       {
         onError: () => {
           setAlert?.(<>게시글이 제대로 불러와지지 않았습니다.</>, () =>
@@ -199,7 +199,7 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
     }
 
     postListSearchMutation.mutate(
-      { status: 'PUBLISHED', title: search, mod: sortMap[sort] },
+      { status: 'PUBLISHED', title: search, mode: sortMap[sort] },
       {
         onSuccess: () => {
           console.log('검색 완료');
@@ -249,8 +249,8 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
               option={sort}
               isOpen={isOpen}
               onClick={() => setIsOpen(!isOpen)}
-              list={mod}
-              onChange={modTogle}
+              list={mode}
+              onChange={modeTogle}
             />
           </_.sortInput>
         </_.Header>
