@@ -148,7 +148,7 @@ const CommunityPostWrite: React.FC<postData> = ({
       );
     }
   };
-  const postDraft = () => {
+  const postDraftSave = () => {
     if (!currentUserId) {
       setAlert?.(
         <>
@@ -162,7 +162,19 @@ const CommunityPostWrite: React.FC<postData> = ({
       );
       return;
     }
-
+    if (!title || !body) {
+      setAlert?.(
+        <>
+          입력된 내용이 없습니다.
+          <br />
+          내용을 입력한 후 다시 시도해주세요.
+        </>,
+        () => {
+          taskTransform?.('경고', '');
+        },
+      );
+      return;
+    }
     setAlert?.(<>임시저장 하시겠습니까?</>, () => {
       postCreateMutation.mutate(
         {
@@ -192,50 +204,46 @@ const CommunityPostWrite: React.FC<postData> = ({
     });
   };
   const postDraftHandle = () => {
-    if (title || body) {
-      postDraft();
-    } else {
-      if (!currentUserId) {
-        setAlert?.(
-          <>
-            유저 정보를 찾아올 수 없습니다.
-            <br />
-            잠시 후 다시 시도해주세요.
-          </>,
-          () => {
-            taskTransform?.('경고', '');
-          },
-        );
-        return;
-      }
-
-      postListSearchMutation.mutate(
-        {
-          user_id: currentUserId,
-          status: 'DRAFT',
-          role: currentUserRole,
-        },
-        {
-          onSuccess: (data) => {
-            const filteredPosts = data.data.posts.filter((post) => post.userId === currentUserId);
-            setDraftPosts(filteredPosts);
-            setLoadPage(!loadPage);
-          },
-          onError: () => {
-            setAlert?.(<>게시글을 불러올 수 없습니다</>, () => {
-              taskTransform?.('경고', '');
-            });
-          },
+    if (!currentUserId) {
+      setAlert?.(
+        <>
+          유저 정보를 찾아올 수 없습니다.
+          <br />
+          잠시 후 다시 시도해주세요.
+        </>,
+        () => {
+          taskTransform?.('경고', '');
         },
       );
       return;
     }
-    setLoadPage(!loadPage);
+
+    postListSearchMutation.mutate(
+      {
+        user_id: currentUserId,
+        status: 'DRAFT',
+        role: currentUserRole,
+      },
+      {
+        onSuccess: (data) => {
+          const filteredPosts = data.data.posts.filter((post) => post.userId === currentUserId);
+          setDraftPosts(filteredPosts);
+          setLoadPage(!loadPage);
+        },
+        onError: () => {
+          setAlert?.(<>게시글을 불러올 수 없습니다</>, () => {
+            taskTransform?.('경고', '');
+          });
+        },
+      },
+    );
+    return;
   };
 
   const handleSelectDraft = (postId: number, draftTitle: string, draftBody: string) => {
     setTitle(String(draftTitle || ''));
     setBody(String(draftBody || ''));
+    postDeleteMutation.mutate({ post_id: postId, user_id: currentUserId!, role: currentUserRole });
     setLoadPage(false);
   };
 
@@ -312,21 +320,26 @@ const CommunityPostWrite: React.FC<postData> = ({
           type="submit"
           onClick={() => taskTransform?.('', '도움말')}
         />
-        {postId ? (
-          <></>
-        ) : (
-          <CommunityBtn
-            name="임시저장/불러오기"
-            selected={loadPage}
-            onClick={postDraftHandle}
-            type="menu"
-          />
+        {postId || (
+          <>
+            <CommunityBtn
+              name="임시저장"
+              onClick={postDraftSave}
+              type="menu"
+            />
+            <CommunityBtn
+              name="불러오기"
+              selected={loadPage}
+              onClick={postDraftHandle}
+              type="menu"
+            />
+          </>
         )}
         <CommunityBtn
           name="취소"
           type="submit"
           onClick={() => {
-            if (title || body) postDraft();
+            if (title || body) postDraftSave();
             else pop?.();
           }}
         />
