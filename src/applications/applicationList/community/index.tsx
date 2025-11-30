@@ -132,6 +132,11 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
     pop: pop,
     top: top,
   };
+  const sortMap: Record<string, string> = {
+    기본순: 'normal',
+    최신순: 'latest',
+    인기순: 'popular',
+  };
 
   const taskTransform = useAtomValue(taskTransformerAtom);
   const taskSearch = useAtomValue(taskSearchAtom);
@@ -141,8 +146,9 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
   const modTogle = (value: any) => {
     setSort(value);
     setIsOpen(false);
+
     postListSearchMutation.mutate(
-      { status: 'PUBLISHED', mod: sort },
+      { status: 'PUBLISHED', mod: sortMap[value] },
       {
         onError: () => {
           setAlert?.(<>게시글이 제대로 불러와지지 않았습니다.</>, () =>
@@ -193,7 +199,7 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
     }
 
     postListSearchMutation.mutate(
-      { status: 'PUBLISHED', title: search },
+      { status: 'PUBLISHED', title: search, mod: sortMap[sort] },
       {
         onSuccess: () => {
           console.log('검색 완료');
