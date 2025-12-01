@@ -55,6 +55,11 @@ const CommunityPost = ({ stack, push, pop, top, postId }: postProps) => {
   const [userDataMap, setUserDataMap] = useState<Record<string, { name: string; profile: string }>>(
     {},
   );
+  const comments = commentsData?.data || [];
+
+  const taskSearch = useAtomValue(taskSearchAtom);
+  const taskTransform = useAtomValue(taskTransformerAtom);
+  const setAlert = useAtomValue(alerterAtom);
 
   useEffect(() => {
     if (token) {
@@ -130,12 +135,6 @@ const CommunityPost = ({ stack, push, pop, top, postId }: postProps) => {
         console.error('사용자 정보 가져오기 실패:', error);
       });
   }, [commentsData, data]);
-
-  const taskSearch = useAtomValue(taskSearchAtom);
-  const taskTransform = useAtomValue(taskTransformerAtom);
-  const setAlert = useAtomValue(alerterAtom);
-
-  const comments = commentsData?.data || [];
 
   const postEdit = () => {
     if (taskSearch) {
