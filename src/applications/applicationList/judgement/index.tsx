@@ -20,10 +20,9 @@ interface JudgementProps {
 
 const sort = ['최신순', '인기순'];
 
-/* api 로 재판 목록 불러와야함 */
-
 const Judgement = ({ stack, push, pop, top }: JudgementProps) => {
   const [Judgement_List, setJL] = useState([]);
+  const [rawData, setRawData] = useState([]); // 원본 데이터 보관
 
   const { mutate: getList } = useGetJudgementList();
 
@@ -36,10 +35,12 @@ const Judgement = ({ stack, push, pop, top }: JudgementProps) => {
 
   const judgementLoadCount = useAtomValue(judgementLoadingCount);
 
+  const [pageNumber, setPageNumber] = useState(1);
+  const [maxPage, setMaxPage] = useState(1);
+  const [size, setSize] = useState(5);
+
   useEffect(() => {
     set_selected(-1);
-    console.log('chrlrkqt');
-    console.log(judgementLoadCount);
   }, []);
 
   useEffect(() => {
@@ -59,29 +60,112 @@ const Judgement = ({ stack, push, pop, top }: JudgementProps) => {
           heaven_count: item.heavenCount,
           hell_count: item.hellCount,
           is_end: item.isEnd ?? false,
-          isSearch: false,
+          is_search: false,
+          created_at: item.createdAt, // 생성일 추가
         }));
 
-        // 좋아요 + 투표 기준 내림차순 정렬
-        const sorted = mapped.sort((a: any, b: any) => b.like + b.vote - (a.like + a.vote));
-
-        // rank 부여
-        const ranked = sorted.map((item: any, index: any) => ({
-          ...item,
-          rank: index + 1,
-        }));
-
-        // 상태 업데이트
-        setJL(ranked);
+        setRawData(mapped); // 원본 데이터 저장
       },
     });
   }, [stack]);
 
-  /*if (judgementLoadCount) {
-    console.log(judgementLoadCount);
-    console.log('dkdkdkdkdkdkdkdkdkdkdkdk');
-    return <Loading />;
-  }*/
+  // choice가 변경될 때마다 정렬 수행
+  useEffect(() => {
+    if (rawData.length === 0) return;
+
+    let sorted;
+    if (choice === '인기순') {
+      // 좋아요 + 투표 기준 내림차순 정렬
+      sorted = [...rawData].sort((a: any, b: any) => b.like + b.vote - (a.like + a.vote));
+    } else if (choice === '최신순') {
+      // 생성일 기준 내림차순 정렬 (최신이 먼저)
+      sorted = [...rawData].sort(
+        (a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+      );
+    }
+
+    // rank 부여
+    const ranked = sorted.map((item: any, index: any) => ({
+      ...item,
+      rank: index + 1,
+    }));
+
+    setJL(ranked);
+  }, [rawData, choice]);
+
+  // maxPage 계산 - Judgement_List와 text가 변경될 때마다 재계산
+  useEffect(() => {
+    if (Judgement_List.length === 0) {
+      setMaxPage(1);
+      return;
+    }
+
+    const filtered = Judgement_List.filter((item: any) => {
+      if (text) {
+        return item.c_name && item.c_name.includes(text);
+      }
+      return true;
+    });
+
+    // 각 섹션별 아이템 개수 계산
+    const popularCount = filtered.filter(
+      (item: any) => item.rank <= 3 && item.is_end === false,
+    ).length;
+    const normalCount = filtered.filter(
+      (item: any) => item.rank > 3 && item.is_end === false,
+    ).length;
+    const endedCount = filtered.filter((item: any) => item.is_end === true).length;
+
+    // 전체 아이템 개수
+    const totalCount = popularCount + normalCount + endedCount;
+
+    setMaxPage(Math.max(1, Math.ceil(totalCount / size)));
+  }, [Judgement_List, text, size]);
+
+  // 검색어나 정렬 방식이 바뀌면 1페이지로 리셋
+  useEffect(() => {
+    setPageNumber(1);
+  }, [text, choice]);
+
+  // 검색 필터 적용
+  useEffect(() => {
+    setJL((prevList: any) =>
+      prevList.map((item: any) => ({
+        ...item,
+        is_search: text ? (item.c_name ? item.c_name.includes(text) : false) : false,
+      })),
+    );
+  }, [text]);
+
+  // 필터링된 전체 리스트 가져오기 (섹션 구분 없이 전체)
+  const getAllFilteredItems = () => {
+    const filtered = Judgement_List.filter((item) => {
+      const anySearch = Judgement_List.some((i) => i.is_search);
+      if (anySearch) return item.is_search;
+      return true;
+    });
+
+    // 인기재판 + 재판 + 종료된 재판을 순서대로 합침
+    const popular = filtered.filter((item) => item.rank <= 3 && item.is_end === false);
+    const normal = filtered.filter((item) => item.rank > 3 && item.is_end === false);
+    const ended = filtered.filter((item) => item.is_end === true);
+
+    return [...popular, ...normal, ...ended];
+  };
+
+  // 전체 아이템 리스트
+  const allItems = getAllFilteredItems();
+
+  // 현재 페이지에 표시할 아이템들
+  const startIndex = (pageNumber - 1) * size;
+  const endIndex = startIndex + size;
+  const currentPageItems = allItems.slice(startIndex, endIndex);
+
+  // 각 섹션별로 현재 페이지의 아이템 분리
+  const popularList = currentPageItems.filter((item) => item.rank <= 3 && item.is_end === false);
+  const normalList = currentPageItems.filter((item) => item.rank > 3 && item.is_end === false);
+  const endedList = currentPageItems.filter((item) => item.is_end === true);
+
   return (
     <_.Container>
       {judgementLoadCount !== 0 && (
@@ -101,14 +185,6 @@ const Judgement = ({ stack, push, pop, top }: JudgementProps) => {
             value={text}
             setValue={(value) => {
               setText(value);
-
-              setJL((prevList: any) =>
-                prevList.map((item: any) => ({
-                  ...item,
-                  // c_name에 value가 포함되면 isSearch를 true, 아니면 false
-                  isSearch: value ? item.c_name.includes(value) : false,
-                })),
-              );
             }}
             placeHold="캐릭터 이름으로 검색"
           />
@@ -142,11 +218,7 @@ const Judgement = ({ stack, push, pop, top }: JudgementProps) => {
         <_.Judgement_List>
           <_.Sort>인기재판</_.Sort>
           <_.Obj_Div>
-            {Judgement_List.filter((item) => {
-              const anySearch = Judgement_List.some((i) => i.isSearch); // 하나라도 검색된 항목 있는지
-              if (anySearch) return item.isSearch && item.rank <= 3 && item.is_end === false; // 있으면 isSearch true만
-              return item.rank <= 3 && item.is_end === false; // 없으면 기존 필터
-            }).map((item) => {
+            {popularList.map((item) => {
               return (
                 <Judgement_Object
                   key={item.id}
@@ -172,11 +244,7 @@ const Judgement = ({ stack, push, pop, top }: JudgementProps) => {
           <_.Sort>재판</_.Sort>
 
           <_.Obj_Div>
-            {Judgement_List.filter((item) => {
-              const anySearch = Judgement_List.some((i) => i.isSearch); // 하나라도 검색된 항목 있는지
-              if (anySearch) return item.isSearch && item.rank > 3 && item.is_end === false; // 있으면 isSearch true만
-              return item.rank > 3 && item.is_end === false; // 없으면 기존 필터
-            }).map((item) => {
+            {normalList.map((item) => {
               return (
                 <Judgement_Object
                   key={item.id}
@@ -202,11 +270,7 @@ const Judgement = ({ stack, push, pop, top }: JudgementProps) => {
           <_.Sort>종료된 재판</_.Sort>
 
           <_.Obj_Div>
-            {Judgement_List.filter((item) => {
-              const anySearch = Judgement_List.some((i) => i.isSearch); // 하나라도 검색된 항목 있는지
-              if (anySearch) return item.isSearch && item.is_end === true; // 있으면 isSearch true만
-              return item.is_end === true; // 없으면 기존 필터
-            }).map((item) => {
+            {endedList.map((item) => {
               return (
                 <Judgement_Object
                   key={item.id}
@@ -230,6 +294,60 @@ const Judgement = ({ stack, push, pop, top }: JudgementProps) => {
           </_.Obj_Div>
         </_.Judgement_List>
       </_.Main_Display>
+      <_.Paging>
+        <MemorialBtn
+          name="1"
+          selected={false}
+          type="menu"
+          onClick={() => setPageNumber(1)}
+          active={true}
+          width="32px"
+          height="32px"
+          fontSize="16px"
+        />
+        <_.PagingGap>...</_.PagingGap>
+        <MemorialBtn
+          name={`${pageNumber - 1}`}
+          selected={false}
+          type={pageNumber === 1 ? 'hidden' : 'menu'}
+          onClick={() => setPageNumber(pageNumber - 1)}
+          active={true}
+          width="32px"
+          height="32px"
+          fontSize="16px"
+        />
+        <MemorialBtn
+          name={`${pageNumber}`}
+          selected={true}
+          type="menu"
+          onClick={() => setPageNumber(pageNumber)}
+          active={true}
+          width="32px"
+          height="32px"
+          fontSize="16px"
+        />
+        <MemorialBtn
+          name={`${pageNumber + 1}`}
+          selected={false}
+          type={pageNumber === maxPage ? 'hidden' : 'menu'}
+          onClick={() => setPageNumber(pageNumber + 1)}
+          active={true}
+          width="32px"
+          height="32px"
+          fontSize="16px"
+        />
+        <_.PagingGap>...</_.PagingGap>
+        <MemorialBtn
+          name={`${maxPage}`}
+          selected={false}
+          type="menu"
+          onClick={() => setPageNumber(maxPage)}
+          active={true}
+          width="32px"
+          height="32px"
+          fontSize="16px"
+        />
+      </_.Paging>
     </_.Container>
   );
 };

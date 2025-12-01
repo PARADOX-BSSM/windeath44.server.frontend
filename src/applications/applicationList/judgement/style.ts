@@ -47,8 +47,8 @@ export const Select = styled.div`
 
 export const Main_Display = styled.div`
   width: 100%;
-  height: 82%;
-  min-height: 420px;
+  height: 70%;
+  min-height: 375px;
 
   background-color: #ffebfd;
   overflow-y: scroll;
@@ -85,4 +85,28 @@ export const loadingBack = styled.div`
   background-color: white;
   position: absolute;
   z-index: 999;
+`;
+
+export const PagingContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1; /* 부모의 남는 공간을 채움 (fill) */
+  box-sizing: border-box;
+  overflow: hidden;
+`;
+
+export const Paging = styled.div`
+  display: flex;
+  width: 100%;
+  height: fit-content;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+`;
+
+export const PagingGap = styled.p`
+  font-size: 16px;
+  color: #7c547b;
+  user-select: none;
 `;
