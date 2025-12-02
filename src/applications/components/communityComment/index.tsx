@@ -15,6 +15,7 @@ import { alerterAtom } from '@/atoms/alerter';
 import { useAtomValue } from 'jotai';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface User {
   name: string;
@@ -58,6 +59,7 @@ const Posts: React.FC<PostsProps> = ({
   const menuRef = useRef<HTMLDivElement>(null);
   const taskTransform = useAtomValue(taskTransformerAtom);
   const setAlert = useAtomValue(alerterAtom);
+  const queryClient = useQueryClient();
 
   const { mutate: getUser, data: userData } = useGetUserMutation();
   const loggedInUserId = userData?.data?.userId;
@@ -193,7 +195,12 @@ const Posts: React.FC<PostsProps> = ({
       commentLikeDeleteMutation.mutate(
         { comment_id: post.commentId, user_id: loggedInUserId },
         {
-          onSuccess: () => setIsLike(false),
+          onSuccess: () => {
+            setIsLike(false);
+            refetchComments();
+            // 좋아요 상태 쿼리 캐시 무효화
+            queryClient.invalidateQueries({ queryKey: ['commentLike', post.commentId] });
+          },
           onError: () => {},
         },
       );
@@ -201,7 +208,12 @@ const Posts: React.FC<PostsProps> = ({
       commentLikeMutation.mutate(
         { comment_id: post.commentId, user_id: loggedInUserId },
         {
-          onSuccess: () => setIsLike(true),
+          onSuccess: () => {
+            setIsLike(true);
+            refetchComments();
+            // 좋아요 상태 쿼리 캐시 무효화
+            queryClient.invalidateQueries({ queryKey: ['commentLike', post.commentId] });
+          },
           onError: () => {},
         },
       );
