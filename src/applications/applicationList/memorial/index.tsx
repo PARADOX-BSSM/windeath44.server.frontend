@@ -290,23 +290,29 @@ const Memorial = ({
   };
 
   const handleLikeToggle = (commentId: number, isLiked: boolean) => {
-    mutationCommentLike.mutate(
-      { commentId, isLiked },
-      {
-        onError: () => {
-          setAlert?.(
-            <>
-              좋아요 처리 중 문제가 발생했습니다.
-              <br />
-              잠시 후 다시 시도해 주세요.
-            </>,
-            () => {
-              taskTransform?.('경고', '');
-            },
-          );
+    if (!token && setAlert) {
+      setAlert(<>로그인 후 사용 가능 합니다.</>, () => {
+        taskTransform?.('경고', '');
+      });
+    } else {
+      mutationCommentLike.mutate(
+        { commentId, isLiked },
+        {
+          onError: () => {
+            setAlert?.(
+              <>
+                좋아요 처리 중 문제가 발생했습니다.
+                <br />
+                잠시 후 다시 시도해 주세요.
+              </>,
+              () => {
+                taskTransform?.('경고', '');
+              },
+            );
+          },
         },
-      },
-    );
+      );
+    }
   };
 
   const handleLoadMore = () => {
