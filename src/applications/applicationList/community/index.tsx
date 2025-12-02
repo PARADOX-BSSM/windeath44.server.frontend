@@ -54,6 +54,43 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
   );
   const token = getCookie('access_token');
 
+  const stackProps = {
+    stack: stack,
+    push: push,
+    pop: pop,
+    top: top,
+  };
+  const sortMap: Record<string, string> = {
+    기본순: 'normal',
+    최신순: 'latest',
+    인기순: 'popular',
+  };
+
+  const taskTransform = useAtomValue(taskTransformerAtom);
+  const taskSearch = useAtomValue(taskSearchAtom);
+  const setAlert = useAtomValue(alerterAtom);
+
+  const mode: string[] = [sortOption.normal, sortOption.latest, sortOption.popular];
+  const modeTogle = (value: any) => {
+    setSort(value);
+    setIsOpen(false);
+    handlePostListSearch(0, sortMap[value]);
+  };
+
+  const handlePostListSearch = (page: number, title?: string, mode?: string) => {
+    const searchMode = mode ?? sortMap[sort];
+    postListSearchMutation.mutate(
+      { status: 'PUBLISHED', page: page, size: 10, title: title, mode: searchMode },
+      {
+        onError: () => {
+          setAlert?.(<>게시글이 제대로 불러와지지 않았습니다.</>, () =>
+            taskTransform?.('경고', ''),
+          );
+        },
+      },
+    );
+  };
+
   useEffect(() => {
     if (postListSearchMutation.isSuccess && postListSearchMutation.data?.data?.content) {
       setPostData(postListSearchMutation.data.data.content);
@@ -99,77 +136,11 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
 
   // 컴포넌트 마운트 시 초기 게시글 로딩
   useEffect(() => {
-    postListSearchMutation.mutate(
-      { status: 'PUBLISHED', page: 1, size: 3 },
-      {
-        onError: () => {
-          setAlert?.(<>게시글이 제대로 불러와지지 않았습니다.</>, () =>
-            taskTransform?.('경고', ''),
-          );
-        },
-      },
-    );
+    handlePostListSearch(0);
   }, []);
 
-  useEffect(() => {
-    if (active) {
-      postListSearchMutation.mutate(
-        { status: 'PUBLISHED' },
-        {
-          onError: () => {
-            setAlert?.(<>게시글이 제대로 불러와지지 않았습니다.</>, () =>
-              taskTransform?.('경고', ''),
-            );
-          },
-        },
-      );
-    }
-  }, [active]);
-
-  const stackProps = {
-    stack: stack,
-    push: push,
-    pop: pop,
-    top: top,
-  };
-  const sortMap: Record<string, string> = {
-    기본순: 'normal',
-    최신순: 'latest',
-    인기순: 'popular',
-  };
-
-  const taskTransform = useAtomValue(taskTransformerAtom);
-  const taskSearch = useAtomValue(taskSearchAtom);
-  const setAlert = useAtomValue(alerterAtom);
-
-  const mode: string[] = [sortOption.normal, sortOption.latest, sortOption.popular];
-  const modeTogle = (value: any) => {
-    setSort(value);
-    setIsOpen(false);
-
-    postListSearchMutation.mutate(
-      { status: 'PUBLISHED', mode: sortMap[value] },
-      {
-        onError: () => {
-          setAlert?.(<>게시글이 제대로 불러와지지 않았습니다.</>, () =>
-            taskTransform?.('경고', ''),
-          );
-        },
-      },
-    );
-  };
-
   const refetchPosts = () => {
-    postListSearchMutation.mutate(
-      { status: 'PUBLISHED' },
-      {
-        onError: () => {
-          setAlert?.(<>게시글이 제대로 불러와지지 않았습니다.</>, () =>
-            taskTransform?.('경고', ''),
-          );
-        },
-      },
-    );
+    handlePostListSearch(0);
   };
 
   const postCreateClick = () => {
@@ -191,26 +162,7 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
   };
 
   const searchHandle = () => {
-    if (!search.trim()) {
-      setAlert?.(<>검색어를 입력해주세요.</>, () => {
-        taskTransform?.('경고', '');
-      });
-      return;
-    }
-
-    postListSearchMutation.mutate(
-      { status: 'PUBLISHED', title: search, mode: sortMap[sort] },
-      {
-        onSuccess: () => {
-          console.log('검색 완료');
-        },
-        onError: () => {
-          setAlert?.(<>게시글 검색에 실패했습니다.</>, () => {
-            taskTransform?.('경고', '');
-          });
-        },
-      },
-    );
+    handlePostListSearch(0, search);
   };
 
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
