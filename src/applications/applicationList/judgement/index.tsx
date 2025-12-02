@@ -4,12 +4,14 @@ import { useEffect, useState } from 'react';
 import FilterBlock from '@/applications/components/filterBlock';
 import MemorialBtn from '@/applications/components/memorialBtn';
 import Judgement_Object from '@/applications/components/judgementObject';
-import hosino from '@/assets/character/hosino.svg';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { select_chat } from '@/applications/components/judgementChatObj/state_manager';
 import { useGetJudgementList } from '@/api/judgement/judgementList';
-import { judgementLoadingCount } from '@/applications/components/judgementObject/load_state';
 import Loading from '@/applications/components/loading';
+import axios from 'axios';
+import { anime } from '@/config';
+import type { CharacterData, CharacterDataResponse } from '@/api/anime/getCharacter';
+import { useGetAnimeQuery } from '@/api/anime/getAnime';
 
 interface JudgementProps {
   stack: any[];
@@ -18,22 +20,29 @@ interface JudgementProps {
   top: any;
 }
 
+interface AnimeDataResponse {
+  message: string;
+  data: {
+    animeId: number;
+    name: string;
+    [key: string]: any;
+  };
+}
+
 const sort = ['최신순', '인기순'];
 
 const Judgement = ({ stack, push, pop, top }: JudgementProps) => {
   const [Judgement_List, setJL] = useState([]);
-  const [rawData, setRawData] = useState([]); // 원본 데이터 보관
+  const [rawData, setRawData] = useState([]);
+  const [isLoadingData, setIsLoadingData] = useState(false);
 
   const { mutate: getList } = useGetJudgementList();
 
   const [text, setText] = useState('');
-
   const [open, setOpen] = useState(false);
   const [choice, setChoice] = useState('인기순');
 
   const set_selected = useSetAtom(select_chat);
-
-  const judgementLoadCount = useAtomValue(judgementLoadingCount);
 
   const [pageNumber, setPageNumber] = useState(1);
   const [maxPage, setMaxPage] = useState(1);
@@ -43,12 +52,33 @@ const Judgement = ({ stack, push, pop, top }: JudgementProps) => {
     set_selected(-1);
   }, []);
 
+  // 캐릭터 데이터 가져오기
+  const fetchCharacter = async (characterId: number): Promise<CharacterData> => {
+    try {
+      const response = await axios.get<CharacterDataResponse>(`${anime}/characters/${characterId}`);
+      return response.data.data;
+    } catch (error) {
+      console.error(`Failed to fetch character ${characterId}:`, error);
+      return null;
+    }
+  };
+
+  // 애니메이션 데이터 가져오기
+  const fetchAnime = async (animeId: number) => {
+    try {
+      const response = await axios.get<AnimeDataResponse>(`${anime}/${animeId}`);
+      return response.data.data;
+    } catch (error) {
+      console.error(`Failed to fetch anime ${animeId}:`, error);
+      return null;
+    }
+  };
+
   useEffect(() => {
     getList(undefined, {
-      onSuccess: (data) => {
+      onSuccess: async (data) => {
         const content = data.data.judgments ?? [];
 
-        // 서버 데이터 구조를 미리보기 형태로 변환
         const mapped = content.map((item: any) => ({
           id: item.judgmentId,
           characterId: item.characterId,
@@ -61,10 +91,77 @@ const Judgement = ({ stack, push, pop, top }: JudgementProps) => {
           hell_count: item.hellCount,
           is_end: item.isEnd ?? false,
           is_search: false,
-          created_at: item.createdAt, // 생성일 추가
+          created_at: item.createdAt,
         }));
 
-        setRawData(mapped); // 원본 데이터 저장
+        setRawData(mapped);
+
+        setIsLoadingData(true);
+        try {
+          // 1단계: 중복 제거된 캐릭터 ID 추출
+          const uniqueCharacterIds = [...new Set(mapped.map((item: any) => item.characterId))];
+
+          // 2단계: 모든 캐릭터 데이터 병렬 로딩
+          const characterResults = await Promise.all(
+            uniqueCharacterIds.map((charId) => fetchCharacter(charId)),
+          );
+
+          // 캐릭터 데이터 Map 생성 및 animeId 추출
+          const characterDataMap = new Map<number, CharacterData>();
+          const animeIds = new Set<number>();
+
+          characterResults.forEach((charData, index) => {
+            if (charData) {
+              const charId = uniqueCharacterIds[index];
+              characterDataMap.set(charId, charData);
+              if (charData.animeId) {
+                animeIds.add(charData.animeId);
+              }
+            }
+          });
+
+          console.log('캐릭터 데이터 로드 완료:', characterDataMap.size);
+          console.log('애니메이션 ID 목록:', Array.from(animeIds));
+
+          // 3단계: 모든 애니메이션 데이터 병렬 로딩
+          const animeIdsArray = Array.from(animeIds);
+          const animeResults = await Promise.all(
+            animeIdsArray.map((animeId) => fetchAnime(animeId)),
+          );
+
+          // 애니메이션 데이터 Map 생성 (수정된 부분)
+          const animeDataMap = new Map<number, any>();
+          animeResults.forEach((animeData, index) => {
+            if (animeData) {
+              const animeId = animeIdsArray[index];
+              animeDataMap.set(animeId, animeData);
+            }
+          });
+
+          console.log('애니메이션 데이터 로드 완료:', animeDataMap.size);
+
+          // 4단계: 완성된 데이터로 rawData 업데이트
+          const enrichedData = mapped.map((item: any) => {
+            const charData = characterDataMap.get(item.characterId);
+            const animeData = charData?.animeId ? animeDataMap.get(charData.animeId) : null;
+
+            return {
+              ...item,
+              c_name: charData?.name ?? null,
+              a_name: animeData?.name ?? null,
+              img: charData?.imageUrl ?? null,
+              characterData: charData,
+              animeData: animeData,
+            };
+          });
+
+          console.log('최종 데이터 샘플:', enrichedData[0]);
+          setRawData(enrichedData);
+        } catch (error) {
+          console.error('Failed to load data:', error);
+        } finally {
+          setIsLoadingData(false);
+        }
       },
     });
   }, [stack]);
@@ -75,16 +172,13 @@ const Judgement = ({ stack, push, pop, top }: JudgementProps) => {
 
     let sorted;
     if (choice === '인기순') {
-      // 좋아요 + 투표 기준 내림차순 정렬
       sorted = [...rawData].sort((a: any, b: any) => b.like + b.vote - (a.like + a.vote));
     } else if (choice === '최신순') {
-      // 생성일 기준 내림차순 정렬 (최신이 먼저)
       sorted = [...rawData].sort(
         (a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
       );
     }
 
-    // rank 부여
     const ranked = sorted.map((item: any, index: any) => ({
       ...item,
       rank: index + 1,
@@ -93,7 +187,7 @@ const Judgement = ({ stack, push, pop, top }: JudgementProps) => {
     setJL(ranked);
   }, [rawData, choice]);
 
-  // maxPage 계산 - Judgement_List와 text가 변경될 때마다 재계산
+  // maxPage 계산
   useEffect(() => {
     if (Judgement_List.length === 0) {
       setMaxPage(1);
@@ -107,7 +201,6 @@ const Judgement = ({ stack, push, pop, top }: JudgementProps) => {
       return true;
     });
 
-    // 각 섹션별 아이템 개수 계산
     const popularCount = filtered.filter(
       (item: any) => item.rank <= 3 && item.is_end === false,
     ).length;
@@ -116,7 +209,6 @@ const Judgement = ({ stack, push, pop, top }: JudgementProps) => {
     ).length;
     const endedCount = filtered.filter((item: any) => item.is_end === true).length;
 
-    // 전체 아이템 개수
     const totalCount = popularCount + normalCount + endedCount;
 
     setMaxPage(Math.max(1, Math.ceil(totalCount / size)));
@@ -137,7 +229,7 @@ const Judgement = ({ stack, push, pop, top }: JudgementProps) => {
     );
   }, [text]);
 
-  // 필터링된 전체 리스트 가져오기 (섹션 구분 없이 전체)
+  // 필터링된 전체 리스트 가져오기
   const getAllFilteredItems = () => {
     const filtered = Judgement_List.filter((item) => {
       const anySearch = Judgement_List.some((i) => i.is_search);
@@ -145,7 +237,6 @@ const Judgement = ({ stack, push, pop, top }: JudgementProps) => {
       return true;
     });
 
-    // 인기재판 + 재판 + 종료된 재판을 순서대로 합침
     const popular = filtered.filter((item) => item.rank <= 3 && item.is_end === false);
     const normal = filtered.filter((item) => item.rank > 3 && item.is_end === false);
     const ended = filtered.filter((item) => item.is_end === true);
@@ -153,26 +244,23 @@ const Judgement = ({ stack, push, pop, top }: JudgementProps) => {
     return [...popular, ...normal, ...ended];
   };
 
-  // 전체 아이템 리스트
   const allItems = getAllFilteredItems();
 
-  // 현재 페이지에 표시할 아이템들
   const startIndex = (pageNumber - 1) * size;
   const endIndex = startIndex + size;
   const currentPageItems = allItems.slice(startIndex, endIndex);
 
-  // 각 섹션별로 현재 페이지의 아이템 분리
   const popularList = currentPageItems.filter((item) => item.rank <= 3 && item.is_end === false);
   const normalList = currentPageItems.filter((item) => item.rank > 3 && item.is_end === false);
   const endedList = currentPageItems.filter((item) => item.is_end === true);
 
   return (
     <_.Container>
-      {judgementLoadCount !== 0 && (
+      {isLoadingData && (
         <_.loadingBack>
           <Loading
-            overlay={true}
             text="데이터를 불러오는 중..."
+            color="white"
           />
         </_.loadingBack>
       )}
@@ -225,9 +313,11 @@ const Judgement = ({ stack, push, pop, top }: JudgementProps) => {
                   judgement_id={item.id}
                   rank={item.rank}
                   c_id={item.characterId}
-                  c_name=""
-                  a_name=""
-                  img={undefined}
+                  c_name={item.c_name}
+                  a_name={item.a_name}
+                  img={item.img}
+                  characterData={item.characterData}
+                  animeData={item.animeData}
                   like={item.like}
                   vote={item.vote}
                   heaven_count={item.heaven_count}
@@ -251,9 +341,11 @@ const Judgement = ({ stack, push, pop, top }: JudgementProps) => {
                   judgement_id={item.id}
                   rank={item.rank}
                   c_id={item.characterId}
-                  c_name=""
-                  a_name=""
-                  img={undefined}
+                  c_name={item.c_name}
+                  a_name={item.a_name}
+                  img={item.img}
+                  characterData={item.characterData}
+                  animeData={item.animeData}
                   like={item.like}
                   vote={item.vote}
                   heaven_count={item.heaven_count}
@@ -277,9 +369,11 @@ const Judgement = ({ stack, push, pop, top }: JudgementProps) => {
                   judgement_id={item.id}
                   rank={item.rank}
                   c_id={item.characterId}
-                  c_name=""
-                  a_name=""
-                  img={undefined}
+                  c_name={item.c_name}
+                  a_name={item.a_name}
+                  img={item.img}
+                  characterData={item.characterData}
+                  animeData={item.animeData}
                   like={item.like}
                   vote={item.vote}
                   heaven_count={item.heaven_count}

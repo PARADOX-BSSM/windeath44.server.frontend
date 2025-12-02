@@ -81,7 +81,7 @@ export const Sort = styled.div`
 
 export const loadingBack = styled.div`
   width: calc(100% - 36px);
-  height: 100%;
+  height: 99%;
   background-color: white;
   position: absolute;
   z-index: 999;
