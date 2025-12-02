@@ -105,10 +105,10 @@ export const Title_Text = styled.div`
 `;
 
 export const Select_Div = styled.div`
-  width: 72px;
+  min-width: 90px;
   height: 32px;
   padding-top: 18px;
-  padding-right: 30px;
+  padding-right: 0px;
   font-family: 'Galmuri11', sans-serif;
 `;
 

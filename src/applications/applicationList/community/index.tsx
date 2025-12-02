@@ -80,7 +80,7 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
   const handlePostListSearch = (page: number, title?: string, mode?: string) => {
     const searchMode = mode ?? sortMap[sort];
     postListSearchMutation.mutate(
-      { status: 'PUBLISHED', page: page, size: 10, title: title, mode: searchMode },
+      { status: 'PUBLISHED', /*page: page, size: 10,*/ title: title, mode: searchMode },
       {
         onError: () => {
           setAlert?.(<>게시글이 제대로 불러와지지 않았습니다.</>, () =>

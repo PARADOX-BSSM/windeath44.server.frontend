@@ -1,15 +1,11 @@
-import { useAtomValue, useSetAtom } from 'jotai';
+import { useAtomValue } from 'jotai';
 import MainInfo from '../judgementMainInfo';
 import SubInfo from '../judgementSubInfo';
 import * as _ from './style';
 import { taskSearchAtom, taskTransformerAtom } from '@/atoms/taskTransformer';
 import { Sep_window } from '@/applications/applicationList/vote/state_manage';
-import { useEffect, useState } from 'react';
-import { useGetCharacter } from '@/api/anime/getCharacter';
+import { useEffect } from 'react';
 import type { CharacterData } from '@/api/anime/getCharacter';
-import { useGetAnimeQuery } from '@/api/anime/getAnime';
-import Loading from '@/applications/components/loading';
-import { judgementLoadingCount } from './load_state';
 
 interface JudgementObjProps {
   judgement_id: number;
@@ -18,6 +14,8 @@ interface JudgementObjProps {
   c_name: string;
   a_name: string;
   img: string | undefined;
+  characterData?: CharacterData; // ✅ 부모에서 받아온 캐릭터 데이터
+  animeData?: any; // ✅ 부모에서 받아온 애니메이션 데이터
   like: number;
   vote: number;
   heaven_count: number;
@@ -35,6 +33,8 @@ const Judgement_Object = ({
   c_name,
   a_name,
   img,
+  characterData,
+  animeData,
   like,
   vote,
   heaven_count,
@@ -44,48 +44,9 @@ const Judgement_Object = ({
   pop,
   top,
 }: JudgementObjProps) => {
-  const [characterData, setCharacterData] = useState<CharacterData>({
-    characterId: 0,
-    animeId: 0,
-    name: '',
-    lifeTime: 0,
-    deathReason: '',
-    causeOfDeathDetails: '',
-    imageUrl: '',
-    bowCount: 0,
-    age: 0,
-    saying: '',
-    state: '',
-    deathOfDay: '',
-  });
-  const setIsJudgeLoading = useSetAtom(judgementLoadingCount);
-
-  const mutationGetCharacter = useGetCharacter(setCharacterData);
-  useEffect(() => {
-    setIsJudgeLoading((prev) => prev + 1);
-
-    mutationGetCharacter.mutate(c_id, {
-      onSuccess: () => {
-        setIsJudgeLoading((prev) => prev - 1);
-        console.log('뼤ㅃ');
-      },
-      onError: () => {
-        console.log('캐릭터 조회 실패');
-        setIsJudgeLoading((prev) => prev - 1);
-      },
-    });
-  }, []);
-
-  const {
-    data: animeData,
-    isLoading: loading,
-    isError,
-  } = useGetAnimeQuery(characterData.animeId, !!characterData?.animeId);
-
+  // ✅ 더 이상 API 호출하지 않음 - 부모에서 받은 데이터 사용
   const taskSearch = useAtomValue(taskSearchAtom);
-
   const taskTransform = useAtomValue(taskTransformerAtom);
-
   const sep_window = useAtomValue(Sep_window);
 
   const chatProps = { judgement_id: judgement_id };
@@ -101,11 +62,10 @@ const Judgement_Object = ({
     push: push,
     pop: pop,
     top: top,
-
     judgement_id: judgement_id,
-    a_name: animeData?.data.name,
-    c_name: characterData.name,
-    img: characterData.imageUrl,
+    a_name: animeData?.name || a_name,
+    c_name: characterData?.name || c_name,
+    img: characterData?.imageUrl || img,
     like: like,
     vote: vote,
     hell_count: hell_count,
@@ -118,12 +78,12 @@ const Judgement_Object = ({
         <MainInfo
           id={judgement_id}
           rank={rank}
-          cName={characterData.name}
-          aName={animeData?.data.name}
-          img={characterData.imageUrl}
+          cName={characterData?.name || c_name}
+          aName={animeData?.name || a_name}
+          img={characterData?.imageUrl || img}
           like={like}
           voteNum={vote}
-        ></MainInfo>
+        />
       </_.Left>
 
       <_.Right>
@@ -136,7 +96,7 @@ const Judgement_Object = ({
           hell_count={
             hell_count != 0 ? ((hell_count / (heaven_count + hell_count)) * 100).toFixed(1) : '0.0'
           }
-        ></SubInfo>
+        />
         <_.Link
           onClick={() => {
             taskTransform('', '재판 댓글', chatProps);

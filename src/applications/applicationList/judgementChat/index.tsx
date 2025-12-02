@@ -21,7 +21,7 @@ import { alerterAtom } from '@/atoms/alerter';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
 import Loading from '@/applications/components/loading/index.tsx';
 
-const sort = ['최신', '인기'];
+const sort = ['최신순', '인기순'];
 
 interface judgementChatProps {
   judgement_id: number;
@@ -51,6 +51,7 @@ const JudgementChat = ({ judgement_id }: judgementChatProps) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
 
   const [loading, setLoading] = useState(true);
+  const [firstLoading, setFirstLoading] = useState(0);
 
   useEffect(() => {
     getUser();
@@ -85,8 +86,10 @@ const JudgementChat = ({ judgement_id }: judgementChatProps) => {
 
   // 사용자 정보 가져오기 (community 방식)
   useEffect(() => {
-    setLoading(true);
     if (ChatList.length === 0) return;
+    if (firstLoading == 0) {
+      setLoading(true);
+    }
 
     const userIds = new Set<string>();
     ChatList.forEach((comment: any) => {
@@ -115,6 +118,7 @@ const JudgementChat = ({ judgement_id }: judgementChatProps) => {
       })
       .then((response) => {
         setLoading(false);
+        setFirstLoading((prev) => (prev += 1));
         const users = response.data.data;
         const userMap: Record<string, { name: string; profile: string }> = {};
         users.forEach((user: any) => {
@@ -126,8 +130,9 @@ const JudgementChat = ({ judgement_id }: judgementChatProps) => {
         setUserDataMap(userMap);
       })
       .catch((error) => {
-        console.error('사용자 정보 가져오기 실패:', error);
         setLoading(false);
+        setFirstLoading((prev) => (prev += 1));
+        console.error('사용자 정보 가져오기 실패:', error);
       });
   }, [ChatList]);
 
@@ -150,24 +155,26 @@ const JudgementChat = ({ judgement_id }: judgementChatProps) => {
       },
       {
         onSuccess: () => {
-          // ✅ 여기가 핵심! setChatList를 호출해야 함
           getChats(
             { judgement_id, user_id: currentUserId },
             {
               onSuccess: (newData) => {
-                setChatList(newData.data); // ← UI 업데이트!
+                setChatList(newData.data);
 
-                setTimeout(() => {
-                  if (scroll_ref.current) {
-                    scroll_ref.current.scrollTo({
-                      top: scroll_ref.current.scrollHeight,
-                    });
-                  }
-                });
+                // ✅ parentCommentId가 없을 때만 스크롤 (일반 댓글)
+                if (!parentCommentId) {
+                  setTimeout(() => {
+                    if (scroll_ref.current) {
+                      scroll_ref.current.scrollTo({
+                        top: scroll_ref.current.scrollHeight,
+                      });
+                    }
+                  });
+                }
               },
             },
           );
-          set_input_value(''); // input 초기화
+          set_input_value('');
         },
         onError: () => {
           console.error('댓글 생성 실패');
@@ -199,14 +206,6 @@ const JudgementChat = ({ judgement_id }: judgementChatProps) => {
             {
               onSuccess: (newData) => {
                 setChatList(newData.data); // ← UI 업데이트!
-
-                setTimeout(() => {
-                  if (scroll_ref.current) {
-                    scroll_ref.current.scrollTo({
-                      top: scroll_ref.current.scrollHeight,
-                    });
-                  }
-                });
               },
             },
           );
@@ -304,17 +303,6 @@ const JudgementChat = ({ judgement_id }: judgementChatProps) => {
     }
   };
 
-  const chat_list = ChatList.sort((a, b) => {
-    const aKey = a.parentCommentId ?? a.commentId; // parent_id가 null이면 id 사용
-    const bKey = b.parentCommentId ?? b.commentId;
-
-    // 1차 기준: parent_id 또는 id
-    if (aKey !== bKey) return aKey - bKey;
-
-    // 2차 기준: id (같은 그룹 내에서 id 오름차순)
-    return a.commentId - b.commentId;
-  });
-
   const scroll_ref = useRef<HTMLDivElement>(null);
 
   const select = useAtomValue(select_chat);
@@ -330,8 +318,31 @@ const JudgementChat = ({ judgement_id }: judgementChatProps) => {
   const [input_value, set_input_value] = useState('');
 
   const [open, setOpen] = useState(false);
-  const [choice, setChoice] = useState('최신');
+  const [choice, setChoice] = useState('최신순');
   const selected = useAtomValue(select_chat);
+
+  // 정렬 로직 적용 (부모 댓글만 정렬, 대댓글은 순서 유지)
+  const getSortedChatList = () => {
+    // 부모 댓글만 먼저 필터링
+    const parentComments = ChatList.filter((item) => item.parentCommentId === null);
+
+    // 정렬 기준에 따라 부모 댓글만 정렬
+    const sortedParents = [...parentComments].sort((a, b) => {
+      if (choice === '최신순') {
+        // createdAt을 기준으로 내림차순 (최신이 위로)
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      } else if (choice === '인기순') {
+        // likesCount를 기준으로 내림차순 (좋아요 많은 게 위로)
+        return b.likesCount - a.likesCount;
+      }
+      return 0;
+    });
+
+    // 대댓글은 원래 순서 그대로 유지
+    return sortedParents;
+  };
+
+  const chat_list = getSortedChatList();
 
   if (loading) {
     return <Loading />;
