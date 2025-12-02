@@ -11,11 +11,13 @@ interface postListSearchInterface {
   status?: string;
   mode?: string;
   role?: string;
+  page?: number;
+  size?: number;
 }
 interface postListSearchResponse {
   message: string;
   data: {
-    posts: {
+    content: {
       postId: number;
       userId: string;
       title: string;
@@ -28,6 +30,31 @@ interface postListSearchResponse {
       likesCount: number;
       postCommentCount: number;
     }[];
+    pageable: {
+      pageNumber: number;
+      pageSize: number;
+      sort: {
+        empty: boolean;
+        unsorted: boolean;
+        sorted: boolean;
+      };
+      offset: number;
+      unpaged: boolean;
+      paged: boolean;
+    };
+    last: boolean;
+    totalPages: number;
+    totalElements: number;
+    first: boolean;
+    size: number;
+    number: number;
+    sort: {
+      empty: boolean;
+      unsorted: boolean;
+      sorted: boolean;
+    };
+    numberOfElements: number;
+    empty: boolean;
   };
 }
 const postListSearch = async ({
@@ -38,6 +65,8 @@ const postListSearch = async ({
   status,
   mode,
   role,
+  page,
+  size,
 }: postListSearchInterface) => {
   const data = {
     title: title,
@@ -45,6 +74,8 @@ const postListSearch = async ({
     character_id: characterId,
     status: status,
     mode: mode,
+    page: page,
+    size: size,
   };
   try {
     const response: AxiosResponse<postListSearchResponse> = await api.post(
