@@ -1,4 +1,8 @@
 import * as _ from './style';
+import { useAtomValue } from 'jotai';
+import { taskTransformerAtom } from '@/atoms/taskTransformer.ts';
+import { alerterAtom } from '@/atoms/alerter.ts';
+import { getCookie } from '@/api/auth/cookie.ts';
 
 interface PropsType {
   userId: string;
@@ -57,6 +61,9 @@ const Application = ({
         return state;
     }
   };
+  const taskTransform = useAtomValue(taskTransformerAtom);
+  const setAlert = useAtomValue(alerterAtom);
+  const token = getCookie('access_token');
 
   return (
     <_.Container>
@@ -72,7 +79,13 @@ const Application = ({
             $isLiked={isLiked}
             onClick={(e) => {
               e.stopPropagation();
-              onLikeToggle?.(memorialApplicationId, isLiked);
+              if (!token && setAlert) {
+                setAlert(<> 좋아요 기능은 로그인 후 이용하실 수 있습니다.</>, () => {
+                  taskTransform?.('경고', '');
+                });
+              } else {
+                onLikeToggle?.(memorialApplicationId, isLiked);
+              }
             }}
           >
             {isLiked ? '♥' : '♡'} {likes}
