@@ -77,7 +77,7 @@ const Judgement = ({ stack, push, pop, top }: JudgementProps) => {
   useEffect(() => {
     getList(undefined, {
       onSuccess: async (data) => {
-        const content = data.data.judgments ?? [];
+        const content = data.data.content ?? [];
 
         const mapped = content.map((item: any) => ({
           id: item.judgmentId,
@@ -90,7 +90,6 @@ const Judgement = ({ stack, push, pop, top }: JudgementProps) => {
           heaven_count: item.heavenCount,
           hell_count: item.hellCount,
           is_end: item.isEnd ?? false,
-          is_search: false,
           created_at: item.createdAt,
         }));
 
@@ -219,23 +218,12 @@ const Judgement = ({ stack, push, pop, top }: JudgementProps) => {
     setPageNumber(1);
   }, [text, choice]);
 
-  // 검색 필터 적용
-  useEffect(() => {
-    setJL((prevList: any) =>
-      prevList.map((item: any) => ({
-        ...item,
-        is_search: text ? (item.c_name ? item.c_name.includes(text) : false) : false,
-      })),
-    );
-  }, [text]);
-
   // 필터링된 전체 리스트 가져오기
   const getAllFilteredItems = () => {
-    const filtered = Judgement_List.filter((item) => {
-      const anySearch = Judgement_List.some((i) => i.is_search);
-      if (anySearch) return item.is_search;
-      return true;
-    });
+    // 검색어가 있으면 필터링, 없으면 전체 리스트
+    const filtered = text
+      ? Judgement_List.filter((item) => item.c_name && item.c_name.includes(text))
+      : Judgement_List;
 
     const popular = filtered.filter((item) => item.rank <= 3 && item.is_end === false);
     const normal = filtered.filter((item) => item.rank > 3 && item.is_end === false);

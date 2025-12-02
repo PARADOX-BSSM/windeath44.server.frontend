@@ -303,17 +303,6 @@ const JudgementChat = ({ judgement_id }: judgementChatProps) => {
     }
   };
 
-  const chat_list = ChatList.sort((a, b) => {
-    const aKey = a.parentCommentId ?? a.commentId; // parent_id가 null이면 id 사용
-    const bKey = b.parentCommentId ?? b.commentId;
-
-    // 1차 기준: parent_id 또는 id
-    if (aKey !== bKey) return aKey - bKey;
-
-    // 2차 기준: id (같은 그룹 내에서 id 오름차순)
-    return a.commentId - b.commentId;
-  });
-
   const scroll_ref = useRef<HTMLDivElement>(null);
 
   const select = useAtomValue(select_chat);
@@ -331,6 +320,29 @@ const JudgementChat = ({ judgement_id }: judgementChatProps) => {
   const [open, setOpen] = useState(false);
   const [choice, setChoice] = useState('최신순');
   const selected = useAtomValue(select_chat);
+
+  // 정렬 로직 적용 (부모 댓글만 정렬, 대댓글은 순서 유지)
+  const getSortedChatList = () => {
+    // 부모 댓글만 먼저 필터링
+    const parentComments = ChatList.filter((item) => item.parentCommentId === null);
+
+    // 정렬 기준에 따라 부모 댓글만 정렬
+    const sortedParents = [...parentComments].sort((a, b) => {
+      if (choice === '최신순') {
+        // createdAt을 기준으로 내림차순 (최신이 위로)
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      } else if (choice === '인기순') {
+        // likesCount를 기준으로 내림차순 (좋아요 많은 게 위로)
+        return b.likesCount - a.likesCount;
+      }
+      return 0;
+    });
+
+    // 대댓글은 원래 순서 그대로 유지
+    return sortedParents;
+  };
+
+  const chat_list = getSortedChatList();
 
   if (loading) {
     return <Loading />;
