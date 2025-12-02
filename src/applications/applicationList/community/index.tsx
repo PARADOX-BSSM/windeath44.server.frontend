@@ -75,7 +75,11 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
     setSort(value);
     setIsOpen(false);
     postListSearchMutation.mutate(
-      { status: 'PUBLISHED', title: search, mode: sortMap[value] },
+      {
+        status: 'PUBLISHED',
+        title: active === 'search' ? search : undefined,
+        mode: sortMap[value],
+      },
       {
         onError: () => {
           setAlert?.(<>게시글이 제대로 불러와지지 않았습니다.</>, () =>
@@ -201,7 +205,20 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
             <CommunityBtn
               name="게시글"
               selected={active === 'humor'}
-              onClick={() => setActive('humor')}
+              onClick={() => {
+                setActive('humor');
+                setSearch('');
+                postListSearchMutation.mutate(
+                  { status: 'PUBLISHED', mode: sortMap[sort] },
+                  {
+                    onError: () => {
+                      setAlert?.(<>게시글이 제대로 불러와지지 않았습니다.</>, () =>
+                        taskTransform?.('경고', ''),
+                      );
+                    },
+                  },
+                );
+              }}
               type="menu"
             />
             <CommunityBtn

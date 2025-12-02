@@ -56,6 +56,7 @@ const Posts: React.FC<PostsProps> = ({
   const [isEditing, setIsEditing] = useState(false);
   const [editedBody, setEditedBody] = useState(body);
   const [isLike, setIsLike] = useState(false);
+  const [localLikesCount, setLocalLikesCount] = useState(likesCount);
   const menuRef = useRef<HTMLDivElement>(null);
   const taskTransform = useAtomValue(taskTransformerAtom);
   const setAlert = useAtomValue(alerterAtom);
@@ -80,6 +81,10 @@ const Posts: React.FC<PostsProps> = ({
       setIsLike(commentLikedData.data);
     }
   }, [commentLikedData]);
+
+  useEffect(() => {
+    setLocalLikesCount(likesCount);
+  }, [likesCount]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -197,7 +202,7 @@ const Posts: React.FC<PostsProps> = ({
         {
           onSuccess: () => {
             setIsLike(false);
-            refetchComments();
+            setLocalLikesCount((prev) => prev - 1);
             // 좋아요 상태 쿼리 캐시 무효화
             queryClient.invalidateQueries({ queryKey: ['commentLike', post.commentId] });
           },
@@ -210,7 +215,7 @@ const Posts: React.FC<PostsProps> = ({
         {
           onSuccess: () => {
             setIsLike(true);
-            refetchComments();
+            setLocalLikesCount((prev) => prev + 1);
             // 좋아요 상태 쿼리 캐시 무효화
             queryClient.invalidateQueries({ queryKey: ['commentLike', post.commentId] });
           },
@@ -324,7 +329,7 @@ const Posts: React.FC<PostsProps> = ({
               onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
               onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
             />
-            {likesCount}
+            {localLikesCount}
           </_.Icons>
           {!parentCommentId && (
             <_.ReplyButton
