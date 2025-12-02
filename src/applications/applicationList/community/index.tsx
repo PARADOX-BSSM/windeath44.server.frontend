@@ -74,13 +74,8 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
   const modeTogle = (value: any) => {
     setSort(value);
     setIsOpen(false);
-    handlePostListSearch(0, sortMap[value]);
-  };
-
-  const handlePostListSearch = (page: number, title?: string, mode?: string) => {
-    const searchMode = mode ?? sortMap[sort];
     postListSearchMutation.mutate(
-      { status: 'PUBLISHED', /*page: page, size: 10,*/ title: title, mode: searchMode },
+      { status: 'PUBLISHED', title: search, mode: sortMap[value] },
       {
         onError: () => {
           setAlert?.(<>게시글이 제대로 불러와지지 않았습니다.</>, () =>
@@ -136,11 +131,29 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
 
   // 컴포넌트 마운트 시 초기 게시글 로딩
   useEffect(() => {
-    handlePostListSearch(0);
+    postListSearchMutation.mutate(
+      { status: 'PUBLISHED', mode: sortMap[sort] },
+      {
+        onError: () => {
+          setAlert?.(<>게시글이 제대로 불러와지지 않았습니다.</>, () =>
+            taskTransform?.('경고', ''),
+          );
+        },
+      },
+    );
   }, []);
 
   const refetchPosts = () => {
-    handlePostListSearch(0);
+    postListSearchMutation.mutate(
+      { status: 'PUBLISHED', mode: sortMap[sort] },
+      {
+        onError: () => {
+          setAlert?.(<>게시글이 제대로 불러와지지 않았습니다.</>, () =>
+            taskTransform?.('경고', ''),
+          );
+        },
+      },
+    );
   };
 
   const postCreateClick = () => {
@@ -162,7 +175,16 @@ const Community = ({ stack, push, pop, top }: dataStructureProps) => {
   };
 
   const searchHandle = () => {
-    handlePostListSearch(0, search);
+    postListSearchMutation.mutate(
+      { status: 'PUBLISHED', title: search, mode: sortMap[sort] },
+      {
+        onError: () => {
+          setAlert?.(<>게시글이 제대로 불러와지지 않았습니다.</>, () =>
+            taskTransform?.('경고', ''),
+          );
+        },
+      },
+    );
   };
 
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
