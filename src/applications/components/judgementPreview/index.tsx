@@ -17,8 +17,8 @@ const JudgementPreview = () => {
   const { mutate: getCharacters } = useGetCharactersByCharacterIds(setCharactersData);
 
   useEffect(() => {
-    if (isSuccess && data?.data?.ranks) {
-      const characterIds = data.data.ranks.map((item: any) => item.characterId);
+    if (isSuccess && data?.data?.content) {
+      const characterIds = data.data.content.map((item: any) => item.characterId);
       if (characterIds.length > 0) {
         getCharacters(characterIds);
       }
@@ -48,7 +48,7 @@ const JudgementPreview = () => {
       <_.JudgementLankArea>
         <_.JudgementText>진행중인 재판</_.JudgementText>
         <_.JudgementLankList>
-          {data?.data?.ranks?.map((rank: any) => {
+          {data?.data?.content?.map((rank: any) => {
             const character = charactersData.find((c) => c?.characterId === rank.characterId);
             return (
               <_.JudgementLank key={rank.characterId}>
