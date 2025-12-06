@@ -79,7 +79,9 @@ const ChatbotSelect = () => {
     if (!chatBotsQuery.data?.data?.values) return [];
     return chatBotsQuery.data.data.values.flat();
   }, [chatBotsQuery.data]);
-
+  const filteredChatBots = useMemo(() => {
+    return flattenedChatBots.filter((bot) => bot.name.includes(inputs));
+  }, [flattenedChatBots, inputs]);
   if (!token && setAlert) {
     const task = taskSearch?.('분신사바');
     if (task) removeTask(task);
@@ -103,7 +105,7 @@ const ChatbotSelect = () => {
         ) : chatBotsQuery.error ? (
           <div>Error loading chatbots</div>
         ) : (
-          flattenedChatBots?.map((item) => (
+          filteredChatBots?.map((item) => (
             <ChatbotItem
               key={item.chatbot_id}
               chatbot_id={item.chatbot_id}

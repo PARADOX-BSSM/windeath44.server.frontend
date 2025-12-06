@@ -2,6 +2,10 @@ import * as _ from './style';
 import verificationBadge from '@/assets/verification.png';
 import { useState, useEffect } from 'react';
 import { setCursorImage, CURSOR_IMAGES } from 'lib/setCursorImg';
+import { useAtomValue } from 'jotai';
+import { taskTransformerAtom } from '@/atoms/taskTransformer.ts';
+import { alerterAtom } from '@/atoms/alerter.ts';
+import { getCookie } from '@/api/auth/cookie.ts';
 
 interface PropsType {
   // nickname: string;
@@ -59,7 +63,9 @@ const Comment = ({
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
   // console.log(imgUrl);
-
+  const taskTransform = useAtomValue(taskTransformerAtom);
+  const setAlert = useAtomValue(alerterAtom);
+  const token = getCookie('access_token');
   const isOwner = currentUserId === userid;
   const isPending = commentId < 0; // 음수 ID는 임시 댓글 (아직 서버에 등록 중)
 
@@ -194,7 +200,15 @@ const Comment = ({
                         {isLiked ? '♥' : '♡'} {likes}
                       </_.LikeButton>
                       <_.ReplyButton
-                        onClick={() => setShowReplyForm(!showReplyForm)}
+                        onClick={() => {
+                          if (!token && setAlert) {
+                            setAlert(<> 답글 입력 기능은 로그인 후 이용하실 수 있습니다.</>, () => {
+                              taskTransform?.('경고', '');
+                            });
+                          } else {
+                            setShowReplyForm(!showReplyForm);
+                          }
+                        }}
                         onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
                         onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
                       >
