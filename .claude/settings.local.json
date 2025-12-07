@@ -16,7 +16,9 @@
       "Bash(xargs sed:*)",
       "Bash(curl:*)",
       "mcp__figma-dev-mode-mcp-server__get_design_context",
-      "mcp__figma-dev-mode-mcp-server__get_screenshot"
+      "mcp__figma-dev-mode-mcp-server__get_screenshot",
+      "Bash(git shortlog:*)",
+      "Bash(git config:*)"
     ],
     "deny": [],
     "ask": [],
