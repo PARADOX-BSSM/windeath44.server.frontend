@@ -252,6 +252,7 @@ const Application = (props: ApplicationProps) => {
                   width="100%"
                   onMouseEnter={() => {
                     if (!isAlertOpen) setCursorImage(CURSOR_IMAGES.hand);
+                    else setCursorImage(CURSOR_IMAGES.block);
                   }}
                   onMouseLeave={() => {
                     setCursorImage(CURSOR_IMAGES.default);
@@ -277,6 +278,7 @@ const Application = (props: ApplicationProps) => {
                   width="100%"
                   onMouseEnter={() => {
                     if (!isAlertOpen) setCursorImage(CURSOR_IMAGES.hand);
+                    else setCursorImage(CURSOR_IMAGES.block);
                   }}
                   onMouseLeave={() => {
                     setCursorImage(CURSOR_IMAGES.default);

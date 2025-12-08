@@ -1,4 +1,4 @@
-import { useAtom } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { focusAtom } from '@/atoms/windowManager';
 import { IconContainer } from '../layout/components/AppHandles';
 import { initializeGridAtom, resizeGridAtom, iconPositionsAtom } from '@/atoms/gridManager';
@@ -11,6 +11,7 @@ import * as _ from './style';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
 import { TaskType } from '@/modules/typeModule.tsx';
 import { isNotClickAtom, isSeoriDraggingAtom } from '@/atoms/cursorState';
+import { alertOpenAtom } from '@/atoms/alerter.ts';
 
 interface TaskBarProps {
   backUpFocus: string;
@@ -29,6 +30,7 @@ const Discover = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
   const [, setFocus] = useAtom(focusAtom);
   const Apps = useApps();
   const visibleApps = Apps.filter((app: TaskType) => app.visible);
+  const isAlertOpen = useAtomValue(alertOpenAtom);
 
   const [, initializeGrid] = useAtom(initializeGridAtom);
   const [, resizeGrid] = useAtom(resizeGridAtom);

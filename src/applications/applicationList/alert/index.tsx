@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import seori from '@/assets/sulkkagi/black_stone.svg';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
 import { alertOpenAtom } from '@/atoms/alerter';
+import { CURSOR_IMAGES, setCursorImage } from '@/lib/setCursorImg.tsx';
 
 interface AlertProps {
   text: JSX.Element;
@@ -37,7 +38,14 @@ const Alert = ({ text, onClick, onCancel }: AlertProps) => {
 
   return (
     <>
-      <_.overlay />
+      <_.overlay
+        onMouseEnter={() => {
+          setCursorImage(CURSOR_IMAGES.block);
+        }}
+        onMouseLeave={() => {
+          setCursorImage(CURSOR_IMAGES.default);
+        }}
+      />
       <_.main>
         <_.container>
           <_.place>
