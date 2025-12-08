@@ -64,6 +64,7 @@ const Alert = ({ text, onClick, onCancel }: AlertProps) => {
               width="144px"
               height="42px"
               fontSize="20px"
+              allowAlertCursor
             ></MemorialBtn>
             <MemorialBtn
               name={'취소'}
@@ -73,6 +74,7 @@ const Alert = ({ text, onClick, onCancel }: AlertProps) => {
               width="144px"
               height="42px"
               fontSize="20px"
+              allowAlertCursor
             ></MemorialBtn>
           </_.btnContainer>
         </_.container>

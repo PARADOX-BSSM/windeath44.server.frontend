@@ -1,7 +1,14 @@
-export const setCursorImage = (imagePath: string) => {
+let cursorLockImage: string | null = null;
+
+export const setCursorLock = (imagePath: string | null) => {
+  cursorLockImage = imagePath;
+};
+
+export const setCursorImage = (imagePath: string, force?: boolean) => {
+  const finalImage = force ? imagePath : cursorLockImage ?? imagePath;
   const cursor = document.getElementById('cursor');
   if (cursor) {
-    cursor.style.backgroundImage = `url('${imagePath}')`;
+    cursor.style.backgroundImage = `url('${finalImage}')`;
 
     // 윈도우 드래그 커서들은 클릭점이 중앙이므로 transform 적용
     const centerCursors = [
@@ -12,7 +19,7 @@ export const setCursorImage = (imagePath: string) => {
       '/assets/cursor/cursor_window_drag_135.svg',
     ];
 
-    if (centerCursors.includes(imagePath)) {
+    if (centerCursors.includes(finalImage)) {
       cursor.style.transform = 'translate(-50%, -50%)';
     } else {
       cursor.style.transform = 'translate(0, 0)';

@@ -286,6 +286,7 @@ const Application = (props: ApplicationProps) => {
                 />
               </_.FullScreenButton>
               <_.ExitButton
+                data-allow-alert-cursor="true"
                 onMouseDown={(e: React.MouseEvent<HTMLDivElement>) => {
                   e.stopPropagation();
                   props.removeTask(props.removeCompnent);
@@ -294,6 +295,8 @@ const Application = (props: ApplicationProps) => {
                   }
                 }}
                 isFocus={focus === (props.instanceId || props.name)}
+                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand, isAlertOpen)}
+                onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default, isAlertOpen)}
               >
                 <img
                   src={Exit}
