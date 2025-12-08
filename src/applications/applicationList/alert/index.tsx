@@ -33,7 +33,12 @@ const Alert = ({ text, onClick, onCancel }: AlertProps) => {
       onCancel();
       return;
     }
-    taskTransform?.('경고', '');
+    if (taskTransform) {
+      taskTransform('경고', '');
+    } else {
+      setAlertOpen(false);
+      setFocus('Observer');
+    }
   };
 
   return (
