@@ -1,23 +1,36 @@
 import * as _ from './style.ts';
 import MemorialBtn from '@/applications/components/memorialBtn';
-import { useAtom } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { focusAtom } from '@/atoms/windowManager.ts';
 import { useEffect } from 'react';
 import seori from '@/assets/sulkkagi/black_stone.svg';
+import { taskTransformerAtom } from '@/atoms/taskTransformer';
 
 interface AlertProps {
   text: JSX.Element;
   onClick: () => any;
+  onCancel?: () => void;
 }
 
-const Alert = ({ text, onClick }: AlertProps) => {
+const Alert = ({ text, onClick, onCancel }: AlertProps) => {
   const [, setFocus] = useAtom(focusAtom);
+  const taskTransform = useAtomValue(taskTransformerAtom);
+
   useEffect(() => {
     setFocus('');
     return () => {
       setFocus('Observer');
     };
   }, [setFocus]);
+
+  const handleCancel = () => {
+    if (onCancel) {
+      onCancel();
+      return;
+    }
+    taskTransform?.('경고', '');
+  };
+
   return (
     <>
       <_.overlay />
@@ -36,6 +49,15 @@ const Alert = ({ text, onClick }: AlertProps) => {
               type="submit"
               active={true}
               onClick={onClick}
+              width="144px"
+              height="42px"
+              fontSize="20px"
+            ></MemorialBtn>
+            <MemorialBtn
+              name={'취소'}
+              type="submit"
+              active={true}
+              onClick={handleCancel}
               width="144px"
               height="42px"
               fontSize="20px"
