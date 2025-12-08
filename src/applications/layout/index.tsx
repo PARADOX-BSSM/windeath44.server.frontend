@@ -200,18 +200,19 @@ const Application = (props: ApplicationProps) => {
   }, [setIsNotClick, props.type]);
 
   if (props.type === 'App') {
+    const posX = ui.position.x + ui.positionOffset.x;
+    const posY = ui.position.y + ui.positionOffset.y;
+
     return (
       <section
         style={{
           position: 'fixed',
-          left: 0,
-          top: 0,
-          transform: isAlertApp
-            ? undefined
-            : `translate(${ui.position.x + ui.positionOffset.x}rem, ${ui.position.y + ui.positionOffset.y}rem)`,
+          left: isAlertApp ? `${posX}rem` : 0,
+          top: isAlertApp ? `${posY}rem` : 0,
+          transform: isAlertApp ? undefined : `translate(${posX}rem, ${posY}rem)`,
           height: `${(ui.size.height + ui.sizeOffset.height).toString()}rem`,
           width: `${(ui.size.width + ui.sizeOffset.width).toString()}rem`,
-          zIndex: zIndex,
+          zIndex: isAlertApp ? 2001 : zIndex,
           display: isMinimized || !hasEnabledSave ? 'none' : 'block',
           backgroundColor: 'white',
           border: `3px solid #ff8ef6`,
