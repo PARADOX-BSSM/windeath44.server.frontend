@@ -6,3 +6,4 @@ export const alerterAtom = atom<
 export const reconfirmAlerterAtom = atom<
   ((icon: string, confirmText: string, onClick: () => void) => void) | null
 >(null);
+export const alertOpenAtom = atom<boolean>(false);

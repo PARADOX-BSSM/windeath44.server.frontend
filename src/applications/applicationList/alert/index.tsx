@@ -1,10 +1,11 @@
 import * as _ from './style.ts';
 import MemorialBtn from '@/applications/components/memorialBtn';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { focusAtom } from '@/atoms/windowManager.ts';
 import { useEffect } from 'react';
 import seori from '@/assets/sulkkagi/black_stone.svg';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
+import { alertOpenAtom } from '@/atoms/alerter';
 
 interface AlertProps {
   text: JSX.Element;
@@ -15,13 +16,16 @@ interface AlertProps {
 const Alert = ({ text, onClick, onCancel }: AlertProps) => {
   const [, setFocus] = useAtom(focusAtom);
   const taskTransform = useAtomValue(taskTransformerAtom);
+  const setAlertOpen = useSetAtom(alertOpenAtom);
 
   useEffect(() => {
+    setAlertOpen(true);
     setFocus('');
     return () => {
+      setAlertOpen(false);
       setFocus('Observer');
     };
-  }, [setFocus]);
+  }, [setAlertOpen, setFocus]);
 
   const handleCancel = () => {
     if (onCancel) {
