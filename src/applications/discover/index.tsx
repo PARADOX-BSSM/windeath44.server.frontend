@@ -30,7 +30,6 @@ const Discover = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
   const [, setFocus] = useAtom(focusAtom);
   const Apps = useApps();
   const visibleApps = Apps.filter((app: TaskType) => app.visible);
-  const isAlertOpen = useAtomValue(alertOpenAtom);
 
   const [, initializeGrid] = useAtom(initializeGridAtom);
   const [, resizeGrid] = useAtom(resizeGridAtom);
