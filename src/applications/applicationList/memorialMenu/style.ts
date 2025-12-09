@@ -82,7 +82,7 @@ export const DescriptionBox = styled.div`
   gap: ${24 / 16}rem;
   flex: 1 1 0;
   align-self: stretch;
-  background: #FFF;
+  background: #fff;
   box-shadow: ${shadow};
   overflow-y: auto;
   overflow-x: hidden;
@@ -91,7 +91,7 @@ export const DescriptionBox = styled.div`
 export const Description = styled.div`
   flex: 1 1 0;
   align-self: stretch;
-  color: #2E2E2E;
+  color: #2e2e2e;
   font-family: Galmuri11;
   font-size: ${24 / 16}rem;
   font-style: normal;
@@ -116,11 +116,11 @@ export const BtnInnerWrapper = styled.div`
 `;
 
 export const BtnVoid = styled.div`
-  height: 0.3375rem;
+  height: 0.2075rem;
   flex-direction: column;
   align-self: stretch;
-  background: #FFF;
-  box-shadow: ${shadow};
+  background: var(--dark-primary-color);
+  box-shadow: -0.0825rem -0.0825rem 0px 0px #fff inset;
 `;
 
 export const Footer = styled.footer`
