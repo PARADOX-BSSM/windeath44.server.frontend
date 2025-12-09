@@ -4,7 +4,7 @@ import Exit from '@/assets/headerButton/exit.svg';
 import Full from '@/assets/headerButton/full.svg';
 import Min from '@/assets/headerButton/min.svg';
 import Heart from '@/assets/headerButton/heart.svg';
-import { useAtom } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import {
   isLogInedAtom,
   focusAtom,
@@ -13,6 +13,7 @@ import {
 } from '@/atoms/windowManager.ts';
 import { isNotClickAtom } from '@/atoms/cursorState.ts';
 import { windowPositionsAtom } from '@/atoms/processManager.ts';
+import { alertOpenAtom } from '@/atoms/alerter';
 import { ApplicationProps } from './utils';
 import React from 'react';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
@@ -29,6 +30,7 @@ const Application = (props: ApplicationProps) => {
   const [, , , setVirtualWindowPositions] = useProcessManager();
   const [windowName, setWindowName] = useState<string>(props.name);
   const [isNotClick, setIsNotClick] = useAtom(isNotClickAtom);
+  const isAlertOpen = useAtomValue(alertOpenAtom);
 
   // UI 상태 관리
   const ui = useUI();
@@ -36,6 +38,7 @@ const Application = (props: ApplicationProps) => {
   const [isMinimized, setIsMinimized] = useState<boolean>(false);
   const [hasEnabledSave, setHasEnabledSave] = useState<boolean>(false);
   const [zIndex, setZIndex] = useState<number>(layer);
+  const isAlertApp = props.name === '경고';
 
   // 전체화면 백업용 상태
   const [backupPosition, setBackupPosition] = useState<{ x: number; y: number } | null>(null);
@@ -197,16 +200,19 @@ const Application = (props: ApplicationProps) => {
   }, [setIsNotClick, props.type]);
 
   if (props.type === 'App') {
+    const posX = ui.position.x + ui.positionOffset.x;
+    const posY = ui.position.y + ui.positionOffset.y;
+
     return (
       <section
         style={{
           position: 'fixed',
-          left: 0,
-          top: 0,
-          transform: `translate(${ui.position.x + ui.positionOffset.x}rem, ${ui.position.y + ui.positionOffset.y}rem)`,
+          left: isAlertApp ? `${posX}rem` : 0,
+          top: isAlertApp ? `${posY}rem` : 0,
+          transform: isAlertApp ? undefined : `translate(${posX}rem, ${posY}rem)`,
           height: `${(ui.size.height + ui.sizeOffset.height).toString()}rem`,
           width: `${(ui.size.width + ui.sizeOffset.width).toString()}rem`,
-          zIndex: zIndex,
+          zIndex: isAlertApp ? 2001 : zIndex,
           display: isMinimized || !hasEnabledSave ? 'none' : 'block',
           backgroundColor: 'white',
           border: `3px solid #ff8ef6`,
@@ -229,10 +235,15 @@ const Application = (props: ApplicationProps) => {
             <_.BtnContainer>
               <_.MinimizeButton
                 onMouseDown={(e: React.MouseEvent<HTMLDivElement>) => {
+                  if (isAlertOpen) {
+                    e.stopPropagation();
+                    return;
+                  }
                   e.stopPropagation();
                   setIsMinimized(!isMinimized);
                 }}
                 isFocus={focus === (props.instanceId || props.name)}
+                disabled={isAlertOpen}
               >
                 <img
                   src={Min}
@@ -240,7 +251,8 @@ const Application = (props: ApplicationProps) => {
                   draggable="false"
                   width="100%"
                   onMouseEnter={() => {
-                    setCursorImage(CURSOR_IMAGES.hand);
+                    if (!isAlertOpen) setCursorImage(CURSOR_IMAGES.hand);
+                    else setCursorImage(CURSOR_IMAGES.block);
                   }}
                   onMouseLeave={() => {
                     setCursorImage(CURSOR_IMAGES.default);
@@ -249,10 +261,15 @@ const Application = (props: ApplicationProps) => {
               </_.MinimizeButton>
               <_.FullScreenButton
                 onMouseDown={(e: React.MouseEvent<HTMLDivElement>) => {
+                  if (isAlertOpen) {
+                    e.stopPropagation();
+                    return;
+                  }
                   e.stopPropagation();
                   setIsFullScreen(!isFullScreen);
                 }}
                 isFocus={focus === (props.instanceId || props.name)}
+                disabled={isAlertOpen}
               >
                 <img
                   src={Full}
@@ -260,7 +277,8 @@ const Application = (props: ApplicationProps) => {
                   draggable="false"
                   width="100%"
                   onMouseEnter={() => {
-                    setCursorImage(CURSOR_IMAGES.hand);
+                    if (!isAlertOpen) setCursorImage(CURSOR_IMAGES.hand);
+                    else setCursorImage(CURSOR_IMAGES.block);
                   }}
                   onMouseLeave={() => {
                     setCursorImage(CURSOR_IMAGES.default);
@@ -268,6 +286,7 @@ const Application = (props: ApplicationProps) => {
                 />
               </_.FullScreenButton>
               <_.ExitButton
+                data-allow-alert-cursor="true"
                 onMouseDown={(e: React.MouseEvent<HTMLDivElement>) => {
                   e.stopPropagation();
                   props.removeTask(props.removeCompnent);
@@ -276,6 +295,8 @@ const Application = (props: ApplicationProps) => {
                   }
                 }}
                 isFocus={focus === (props.instanceId || props.name)}
+                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand, isAlertOpen)}
+                onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default, isAlertOpen)}
               >
                 <img
                   src={Exit}

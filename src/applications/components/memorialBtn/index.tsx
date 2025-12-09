@@ -10,6 +10,7 @@ interface PropsType {
   width?: string;
   height?: string;
   fontSize?: string;
+  allowAlertCursor?: boolean;
 }
 
 const MemorialBtn = ({
@@ -21,6 +22,7 @@ const MemorialBtn = ({
   width,
   height,
   fontSize = '20px',
+  allowAlertCursor,
 }: PropsType) => {
   if (type === 'hidden') {
     return (
@@ -47,8 +49,9 @@ const MemorialBtn = ({
         width={width}
         height={height}
         fontSize={fontSize}
-        onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
-        onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+        data-allow-alert-cursor={allowAlertCursor || undefined}
+        onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand, allowAlertCursor)}
+        onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default, allowAlertCursor)}
       >
         {name}
       </_.SubmitActive>
@@ -60,8 +63,8 @@ const MemorialBtn = ({
         width={width}
         height={height}
         fontSize={fontSize}
-        onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
-        onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+        onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand, allowAlertCursor)}
+        onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default, allowAlertCursor)}
       >
         {name}
       </_.Btn>
@@ -70,8 +73,8 @@ const MemorialBtn = ({
         width={width}
         height={height}
         fontSize={fontSize}
-        onMouseEnter={() => setCursorImage(CURSOR_IMAGES.block)}
-        onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+        onMouseEnter={() => setCursorImage(CURSOR_IMAGES.block, allowAlertCursor)}
+        onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default, allowAlertCursor)}
       >
         {name}
       </_.SelectedBtn>

@@ -17,7 +17,7 @@ import { useTaskSearchFunction } from '@/hooks/taskSearch.tsx';
 import { useAlerter } from '@/hooks/alerter.tsx';
 import { useConfirmAlerter } from '@/hooks/alerter.tsx';
 import { useNotification } from '@/hooks/notification.tsx';
-import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg.tsx';
+import { setCursorImage, CURSOR_IMAGES, setCursorLock } from '@/lib/setCursorImg.tsx';
 import { useDrag } from 'react-use-gesture';
 import useApps from '@/applications/data/importManager.tsx';
 import { lastTaskListAtom } from '@/atoms/processManager.ts';
@@ -29,6 +29,7 @@ import { isNotClickAtom, useNativeContextMenuAtom } from '@/atoms/cursorState.ts
 import { feedsAtom } from '@/atoms/feeds';
 import { useGetFeedsMutation } from '@/api/feeds/getFeeds';
 import ContextMenu from '@/applications/components/contextMenu';
+import { alertOpenAtom } from '@/atoms/alerter.ts';
 
 const Application = lazy(() => import('@/applications/layout/index.tsx'));
 
@@ -67,6 +68,7 @@ const WindowManager = () => {
   const clickTimeout = useRef<NodeJS.Timeout | null>(null);
   const hasRestoredTasks = useRef(false);
   const hasCheckedNotification = useRef(false);
+  const isAlertOpen = useAtomValue(alertOpenAtom);
 
   // 공지사항 조회
   const { data: notificationsData } = useGetPublicNotificationsQuery();
@@ -377,9 +379,36 @@ const WindowManager = () => {
   useEffect(() => {
     const cursor = document.getElementById('cursor');
     if (!cursor) return;
-    if (isNotClick) return;
+    // Alert 시 기본 커서를 block으로 잠금(예외는 핸들러 내부에서 처리)
+    setCursorLock(isAlertOpen ? CURSOR_IMAGES.block : null);
+    if (isAlertOpen) {
+      setCursorImage(CURSOR_IMAGES.block, true);
+    }
+    if (!isAlertOpen && isNotClick) return;
 
-    const handleClick = () => {
+    const handleClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement | null;
+
+      if (isAlertOpen) {
+        const allowed = target?.closest('[data-allow-alert-cursor="true"]');
+        if (!allowed) {
+          setCursorImage(CURSOR_IMAGES.block, true);
+          return;
+        }
+        // 잠시 잠금 해제 후 클릭 커서 표시
+        setCursorLock(null);
+        setCursorImage(CURSOR_IMAGES.click, true);
+        if (clickTimeout.current) {
+          clearTimeout(clickTimeout.current);
+        }
+        clickTimeout.current = setTimeout(() => {
+          setCursorLock(CURSOR_IMAGES.block);
+          setCursorImage(CURSOR_IMAGES.block, true);
+          clickTimeout.current = null;
+        }, 300);
+        return;
+      }
+
       const [dx, dy] = dragOffset.current;
       const dragged = Math.abs(dx) > 10 || Math.abs(dy) > 10;
       if (dragged) return;
@@ -394,8 +423,11 @@ const WindowManager = () => {
     };
 
     document.addEventListener('mousedown', handleClick);
-    return () => document.removeEventListener('mousedown', handleClick);
-  }, [isNotClick]);
+    return () => {
+      document.removeEventListener('mousedown', handleClick);
+      setCursorLock(null);
+    };
+  }, [isNotClick, isAlertOpen]);
 
   // 우클릭 메뉴 처리
   useEffect(() => {

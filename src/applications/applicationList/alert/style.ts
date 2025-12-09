@@ -61,4 +61,6 @@ export const btnContainer = styled.div`
   width: 100%;
   height: 100%;
   justify-content: center;
+  align-items: center;
+  gap: 12px;
 `;
