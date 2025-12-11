@@ -4,7 +4,6 @@ import { anime } from '@/config';
 import api from '../axiosInstance';
 
 const getCharacterIdsByAnniversary  = async() => {
-    // 실제 API 호출
     try {
         const response: AxiosResponse = await api.get(`${anime}/characters/today-anniversary`);
         return response.data;

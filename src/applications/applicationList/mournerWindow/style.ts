@@ -14,6 +14,10 @@ export const Main_Text = styled.div`
     font-style: normal;
     line-height: normal;
 
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
     &:hover {
     color: #9A5A95;
 `;

@@ -4,13 +4,13 @@ import {setCursorImage,CURSOR_IMAGES} from '@/lib/setCursorImg'
 import { useGetCharacterIdsByAnniversary } from '@/api/notification/getCharacterIdsByAnniversary';
 import { useAtomValue } from 'jotai';
 import { taskTransformerAtom } from '@/atoms/taskTransformer';
+import { alerterAtom } from '@/atoms/alerter';
+import { useGetMemorialsCharacterFilteredQuery } from '@/api/memorial/getMemorialsCharacterFiltered';
 
 interface Today_Anniversary {
     window: React.CSSProperties;
     setWindow: React.Dispatch<React.SetStateAction<React.CSSProperties>>;
 }
-
-
 
 const anniversaryWindow = ({window,setWindow}:Today_Anniversary) => {
 
@@ -22,6 +22,19 @@ const [currentIndex, setCurrentIndex] = useState(0);
 
 // taskTransform: 추모관으로 이동하기 위한 함수
 const taskTransform = useAtomValue(taskTransformerAtom);
+const setAlert = useAtomValue(alerterAtom);
+
+// 현재 선택된 캐릭터의 ID 가져오기
+const currentCharacter = anniversaryData?.[currentIndex];
+const currentCharacterId = currentCharacter?.id || currentCharacter?.characterId;
+
+// 캐릭터 ID로 추모관 조회
+const { data: memorialsData } = useGetMemorialsCharacterFilteredQuery({
+    orderBy: 'recently-updated',
+    page: 1,
+    characters: currentCharacterId ? [currentCharacterId] : [],
+    enabled: !!currentCharacterId && !isLoading && !isError,
+});
 
 const customWindow={...window, top:10, left:885 }
     useEffect(()=>{setWindow(customWindow)},[])
@@ -61,20 +74,51 @@ const customWindow={...window, top:10, left:885 }
             return;
         }
 
-        // 현재 보여지고 있는 고인 데이터 가져오기
-        const currentCharacter = anniversaryData[currentIndex];
-
         // 고인의 ID와 이름 추출
         const characterId = currentCharacter?.id || currentCharacter?.characterId;
         const characterName = currentCharacter?.name || currentCharacter?.characterName;
 
-        // characterId가 있을 때만 추모관으로 이동
-        if (characterId && taskTransform) {
-            taskTransform('', '추모관 뷰어', {
-                characterId: characterId,
-                characterName: characterName,
-            });
+        // API 응답 구조 확인: memorialsData?.data?.values 또는 memorialsData?.data
+        const memorials = memorialsData?.data?.values || memorialsData?.data || [];
+
+        if (!Array.isArray(memorials) || memorials.length === 0) {
+            setAlert?.(
+                <>
+                    해당 캐릭터의 추모관을 찾을 수 없습니다.
+                    <br />
+                    추모관이 존재하는지 확인해주세요.
+                </>,
+                () => {
+                    taskTransform?.('경고', '');
+                },
+            );
+            return;
         }
+
+        // 첫 번째 추모관 사용 (캐릭터 ID로 필터링된 추모관)
+        const firstMemorial = memorials[0];
+
+        if (!firstMemorial || !firstMemorial.memorialId) {
+            setAlert?.(
+                <>
+                    추모관 데이터를 찾을 수 없습니다.
+                    <br />
+                    잠시 후 다시 시도해주세요.
+                </>,
+                () => {
+                    taskTransform?.('경고', '');
+                },
+            );
+            return;
+        }
+
+        const memorialId = firstMemorial.memorialId;
+
+        // taskTransform 사용 (chatBot과 동일한 방식)
+        taskTransform?.('', '추모관 뷰어', {
+            memorialId: memorialId,
+            characterId: characterId,
+        });
     }
 
     return (
