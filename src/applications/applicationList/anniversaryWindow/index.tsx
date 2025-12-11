@@ -76,7 +76,6 @@ const customWindow={...window, top:10, left:885 }
 
         // 고인의 ID와 이름 추출
         const characterId = currentCharacter?.id || currentCharacter?.characterId;
-        const characterName = currentCharacter?.name || currentCharacter?.characterName;
 
         // API 응답 구조 확인: memorialsData?.data?.values 또는 memorialsData?.data
         const memorials = memorialsData?.data?.values || memorialsData?.data || [];
