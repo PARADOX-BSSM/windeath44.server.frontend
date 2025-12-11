@@ -17,21 +17,32 @@ import { useTaskSearchFunction } from '@/hooks/taskSearch.tsx';
 import { useAlerter } from '@/hooks/alerter.tsx';
 import { useConfirmAlerter } from '@/hooks/alerter.tsx';
 import { useNotification } from '@/hooks/notification.tsx';
-import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg.tsx';
+import { setCursorImage, CURSOR_IMAGES, setCursorLock } from '@/lib/setCursorImg.tsx';
 import { useDrag } from 'react-use-gesture';
 import useApps from '@/applications/data/importManager.tsx';
-import { lastTaskListAtom, windowPositionsAtom } from '@/atoms/processManager.ts';
+import { lastTaskListAtom } from '@/atoms/processManager.ts';
 import { useGetPublicNotificationsQuery } from '@/api/notification/getPublicNotifications';
 import { notificationAtom, notificationListAtom } from '@/atoms/notification';
 import { settingsAtom } from '@/atoms/settings.ts';
 import { DEFAULT_NOTIFICATIONS } from '@/data/notifications.ts';
-import { isNotClickAtom } from '@/atoms/cursorState.ts';
+import { isNotClickAtom, useNativeContextMenuAtom } from '@/atoms/cursorState.ts';
+import { feedsAtom } from '@/atoms/feeds';
+import { useGetFeedsMutation } from '@/api/feeds/getFeeds';
+import ContextMenu from '@/applications/components/contextMenu';
+import { alertOpenAtom } from '@/atoms/alerter.ts';
 
 const Application = lazy(() => import('@/applications/layout/index.tsx'));
 
 const WindowManager = () => {
   const [cursorVec, setCursorVec] = useState<number[]>([0, 0, 0, 0]);
   const [sideWidth, setSideWidth] = useState<number>(0);
+  const [contextMenu, setContextMenu] = useState<{
+    x: number;
+    y: number;
+    isInputElement: boolean;
+    isAppButton: boolean;
+    targetElement: HTMLElement | null;
+  } | null>(null);
 
   // jotai 전역 상태
   const [focus, setFocus] = useAtom(focusAtom);
@@ -44,6 +55,9 @@ const WindowManager = () => {
   const setNotificationList = useSetAtom(notificationListAtom);
   const [settings] = useAtom(settingsAtom);
   const [isNotClick] = useAtom(isNotClickAtom);
+  const [useNativeContextMenu] = useAtom(useNativeContextMenuAtom);
+  const setFeeds = useSetAtom(feedsAtom);
+  const { mutate: getFeeds } = useGetFeedsMutation();
 
   const [taskList, addTask, removeTask, setVirtualWindowPosition] = useProcessManager();
   const [, , , addTaskToDesktop] = useVirtualProcessManager();
@@ -54,6 +68,9 @@ const WindowManager = () => {
   const clickTimeout = useRef<NodeJS.Timeout | null>(null);
   const hasRestoredTasks = useRef(false);
   const hasCheckedNotification = useRef(false);
+  const hasInitializedDiscover = useRef(false);
+  const hasInitializedNotifications = useRef(false);
+  const isAlertOpen = useAtomValue(alertOpenAtom);
 
   // 공지사항 조회
   const { data: notificationsData } = useGetPublicNotificationsQuery();
@@ -119,6 +136,22 @@ const WindowManager = () => {
           { top: number; left: number; width: number; height: number }
         > = {};
         tasks.forEach((savedTask) => {
+          if (savedTask.stackKey && savedTask.stackData) {
+            try {
+              localStorage.setItem(savedTask.stackKey, savedTask.stackData as string);
+              console.log('[WindowManager] Restored stack storage for', savedTask.stackKey);
+            } catch (e) {
+              console.warn('Failed to restore stack storage', savedTask.stackKey, e);
+            }
+          } else if (savedTask.stackKey) {
+            // 스택 데이터가 없으면 기존 키를 정리
+            try {
+              localStorage.removeItem(savedTask.stackKey);
+            } catch (e) {
+              console.warn('Failed to clear missing stack storage', savedTask.stackKey, e);
+            }
+          }
+
           if (savedTask.position) {
             positions[savedTask.name] = savedTask.position;
             console.log(
@@ -162,12 +195,14 @@ const WindowManager = () => {
     }
   }, [hydrated, isLogIned, lastTaskList, availableApps, addTask, setVirtualWindowPosition]);
 
+  // Discover 초기화 (availableApps 불필요)
   useEffect(() => {
-    if (!hydrated) return; // hydration 전엔 아무것도 하지 않음
+    if (!hydrated || hasInitializedDiscover.current) return;
 
-    //초기 기본 설정
     if (isLogIned === 'true') {
+      hasInitializedDiscover.current = true;
       removeTask(logIn);
+
       const discover: TaskType = {
         component: (
           <Discover
@@ -195,43 +230,57 @@ const WindowManager = () => {
         addTask(discover);
         addTask(virtualDesktopService);
       }, 200);
-
-      // bootLoader 끝난 후 알림창 띄우기 (3.5초 후)
-      setTimeout(() => {
-        if (!availableApps || availableApps.length === 0) return;
-
-        // 알림창 위치 설정
-        const notificationPositions: Record<string, { top: number; left: number; width: number; height: number }> = {
-          '오늘의 기일': { top: 10, left: 920, width: 370, height: 87 },
-          '오늘의 추모관': { top: 108, left: 920, width: 370, height: 87 },
-          '오늘의 조문객': { top: 205, left: 920, width: 370, height: 87 },
-        };
-        setVirtualWindowPosition(notificationPositions, 0);
-
-        // 오늘의 기일
-        const anniversaryApp = availableApps.find(app => app.id === 10001 && app.name === '오늘의 기일');
-        if (anniversaryApp) {
-          addTask(anniversaryApp);
-        }
-
-        // 추모관 알림
-        const memorialApp = availableApps.find(app => app.id === 10002 && app.name === '오늘의 추모관');
-        if (memorialApp) {
-          addTask(memorialApp);
-        }
-
-        // 조문객 알림
-        const mournerApp = availableApps.find(app => app.id === 10003 && app.name === '오늘의 조문객');
-        if (mournerApp) {
-          addTask(mournerApp);
-        }
-      }, 3500);
     } else {
       setTimeout(() => {
         addTask(logIn);
       }, 200);
     }
-  }, [isLogIned, hydrated, availableApps]);
+  }, [isLogIned, hydrated]);
+
+  // 알림창 초기화 (availableApps 필요)
+  useEffect(() => {
+    if (!hydrated || hasInitializedNotifications.current || isLogIned !== 'true') return;
+    if (!availableApps || availableApps.length === 0) return;
+
+    hasInitializedNotifications.current = true;
+
+    // bootLoader 끝난 후 알림창 띄우기 (3.5초 후)
+    setTimeout(() => {
+      // 알림창 위치 설정
+      const notificationPositions: Record<string, { top: number; left: number; width: number; height: number }> = {
+        '오늘의 기일': { top: 10, left: 920, width: 370, height: 87 },
+        '오늘의 추모관': { top: 108, left: 920, width: 370, height: 87 },
+        '오늘의 조문객': { top: 205, left: 920, width: 370, height: 87 },
+      };
+      setVirtualWindowPosition(notificationPositions, 0);
+
+      // 오늘의 기일
+      const anniversaryApp = availableApps.find(app => app.id === 10001 && app.name === '오늘의 기일');
+      if (anniversaryApp) {
+        addTask(anniversaryApp);
+      }
+
+      // 추모관 알림
+      const memorialApp = availableApps.find(app => app.id === 10002 && app.name === '오늘의 추모관');
+      if (memorialApp) {
+        addTask(memorialApp);
+      }
+
+      // 조문객 알림
+      const mournerApp = availableApps.find(app => app.id === 10003 && app.name === '오늘의 조문객');
+      if (mournerApp) {
+        addTask(mournerApp);
+      }
+    }, 3500);
+  }, [hydrated, isLogIned, availableApps]);
+
+  // 로그아웃 시 ref 리셋
+  useEffect(() => {
+    if (isLogIned !== 'true') {
+      hasInitializedDiscover.current = false;
+      hasInitializedNotifications.current = false;
+    }
+  }, [isLogIned]);
 
   // 공지사항 데이터를 atom에 저장 (항상 실행)
   useEffect(() => {
@@ -270,19 +319,6 @@ const WindowManager = () => {
       isLogIned !== 'true'
     )
       return;
-    if (!notificationsData?.data) return;
-
-    const openNotifications = notificationsData.data.filter((n) => n.is_open);
-    if (openNotifications.length === 0) {
-      hasCheckedNotification.current = true;
-      if (
-        !hydrated ||
-        hasCheckedNotification.current ||
-        !settings.showBootNotification ||
-        isLogIned !== 'true'
-      )
-        return;
-    }
 
     hasCheckedNotification.current = true;
 
@@ -308,6 +344,26 @@ const WindowManager = () => {
       }, 500); // 부팅 후 0.5초 뒤에 표시
     }
   }, [hydrated, settings, isLogIned, notificationsData, setNotification]);
+
+  // 부팅 시 feeds 데이터 가져오기
+  useEffect(() => {
+    if (!hydrated) return;
+
+    getFeeds(
+      { days: 5, size: 10 },
+      {
+        onSuccess: (response) => {
+          if (response?.data) {
+            setFeeds(response.data);
+            console.log('[WindowManager] Feeds loaded:', response.data.length);
+          }
+        },
+        onError: (error) => {
+          console.error('[WindowManager] Failed to load feeds:', error);
+        },
+      },
+    );
+  }, [hydrated, getFeeds, setFeeds]);
 
   useEffect(() => {
     const container = document.getElementById('cursorContainer') as HTMLElement;
@@ -372,9 +428,36 @@ const WindowManager = () => {
   useEffect(() => {
     const cursor = document.getElementById('cursor');
     if (!cursor) return;
-    if (isNotClick) return;
+    // Alert 시 기본 커서를 block으로 잠금(예외는 핸들러 내부에서 처리)
+    setCursorLock(isAlertOpen ? CURSOR_IMAGES.block : null);
+    if (isAlertOpen) {
+      setCursorImage(CURSOR_IMAGES.block, true);
+    }
+    if (!isAlertOpen && isNotClick) return;
 
-    const handleClick = () => {
+    const handleClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement | null;
+
+      if (isAlertOpen) {
+        const allowed = target?.closest('[data-allow-alert-cursor="true"]');
+        if (!allowed) {
+          setCursorImage(CURSOR_IMAGES.block, true);
+          return;
+        }
+        // 잠시 잠금 해제 후 클릭 커서 표시
+        setCursorLock(null);
+        setCursorImage(CURSOR_IMAGES.click, true);
+        if (clickTimeout.current) {
+          clearTimeout(clickTimeout.current);
+        }
+        clickTimeout.current = setTimeout(() => {
+          setCursorLock(CURSOR_IMAGES.block);
+          setCursorImage(CURSOR_IMAGES.block, true);
+          clickTimeout.current = null;
+        }, 300);
+        return;
+      }
+
       const [dx, dy] = dragOffset.current;
       const dragged = Math.abs(dx) > 10 || Math.abs(dy) > 10;
       if (dragged) return;
@@ -389,8 +472,40 @@ const WindowManager = () => {
     };
 
     document.addEventListener('mousedown', handleClick);
-    return () => document.removeEventListener('mousedown', handleClick);
-  }, [isNotClick]);
+    return () => {
+      document.removeEventListener('mousedown', handleClick);
+      setCursorLock(null);
+    };
+  }, [isNotClick, isAlertOpen]);
+
+  // 우클릭 메뉴 처리
+  useEffect(() => {
+    const handleContextMenu = (e: MouseEvent) => {
+      // 네이티브 메뉴 사용 시 커스텀 메뉴 표시 안 함
+      if (useNativeContextMenu) {
+        return;
+      }
+
+      e.preventDefault();
+
+      // input, textarea 요소인지 확인
+      const target = e.target as HTMLElement;
+      const isInputElement = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA';
+
+      const isAppButton = target.closest('.app-button') ? true : false;
+
+      setContextMenu({
+        x: e.clientX,
+        y: e.clientY,
+        isInputElement,
+        isAppButton,
+        targetElement: target,
+      });
+    };
+
+    document.addEventListener('contextmenu', handleContextMenu);
+    return () => document.removeEventListener('contextmenu', handleContextMenu);
+  }, [useNativeContextMenu]);
 
   // Custom Hook 초기화 역할
   useTaskTransformFunction();
@@ -456,6 +571,15 @@ const WindowManager = () => {
             );
           })}
           {startOption ? <Observer /> : <></>}
+          {contextMenu && (
+            <ContextMenu
+              x={contextMenu.x}
+              y={contextMenu.y}
+              isInputElement={contextMenu.isInputElement}
+              targetElement={contextMenu.targetElement}
+              onClose={() => setContextMenu(null)}
+            />
+          )}
         </_.Display>
         <_.BackgroundDiv width={sideWidth}></_.BackgroundDiv>
       </Suspense>

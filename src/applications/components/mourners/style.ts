@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 export const Container = styled.div`
   width: 100%;
+  margin-top: 5%;
   padding: 1rem 0;
   display: flex;
   flex-direction: column;

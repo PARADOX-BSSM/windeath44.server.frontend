@@ -22,6 +22,7 @@ import SulkkagiApproach from '../applicationList/sulkkagiApproach';
 import SulkkagiMenu from '../applicationList/sulkkagiMenu';
 import AnniversaryWindow from '../applicationList/anniversaryWindow';
 import { getCookie } from '@/api/auth/cookie.ts';
+import NewBow from '../applicationList/bow_ver2';
 
 // lazy를 이용한 어플리케이션 컴포넌트 로드
 const Terminal = lazy(() => import('@/applications/applicationList/terminal/index.tsx'));
@@ -43,8 +44,8 @@ const AnimationSelect = lazy(
   () => import('@/applications/applicationList/animationSelect/index.tsx'),
 );
 
-const MemorialApproach = lazy(
-  () => import('@/applications/applicationList/memorialApproach/index.tsx'),
+const MemorialApplicationListApproach = lazy(
+  () => import('@/applications/applicationList/memorialApplicationListApproach/index.tsx'),
 );
 
 const Bow = lazy(() => import('@/applications/applicationList/bow/index.tsx'));
@@ -112,8 +113,8 @@ const MemorialApplicationListMain = lazy(
   () => import('@/applications/applicationList/memorialApplicationListMain/index.tsx'),
 );
 
-const MemorialApplicationListApproach = lazy(
-  () => import('@/applications/applicationList/memorialApplicationListApproach/index.tsx'),
+const MemorialApproach = lazy(
+  () => import('@/applications/applicationList/memorialApproach/index.tsx'),
 );
 
 const MemorialApplicationViewer = lazy(
@@ -132,13 +133,9 @@ const ReconfirmAlert = lazy(
   () => import('@/applications/applicationList/reconfirmAlert/index.tsx'),
 );
 
-const MemorialWindow = lazy(
-  () => import('@/applications/applicationList/memorialWindow'),
-);
+const MemorialWindow = lazy(() => import('@/applications/applicationList/memorialWindow'));
 
-const MournerWindow = lazy(
-  () => import('@/applications/applicationList/mournerWindow'),
-);
+const MournerWindow = lazy(() => import('@/applications/applicationList/mournerWindow'));
 
 //Application Import 형식 예시
 /*
@@ -198,17 +195,22 @@ const useApps = (): TaskType[] => {
     {
       component: (
         <Suspense fallback={null}>
-          <MemorialApproach />
+          <MemorialApproach
+            window={{}}
+            setWindow={() => {}}
+            setUpHeight={577}
+            setUpWidth={890}
+          />
         </Suspense>
       ),
       type: 'App',
-      id: 2221,
+      id: 2250,
       name: '추모관',
       layer: undefined,
       appSetup: {
         Image: search,
-        minWidth: 720,
-        minHeight: 450,
+        minWidth: 600,
+        minHeight: 400,
         setUpWidth: 950,
         setUpHeight: 500,
       },
@@ -218,7 +220,6 @@ const useApps = (): TaskType[] => {
       component: (
         <Suspense fallback={null}>
           <Search />
-          
         </Suspense>
       ),
       type: 'App',
@@ -226,7 +227,7 @@ const useApps = (): TaskType[] => {
       name: 'Search',
       layer: undefined,
       appSetup: {
-        Image: 'default',
+        Image: search,
         minWidth: 600,
         minHeight: 400,
         setUpWidth: 950,
@@ -247,7 +248,7 @@ const useApps = (): TaskType[] => {
       ),
       type: 'App',
       id: 2223,
-      name: 'memorialMenu',
+      name: 'memorialApplicationListMenu',
       layer: undefined,
       appSetup: {
         Image: 'default',
@@ -898,6 +899,25 @@ const useApps = (): TaskType[] => {
     {
       component: (
         <Suspense fallback={null}>
+          <MemorialApplicationListApproach />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2221,
+      name: '추모관 신청',
+      layer: undefined,
+      appSetup: {
+        Image: memorial,
+        minWidth: 50 * 16,
+        minHeight: 30 * 16,
+        setUpWidth: 55 * 16,
+        setUpHeight: 35 * 16,
+      },
+      visible: true,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
           <Settings />
         </Suspense>
       ),
@@ -911,30 +931,6 @@ const useApps = (): TaskType[] => {
         minHeight: 400,
         setUpWidth: 700,
         setUpHeight: 500,
-      },
-      visible: true,
-    },
-    {
-      component: (
-        <Suspense fallback={null}>
-          <MemorialApplicationListApproach
-            window={{}}
-            setWindow={() => {}}
-            setUpHeight={577}
-            setUpWidth={890}
-          />
-        </Suspense>
-      ),
-      type: 'App',
-      id: 2250,
-      name: '추모관 신청 목록',
-      layer: undefined,
-      appSetup: {
-        Image: memorial,
-        minWidth: 580,
-        minHeight: 420,
-        setUpWidth: 890,
-        setUpHeight: 577,
       },
       visible: true,
     },
@@ -1123,9 +1119,26 @@ const useApps = (): TaskType[] => {
       },
       visible: false,
     },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <NewBow memorialId={0} />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2258,
+      name: '절',
+      layer: undefined,
+      appSetup: {
+        Image: search,
+        minWidth: 600,
+        minHeight: 400,
+        setUpWidth: 976,
+        setUpHeight: 617,
+      },
+      visible: false,
+    },
   ];
-  
-  
 
   return baseApps;
 };

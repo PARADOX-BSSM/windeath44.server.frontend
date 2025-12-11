@@ -16,6 +16,7 @@ import { useGetCharacter, CharacterData } from '@/api/anime/getCharacter';
 import { useProcessManager } from '@/hooks/processManager';
 import { useGetMemorialsCharacterFilteredQuery } from '@/api/memorial/getMemorialsCharacterFiltered';
 import { useGetUsersQuery } from '@/api/user/getUsersByIds';
+import ribbon from '@/assets/memorial_ribbon.svg';
 
 interface Message {
   id: string;
@@ -57,7 +58,7 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
 
   const [contributors, setContributors] = useState<Contributor[]>([]);
   const [showAllContributors, setShowAllContributors] = useState(false);
-  const [hoveredContributorId, setHoveredContributorId] = useState<string | null>(null);
+  const [hoveredContributor, setHoveredContributor] = useState<Contributor | null>(null);
   const [characterData, setCharacterData] = useState<CharacterData>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollToBottom = () => {
@@ -323,10 +324,16 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
           <_.ProfileSection>
             <_.ProfileTop>
               <_.CharacterImageContainer>
-                <_.CharacterImage
-                  src={characterImage}
-                  alt={character}
-                />
+                <_.PictureContainer>
+                  <_.Ribbon
+                    src={ribbon}
+                    alt="ribbon"
+                  />
+                  <_.CharacterImage
+                    src={characterImage}
+                    alt={character}
+                  />
+                </_.PictureContainer>
               </_.CharacterImageContainer>
               <_.CharacterName>{character}</_.CharacterName>
             </_.ProfileTop>
@@ -334,15 +341,15 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
             <_.ContributorsSection>
               <_.ContributorsTitle>영매사 목록</_.ContributorsTitle>
               <_.ContributorsList>
-                {displayedContributors.map((contributor) => (
+                {displayedContributors.map((contributor, index) => (
                   <_.ContributorAvatarWrapper
                     key={contributor.id}
                     onMouseEnter={() => {
-                      setHoveredContributorId(contributor.id);
+                      setHoveredContributor(contributor);
                       setCursorImage(CURSOR_IMAGES.hand);
                     }}
                     onMouseLeave={() => {
-                      setHoveredContributorId(null);
+                      setHoveredContributor(null);
                       setCursorImage(CURSOR_IMAGES.default);
                     }}
                   >
@@ -350,23 +357,35 @@ const ChatBot = ({ chatbotId = 1 }: ChatBotProps) => {
                       src={contributor.avatar}
                       alt={contributor.alt}
                     />
-                    <_.ContributorCard show={hoveredContributorId === contributor.id}>
-                      <_.ContributorCardUserId>@{contributor.userId}</_.ContributorCardUserId>
-                      {contributor.wordsets.length > 0 ? (
-                        contributor.wordsets.map((wordset, index) => (
-                          <_.ContributorCardItem key={index}>
-                            <_.ContributorCardQuestion>
-                              Q: {wordset.question}
-                            </_.ContributorCardQuestion>
-                            <_.ContributorCardAnswer>A: {wordset.answer}</_.ContributorCardAnswer>
-                          </_.ContributorCardItem>
-                        ))
-                      ) : (
-                        <_.ContributorCardAnswer>
-                          아직 등록된 질문/답변이 없습니다.
-                        </_.ContributorCardAnswer>
-                      )}
-                    </_.ContributorCard>
+                    {index === 0 && hoveredContributor && (
+                      <_.ContributorCard
+                        show={true}
+                        onMouseEnter={() => {
+                          setHoveredContributor(hoveredContributor);
+                          setCursorImage(CURSOR_IMAGES.default);
+                        }}
+                        onMouseLeave={() => {
+                          setHoveredContributor(null);
+                          setCursorImage(CURSOR_IMAGES.default);
+                        }}
+                      >
+                        <_.ContributorCardUserId>@{hoveredContributor.userId}</_.ContributorCardUserId>
+                        {hoveredContributor.wordsets.length > 0 ? (
+                          hoveredContributor.wordsets.map((wordset, index) => (
+                            <_.ContributorCardItem key={index}>
+                              <_.ContributorCardQuestion>
+                                Q: {wordset.question}
+                              </_.ContributorCardQuestion>
+                              <_.ContributorCardAnswer>A: {wordset.answer}</_.ContributorCardAnswer>
+                            </_.ContributorCardItem>
+                          ))
+                        ) : (
+                          <_.ContributorCardAnswer>
+                            아직 등록된 질문/답변이 없습니다.
+                          </_.ContributorCardAnswer>
+                        )}
+                      </_.ContributorCard>
+                    )}
                   </_.ContributorAvatarWrapper>
                 ))}
               </_.ContributorsList>

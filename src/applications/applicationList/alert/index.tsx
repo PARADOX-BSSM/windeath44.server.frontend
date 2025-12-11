@@ -1,26 +1,56 @@
 import * as _ from './style.ts';
 import MemorialBtn from '@/applications/components/memorialBtn';
-import { useAtom } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { focusAtom } from '@/atoms/windowManager.ts';
 import { useEffect } from 'react';
 import seori from '@/assets/sulkkagi/black_stone.svg';
+import { taskTransformerAtom } from '@/atoms/taskTransformer';
+import { alertOpenAtom } from '@/atoms/alerter';
+import { CURSOR_IMAGES, setCursorImage } from '@/lib/setCursorImg.tsx';
 
 interface AlertProps {
   text: JSX.Element;
   onClick: () => any;
+  onCancel?: () => void;
 }
 
-const Alert = ({ text, onClick }: AlertProps) => {
+const Alert = ({ text, onClick, onCancel }: AlertProps) => {
   const [, setFocus] = useAtom(focusAtom);
+  const taskTransform = useAtomValue(taskTransformerAtom);
+  const setAlertOpen = useSetAtom(alertOpenAtom);
+
   useEffect(() => {
+    setAlertOpen(true);
     setFocus('');
     return () => {
+      setAlertOpen(false);
       setFocus('Observer');
     };
-  }, [setFocus]);
+  }, [setAlertOpen, setFocus]);
+
+  const handleCancel = () => {
+    if (onCancel) {
+      onCancel();
+      return;
+    }
+    if (taskTransform) {
+      taskTransform('경고', '');
+    } else {
+      setAlertOpen(false);
+      setFocus('Observer');
+    }
+  };
+
   return (
     <>
-      <_.overlay />
+      <_.overlay
+        onMouseEnter={() => {
+          setCursorImage(CURSOR_IMAGES.block);
+        }}
+        onMouseLeave={() => {
+          setCursorImage(CURSOR_IMAGES.default);
+        }}
+      />
       <_.main>
         <_.container>
           <_.place>
@@ -39,6 +69,17 @@ const Alert = ({ text, onClick }: AlertProps) => {
               width="144px"
               height="42px"
               fontSize="20px"
+              allowAlertCursor
+            ></MemorialBtn>
+            <MemorialBtn
+              name={'취소'}
+              type="submit"
+              active={true}
+              onClick={handleCancel}
+              width="144px"
+              height="42px"
+              fontSize="20px"
+              allowAlertCursor
             ></MemorialBtn>
           </_.btnContainer>
         </_.container>

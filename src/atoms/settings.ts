@@ -5,6 +5,7 @@ export type ScreenRatio = '4:3' | '16:9';
 export interface SettingsState {
   screenRatio: ScreenRatio;
   showBootNotification: boolean;
+  seoriScale: number;
   // 추후 언어, 표시 설정 등 추가 가능
   // language: 'ko' | 'en';
   // displaySettings: {
@@ -13,17 +14,55 @@ export interface SettingsState {
   // };
 }
 
-export const settingsAtom = atomWithStorage<SettingsState>('settings', {
+// 기본 설정값
+const defaultSettings: SettingsState = {
   screenRatio: '4:3',
   showBootNotification: true,
-});
+  seoriScale: 0.07,
+};
+
+export const settingsAtom = atomWithStorage<SettingsState>(
+  'settings',
+  defaultSettings,
+  {
+    getItem: (key, initialValue) => {
+      const storedValue = localStorage.getItem(key);
+      if (!storedValue) {
+        return initialValue;
+      }
+      try {
+        const parsed = JSON.parse(storedValue);
+        // 누락된 필드를 기본값으로 채움 (마이그레이션)
+        return {
+          ...defaultSettings,
+          ...parsed,
+        };
+      } catch {
+        return initialValue;
+      }
+    },
+    setItem: (key, value) => {
+      localStorage.setItem(key, JSON.stringify(value));
+    },
+    removeItem: (key) => {
+      localStorage.removeItem(key);
+    },
+  },
+);
 
 // 설정 스키마 타입 정의
-export type SettingInputType = 'radio' | 'checkbox';
+export type SettingInputType = 'radio' | 'checkbox' | 'button' | 'number';
 
 export interface RadioOption<T> {
   value: T;
   label: string;
+}
+
+export interface NumberInputConfig {
+  min: number;
+  max: number;
+  step: number;
+  displayMultiplier?: number; // UI 표시용 배수 (예: 0.08 → 0.8로 표시)
 }
 
 export interface SettingItem<K extends keyof SettingsState = keyof SettingsState> {
@@ -31,6 +70,9 @@ export interface SettingItem<K extends keyof SettingsState = keyof SettingsState
   key: K;
   label: string;
   options?: RadioOption<SettingsState[K]>[];
+  onClick?: () => void;
+  width?: string;
+  numberConfig?: NumberInputConfig;
 }
 
 export interface SettingSection {
@@ -55,12 +97,43 @@ export const settingsConfig: SettingSection[] = [
     ],
   },
   {
+    title: '캐릭터',
+    items: [
+      {
+        type: 'number',
+        key: 'seoriScale',
+        label: '크기 (새로고침 후 적용)',
+        numberConfig: {
+          min: 0.05,
+          max: 0.15,
+          step: 0.01,
+          displayMultiplier: 10, // 0.08 → 0.8로 표시
+        },
+      },
+    ],
+  },
+  {
     title: '알림',
     items: [
       {
         type: 'checkbox',
         key: 'showBootNotification',
         label: '부팅 시 알림 표시',
+      },
+    ],
+  },
+  {
+    title: '계정',
+    items: [
+      {
+        type: 'button',
+        key: 'dummy' as keyof SettingsState, // 버튼에는 실제로 상태 키가 필요하지 않으므로 더미 키 사용
+        label: '탈퇴',
+        onClick: () => {
+          // 탈퇴 로직 구현
+          console.log('계정 탈퇴 처리');
+        },
+        width: '100px',
       },
     ],
   },

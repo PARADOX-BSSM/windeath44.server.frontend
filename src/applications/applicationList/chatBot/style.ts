@@ -131,7 +131,21 @@ export const ContributorAvatarWrapper = styled.div`
     z-index: 10000;
   }
 `;
-
+export const PictureContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  border: 12px solid #000;
+`;
+export const Ribbon = styled.img`
+  position: absolute;
+  top: -11px;
+  width: 174px;
+  z-index: 1;
+`;
 export const ContributorAvatar = styled.img`
   width: 28.125px;
   height: 28.125px;
@@ -154,11 +168,12 @@ export const ContributorCard = styled.div<{ show: boolean }>`
     2px 2px 0px 0px inset var(--dark-primary-color);
   z-index: 10000;
   display: ${({ show }) => (show ? 'block' : 'none')};
-  pointer-events: none;
+  pointer-events: auto;
   max-height: 250px;
   overflow-y: auto;
   white-space: normal;
   word-break: break-word;
+  cursor: none;
 
   &::-webkit-scrollbar {
     width: 4px;

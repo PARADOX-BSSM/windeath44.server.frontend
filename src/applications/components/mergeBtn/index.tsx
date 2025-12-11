@@ -143,7 +143,7 @@ const MergeBtn = ({ text, memorialId, characterId }: PropsType) => {
                         setContentIn({ characterId: '', content: '' });
                         let task = taskList.find((t) => t.name === '미리보기');
                         if (task) removeTask(task);
-                        task = taskList.find((t) => t.name === '추모관');
+                        task = taskList.find((t) => t.name === '추모관 신청');
                         if (task) removeTask(task);
                       },
                       onError: () => {

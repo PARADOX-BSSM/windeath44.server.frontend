@@ -22,6 +22,7 @@ export const HeaderContainer = styled.div`
   left: 0;
   right: 0;
   height: 32px;
+  z-index: 1200;
   background-color: #ffd3fb;
   border: 3px solid #e774dd;
   display: flex;
@@ -30,6 +31,7 @@ export const HeaderContainer = styled.div`
   padding: 0;
   margin: 4px 4px 0 4px;
   cursor: none;
+  pointer-events: auto;
 `;
 
 // Header content containers

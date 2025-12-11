@@ -1,7 +1,12 @@
 import * as _ from './style';
 import ameImg from '@/assets/profile/ame.svg';
+import verificationBadge from '@/assets/verification.png';
 import { useState } from 'react';
 import { setCursorImage, CURSOR_IMAGES } from 'lib/setCursorImg';
+import { useAtomValue } from 'jotai';
+import { taskTransformerAtom } from '@/atoms/taskTransformer.ts';
+import { alerterAtom } from '@/atoms/alerter.ts';
+import { getCookie } from '@/api/auth/cookie.ts';
 
 interface PropsType {
   // nickname: string;
@@ -15,6 +20,7 @@ interface PropsType {
   isLiked: boolean;
   userName?: string;
   userProfile?: string;
+  isOfficial?: boolean;
   onReplySubmit?: (commentId: number, content: string) => void;
   onEditSubmit?: (commentId: number, content: string) => void;
   onDeleteSubmit?: (commentId: number) => void;
@@ -32,6 +38,7 @@ const Comment = ({
   isLiked,
   userName,
   userProfile,
+  isOfficial,
   onReplySubmit,
   onEditSubmit,
   onDeleteSubmit,
@@ -40,12 +47,24 @@ const Comment = ({
   // console.log(idx);
   const imgUrl = userProfile || ameImg;
   const displayName = userName || userid;
+
+  // official 계정의 경우 userid에서 1,2,4번째 요소만 추출
+  const displayUserId =
+    isOfficial && userid.startsWith('official-windeath44-')
+      ? (() => {
+          const parts = userid.split('-');
+          return `${parts[0]}-${parts[1]}-${parts[3]}`;
+        })()
+      : userid;
+
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [replyContent, setReplyContent] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(content);
   // console.log(imgUrl);
-
+  const taskTransform = useAtomValue(taskTransformerAtom);
+  const setAlert = useAtomValue(alerterAtom);
+  const token = getCookie('access_token');
   const isOwner = currentUserId === userid;
   const isPending = commentId < 0; // 음수 ID는 임시 댓글 (아직 서버에 등록 중)
 
@@ -81,8 +100,18 @@ const Comment = ({
         <_.ProfileImg imgUrl={imgUrl} />
         <_.TextBox>
           <_.NickNameContainer>
-            {userName && <_.NickName>{displayName}</_.NickName>}
-            <_.UserId>@{userid}</_.UserId>
+            {userName && (
+              <_.NameWithBadge>
+                <_.NickName>{displayName}</_.NickName>
+                {isOfficial && (
+                  <_.VerifiedBadge
+                    src={verificationBadge}
+                    alt="인증 뱃지"
+                  />
+                )}
+              </_.NameWithBadge>
+            )}
+            <_.UserId>@{displayUserId}</_.UserId>
           </_.NickNameContainer>
           {isEditing ? (
             <_.EditForm onSubmit={handleEditSubmit}>
@@ -142,7 +171,15 @@ const Comment = ({
                         {isLiked ? '♥' : '♡'} {likes}
                       </_.LikeButton>
                       <_.ReplyButton
-                        onClick={() => setShowReplyForm(!showReplyForm)}
+                        onClick={() => {
+                          if (!token && setAlert) {
+                            setAlert(<> 답글 입력 기능은 로그인 후 이용하실 수 있습니다.</>, () => {
+                              taskTransform?.('경고', '');
+                            });
+                          } else {
+                            setShowReplyForm(!showReplyForm);
+                          }
+                        }}
                         onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
                         onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
                       >

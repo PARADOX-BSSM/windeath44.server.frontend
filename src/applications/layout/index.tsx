@@ -5,8 +5,8 @@ import Full from '@/assets/headerButton/full.svg';
 import Min from '@/assets/headerButton/min.svg';
 import Heart from '@/assets/headerButton/heart.svg';
 import scal from '@/assets/NotificationImg/scal.svg';
-import flower from '@/assets/NotificationImg/flower.svg'
-import { useAtom } from 'jotai';
+import flower from '@/assets/NotificationImg/flower.svg';
+import { useAtom, useAtomValue } from 'jotai';
 import {
   isLogInedAtom,
   focusAtom,
@@ -15,6 +15,7 @@ import {
 } from '@/atoms/windowManager.ts';
 import { isNotClickAtom } from '@/atoms/cursorState.ts';
 import { windowPositionsAtom } from '@/atoms/processManager.ts';
+import { alertOpenAtom } from '@/atoms/alerter';
 import { ApplicationProps } from './utils';
 import React from 'react';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
@@ -31,6 +32,7 @@ const Application = (props: ApplicationProps) => {
   const [, , , setVirtualWindowPositions] = useProcessManager();
   const [windowName, setWindowName] = useState<string>(props.name);
   const [isNotClick, setIsNotClick] = useAtom(isNotClickAtom);
+  const isAlertOpen = useAtomValue(alertOpenAtom);
 
   // UI 상태 관리
   const ui = useUI();
@@ -38,6 +40,7 @@ const Application = (props: ApplicationProps) => {
   const [isMinimized, setIsMinimized] = useState<boolean>(false);
   const [hasEnabledSave, setHasEnabledSave] = useState<boolean>(false);
   const [zIndex, setZIndex] = useState<number>(layer);
+  const isAlertApp = props.name === '경고';
 
   // 전체화면 백업용 상태
   const [backupPosition, setBackupPosition] = useState<{ x: number; y: number } | null>(null);
@@ -189,24 +192,38 @@ const Application = (props: ApplicationProps) => {
       setBackupSize(null);
     }
   }, [isFullScreen]);
+
   useEffect(() => {
     if (tabDownInterrupt === props.name) {
       setIsMinimized(true);
       setTabDownInterrupt('empty');
     }
   }, [tabDownInterrupt]);
+
+  // 컴포넌트 언마운트 시 isNotClick 리셋
+  useEffect(() => {
+    return () => {
+      if (props.type === 'App') {
+        setIsNotClick(false);
+      }
+    };
+  }, [setIsNotClick, props.type]);
+
   if (props.type === 'App') {
+    const posX = ui.position.x + ui.positionOffset.x;
+    const posY = ui.position.y + ui.positionOffset.y;
+
     return (
       <section
         style={{
           position: 'fixed',
-          left: 0,
-          top: 0,
-          transform: `translate(${ui.position.x + ui.positionOffset.x}rem, ${ui.position.y + ui.positionOffset.y}rem)`,
+          left: isAlertApp ? `${posX}rem` : 0,
+          top: isAlertApp ? `${posY}rem` : 0,
+          transform: isAlertApp ? undefined : `translate(${posX}rem, ${posY}rem)`,
           height: `${(ui.size.height + ui.sizeOffset.height).toString()}rem`,
           width: `${(ui.size.width + ui.sizeOffset.width).toString()}rem`,
-          zIndex: zIndex,
-          display: isMinimized ? 'none' : 'block',
+          zIndex: isAlertApp ? 2001 : zIndex,
+          display: isMinimized || !hasEnabledSave ? 'none' : 'block',
           backgroundColor: 'white',
           border: `3px solid #ff8ef6`,
         }}
@@ -219,67 +236,82 @@ const Application = (props: ApplicationProps) => {
             onDoubleClick={() => setIsFullScreen(!isFullScreen)}
           >
             <_.TitleContainer>
-            {props.setUpHeight>=81?
-              <_.HeartImg
-                src={props.name=="오늘의 기일" ? scal : Heart}
-                draggable='false'
-              />
-              :
-
-              <_.HeartImg
-                src={props.name=="오늘의 추모관" ? flower:Heart}
-                draggable='false'
-              />
-          }
+              {props.setUpHeight >= 81 ? (
+                <_.HeartImg
+                  src={props.name == '오늘의 기일' ? scal : Heart}
+                  draggable="false"
+                />
+              ) : (
+                <_.HeartImg
+                  src={props.name == '오늘의 추모관' ? flower : Heart}
+                  draggable="false"
+                />
+              )}
               <_.Title>{windowName}</_.Title>
             </_.TitleContainer>
             <_.BtnContainer>
-              {props.name !== '오늘의 기일' && props.name !== '오늘의 추모관' && props.name !== '오늘의 조문객' && (
-                <>
-                  <_.MinimizeButton
-                    onMouseDown={(e: React.MouseEvent) => {
-                      e.stopPropagation();
-                      setIsMinimized(!isMinimized);
-                    }}
-                    isFocus={focus === (props.instanceId || props.name)}
-                  >
-                    <img
-                      src={Min}
-                      alt=""
-                      draggable="false"
-                      width="100%"
-                      onMouseEnter={() => {
-                        setCursorImage(CURSOR_IMAGES.hand);
+              {props.name !== '오늘의 기일' &&
+                props.name !== '오늘의 추모관' &&
+                props.name !== '오늘의 조문객' && (
+                  <>
+                    <_.MinimizeButton
+                      onMouseDown={(e: React.MouseEvent<HTMLDivElement>) => {
+                        if (isAlertOpen) {
+                          e.stopPropagation();
+                          return;
+                        }
+                        e.stopPropagation();
+                        setIsMinimized(!isMinimized);
                       }}
-                      onMouseLeave={() => {
-                        setCursorImage(CURSOR_IMAGES.default);
+                      isFocus={focus === (props.instanceId || props.name)}
+                      disabled={isAlertOpen}
+                    >
+                      <img
+                        src={Min}
+                        alt=""
+                        draggable="false"
+                        width="100%"
+                        onMouseEnter={() => {
+                          if (!isAlertOpen) setCursorImage(CURSOR_IMAGES.hand);
+                          else setCursorImage(CURSOR_IMAGES.block);
+                        }}
+                        onMouseLeave={() => {
+                          setCursorImage(CURSOR_IMAGES.default);
+                        }}
+                      />
+                    </_.MinimizeButton>
+                    <_.FullScreenButton
+                      onMouseDown={(e: React.MouseEvent<HTMLDivElement>) => {
+                        if (isAlertOpen) {
+                          e.stopPropagation();
+                          return;
+                        }
+                        e.stopPropagation();
+                        setIsFullScreen(!isFullScreen);
                       }}
-                    />
-                  </_.MinimizeButton>
-                  <_.FullScreenButton
-                    onMouseDown={(e: React.MouseEvent) => {
-                      e.stopPropagation();
-                      setIsFullScreen(!isFullScreen);
-                    }}
-                    isFocus={focus === (props.instanceId || props.name)}
-                  >
-                    <img
-                      src={Full}
-                      alt=""
-                      draggable="false"
-                      width="100%"
-                      onMouseEnter={() => {
-                        setCursorImage(CURSOR_IMAGES.hand);
-                      }}
-                      onMouseLeave={() => {
-                        setCursorImage(CURSOR_IMAGES.default);
-                      }}
-                    />
-                  </_.FullScreenButton>
-                </>
-              )}
+                      isFocus={focus === (props.instanceId || props.name)}
+                      disabled={isAlertOpen}
+                    >
+                      <img
+                        src={Full}
+                        alt=""
+                        draggable="false"
+                        width="100%"
+                        onMouseEnter={() => {
+                          if (!isAlertOpen) setCursorImage(CURSOR_IMAGES.hand);
+                          else setCursorImage(CURSOR_IMAGES.block);
+                        }}
+                        onMouseLeave={() => {
+                          setCursorImage(CURSOR_IMAGES.default);
+                        }}
+                      />
+                    </_.FullScreenButton>
+                  </>
+                )}
+
               <_.ExitButton
-                onMouseDown={(e: React.MouseEvent) => {
+                data-allow-alert-cursor="true"
+                onMouseDown={(e: React.MouseEvent<HTMLDivElement>) => {
                   e.stopPropagation();
                   props.removeTask(props.removeCompnent);
                   if (!isLogIned) {
@@ -287,6 +319,8 @@ const Application = (props: ApplicationProps) => {
                   }
                 }}
                 isFocus={focus === (props.instanceId || props.name)}
+                onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand, isAlertOpen)}
+                onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default, isAlertOpen)}
               >
                 <img
                   src={Exit}
@@ -332,10 +366,15 @@ const Application = (props: ApplicationProps) => {
                         setUpWidth: props.setUpWidth,
                         props,
                         setWindowName,
+                        instanceId: props.instanceId,
                       })}
                     </Suspense>
                   );
-                } else if (props.name === '오늘의 기일' || props.name === '오늘의 추모관' || props.name === '오늘의 조문객') {
+                } else if (
+                  props.name === '오늘의 기일' ||
+                  props.name === '오늘의 추모관' ||
+                  props.name === '오늘의 조문객'
+                ) {
                   return (
                     <Suspense fallback={null}>
                       {React.createElement(type, {
@@ -347,7 +386,7 @@ const Application = (props: ApplicationProps) => {
                           if (newWindow.top !== undefined && newWindow.left !== undefined) {
                             ui.setPosition({ x: newWindow.left, y: newWindow.top });
                           }
-                        }
+                        },
                       })}
                     </Suspense>
                   );
@@ -399,7 +438,6 @@ const Application = (props: ApplicationProps) => {
       </_.Shell>
     );
   }
-  
 };
 
 export default Application;

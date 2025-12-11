@@ -1,5 +1,5 @@
 import { TaskType } from '@/modules/typeModule.tsx';
-import { useAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import {
   taskManagerAtom,
   lastTaskListAtom,
@@ -9,7 +9,9 @@ import {
   virtualWindowPositionsAtom,
   SavedTaskType,
 } from '@/atoms/processManager.ts';
+import { focusAtom } from '@/atoms/windowManager';
 import { useEffect, useRef } from 'react';
+import { STACK_KEY_MAP, STACK_EXCLUDE_NAMES, STACK_ALL_KEYS } from '@/config/stackStorage';
 
 type Position = { top: number; left: number; width: number; height: number };
 
@@ -26,6 +28,7 @@ export const useProcessManager = (): [
   const [windowPositions, setWindowPositions] = useAtom(windowPositionsAtom);
   const [virtualWindowPositions, setVirtualWindowPositions] = useAtom(virtualWindowPositionsAtom);
   const [desktopIndex] = useAtom(virtualDesktopIndexAtom);
+  const setFocus = useSetAtom(focusAtom);
 
   const isInitialMount = useRef(true);
   const setVirtualWindowPosition = (positions: Record<string, Position>, index?: number) => {
@@ -66,25 +69,65 @@ export const useProcessManager = (): [
 
     const savedTasks: SavedTaskType[][] = virtualTaskLists.map((tasks, idx) =>
       tasks
-        .filter((t) => !t.instanceId && !excludedPages.includes(t.name))
-        .map((t) => ({
-          type: t.type,
-          id: t.id,
-          name: t.name,
-          position: virtualWindowPositions[idx]?.[t.name],
-          desktopIndex: idx,
-        })),
+        .filter((t) => !excludedPages.includes(t.name))
+        .map((t) => {
+          const isExcluded = STACK_EXCLUDE_NAMES.has(t.name);
+          const stackKey = STACK_KEY_MAP[t.name];
+          const stackData =
+            !isExcluded && stackKey && typeof window !== 'undefined'
+              ? localStorage.getItem(stackKey) || undefined
+              : undefined;
+
+          return {
+            type: t.type,
+            id: t.id,
+            name: t.name,
+            position: virtualWindowPositions[idx]?.[t.name],
+            desktopIndex: idx,
+            stackKey,
+            stackData,
+          };
+        }),
     );
 
     setLastTaskList(savedTasks);
+
+    // 현재 유지할 스택 스토리지 키를 추려내고 나머지는 삭제
+    const activeKeys = new Set<string>();
+    savedTasks.forEach((desktop) =>
+      desktop.forEach((task) => {
+        if (task.stackKey && task.stackData) activeKeys.add(task.stackKey);
+      }),
+    );
+    STACK_ALL_KEYS.forEach((key) => {
+      if (!activeKeys.has(key)) {
+        try {
+          localStorage.removeItem(key);
+        } catch (e) {
+          console.warn('Failed to clear stale stack storage', key, e);
+        }
+      }
+    });
   }, [virtualTaskList, windowPositions, virtualWindowPositions, desktopIndex]);
 
   const addTask = (task: TaskType) => {
     if (task.type === 'Shell') {
-      setGlobalTaskList((prev) =>
-        prev.some((t) => t.name === task.name) ? prev : [...prev, task],
-      );
+      // Shell은 이미 있으면 포커스, 없으면 추가
+      const existingTask = globalTaskList.find((t) => t.name === task.name);
+      if (existingTask) {
+        setFocus(existingTask.instanceId || existingTask.name);
+        return;
+      }
+      setGlobalTaskList((prev) => [...prev, task]);
     } else {
+      // App은 현재 가상 데스크탑에서 확인
+      const existingTask = virtualTaskList.find(
+        (t) => t.name === task.name && t.name !== '추모관 뷰어',
+      );
+      if (existingTask) {
+        setFocus(existingTask.instanceId || existingTask.name);
+        return;
+      }
       addVirtualTask(task);
     }
   };

@@ -1,3 +1,10 @@
+export type StackSnapshot = {
+  name: string;
+  id?: number;
+  type?: string;
+  props?: any;
+};
+
 type TaskType = {
   component: JSX.Element;
   type: string;
@@ -15,6 +22,7 @@ type TaskType = {
       }
     | undefined;
   visible: boolean | undefined;
+  stackSnapshot?: StackSnapshot;
 };
 
 export type PositionType = {

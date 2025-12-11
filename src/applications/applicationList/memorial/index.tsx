@@ -10,6 +10,7 @@ import { Fragment, useEffect, useState, useMemo } from 'react';
 import { useGetCharacter } from '@/api/anime/getCharacter.ts';
 import type { CharacterData } from '@/api/anime/getCharacter';
 import type { memorialData } from '@/api/memorial/memorialGet';
+import { useGetCharactersByCharacterIds } from '@/api/anime/getCharactersByCharacterIds.ts';
 import {
   MemorialCommentsData,
   useGetMemorialComments,
@@ -29,6 +30,7 @@ import axios from 'axios';
 import { user as userEndpoint, memorial as memorialEndpoint } from '@/config';
 import { CURSOR_IMAGES, setCursorImage } from '@/lib/setCursorImg';
 import api from '@/api/axiosInstance';
+import { memorialViewerListAtom } from '@/atoms/memorialManager';
 
 interface dataStructureProps {
   stack: any[];
@@ -39,6 +41,7 @@ interface dataStructureProps {
   characterId: number;
   props?: ApplicationProps;
   setWindowName?: (name: string) => void;
+  instanceId?: string;
 }
 // 날짜 포맷팅 함수
 const formatDate = (dateString: string) => {
@@ -63,17 +66,23 @@ const Memorial = ({
   characterId,
   props,
   setWindowName,
+  instanceId,
 }: dataStructureProps) => {
   const taskTransform = useAtomValue(taskTransformerAtom);
   const taskSearch = useAtomValue(taskSearchAtom);
   const setAlert = useAtomValue(alerterAtom);
   const [, setInputValue] = useAtom(inputPortage);
+  const [, setViewerList] = useAtom(memorialViewerListAtom);
   const [content, setContent] = useState<string>('');
   const token = getCookie('access_token');
   const [indexData, setIndexData] = useState<string[]>([]);
   const [userDataMap, setUserDataMap] = useState<Record<string, { name: string; profile: string }>>(
     {},
   );
+  const [officialCharactersData, setOfficialCharactersData] = useState<CharacterData[]>([]);
+  const [officialUserIdToCharacterId, setOfficialUserIdToCharacterId] = useState<
+    Map<string, number>
+  >(new Map());
   const [characterData, setCharacterData] = useState<CharacterData>({
     characterId: 0,
     animeId: 0,
@@ -124,6 +133,8 @@ const Memorial = ({
   const mutationCommentUpdate = useCommentUpdate(setMemorialComment);
   const mutationCommentDelete = useCommentDelete(setMemorialComment);
   const mutationCommentLike = useCommentLike(setMemorialComment);
+  const mutationGetCharactersByCharacterIds =
+    useGetCharactersByCharacterIds(setOfficialCharactersData);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -279,23 +290,29 @@ const Memorial = ({
   };
 
   const handleLikeToggle = (commentId: number, isLiked: boolean) => {
-    mutationCommentLike.mutate(
-      { commentId, isLiked },
-      {
-        onError: () => {
-          setAlert?.(
-            <>
-              좋아요 처리 중 문제가 발생했습니다.
-              <br />
-              잠시 후 다시 시도해 주세요.
-            </>,
-            () => {
-              taskTransform?.('경고', '');
-            },
-          );
+    if (!token && setAlert) {
+      setAlert(<>로그인 후 사용 가능 합니다.</>, () => {
+        taskTransform?.('경고', '');
+      });
+    } else {
+      mutationCommentLike.mutate(
+        { commentId, isLiked },
+        {
+          onError: () => {
+            setAlert?.(
+              <>
+                좋아요 처리 중 문제가 발생했습니다.
+                <br />
+                잠시 후 다시 시도해 주세요.
+              </>,
+              () => {
+                taskTransform?.('경고', '');
+              },
+            );
+          },
         },
-      },
-    );
+      );
+    }
   };
 
   const handleLoadMore = () => {
@@ -395,6 +412,40 @@ const Memorial = ({
     }
   }, [characterData, setWindowName]);
 
+  // 마운트 시 리스트에 추가, 언마운트 시 제거
+  useEffect(() => {
+    if (!instanceId) {
+      console.warn('Memorial: instanceId is undefined');
+      return;
+    }
+
+    setViewerList((prev) => [
+      ...prev,
+      {
+        instanceId,
+        windowName: '추모관 뷰어',
+        characterId,
+      },
+    ]);
+
+    return () => {
+      setViewerList((prev) => prev.filter((v) => v.instanceId !== instanceId));
+    };
+  }, [instanceId, characterId, setViewerList]);
+
+  // characterData.name이 로드되면 리스트의 windowName 업데이트
+  useEffect(() => {
+    if (instanceId && characterData?.name) {
+      setViewerList((prev) =>
+        prev.map((v) =>
+          v.instanceId === instanceId
+            ? { ...v, windowName: `추모관 뷰어 - ${characterData.name}` }
+            : v,
+        ),
+      );
+    }
+  }, [instanceId, characterData?.name, setViewerList]);
+
   // content가 변경될 때마다 파싱하여 목차 업데이트
   const parsedContent = useMemo(() => {
     const tempIndexData: string[] = [];
@@ -409,12 +460,48 @@ const Memorial = ({
 
     // 모든 userId 추출 (부모 + 자식 댓글)
     const userIds = new Set<string>();
+    const officialCharacterIds = new Set<number>();
+    const userIdToCharacterIdMap = new Map<string, number>();
+
     memorialComment.forEach((comment) => {
-      userIds.add(comment.userId);
+      // official-windeath44로 시작하는 userId에서 characterId 추출
+      // 형식: official-windeath44-{characterId}-{chatbotName}
+      if (comment.userId.startsWith('official-windeath44-')) {
+        const parts = comment.userId.split('-');
+        // parts[0] = 'official', parts[1] = 'windeath44', parts[2] = characterId
+        if (parts.length >= 3) {
+          const characterId = parseInt(parts[2]);
+          if (!isNaN(characterId)) {
+            officialCharacterIds.add(characterId);
+            userIdToCharacterIdMap.set(comment.userId, characterId);
+          }
+        }
+      } else {
+        userIds.add(comment.userId);
+      }
+
       comment.children?.forEach((child) => {
-        userIds.add(child.userId);
+        if (child.userId.startsWith('official-windeath44-')) {
+          const parts = child.userId.split('-');
+          if (parts.length >= 3) {
+            const characterId = parseInt(parts[2]);
+            if (!isNaN(characterId)) {
+              officialCharacterIds.add(characterId);
+              userIdToCharacterIdMap.set(child.userId, characterId);
+            }
+          }
+        } else {
+          userIds.add(child.userId);
+        }
       });
     });
+
+    // official character 정보 가져오기
+    if (officialCharacterIds.size > 0) {
+      const characterIdsArray = Array.from(officialCharacterIds);
+      setOfficialUserIdToCharacterId(userIdToCharacterIdMap);
+      mutationGetCharactersByCharacterIds.mutate(characterIdsArray);
+    }
 
     const userIdArray = Array.from(userIds);
     if (userIdArray.length === 0) return;
@@ -447,6 +534,33 @@ const Memorial = ({
       });
   }, [memorialComment]);
 
+  // official character 정보를 userDataMap에 추가
+  useEffect(() => {
+    if (officialCharactersData.length === 0) return;
+
+    const characterMap = new Map<number, CharacterData>();
+    officialCharactersData.forEach((character) => {
+      if (character) {
+        characterMap.set(character.characterId, character);
+      }
+    });
+
+    // 각 official userId에 대해 character 정보 매핑
+    setUserDataMap((prev) => {
+      const newMap = { ...prev };
+      officialUserIdToCharacterId.forEach((characterId, userId) => {
+        const character = characterMap.get(characterId);
+        if (character) {
+          newMap[userId] = {
+            name: character.name,
+            profile: character.imageUrl,
+          };
+        }
+      });
+      return newMap;
+    });
+  }, [officialCharactersData, officialUserIdToCharacterId]);
+
   // 데이터 로딩 중일 때 로딩 컴포넌트 표시
   if (
     mutationMemorialGet.isPending ||
@@ -458,12 +572,6 @@ const Memorial = ({
     return <Loading />;
   }
 
-  const stackProps = {
-    stack: stack,
-    push: push,
-    pop: pop,
-    top: top,
-  };
   const handleCommit = () => {
     if (!token && setAlert) {
       setAlert(
@@ -509,7 +617,7 @@ const Memorial = ({
             <_.Header>
               <_.TextContainer>
                 <_.Title>{characterData?.name}</_.Title>
-                <_.Subtitle>최근 수정: {formatDate(memorialData?.updatedAt)}</_.Subtitle>
+                <_.Subtitle>최근 수정: {formatDate(memorialData!.updatedAt)}</_.Subtitle>
               </_.TextContainer>
               <_.History
                 onClick={() => {
@@ -590,7 +698,7 @@ const Memorial = ({
 
           <_.GotoBow
             onClick={() => {
-              taskTransform?.('', '절하기', { memorialId: memorialId });
+              taskTransform?.('', '절', { memorialId: memorialId });
             }}
           >
             절 하러가기
@@ -633,6 +741,7 @@ const Memorial = ({
                           isLiked={comment.isLiked}
                           userName={userDataMap[comment.userId]?.name}
                           userProfile={userDataMap[comment.userId]?.profile}
+                          isOfficial={comment.userId.startsWith('official-windeath44-')}
                           onReplySubmit={handleReplySubmit}
                           onEditSubmit={handleEditSubmit}
                           onDeleteSubmit={handleDeleteSubmit}
@@ -651,6 +760,7 @@ const Memorial = ({
                             isLiked={child.isLiked}
                             userName={userDataMap[child.userId]?.name}
                             userProfile={userDataMap[child.userId]?.profile}
+                            isOfficial={child.userId.startsWith('official-windeath44-')}
                             onReplySubmit={handleReplySubmit}
                             onEditSubmit={handleEditSubmit}
                             onDeleteSubmit={handleDeleteSubmit}
