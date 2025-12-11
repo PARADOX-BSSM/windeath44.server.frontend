@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import * as _ from './style';
 
 export const parseCustomContent = (root: string[], content: string): React.ReactNode[] => {
@@ -28,12 +28,12 @@ export const parseCustomContent = (root: string[], content: string): React.React
       indexIdx += 1;
       root.push(match[1]);
       elements.push(
-        <>
+        <React.Fragment key={`목차-${match.index}`}>
           <_.Horizon />
-          <_.Index key={`목차-${match.index}`}>
+          <_.Index>
             {indexIdx}. {match[1]}
           </_.Index>
-        </>,
+        </React.Fragment>,
       );
     } else if (match[2] && match[3]) {
       // 사진

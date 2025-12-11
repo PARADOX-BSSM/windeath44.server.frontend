@@ -16,7 +16,7 @@ export const Shell = styled.article`
 `;
 
 // Header container (draggable area)
-export const HeaderContainer = styled.button`
+export const HeaderContainer = styled.div`
   position: absolute;
   top: 0;
   left: 0;

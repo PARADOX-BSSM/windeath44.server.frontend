@@ -68,6 +68,8 @@ const WindowManager = () => {
   const clickTimeout = useRef<NodeJS.Timeout | null>(null);
   const hasRestoredTasks = useRef(false);
   const hasCheckedNotification = useRef(false);
+  const hasInitializedDiscover = useRef(false);
+  const hasInitializedNotifications = useRef(false);
   const isAlertOpen = useAtomValue(alertOpenAtom);
 
   // 공지사항 조회
@@ -97,13 +99,13 @@ const WindowManager = () => {
     const selection = window.getSelection();
     return selection && selection.type === 'Range' && selection.toString().trim().length > 0;
   };
+
   // 포커스가 바뀔 때마다
   useEffect(() => {
     if (focus !== 'Observer') {
       setStartOption(false);
     }
   }, [focus]);
-  // 태스크 리스트 복원 로직
   useEffect(() => {
     console.log('[WindowManager] Restore check:', {
       hydrated,
@@ -193,12 +195,14 @@ const WindowManager = () => {
     }
   }, [hydrated, isLogIned, lastTaskList, availableApps, addTask, setVirtualWindowPosition]);
 
+  // Discover 초기화 (availableApps 불필요)
   useEffect(() => {
-    if (!hydrated) return; // hydration 전엔 아무것도 하지 않음
+    if (!hydrated || hasInitializedDiscover.current) return;
 
-    //초기 기본 설정
     if (isLogIned === 'true') {
+      hasInitializedDiscover.current = true;
       removeTask(logIn);
+
       const discover: TaskType = {
         component: (
           <Discover
@@ -232,6 +236,51 @@ const WindowManager = () => {
       }, 200);
     }
   }, [isLogIned, hydrated]);
+
+  // 알림창 초기화 (availableApps 필요)
+  useEffect(() => {
+    if (!hydrated || hasInitializedNotifications.current || isLogIned !== 'true') return;
+    if (!availableApps || availableApps.length === 0) return;
+
+    hasInitializedNotifications.current = true;
+
+    // bootLoader 끝난 후 알림창 띄우기 (3.5초 후)
+    setTimeout(() => {
+      // 알림창 위치 설정
+      const notificationPositions: Record<string, { top: number; left: number; width: number; height: number }> = {
+        '오늘의 기일': { top: 10, left: 920, width: 370, height: 87 },
+        '오늘의 추모관': { top: 108, left: 920, width: 370, height: 87 },
+        '오늘의 조문객': { top: 205, left: 920, width: 370, height: 87 },
+      };
+      setVirtualWindowPosition(notificationPositions, 0);
+
+      // 오늘의 기일
+      const anniversaryApp = availableApps.find(app => app.id === 10001 && app.name === '오늘의 기일');
+      if (anniversaryApp) {
+        addTask(anniversaryApp);
+      }
+
+      // 추모관 알림
+      const memorialApp = availableApps.find(app => app.id === 10002 && app.name === '오늘의 추모관');
+      if (memorialApp) {
+        addTask(memorialApp);
+      }
+
+      // 조문객 알림
+      const mournerApp = availableApps.find(app => app.id === 10003 && app.name === '오늘의 조문객');
+      if (mournerApp) {
+        addTask(mournerApp);
+      }
+    }, 3500);
+  }, [hydrated, isLogIned, availableApps]);
+
+  // 로그아웃 시 ref 리셋
+  useEffect(() => {
+    if (isLogIned !== 'true') {
+      hasInitializedDiscover.current = false;
+      hasInitializedNotifications.current = false;
+    }
+  }, [isLogIned]);
 
   // 공지사항 데이터를 atom에 저장 (항상 실행)
   useEffect(() => {
