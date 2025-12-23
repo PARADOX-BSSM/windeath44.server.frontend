@@ -1,7 +1,7 @@
 import * as _ from './style';
 import ameImg from '@/assets/profile/ame.svg';
 import verificationBadge from '@/assets/verification.png';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { setCursorImage, CURSOR_IMAGES } from 'lib/setCursorImg';
 import { useAtomValue } from 'jotai';
 import { taskTransformerAtom } from '@/atoms/taskTransformer.ts';
@@ -67,6 +67,10 @@ const Comment = ({
   const token = getCookie('access_token');
   const isOwner = currentUserId === userid;
   const isPending = commentId < 0; // 음수 ID는 임시 댓글 (아직 서버에 등록 중)
+
+  useEffect(() => {
+    console.log(isOwner);
+  }, [isOwner]);
 
   const handleReplySubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

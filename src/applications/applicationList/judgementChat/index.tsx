@@ -1,0 +1,476 @@
+import * as _ from './style.ts';
+import { Fragment, useEffect, useRef, useState } from 'react';
+import MemorialBtn from '@/applications/components/memorialBtn/index.tsx';
+import FilterBlock from '@/applications/components/filterBlock/index.tsx';
+import { useAtomValue } from 'jotai';
+import { chat_num, select_chat } from '@/applications/components/judgementChatObj/state_manager.ts';
+import {
+  useDeleteJudgementChatLike,
+  useGetJudgementChats,
+  usePostJudgementChatLike,
+} from '@/api/judgement/judgementChat.ts';
+import Comment from '@/applications/components/comment/index.tsx';
+import { usePatchJudgementChats } from '@/api/judgement/judgementChatEdit.ts';
+import { useDeleteJudgementChats } from '@/api/judgement/judgementChatDelete.ts';
+import { usePostJudgementChats } from '@/api/judgement/judgementChatCreate.ts';
+import { useGetUserMutation } from '@/api/user/getUser';
+import axios from 'axios';
+import { user as userEndpoint } from '@/config';
+import { getCookie } from '@/api/auth/cookie.ts';
+import { alerterAtom } from '@/atoms/alerter';
+import { taskTransformerAtom } from '@/atoms/taskTransformer';
+import Loading from '@/applications/components/loading/index.tsx';
+
+const sort = ['최신순', '인기순'];
+
+interface judgementChatProps {
+  judgement_id: number;
+}
+
+const JudgementChat = ({ judgement_id }: judgementChatProps) => {
+  const [ChatList, setChatList] = useState<any[]>([]);
+  const [userDataMap, setUserDataMap] = useState<Record<string, { name: string; profile: string }>>(
+    {},
+  );
+  const { mutate: getChats } = useGetJudgementChats();
+  const { mutate: postLike } = usePostJudgementChatLike();
+  const { mutate: deleteLike } = useDeleteJudgementChatLike();
+  const { mutate: createChat } = usePostJudgementChats();
+  const { mutate: editChat } = usePatchJudgementChats();
+  const { mutate: deleteChat } = useDeleteJudgementChats();
+
+  // 로그인한 유저 정보 가져오기
+  const { mutate: getUser, data: userData } = useGetUserMutation();
+  const currentUserId = userData?.data?.userId || '';
+  const currentUserName = userData?.data?.name || '';
+  const currentUserProfile = userData?.data?.profile || '';
+  const currentUserRole = userData?.data?.role || '';
+
+  const token = getCookie('access_token');
+  const setAlert = useAtomValue(alerterAtom);
+  const taskTransform = useAtomValue(taskTransformerAtom);
+
+  const [loading, setLoading] = useState(true);
+  const [firstLoading, setFirstLoading] = useState(0);
+
+  useEffect(() => {
+    getUser();
+  }, []);
+
+  useEffect(() => {
+    if (currentUserId) {
+      getChats(
+        { judgement_id, user_id: currentUserId },
+        {
+          onSuccess: (data) => {
+            setChatList(data.data);
+            setLoading(false);
+          },
+          onError: () => {
+            setLoading(false);
+          },
+        },
+      );
+    } else {
+      getChats(
+        { judgement_id, user_id: 'guest' },
+        {
+          onSuccess: (data) => {
+            setChatList(data.data);
+            setLoading(false);
+          },
+        },
+      );
+    }
+  }, [currentUserId]);
+
+  // 사용자 정보 가져오기 (community 방식)
+  useEffect(() => {
+    if (ChatList.length === 0) return;
+    if (firstLoading == 0) {
+      setLoading(true);
+    }
+
+    const userIds = new Set<string>();
+    ChatList.forEach((comment: any) => {
+      userIds.add(comment.userId);
+      // 대댓글도 확인
+      if (comment.children) {
+        comment.children.forEach((child: any) => {
+          userIds.add(child.userId);
+        });
+      }
+    });
+
+    const userIdArray = Array.from(userIds);
+    if (userIdArray.length === 0) return;
+
+    axios
+      .get(userEndpoint, {
+        params: { userIds: userIdArray },
+        paramsSerializer: (params) => {
+          const searchParams = new URLSearchParams();
+          params.userIds.forEach((id: string) => {
+            searchParams.append('userIds', id);
+          });
+          return searchParams.toString();
+        },
+      })
+      .then((response) => {
+        setLoading(false);
+        setFirstLoading((prev) => (prev += 1));
+        const users = response.data.data;
+        const userMap: Record<string, { name: string; profile: string }> = {};
+        users.forEach((user: any) => {
+          userMap[user.userId] = {
+            name: user.name,
+            profile: user.profile,
+          };
+        });
+        setUserDataMap(userMap);
+      })
+      .catch((error) => {
+        setLoading(false);
+        setFirstLoading((prev) => (prev += 1));
+        console.error('사용자 정보 가져오기 실패:', error);
+      });
+  }, [ChatList]);
+
+  const useCreateChat = (content: string, parentCommentId?: number | null) => {
+    if (!token) {
+      setAlert?.(<>로그인 후 이용 가능합니다.</>, () => {
+        taskTransform?.('경고', '');
+      });
+      return;
+    }
+
+    createChat(
+      {
+        judgement_id: judgement_id,
+        body: content,
+        parentCommentId: parentCommentId ?? null,
+        user_id: currentUserId,
+        user_name: currentUserName,
+        user_profile: currentUserProfile,
+      },
+      {
+        onSuccess: () => {
+          getChats(
+            { judgement_id, user_id: currentUserId },
+            {
+              onSuccess: (newData) => {
+                setChatList(newData.data);
+
+                // ✅ parentCommentId가 없을 때만 스크롤 (일반 댓글)
+                if (!parentCommentId) {
+                  setTimeout(() => {
+                    if (scroll_ref.current) {
+                      scroll_ref.current.scrollTo({
+                        top: scroll_ref.current.scrollHeight,
+                      });
+                    }
+                  });
+                }
+              },
+            },
+          );
+          set_input_value('');
+        },
+        onError: () => {
+          console.error('댓글 생성 실패');
+        },
+      },
+    );
+  };
+
+  const useEditChat = (content: string, comment_id: number) => {
+    if (!token) {
+      setAlert?.(<>로그인 후 이용 가능합니다.</>, () => {
+        taskTransform?.('경고', '');
+      });
+      return;
+    }
+
+    editChat(
+      {
+        comment_id: comment_id,
+        body: content,
+        user_id: currentUserId,
+        role: currentUserRole,
+      },
+      {
+        onSuccess: () => {
+          // ✅ 여기가 핵심! setChatList를 호출해야 함
+          getChats(
+            { judgement_id, user_id: currentUserId },
+            {
+              onSuccess: (newData) => {
+                setChatList(newData.data); // ← UI 업데이트!
+              },
+            },
+          );
+          set_input_value(''); // input 초기화
+        },
+        onError: () => {
+          console.error('댓글 생성 실패');
+        },
+      },
+    );
+  };
+
+  const useDeleteChat = (comment_id: number) => {
+    if (!token) {
+      setAlert?.(<>로그인 후 이용 가능합니다.</>, () => {
+        taskTransform?.('경고', '');
+      });
+      return;
+    }
+
+    deleteChat(
+      {
+        comment_id,
+        user_id: currentUserId,
+        role: currentUserRole,
+      },
+      {
+        onSuccess: () => {
+          // ✅ 여기가 핵심! setChatList를 호출해야 함
+          getChats(
+            { judgement_id, user_id: currentUserId },
+            {
+              onSuccess: (newData) => {
+                setChatList(newData.data); // ← UI 업데이트!
+              },
+            },
+          );
+          set_input_value(''); // input 초기화
+        },
+        onError: () => {
+          console.error('댓글 생성 실패');
+        },
+      },
+    );
+  };
+
+  const handleLikeToggle = (comment_id: number, isLiked: boolean) => {
+    if (!token) {
+      setAlert?.(<>로그인 후 이용 가능합니다.</>, () => {
+        taskTransform?.('경고', '');
+      });
+      return;
+    }
+
+    if (isLiked) {
+      // 이미 좋아요 상태 → 좋아요 취소
+      deleteLike(
+        { comment_id, user_id: currentUserId },
+        {
+          onSuccess: () => {
+            getChats(
+              { judgement_id, user_id: currentUserId },
+              {
+                onSuccess: (newData) => {
+                  setChatList(newData.data);
+                },
+              },
+            );
+          },
+          onError: () => {
+            console.error('좋아요 취소 실패');
+          },
+        },
+      );
+    } else {
+      // 좋아요 안 눌린 상태 → 좋아요 추가
+      postLike(
+        { comment_id, user_id: currentUserId },
+        {
+          onSuccess: () => {
+            getChats(
+              { judgement_id, user_id: currentUserId },
+              {
+                onSuccess: (newData) => {
+                  setChatList(newData.data);
+                },
+              },
+            );
+          },
+          onError: () => {
+            console.error('좋아요 추가 실패');
+          },
+        },
+      );
+    }
+  };
+
+  const scroll_ref = useRef<HTMLDivElement>(null);
+
+  const select = useAtomValue(select_chat);
+  const chat_count = useAtomValue(chat_num);
+
+  useEffect(() => {
+    if (select !== -1 && scroll_ref.current) {
+      console.log(chat_count);
+      scroll_ref.current.scrollTo();
+    }
+  }, [select]);
+
+  const [input_value, set_input_value] = useState('');
+
+  const [open, setOpen] = useState(false);
+  const [choice, setChoice] = useState('최신순');
+  const selected = useAtomValue(select_chat);
+
+  // 정렬 로직 적용 (부모 댓글만 정렬, 대댓글은 순서 유지)
+  const getSortedChatList = () => {
+    // 부모 댓글만 먼저 필터링
+    const parentComments = ChatList.filter((item) => item.parentCommentId === null);
+
+    // 정렬 기준에 따라 부모 댓글만 정렬
+    const sortedParents = [...parentComments].sort((a, b) => {
+      if (choice === '최신순') {
+        // createdAt을 기준으로 내림차순 (최신이 위로)
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      } else if (choice === '인기순') {
+        // likesCount를 기준으로 내림차순 (좋아요 많은 게 위로)
+        return b.likesCount - a.likesCount;
+      }
+      return 0;
+    });
+
+    // 대댓글은 원래 순서 그대로 유지
+    return sortedParents;
+  };
+
+  const chat_list = getSortedChatList();
+
+  if (loading) {
+    return <Loading />;
+  }
+
+  return (
+    <_.Container>
+      <_.Input_Sep>
+        <_.Chat_Back>
+          <_.Title_Div>
+            <_.Title_Text>배심원 토의</_.Title_Text>
+            <_.Select_Div>
+              <FilterBlock
+                label=""
+                option={choice}
+                isOpen={open}
+                list={sort}
+                onChange={(e) => {
+                  setChoice(e);
+                  setOpen(false);
+                }}
+                onClick={() => {
+                  setOpen(!open);
+                }}
+              />
+            </_.Select_Div>
+          </_.Title_Div>
+
+          <_.Discussion ref={scroll_ref}>
+            {chat_list
+              .filter(
+                (item) =>
+                  (judgement_id === item.judgmentId && item.parentCommentId == null) ||
+                  selected === item.parentCommentId,
+              )
+              .map((item, idx) => {
+                return (
+                  <Fragment key={item.commentId}>
+                    <Comment
+                      idx={idx}
+                      userid={item.userId}
+                      currentUserId={currentUserId}
+                      userName={userDataMap[item.userId]?.name || '사용자'}
+                      commentId={item.commentId}
+                      content={item.body}
+                      userProfile={userDataMap[item.userId]?.profile}
+                      likes={item.likesCount}
+                      parentId={item.parentCommentId}
+                      isLiked={item.isLiked}
+                      onReplySubmit={(commentId: number, content: string) => {
+                        useCreateChat(content, commentId);
+                      }}
+                      onEditSubmit={(commentId: number, content: string) => {
+                        useEditChat(content, commentId);
+                      }}
+                      onDeleteSubmit={(commentId: number) => {
+                        useDeleteChat(commentId);
+                      }}
+                      onLikeToggle={handleLikeToggle}
+                    />
+                    {item.children?.map((child: any, childIdx: number) => {
+                      return (
+                        <Comment
+                          idx={idx + childIdx + 1}
+                          key={child.commentId}
+                          userid={child.userId}
+                          currentUserId={currentUserId}
+                          userName={userDataMap[child.userId]?.name || '사용자'}
+                          commentId={child.commentId}
+                          content={child.body}
+                          userProfile={userDataMap[child.userId]?.profile}
+                          likes={child.likesCount}
+                          parentId={child.parentCommentId}
+                          isLiked={child.isLiked}
+                          onReplySubmit={(commentId: number, content: string) => {
+                            useCreateChat(content, commentId);
+                          }}
+                          onEditSubmit={(commentId: number, content: string) => {
+                            useEditChat(content, commentId);
+                          }}
+                          onDeleteSubmit={(commentId: number) => {
+                            useDeleteChat(commentId);
+                          }}
+                          onLikeToggle={handleLikeToggle}
+                        />
+                      );
+                    })}
+                  </Fragment>
+                );
+              })}
+          </_.Discussion>
+        </_.Chat_Back>
+
+        <_.Input_Div
+          as="form"
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (input_value.trim()) {
+              useCreateChat(input_value);
+            }
+          }}
+        >
+          <_.Input
+            value={input_value}
+            placeholder="댓글을 입력하세요"
+            onChange={(value) => {
+              set_input_value(value.target.value);
+            }}
+          />
+          <_.Submit_Btn>
+            <MemorialBtn
+              name="게시"
+              type="menu"
+              width="46px"
+              height="22px"
+              fontSize="11px"
+              onClick={(e) => {
+                e.preventDefault();
+                if (input_value.trim()) {
+                  useCreateChat(input_value);
+                }
+              }}
+            />
+          </_.Submit_Btn>
+        </_.Input_Div>
+      </_.Input_Sep>
+    </_.Container>
+  );
+};
+
+export default JudgementChat;

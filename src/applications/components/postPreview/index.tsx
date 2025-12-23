@@ -1,0 +1,79 @@
+import React from 'react';
+import * as _ from './style';
+import Seori from '@/assets/seori/seori_mini.png';
+import Heart from '@/assets/community/heart_line.svg';
+import CommentIcon from '@/assets/community/comment.svg';
+
+interface User {
+  name: string;
+  userId: string;
+  profile?: string;
+}
+interface Post {
+  postId: number;
+  title: string;
+  body: string;
+  postImage: string;
+  commentCount: number;
+  likesCount: number;
+  createdAt: string;
+}
+interface PostsProps {
+  user: User;
+  post: Post;
+  onClick: (() => void) | ((e: React.MouseEvent<HTMLDivElement>) => Promise<void> | void);
+}
+const PostPreview: React.FC<PostsProps> = ({ user, post, onClick }) => {
+  const { name, userId, profile = '' } = user;
+  const { title, body, commentCount = 0, likesCount = 0, postImage = '', createdAt } = post;
+
+  const truncateText = (text: string, maxLength: number) => {
+    if (text.length <= maxLength) return text;
+    return text.slice(0, maxLength) + '...';
+  };
+
+  const truncatedTitle = truncateText(title, 30);
+  const truncatedBody = truncateText(body, 50);
+
+  return (
+    <_.Post onClick={() => onClick()}>
+      <_.Main>
+        <_.ProfileImg imgUrl={profile || Seori} />
+        <_.PostMain>
+          <_.PostInfo>
+            <_.Name>{name}</_.Name>
+            <_.UserId>@{userId}</_.UserId>
+          </_.PostInfo>
+          <_.Content>
+            <_.PostTitle>{truncatedTitle}</_.PostTitle>
+            <_.PostContent>{truncatedBody}</_.PostContent>
+          </_.Content>
+          <_.Datetime>{createdAt}</_.Datetime>
+          <_.PostInfo>
+            <_.Icons>
+              <_.Icon
+                src={Heart}
+                alt="PostHeart"
+                width="10px"
+                height="10px"
+              />
+              {likesCount}
+            </_.Icons>
+            <_.Icons>
+              <_.Icon
+                src={CommentIcon}
+                alt="PostComment"
+                width="10px"
+                height="10px"
+              />
+              {commentCount}
+            </_.Icons>
+          </_.PostInfo>
+        </_.PostMain>
+      </_.Main>
+      <_.PostImg imgUrl={postImage} />
+    </_.Post>
+  );
+};
+
+export default PostPreview;

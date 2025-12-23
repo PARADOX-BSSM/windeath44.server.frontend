@@ -1,0 +1,117 @@
+import React from 'react';
+import * as _ from './style';
+import Emoticon from '@/assets/community/emoticon.svg';
+import CommunityBtn from '../communityBtn';
+import { useState } from 'react';
+import { usePostCommentCreate } from '@/api/community/postCommentCreate';
+import Seori from '@/assets/sulkkagi/black_stone.svg';
+import { alerterAtom } from '@/atoms/alerter';
+import { useAtomValue } from 'jotai';
+import { taskTransformerAtom } from '@/atoms/taskTransformer';
+import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
+import { getCookie } from '@/api/auth/cookie';
+
+interface CommentInputProps {
+  name?: string;
+  userId?: string;
+  postId: number;
+  profile?: string;
+  parentCommentId?: number | null;
+  refetchComments?: () => void;
+}
+
+const CommentInput: React.FC<CommentInputProps> = ({
+  name = '게스트',
+  userId = 'guest_user',
+  postId,
+  profile = '',
+  parentCommentId,
+  refetchComments,
+}) => {
+  const postCreateCommentMutation = usePostCommentCreate();
+  const taskTransform = useAtomValue(taskTransformerAtom);
+  const setAlert = useAtomValue(alerterAtom);
+  const token = getCookie('access_token');
+
+  const createComment = () => {
+    if (token) {
+      postCreateCommentMutation.mutate(
+        {
+          post_id: postId,
+          user_id: userId,
+          body: commentInput,
+          parentCommentId: parentCommentId,
+        },
+        {
+          onSuccess: () => {
+            console.log('댓글 작성 완료');
+            setCommentInput('');
+            if (refetchComments) {
+              refetchComments();
+            }
+          },
+
+          onError: () => {
+            setAlert?.(<>댓글이 작성되지 않았습니다.</>, () => {
+              taskTransform?.('경고', '');
+            });
+          },
+        },
+      );
+    } else {
+      setAlert?.(<>로그인 후 이용 가능합니다.</>, () => {
+        taskTransform?.('경고', '');
+      });
+    }
+  };
+
+  const [commentInput, setCommentInput] = useState<string>('');
+
+  return (
+    <_.Post>
+      <_.Line></_.Line>
+      {!parentCommentId && <_.ProfileImg imgUrl={profile || Seori} />}
+
+      <_.PostMain>
+        {!parentCommentId && (
+          <_.PostInfo>
+            <_.Name>{name}</_.Name>
+            <_.UserId>@{userId}</_.UserId>
+          </_.PostInfo>
+        )}
+
+        <_.CommentMain>
+          <_.InputArea>
+            <_.Input
+              type="text"
+              placeholder={
+                parentCommentId
+                  ? '자유롭게 대댓글을 작성해보세요!'
+                  : '자유롭게 의견을 작성해보세요!'
+              }
+              value={commentInput}
+              onChange={(e) => setCommentInput(e.target.value)}
+              onMouseDown={() => setCursorImage(CURSOR_IMAGES.click)}
+              onMouseUp={() => setCursorImage(CURSOR_IMAGES.hand)}
+              onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+              onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+            />
+            <_.Icon
+              src={Emoticon}
+              onMouseEnter={() => setCursorImage(CURSOR_IMAGES.hand)}
+              onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}
+            />
+          </_.InputArea>
+
+          <CommunityBtn
+            name="게시"
+            type="submit"
+            onClick={createComment}
+          />
+        </_.CommentMain>
+      </_.PostMain>
+    </_.Post>
+  );
+};
+
+export default CommentInput;

@@ -1,0 +1,189 @@
+import styled from '@emotion/styled';
+
+export const Post = styled.div`
+  display: flex;
+  padding: 12px 15px;
+  justify-content: space-between;
+  gap: 9px;
+  border-bottom: 1px solid #ccc;
+  background-color: #fff;
+`;
+export const Main = styled.div`
+  max-width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  flex: 1;
+`;
+export const ProfileImg = styled.div<{ imgUrl: string }>`
+  width: 45px;
+  height: 45px;
+  background: #ffffff;
+  background-image: url(${(props) => props.imgUrl});
+  background-size: cover;
+`;
+export const PostMain = styled.div`
+  display: flex;
+  padding: 0 7px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  flex: 1;
+`;
+export const PostHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+`;
+export const PostInfo = styled.div`
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+
+  font-family: Galmuri11;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+`;
+export const Name = styled.p`
+  color: #9a5a95;
+`;
+export const UserId = styled.p`
+  color: #dcafdd;
+  font-size: 10px;
+`;
+export const Content = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+
+  color: #2e2e2e;
+  font-family: Galmuri11;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+`;
+export const PostTitle = styled.h3`
+  font-weight: 400;
+`;
+export const PostContent = styled.div`
+  font-size: 14px;
+`;
+export const Datetime = styled.p`
+  color: #999;
+  font-family: Galmuri11;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+`;
+export const Icons = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 2px;
+
+  color: #5f6368;
+  font-family: Galmuri11;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+`;
+export const Icon = styled.img<{ width?: string; height?: string }>`
+  width: ${(props) => props.width};
+  height: 10px;
+`;
+export const PostImg = styled.div<{ imgUrl: string }>`
+  width: 110px;
+  height: 110px;
+  background: #fff;
+  background-image: url(${(props) => props.imgUrl});
+  background-size: cover;
+`;
+
+export const KebabContainer = styled.div`
+  position: relative;
+`;
+export const KebabBtn = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    opacity: 0.7;
+  }
+`;
+export const ContextMenu = styled.div`
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  background: #ffffff;
+  border: 1px solid #ccc;
+  z-index: 1000;
+  min-width: 80px;
+`;
+export const MenuItem = styled.button`
+  width: 100%;
+  padding: 8px 16px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  font-family: Galmuri11;
+  font-size: 12px;
+  color: #2e2e2e;
+
+  &:hover {
+    background-color: #f5f5f5;
+  }
+`;
+export const EditInputArea = styled.div`
+  display: flex;
+  width: 100%;
+  padding: 8px 10px;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffebfd;
+`;
+export const EditInput = styled.input`
+  width: 100%;
+  background: none;
+  border: none;
+  outline: none;
+
+  &::focus {
+    border: none;
+    outline: none;
+  }
+
+  &::placeholder {
+    color: #dcafdd;
+  }
+
+  color: #2e2e2e;
+  font-family: Galmuri11;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+`;
+export const EditIcon = styled.img`
+  width: 16px;
+  height: 15px;
+  aspect-ratio: 16/15;
+`;
+export const EditBtnGroup = styled.div`
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  justify-content: flex-end;
+`;

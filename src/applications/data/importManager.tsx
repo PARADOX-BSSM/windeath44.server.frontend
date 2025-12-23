@@ -14,6 +14,7 @@ import chatbot from '@/assets/appIcons/ChatBot.svg';
 import chatbotRejection from '@/assets/appIcons/ChatBotRejection.svg';
 import game from '@/assets/appIcons/game.svg';
 import sulkkagi from '@/assets/sulkkagi/black_stone.svg';
+import community from '@/assets/appIcons/community.svg';
 import book from '@/assets/appIcons/book.svg';
 import memorial from '@/assets/appIcons/memorial.svg';
 
@@ -126,6 +127,27 @@ const Notification = lazy(() => import('@/applications/applicationList/notificat
 const NotificationViewer = lazy(
   () => import('@/applications/applicationList/notificationViewer/index.tsx'),
 );
+
+const CommunityApproach = lazy(
+  () => import('@/applications/applicationList/communityApproach/index.tsx'),
+);
+const Community = lazy(() => import('@/applications/applicationList/community/index.tsx'));
+
+const CommunityPost = lazy(() => import('@/applications/applicationList/communityPost/index.tsx'));
+
+const CommunityPostWrite = lazy(
+  () => import('@/applications/applicationList/communityPostWrite/index.tsx'),
+);
+
+const Judgement = lazy(() => import('@/applications/applicationList/judgement/index.tsx'));
+
+const JudgementApproach = lazy(
+  () => import('@/applications/applicationList/judgementApproach/index.tsx'),
+);
+
+const Judgement_Vote = lazy(() => import('@/applications/applicationList/vote/index.tsx'));
+
+const JudgementChat = lazy(() => import('@/applications/applicationList/judgementChat/index.tsx'));
 
 const Settings = lazy(() => import('@/applications/applicationList/settings/index.tsx'));
 
@@ -1135,6 +1157,288 @@ const useApps = (): TaskType[] => {
         minHeight: 400,
         setUpWidth: 976,
         setUpHeight: 617,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <CommunityApproach />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2260,
+      name: '커뮤니티',
+      layer: undefined,
+      appSetup: {
+        Image: community,
+        minWidth: 700,
+        minHeight: 562,
+        setUpWidth: 800,
+        setUpHeight: 562,
+      },
+      visible: true,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <Community
+            stack={[]}
+            push={undefined}
+            pop={undefined}
+            top={undefined}
+          />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2261,
+      name: 'communityMain',
+      layer: undefined,
+      appSetup: {
+        Image: community,
+        minWidth: 700,
+        minHeight: 562,
+        setUpWidth: 800,
+        setUpHeight: 562,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <CommunityPost />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2262,
+      name: 'communityPost',
+      layer: undefined,
+      appSetup: {
+        Image: community,
+        minWidth: 700,
+        minHeight: 562,
+        setUpWidth: 800,
+        setUpHeight: 562,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <CommunityPostWrite />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2263,
+      name: '게시글 작성',
+      layer: undefined,
+      appSetup: {
+        Image: community,
+        minWidth: 700,
+        minHeight: 562,
+        setUpWidth: 800,
+        setUpHeight: 562,
+      },
+      visible: false,
+    },
+    {
+      component: <Suspense fallback={null}>{<Judgement />}</Suspense>,
+      type: 'App',
+      id: 3001,
+      name: '재판 목록',
+      layer: undefined,
+      appSetup: {
+        Image: community,
+        minWidth: 700,
+        minHeight: 562,
+        setUpWidth: 800,
+        setUpHeight: 562,
+      },
+      visible: false,
+    },
+    {
+      component: <Suspense fallback={null}>{<JudgementApproach />}</Suspense>,
+      type: 'App',
+      id: 3002,
+      name: '재판',
+      layer: undefined,
+      appSetup: {
+        Image: community,
+        minWidth: 700,
+        minHeight: 562,
+        setUpWidth: 800,
+        setUpHeight: 562,
+      },
+      visible: false,
+    },
+    {
+      component: <Suspense fallback={null}>{<Judgement_Vote />}</Suspense>,
+      type: 'App',
+      id: 3003,
+      name: '투표',
+      layer: undefined,
+      appSetup: {
+        Image: community,
+        minWidth: 700,
+        minHeight: 562,
+        setUpWidth: 800,
+        setUpHeight: 562,
+      },
+      visible: false,
+    },
+    {
+      component: <Suspense fallback={null}>{<JudgementChat />}</Suspense>,
+      type: 'App',
+      id: 3004,
+      name: '재판 댓글',
+      layer: undefined,
+      appSetup: {
+        Image: community,
+        minWidth: 700,
+        minHeight: 562,
+        setUpWidth: 800,
+        setUpHeight: 562,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <CommunityApproach />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2260,
+      name: '커뮤니티',
+      layer: undefined,
+      appSetup: {
+        Image: community,
+        minWidth: 700,
+        minHeight: 562,
+        setUpWidth: 800,
+        setUpHeight: 562,
+      },
+      visible: true,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <Community
+            stack={[]}
+            push={undefined}
+            pop={undefined}
+            top={undefined}
+          />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2261,
+      name: 'communityMain',
+      layer: undefined,
+      appSetup: {
+        Image: community,
+        minWidth: 700,
+        minHeight: 562,
+        setUpWidth: 800,
+        setUpHeight: 562,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <CommunityPost />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2262,
+      name: 'communityPost',
+      layer: undefined,
+      appSetup: {
+        Image: community,
+        minWidth: 700,
+        minHeight: 562,
+        setUpWidth: 800,
+        setUpHeight: 562,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <CommunityPostWrite />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 2263,
+      name: '게시글 작성',
+      layer: undefined,
+      appSetup: {
+        Image: community,
+        minWidth: 700,
+        minHeight: 562,
+        setUpWidth: 800,
+        setUpHeight: 562,
+      },
+      visible: false,
+    },
+    {
+      component: <Suspense fallback={null}>{<Judgement />}</Suspense>,
+      type: 'App',
+      id: 3001,
+      name: '재판 목록',
+      layer: undefined,
+      appSetup: {
+        Image: community,
+        minWidth: 700,
+        minHeight: 562,
+        setUpWidth: 800,
+        setUpHeight: 562,
+      },
+      visible: false,
+    },
+    {
+      component: <Suspense fallback={null}>{<JudgementApproach />}</Suspense>,
+      type: 'App',
+      id: 3002,
+      name: '재판',
+      layer: undefined,
+      appSetup: {
+        Image: community,
+        minWidth: 700,
+        minHeight: 562,
+        setUpWidth: 800,
+        setUpHeight: 562,
+      },
+      visible: false,
+    },
+    {
+      component: <Suspense fallback={null}>{<Judgement_Vote />}</Suspense>,
+      type: 'App',
+      id: 3003,
+      name: '투표',
+      layer: undefined,
+      appSetup: {
+        Image: community,
+        minWidth: 700,
+        minHeight: 562,
+        setUpWidth: 800,
+        setUpHeight: 562,
+      },
+      visible: false,
+    },
+    {
+      component: <Suspense fallback={null}>{<JudgementChat />}</Suspense>,
+      type: 'App',
+      id: 3004,
+      name: '재판 댓글',
+      layer: undefined,
+      appSetup: {
+        Image: community,
+        minWidth: 700,
+        minHeight: 562,
+        setUpWidth: 800,
+        setUpHeight: 562,
       },
       visible: false,
     },

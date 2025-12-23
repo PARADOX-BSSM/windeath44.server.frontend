@@ -10,6 +10,7 @@ type inputProps = {
   setValue: (value: string) => void;
   placeHold?: string;
   disabled?: boolean;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 };
 const Inputs = ({
   width,
@@ -21,6 +22,7 @@ const Inputs = ({
   setValue,
   placeHold,
   disabled,
+  onKeyDown,
 }: inputProps) => {
   const inputElement = (
     <_.Shadow width={width}>
@@ -28,6 +30,7 @@ const Inputs = ({
         type={type}
         value={value}
         onChange={(e) => setValue(e.target.value)}
+        onKeyDown={onKeyDown}
         width={width}
         onMouseEnter={() => setCursorImage(CURSOR_IMAGES.drag)}
         onMouseLeave={() => setCursorImage(CURSOR_IMAGES.default)}

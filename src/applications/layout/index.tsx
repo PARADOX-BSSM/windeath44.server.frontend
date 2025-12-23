@@ -6,7 +6,7 @@ import Min from '@/assets/headerButton/min.svg';
 import Heart from '@/assets/headerButton/heart.svg';
 import scal from '@/assets/NotificationImg/scal.svg';
 import flower from '@/assets/NotificationImg/flower.svg';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import {
   isLogInedAtom,
   focusAtom,
@@ -19,11 +19,14 @@ import { alertOpenAtom } from '@/atoms/alerter';
 import { ApplicationProps } from './utils';
 import React from 'react';
 import { setCursorImage, CURSOR_IMAGES } from '@/lib/setCursorImg';
+import { Event_Count, Open_Vote, Sep_window } from '../applicationList/vote/state_manage';
+import { taskTransformerAtom } from '@/atoms/taskTransformer';
 import { useProcessManager } from '@/hooks/processManager.tsx';
 import { useUI } from './hooks/useUI';
 import Resize from './components/ResizeHandles';
 const Application = (props: ApplicationProps) => {
   // jotai 상태 사용
+
   const [layer, setLayer] = useAtom(layerAtom);
   const [focus, setFocus] = useAtom(focusAtom);
   const [tabDownInterrupt, setTabDownInterrupt] = useAtom(tabDownInterruptAtom);
@@ -46,6 +49,9 @@ const Application = (props: ApplicationProps) => {
   const [backupPosition, setBackupPosition] = useState<{ x: number; y: number } | null>(null);
   const [backupSize, setBackupSize] = useState<{ width: number; height: number } | null>(null);
   const [isNotification, setIsNotification] = useState<boolean>(false);
+
+  const set_sep_window = useSetAtom(Sep_window);
+  const open_vote = useAtomValue(Open_Vote);
 
   useEffect(() => {
     console.log('isNotClick changed:', isNotClick);
@@ -98,6 +104,15 @@ const Application = (props: ApplicationProps) => {
       return () => clearTimeout(timer);
     }
   }, [props.name, windowPositions, isFullScreen]);
+
+  //재판 화면에서 닫기 버튼을 누르면 뒤로 돌아가야하는데 재판 화면인지 아닌지 판단해야함
+  useEffect(() => {
+    if (props.name === '재판' && open_vote === true) {
+      set_sep_window(true);
+    } else {
+      set_sep_window(false);
+    }
+  }, [window]);
 
   // 창의 위치/크기 저장
   useEffect(() => {
@@ -212,6 +227,14 @@ const Application = (props: ApplicationProps) => {
   if (props.type === 'App') {
     const posX = ui.position.x + ui.positionOffset.x;
     const posY = ui.position.y + ui.positionOffset.y;
+    const setEvent = useSetAtom(Event_Count);
+
+    const open_vote = useAtomValue(Open_Vote);
+    const set_open_vote = useSetAtom(Open_Vote);
+
+    const sep_window = useAtomValue(Sep_window);
+
+    const taskTransform = useAtomValue(taskTransformerAtom);
 
     return (
       <section
@@ -313,6 +336,14 @@ const Application = (props: ApplicationProps) => {
                 data-allow-alert-cursor="true"
                 onMouseDown={(e: React.MouseEvent<HTMLDivElement>) => {
                   e.stopPropagation();
+
+                  if (sep_window === true) {
+                    setEvent((prev) => prev + 1);
+                    set_sep_window(false);
+                    set_open_vote(false);
+                    return;
+                  }
+
                   props.removeTask(props.removeCompnent);
                   if (!isLogIned) {
                     setIsLogIned('true');
@@ -337,7 +368,6 @@ const Application = (props: ApplicationProps) => {
               </_.ExitButton>
             </_.BtnContainer>
           </Resize.Header>
-
           <_.BodyContainer windowType="framed">
             <_.ContentContainer windowType="framed">
               {(() => {
