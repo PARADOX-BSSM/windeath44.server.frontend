@@ -20,6 +20,7 @@ import memorial from '@/assets/appIcons/memorial.svg';
 import Sulkkagi from '../applicationList/sulkkagi';
 import SulkkagiApproach from '../applicationList/sulkkagiApproach';
 import SulkkagiMenu from '../applicationList/sulkkagiMenu';
+import AnniversaryWindow from '../applicationList/anniversaryWindow';
 import { getCookie } from '@/api/auth/cookie.ts';
 import NewBow from '../applicationList/bow_ver2';
 
@@ -99,6 +100,7 @@ const MemorialViewer = lazy(
 const MemorialPRPreview = lazy(
   () => import('@/applications/applicationList/memorialPRPreview/index.tsx'),
 );
+
 const MyComputerApproach = lazy(
   () => import('@/applications/applicationList/myComputerApproach/index.tsx'),
 );
@@ -126,9 +128,14 @@ const NotificationViewer = lazy(
 );
 
 const Settings = lazy(() => import('@/applications/applicationList/settings/index.tsx'));
+
 const ReconfirmAlert = lazy(
   () => import('@/applications/applicationList/reconfirmAlert/index.tsx'),
 );
+
+const MemorialWindow = lazy(() => import('@/applications/applicationList/memorialWindow'));
+
+const MournerWindow = lazy(() => import('@/applications/applicationList/mournerWindow'));
 
 //Application Import 형식 예시
 /*
@@ -1039,6 +1046,76 @@ const useApps = (): TaskType[] => {
         minHeight: 600,
         setUpWidth: 1100,
         setUpHeight: 800,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <AnniversaryWindow
+            window={{}}
+            setWindow={() => undefined}
+            stack={[]}
+            push={undefined}
+            pop={undefined}
+            top={undefined}
+          />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 10001,
+      name: '오늘의 기일',
+      layer: undefined,
+      appSetup: {
+        Image: 'default',
+        minWidth: 370,
+        minHeight: 50,
+        setUpWidth: 370,
+        setUpHeight: 250,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <MemorialWindow
+            window={{}}
+            setWindow={() => undefined}
+          />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 10002,
+      name: '오늘의 추모관',
+      layer: undefined,
+      appSetup: {
+        Image: 'default',
+        minWidth: 370,
+        minHeight: 50,
+        setUpWidth: 370,
+        setUpHeight: 50,
+      },
+      visible: false,
+    },
+    {
+      component: (
+        <Suspense fallback={null}>
+          <MournerWindow
+            window={{}}
+            setWindow={() => undefined}
+          />
+        </Suspense>
+      ),
+      type: 'App',
+      id: 10003,
+      name: '오늘의 조문객',
+      layer: undefined,
+      appSetup: {
+        Image: 'default',
+        minWidth: 370,
+        minHeight: 50,
+        setUpWidth: 370,
+        setUpHeight: 50,
       },
       visible: false,
     },
