@@ -1071,76 +1071,76 @@ const useApps = (): TaskType[] => {
       },
       visible: false,
     },
-    {
-      component: (
-        <Suspense fallback={null}>
-          <AnniversaryWindow
-            window={{}}
-            setWindow={() => undefined}
-            stack={[]}
-            push={undefined}
-            pop={undefined}
-            top={undefined}
-          />
-        </Suspense>
-      ),
-      type: 'App',
-      id: 10001,
-      name: '오늘의 기일',
-      layer: undefined,
-      appSetup: {
-        Image: 'default',
-        minWidth: 370,
-        minHeight: 50,
-        setUpWidth: 370,
-        setUpHeight: 250,
-      },
-      visible: false,
-    },
-    {
-      component: (
-        <Suspense fallback={null}>
-          <MemorialWindow
-            window={{}}
-            setWindow={() => undefined}
-          />
-        </Suspense>
-      ),
-      type: 'App',
-      id: 10002,
-      name: '오늘의 추모관',
-      layer: undefined,
-      appSetup: {
-        Image: 'default',
-        minWidth: 370,
-        minHeight: 50,
-        setUpWidth: 370,
-        setUpHeight: 50,
-      },
-      visible: false,
-    },
-    {
-      component: (
-        <Suspense fallback={null}>
-          <MournerWindow
-            window={{}}
-            setWindow={() => undefined}
-          />
-        </Suspense>
-      ),
-      type: 'App',
-      id: 10003,
-      name: '오늘의 조문객',
-      layer: undefined,
-      appSetup: {
-        Image: 'default',
-        minWidth: 370,
-        minHeight: 50,
-        setUpWidth: 370,
-        setUpHeight: 50,
-      },
-      visible: false,
-    },
+    // {
+    //   component: (
+    //     <Suspense fallback={null}>
+    //       <AnniversaryWindow
+    //         window={{}}
+    //         setWindow={() => undefined}
+    //         stack={[]}
+    //         push={undefined}
+    //         pop={undefined}
+    //         top={undefined}
+    //       />
+    //     </Suspense>
+    //   ),
+    //   type: 'App',
+    //   id: 10001,
+    //   name: '오늘의 기일',
+    //   layer: undefined,
+    //   appSetup: {
+    //     Image: 'default',
+    //     minWidth: 370,
+    //     minHeight: 50,
+    //     setUpWidth: 370,
+    //     setUpHeight: 250,
+    //   },
+    //   visible: false,
+    // },
+    // {
+    //   component: (
+    //     <Suspense fallback={null}>
+    //       <MemorialWindow
+    //         window={{}}
+    //         setWindow={() => undefined}
+    //       />
+    //     </Suspense>
+    //   ),
+    //   type: 'App',
+    //   id: 10002,
+    //   name: '오늘의 추모관',
+    //   layer: undefined,
+    //   appSetup: {
+    //     Image: 'default',
+    //     minWidth: 370,
+    //     minHeight: 50,
+    //     setUpWidth: 370,
+    //     setUpHeight: 50,
+    //   },
+    //   visible: false,
+    // },
+    // {
+    //   component: (
+    //     <Suspense fallback={null}>
+    //       <MournerWindow
+    //         window={{}}
+    //         setWindow={() => undefined}
+    //       />
+    //     </Suspense>
+    //   ),
+    //   type: 'App',
+    //   id: 10003,
+    //   name: '오늘의 조문객',
+    //   layer: undefined,
+    //   appSetup: {
+    //     Image: 'default',
+    //     minWidth: 370,
+    //     minHeight: 50,
+    //     setUpWidth: 370,
+    //     setUpHeight: 50,
+    //   },
+    //   visible: false,
+    // },
     {
       component: (
         <Suspense fallback={null}>
@@ -1300,25 +1300,6 @@ const useApps = (): TaskType[] => {
         setUpHeight: 562,
       },
       visible: false,
-    },
-    {
-      component: (
-        <Suspense fallback={null}>
-          <CommunityApproach />
-        </Suspense>
-      ),
-      type: 'App',
-      id: 2260,
-      name: '커뮤니티',
-      layer: undefined,
-      appSetup: {
-        Image: community,
-        minWidth: 700,
-        minHeight: 562,
-        setUpWidth: 800,
-        setUpHeight: 562,
-      },
-      visible: true,
     },
     {
       component: (
