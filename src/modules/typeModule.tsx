@@ -7,6 +7,7 @@ export type StackSnapshot = {
 
 type TaskType = {
   component: JSX.Element;
+  backgroundComponent?: JSX.Element;
   type: string;
   id: number | undefined;
   instanceId?: string;
@@ -23,6 +24,8 @@ type TaskType = {
     | undefined;
   visible: boolean | undefined;
   stackSnapshot?: StackSnapshot;
+  isBackgrounded?: boolean; // 종료시 백그라운드 전환 여부
+  isBackgrounding?: boolean; // 실행시 백그라운드 실행 여부
 };
 
 export type PositionType = {
