@@ -30,6 +30,7 @@ import { feedsAtom } from '@/atoms/feeds';
 import { useGetFeedsMutation } from '@/api/feeds/getFeeds';
 import ContextMenu from '@/applications/components/contextMenu';
 import { alertOpenAtom } from '@/atoms/alerter.ts';
+import { BackgroundRuntime } from '@/services/backgroundRuntime';
 
 const Application = lazy(() => import('@/applications/layout/index.tsx'));
 
@@ -581,6 +582,7 @@ const WindowManager = () => {
             />
           )}
         </_.Display>
+        <BackgroundRuntime />
         <_.BackgroundDiv width={sideWidth}></_.BackgroundDiv>
       </Suspense>
     </_.Desktop>
