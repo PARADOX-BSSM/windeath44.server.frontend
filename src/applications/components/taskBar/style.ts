@@ -112,3 +112,14 @@ export const StartImg = styled.img`
   -ms-user-select: none;
   user-select: none;
 `;
+
+export const AlarmCenterContainer = styled.div`
+  height: 100%;
+  margin-left: auto;
+  box-shadow:
+    -0.0625rem -0.0625rem 0px 0px #FFF inset, 1.5px 1.5px 0px 0px var(--primary-black) inset,
+    -0.125rem -0.125rem 0px 0px var(--secondary-color) inset,
+    0.125rem 0.125rem 0px 0px var(--dark-primary-color) inset;
+  display: flex;
+  align-items: center;
+`;

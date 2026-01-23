@@ -7,6 +7,7 @@ import FileImg from '@/assets/search/folder.svg';
 import StartImg from '@/assets/Start.svg';
 import { CURSOR_IMAGES, setCursorImage } from '@/lib/setCursorImg';
 import { useVirtualDesktopManager } from '@/hooks/virtualDesktopManager';
+import { Time } from '@/applications/utility/time';
 
 interface TaskBarProps {
   backUpFocus: string;
@@ -136,6 +137,9 @@ const TaskBar = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
             );
           }
         })}
+        <_.AlarmCenterContainer>
+          <Time />
+        </_.AlarmCenterContainer>
       </_.TaskList>
     </_.TTaskBar>
   );
