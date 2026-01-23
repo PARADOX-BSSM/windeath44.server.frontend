@@ -184,12 +184,12 @@ export const NotificationBubble = styled.div<{ index: number; total: number }>`
     &::after {
       content: '';
       position: absolute;
-      bottom: -8px;
+      bottom: -9px;
       left: 50%;
       transform: translateX(-50%);
-      border-left: 8px solid transparent;
-      border-right: 8px solid transparent;
-      border-top: 8px solid var(--light-primary-color);
+      border-left: 9px solid transparent;
+      border-right: 9px solid transparent;
+      border-top: 10px solid var(--light-primary-color);
     }
   `}
 `;
