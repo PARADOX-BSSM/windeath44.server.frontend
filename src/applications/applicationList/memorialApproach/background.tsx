@@ -32,49 +32,83 @@ const MemorialBackground = () => {
     }, [delay]);
   };
 
+  const sentAlarms = useRef<Set<string>>(new Set());
+  const pendingAlarms = useRef<{ id: string; message: string; appName: string }[]>([]);
+
+  // Dispatch Loop (500ms) - Staggered Appearance
   useInterval(() => {
-    const messages: string[] = [];
+    if (pendingAlarms.current.length > 0) {
+      const nextAlarm = pendingAlarms.current.shift();
+      if (nextAlarm) {
+        setAlarmManager((prev) => [
+          ...prev,
+          {
+            ...nextAlarm,
+            createdAt: Date.now(),
+          },
+        ]);
+      }
+    }
+  }, 500);
+
+  // Detection Loop (1000ms)
+  useInterval(() => {
+    const queueAlarm = (id: string, message: string, isError: boolean) => {
+      if (isError) {
+        if (!sentAlarms.current.has(id)) {
+          pendingAlarms.current.push({
+            id,
+            appName: '추모관',
+            message,
+          });
+          sentAlarms.current.add(id);
+        }
+      } else {
+        if (sentAlarms.current.has(id)) {
+          sentAlarms.current.delete(id);
+        }
+      }
+    };
+
     if (!server) {
-      messages.push('서버 주소가 잘못 설정되어 있습니다. 관리자에게 문의하세요.');
+      queueAlarm('server-config-error', '서버 주소가 잘못 설정되어 있습니다. 관리자에게 문의하세요.', true);
     } else {
       // 기일자
-      if (anniversaryQuery.isError) {
-        messages.push('오늘의 기일자 정보를 불러올 수 없습니다.');
-      } else if (!anniversaryQuery.isLoading) {
+      queueAlarm('anniversary-error', '오늘의 기일자 정보를 불러올 수 없습니다.', anniversaryQuery.isError);
+      if (!anniversaryQuery.isError && !anniversaryQuery.isLoading) {
         const data = anniversaryQuery.data;
-        if (!Array.isArray(data) || data.length === 0) {
-          messages.push('오늘은 기일이 없습니다.');
-        } else {
+        const noData = !Array.isArray(data) || data.length === 0;
+        queueAlarm('anniversary-empty', '오늘은 기일이 없습니다.', noData);
+        if (!noData) {
           const name = data[0]?.name ?? data[0]?.characterName ?? '알 수 없음';
-          messages.push(`오늘은 ${name}의 기일입니다.`);
+          queueAlarm('anniversary-info', `오늘은 ${name}의 기일입니다.`, true);
         }
       }
+
       // 인기 추모관
-      if (memorialQuery.isError) {
-        messages.push('오늘의 인기 추모관 정보를 불러올 수 없습니다.');
-      } else if (!memorialQuery.isLoading) {
+      queueAlarm('memorial-error', '오늘의 인기 추모관 정보를 불러올 수 없습니다.', memorialQuery.isError);
+      if (!memorialQuery.isError && !memorialQuery.isLoading) {
         const raw = memorialQuery.data?.data ?? memorialQuery.data;
-        if (!raw) {
-          messages.push('오늘은 인기 추모관이 없습니다.');
-        } else {
+        const noData = !raw;
+        queueAlarm('memorial-empty', '오늘은 인기 추모관이 없습니다.', noData);
+        if (!noData) {
           const name = raw.characterName ?? raw.name ?? '알 수 없음';
-          messages.push(`오늘의 인기 추모관은 ${name}입니다.`);
+          queueAlarm('memorial-info', `오늘의 인기 추모관은 ${name}입니다.`, true);
         }
       }
+
       // 조문객
-      if (mournerQuery.isError) {
-        messages.push('조문객 정보를 불러올 수 없습니다.');
-      } else if (!mournerQuery.isLoading) {
+      queueAlarm('mourner-error', '조문객 정보를 불러올 수 없습니다.', mournerQuery.isError);
+      if (!mournerQuery.isError && !mournerQuery.isLoading) {
         const raw = mournerQuery.data?.data ?? mournerQuery.data;
-        if (!raw) {
-          messages.push('오늘은 조문객이 없습니다.');
-        } else {
+        const noData = !raw;
+        queueAlarm('mourner-empty', '오늘은 조문객이 없습니다.', noData);
+        if (!noData) {
           const name = raw.username ?? raw.name ?? '알 수 없음';
-          messages.push(`오늘의 조문객은 ${name} 입니다.`);
+          queueAlarm('mourner-info', `오늘의 조문객은 ${name} 입니다.`, true);
         }
       }
     }
-    setAlarmManager(messages);
   }, 1000);
 
   return null;
