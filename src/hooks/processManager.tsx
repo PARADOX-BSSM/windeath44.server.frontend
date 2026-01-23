@@ -10,6 +10,7 @@ import {
   SavedTaskType,
 } from '@/atoms/processManager.ts';
 import { focusAtom } from '@/atoms/windowManager';
+ import { backgroundTaskListAtom } from '@/atoms/processManager';
 import { useEffect, useRef, useState } from 'react';
 import { STACK_KEY_MAP, STACK_EXCLUDE_NAMES, STACK_ALL_KEYS } from '@/config/stackStorage';
 
@@ -31,7 +32,8 @@ export const useProcessManager = (): [
   const [desktopIndex] = useAtom(virtualDesktopIndexAtom);
   const setFocus = useSetAtom(focusAtom);
 
-  const [backgroundTaskList, setBackgroundTaskList] = useState<TaskType[]>([]); 
+ 
+  const [backgroundTaskList, setBackgroundTaskList] = useAtom(backgroundTaskListAtom);
 
   const isInitialMount = useRef(true);
   const setVirtualWindowPosition = (positions: Record<string, Position>, index?: number) => {

@@ -24,6 +24,7 @@ import SulkkagiMenu from '../applicationList/sulkkagiMenu';
 import AnniversaryWindow from '../applicationList/anniversaryWindow';
 import { getCookie } from '@/api/auth/cookie.ts';
 import NewBow from '../applicationList/bow_ver2';
+import MemorialBackground from '../applicationList/memorialApproach/background';
 
 // lazy를 이용한 어플리케이션 컴포넌트 로드
 const Terminal = lazy(() => import('@/applications/applicationList/terminal/index.tsx'));
@@ -155,9 +156,6 @@ const ReconfirmAlert = lazy(
   () => import('@/applications/applicationList/reconfirmAlert/index.tsx'),
 );
 
-const MemorialWindow = lazy(() => import('@/applications/applicationList/memorialWindow'));
-
-const MournerWindow = lazy(() => import('@/applications/applicationList/mournerWindow'));
 
 //Application Import 형식 예시
 /*
@@ -225,6 +223,11 @@ const useApps = (): TaskType[] => {
           />
         </Suspense>
       ),
+      backgroundComponent: ( 
+        <Suspense fallback={null}>
+          <MemorialBackground />
+        </Suspense>
+      ),
       type: 'App',
       id: 2250,
       name: '추모관',
@@ -237,6 +240,7 @@ const useApps = (): TaskType[] => {
         setUpHeight: 500,
       },
       visible: true,
+      isBackgrounded: true,  
     },
     {
       component: (
