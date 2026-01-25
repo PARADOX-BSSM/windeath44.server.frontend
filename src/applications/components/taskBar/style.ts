@@ -153,7 +153,7 @@ export const NotificationBubble = styled.div<{ index: number; total: number }>`
   position: absolute;
   bottom: 42px;
   left: 50%;
-  transform: translateX(calc(-50% - ${({ index, total }) => (total - 1 - index) * 20}px));
+  transform: translateX(calc(-75% - ${({ index, total }) => (total - 1 - index) * 20}px));
   background: var(--light-primary-color);
   border: 1.5px solid var(--primary-black);
   padding: 10px 14px;
@@ -170,28 +170,31 @@ export const NotificationBubble = styled.div<{ index: number; total: number }>`
 
   /* 꼬리 테두리 (Newest only) */
   ${({ index, total }) => index === total - 1 && `
-    &::before {
-      content: '';
-      position: absolute;
-      bottom: -11px;
-      left: 50%;
-      transform: translateX(-50%);
-      border-left: 11px solid transparent;
-      border-right: 11px solid transparent;
-      border-top: 10px solid var(--primary-black);
-    }
+    /* 꼬리 테두리 */
+  &::before {
+    content: '';
+    position: absolute;
+    bottom: -11px;
+    left: 75%;
+    transform: translateX(-50%);
+    border-left: 11px solid transparent;
+    border-right: 0px solid transparent;
+    border-top: 10px solid var(--primary-black);
+  }
 
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: -9px;
-      left: 50%;
-      transform: translateX(-50%);
-      border-left: 9px solid transparent;
-      border-right: 9px solid transparent;
-      border-top: 10px solid var(--light-primary-color);
-    }
+  /* 꼬리 내부 */
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 75%;
+    transform: translateX(-50%);
+    border-left: 8px solid transparent;
+    border-right: 0px solid transparent;
+    border-top: 8px solid var(--light-primary-color);
+  }
   `}
+  
 `;
 
 export const CloseButton = styled.button`
