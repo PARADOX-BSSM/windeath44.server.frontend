@@ -97,11 +97,11 @@ export const Observer = styled.div<{ selected?: boolean }>`
   box-shadow: ${({ selected }) =>
     !selected
       ? '-0.0625rem -0.0625rem 0px 0px var(--secondary-color) inset, ' +
-        '0.0625rem  0.0625rem 0px 0px #FFF inset, ' +
-        '-0.125rem -0.125rem 0px 0px #DCAFDD inset'
+      '0.0625rem  0.0625rem 0px 0px #FFF inset, ' +
+      '-0.125rem -0.125rem 0px 0px #DCAFDD inset'
       : '-0.0625rem -0.0625rem 0px 0px #FFF inset, 1.5px 1.5px 0px 0px var(--primary-black) inset, ' +
-        '-0.125rem -0.125rem 0px 0px var(--secondary-color) inset, ' +
-        '0.125rem 0.125rem 0px 0px var(--dark-primary-color) inset'};
+      '-0.125rem -0.125rem 0px 0px var(--secondary-color) inset, ' +
+      '0.125rem 0.125rem 0px 0px var(--dark-primary-color) inset'};
 `;
 
 export const StartImg = styled.img`
@@ -111,4 +111,110 @@ export const StartImg = styled.img`
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+`;
+
+export const AlarmCenterContainer = styled.div`
+  height: 100%;
+  margin-left: auto;
+  box-shadow:
+    -0.0625rem -0.0625rem 0px 0px #FFF inset, 1.5px 1.5px 0px 0px var(--primary-black) inset,
+    -0.125rem -0.125rem 0px 0px var(--secondary-color) inset,
+    0.125rem 0.125rem 0px 0px var(--dark-primary-color) inset;
+  display: flex;
+  align-items: center;
+`;
+
+export const BackgroundAppsContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  margin-left: auto;
+  border-left: 1px solid var(--primary-black);
+  height: 80%;
+`;
+
+export const BackgroundAppItem = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  
+  &:hover {
+    background-color: var(--secondary-color);
+    border-radius: 4px;
+  }
+`;
+
+export const NotificationBubble = styled.div<{ index: number; total: number }>`
+  position: absolute;
+  bottom: 42px;
+  left: 50%;
+  transform: translateX(calc(-75% - ${({ index, total }) => (total - 1 - index) * 20}px));
+  background: var(--light-primary-color);
+  border: 1.5px solid var(--primary-black);
+  padding: 10px 14px;
+  border-radius: 8px;
+  min-width: 160px;
+  max-width: 300px;
+  z-index: ${({ index }) => 1000 + index};
+  pointer-events: auto;
+  white-space: pre-wrap;
+  font-family: Galmuri11;
+  font-size: 16px;
+  color: var(--primary-black);
+  text-align: left;
+
+  /* 꼬리 테두리 (Newest only) */
+  ${({ index, total }) => index === total - 1 && `
+    /* 꼬리 테두리 */
+  &::before {
+    content: '';
+    position: absolute;
+    bottom: -11px;
+    left: 75%;
+    transform: translateX(-50%);
+    border-left: 11px solid transparent;
+    border-right: 0px solid transparent;
+    border-top: 10px solid var(--primary-black);
+  }
+
+  /* 꼬리 내부 */
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 75%;
+    transform: translateX(-50%);
+    border-left: 8px solid transparent;
+    border-right: 0px solid transparent;
+    border-top: 8px solid var(--light-primary-color);
+  }
+  `}
+  
+`;
+
+export const CloseButton = styled.button`
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: transparent;
+  border: none;
+  font-family: Galmuri11;
+  font-size: 10px;
+  cursor: pointer;
+  color: var(--primary-black);
+  padding: 0;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    color: red;
+  }
 `;

@@ -10,7 +10,8 @@ import {
   SavedTaskType,
 } from '@/atoms/processManager.ts';
 import { focusAtom } from '@/atoms/windowManager';
-import { useEffect, useRef } from 'react';
+ import { backgroundTaskListAtom } from '@/atoms/processManager';
+import { useEffect, useRef, useState } from 'react';
 import { STACK_KEY_MAP, STACK_EXCLUDE_NAMES, STACK_ALL_KEYS } from '@/config/stackStorage';
 
 type Position = { top: number; left: number; width: number; height: number };
@@ -20,6 +21,7 @@ export const useProcessManager = (): [
   (task: TaskType, position?: Position) => void,
   (task: TaskType) => void,
   (positions: Record<string, Position>, index?: number) => void,
+  TaskType[],
 ] => {
   const [globalTaskList, setGlobalTaskList] = useAtom(taskManagerAtom);
   const [virtualTaskLists] = useAtom(virtualTaskListsAtom);
@@ -29,6 +31,9 @@ export const useProcessManager = (): [
   const [virtualWindowPositions, setVirtualWindowPositions] = useAtom(virtualWindowPositionsAtom);
   const [desktopIndex] = useAtom(virtualDesktopIndexAtom);
   const setFocus = useSetAtom(focusAtom);
+
+ 
+  const [backgroundTaskList, setBackgroundTaskList] = useAtom(backgroundTaskListAtom);
 
   const isInitialMount = useRef(true);
   const setVirtualWindowPosition = (positions: Record<string, Position>, index?: number) => {
@@ -111,28 +116,35 @@ export const useProcessManager = (): [
   }, [virtualTaskList, windowPositions, virtualWindowPositions, desktopIndex]);
 
   const addTask = (task: TaskType) => {
-    if (task.type === 'Shell') {
-      // Shell은 이미 있으면 포커스, 없으면 추가
-      const existingTask = globalTaskList.find((t) => t.name === task.name);
-      if (existingTask) {
-        setFocus(existingTask.instanceId || existingTask.name);
-        return;
+    if (task.isBackgrounding) {
+      setBackgroundTaskList((prev) => [...prev, task]);
+    }else {
+      if (task.type === 'Shell') {
+        // Shell은 이미 있으면 포커스, 없으면 추가
+        const existingTask = globalTaskList.find((t) => t.name === task.name);
+        if (existingTask) {
+          setFocus(existingTask.instanceId || existingTask.name);
+          return;
+        }
+        setGlobalTaskList((prev) => [...prev, task]);
+      } else {
+        // App은 현재 가상 데스크탑에서 확인
+        const existingTask = virtualTaskList.find(
+          (t) => t.name === task.name && t.name !== '추모관 뷰어',
+        );
+        if (existingTask) {
+          setFocus(existingTask.instanceId || existingTask.name);
+          return;
+        }
+        addVirtualTask(task);
       }
-      setGlobalTaskList((prev) => [...prev, task]);
-    } else {
-      // App은 현재 가상 데스크탑에서 확인
-      const existingTask = virtualTaskList.find(
-        (t) => t.name === task.name && t.name !== '추모관 뷰어',
-      );
-      if (existingTask) {
-        setFocus(existingTask.instanceId || existingTask.name);
-        return;
-      }
-      addVirtualTask(task);
-    }
+    } 
   };
 
   const removeTask = (task: TaskType) => {
+    if (task.isBackgrounded) {
+      setBackgroundTaskList((prev) => prev.filter((t) => t.name !== task.name));
+    }
     if (task.type === 'Shell') {
       setGlobalTaskList((prev) => prev.filter((t) => t.name !== task.name));
     } else {
@@ -141,7 +153,7 @@ export const useProcessManager = (): [
   };
 
   const taskList = [...globalTaskList, ...virtualTaskList];
-  return [taskList, addTask, removeTask, setVirtualWindowPosition] as const;
+  return [taskList, addTask, removeTask, setVirtualWindowPosition, backgroundTaskList] as const;
 };
 
 // --- Virtual Process Manager ---

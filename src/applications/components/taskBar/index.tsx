@@ -3,20 +3,60 @@ import * as _ from './style';
 import { useProcessManager } from '@/hooks/processManager';
 import { useAtom } from 'jotai';
 import { focusAtom, startOptionAtom } from '@/atoms/windowManager';
+import { alarmManagerAtom } from '@/atoms/alarmManager';
 import FileImg from '@/assets/search/folder.svg';
 import StartImg from '@/assets/Start.svg';
 import { CURSOR_IMAGES, setCursorImage } from '@/lib/setCursorImg';
 import { useVirtualDesktopManager } from '@/hooks/virtualDesktopManager';
+import { Time } from '@/applications/utility/time';
 
 interface TaskBarProps {
   backUpFocus: string;
   setBackUpFocus: React.Dispatch<React.SetStateAction<string>>;
 }
 
+const NotificationItem = ({
+  alarm,
+  index,
+  total,
+  onRemove,
+}: {
+  alarm: { id: string; message: string };
+  index: number;
+  total: number;
+  onRemove: (id: string) => void;
+}) => {
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      onRemove(alarm.id);
+    }, 9000);
+    return () => clearTimeout(timer);
+  }, [alarm.id, onRemove]);
+
+  return (
+    <_.NotificationBubble index={index} total={total}>
+      <_.CloseButton
+        onClick={(e) => {
+          e.stopPropagation();
+          onRemove(alarm.id);
+        }}
+      >
+        x
+      </_.CloseButton>
+      {alarm.message}
+    </_.NotificationBubble>
+  );
+};
+
 const TaskBar = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
-  const [taskList] = useProcessManager();
+  const [taskList, , , , backgroundTaskList] = useProcessManager();
   const [focus, setFocus] = useAtom(focusAtom);
   const [startOption, setStartOption] = useAtom(startOptionAtom);
+  const [alarms, setAlarms] = useAtom(alarmManagerAtom);
+
+  const removeAlarm = (id: string) => {
+    setAlarms((prev) => prev.filter((a) => a.id !== id));
+  };
   const filterWindow = taskList.filter(
     (task) =>
       task.name !== '오늘의 기일' &&
@@ -70,7 +110,7 @@ const TaskBar = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
             );
           } else if (task.name === 'Extender') {
             return (
-              <>
+              <React.Fragment key={task.name}>
                 {extender && (
                   <>
                     {virtualDesktopList.map((id) => (
@@ -110,7 +150,7 @@ const TaskBar = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
                 >
                   {extender ? '<' : '>'}
                 </_.VirtualDesktopItem>
-              </>
+              </React.Fragment>
             );
           } else {
             const isFocused = (task.instanceId || task.name) === focus;
@@ -136,6 +176,34 @@ const TaskBar = ({ backUpFocus, setBackUpFocus }: TaskBarProps) => {
             );
           }
         })}
+
+        <_.AlarmCenterContainer>
+          <_.BackgroundAppsContainer>
+            {backgroundTaskList.map((task) => {
+              const appAlarms = alarms.filter((alarm) => alarm.appName === task.name);
+
+              return (
+                <_.BackgroundAppItem key={task.name}>
+                  {appAlarms.map((alarm, index) => (
+                    <NotificationItem
+                      key={alarm.id}
+                      alarm={alarm}
+                      index={index}
+                      total={appAlarms.length}
+                      onRemove={removeAlarm}
+                    />
+                  ))}
+                  <_.ImgContainer
+                    src={task.appSetup?.Image}
+                    draggable="false"
+                    style={{ width: '20px', height: '20px' }}
+                  />
+                </_.BackgroundAppItem>
+              );
+            })}
+          </_.BackgroundAppsContainer>
+          <Time />
+        </_.AlarmCenterContainer>
       </_.TaskList>
     </_.TTaskBar>
   );

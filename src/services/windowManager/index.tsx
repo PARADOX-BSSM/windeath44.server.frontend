@@ -30,6 +30,7 @@ import { feedsAtom } from '@/atoms/feeds';
 import { useGetFeedsMutation } from '@/api/feeds/getFeeds';
 import ContextMenu from '@/applications/components/contextMenu';
 import { alertOpenAtom } from '@/atoms/alerter.ts';
+import { BackgroundRuntime } from '@/services/backgroundRuntime';
 
 const Application = lazy(() => import('@/applications/layout/index.tsx'));
 
@@ -237,42 +238,27 @@ const WindowManager = () => {
     }
   }, [isLogIned, hydrated]);
 
-  // 알림창 초기화 (availableApps 필요)
+  // 시작 에플리케이션 호출 (availableApps 필요)
   useEffect(() => {
-    if (!hydrated || hasInitializedNotifications.current || isLogIned !== 'true') return;
-    if (!availableApps || availableApps.length === 0) return;
+  if (!hydrated || isLogIned !== 'true') return;
+  if (!availableApps?.length) return;
 
-    hasInitializedNotifications.current = true;
+  const memorialApp = availableApps.find(app => app.id === 2250);
+  if (!memorialApp || !memorialApp.component) return;
 
-    // bootLoader 끝난 후 알림창 띄우기 (3.5초 후)
-    setTimeout(() => {
-      // 알림창 위치 설정
-      const notificationPositions: Record<string, { top: number; left: number; width: number; height: number }> = {
-        '오늘의 기일': { top: 10, left: 920, width: 370, height: 87 },
-        '오늘의 추모관': { top: 108, left: 920, width: 370, height: 87 },
-        '오늘의 조문객': { top: 205, left: 920, width: 370, height: 87 },
-      };
-      setVirtualWindowPosition(notificationPositions, 0);
+  const instanceId = `${memorialApp.id}_background`;
 
-      // 오늘의 기일
-      const anniversaryApp = availableApps.find(app => app.id === 10001 && app.name === '오늘의 기일');
-      if (anniversaryApp) {
-        addTask(anniversaryApp);
-      }
+  // 🔒 이미 있으면 추가 안 함
+  if (hasInitializedNotifications.current) return;
 
-      // 추모관 알림
-      const memorialApp = availableApps.find(app => app.id === 10002 && app.name === '오늘의 추모관');
-      if (memorialApp) {
-        addTask(memorialApp);
-      }
+  hasInitializedNotifications.current = true;
 
-      // 조문객 알림
-      const mournerApp = availableApps.find(app => app.id === 10003 && app.name === '오늘의 조문객');
-      if (mournerApp) {
-        addTask(mournerApp);
-      }
-    }, 3500);
-  }, [hydrated, isLogIned, availableApps]);
+  addTask({
+    ...memorialApp,
+    instanceId,
+    isBackgrounding: true,
+  });
+}, [hydrated, isLogIned, availableApps]);
 
   // 로그아웃 시 ref 리셋
   useEffect(() => {
@@ -309,7 +295,6 @@ const WindowManager = () => {
     // atom에 데이터 저장
     setNotificationList(notificationsToStore);
   }, [hydrated, isLogIned, notificationsData, setNotificationList]);
-
   // 공지사항 자동 표시 (settings.showBootNotification이 true일 때만)
   useEffect(() => {
     if (
@@ -581,6 +566,7 @@ const WindowManager = () => {
             />
           )}
         </_.Display>
+        <BackgroundRuntime />
         <_.BackgroundDiv width={sideWidth}></_.BackgroundDiv>
       </Suspense>
     </_.Desktop>
